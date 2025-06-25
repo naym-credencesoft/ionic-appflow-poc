@@ -1,8 +1,5 @@
 {
-  "name": "myApp",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone",
-  "id": "a8588239"
+  "name": "ionic-app-base",
+  "integrations": {},
+  "type": "react-vite"
 }
