@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="primary" class="animated fadeIn">
+    <ion-buttons slot="start">
+      <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+    </ion-buttons>
+    <ion-text class="HeaderTitle">Notifications</ion-text>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin no-padding>
+  <ion-list>
+    <ion-item *ngFor="let n of notifications" class="notific-item" role="listitem" routerLinkActive="open">
+      <ion-icon *ngIf="n.status.toLowerCase()==='confirmed'" color="primary" class="notific-icon mr-1">receipt
+      </ion-icon>
+      <ion-icon *ngIf="n.status.toLowerCase()==='cancelled'" color="warn" class="notific-icon mr-1">receipt</ion-icon>
+      <ion-icon *ngIf="n.status.toLowerCase()==='submitted'" color="accent" class="notific-icon mr-1">receipt</ion-icon>
+
+      <a (click)="onRoutePage(n)" *ngIf="n.notificationStatus.toLocaleUpperCase()==='NEW'">
+        <div class="mat-list-text">
+          <h4 class="message"><b>{{n.notificationType}}- {{n.referenceNumber}}: <span>{{n.status}}</span></b></h4>
+          <small class="time text-muted"><b>{{n.createdDate | date:'dd/MM/yyyy HH:mm'}}</b></small>
+        </div>
+      </a>
+
+      <a (click)="onRoutePageRedrect(n)" *ngIf="n.notificationStatus.toLocaleUpperCase() !='NEW'">
+        <div class="mat-list-text">
+          <h4 class="message">{{n.notificationType}}- {{n.referenceNumber}}: <span>{{n.status}}</span></h4>
+          <small class="time text-muted">{{n.createdDate | date:'dd/MM/yyyy HH:mm'}}</small>
+        </div>
+      </a>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <ion-toolbar style=" height: 50px;">
+    <app-footer></app-footer>
+  </ion-toolbar>
+</ion-footer>

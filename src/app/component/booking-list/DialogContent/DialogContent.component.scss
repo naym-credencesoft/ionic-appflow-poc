@@ -1,0 +1,51 @@
+:host {
+ion-content {
+  
+    --background: #fff;
+
+    .list-back{
+        background: #FFFFFF00;
+        z-index: 2;
+        position: relative;
+    }
+    
+    .card-item {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+    }
+
+    .text-white {
+        color: #333;
+    }
+
+    .status{
+        margin-left: 5px;
+    }
+    .icon-color{
+        color: red($color: #fc0808);
+      }
+      
+      .success-icon {
+        color: #4caf50;
+      }
+      .error-icon{
+        color: #970101;
+      }
+
+      .button-submit{
+
+    --border-radius: 10px;
+    color: #fff;
+    }
+      
+}
+
+}

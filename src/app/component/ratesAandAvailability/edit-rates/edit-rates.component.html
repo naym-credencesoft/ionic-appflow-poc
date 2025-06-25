@@ -1,0 +1,179 @@
+<ion-header class="ion-no-border">
+    <ion-img
+        class="header-image"
+        src="/assets/img/icons/booking_round_header.svg"
+    ></ion-img>
+  
+    <ion-avatar class="profile">
+    
+        <img
+        style="object-fit: fill;"
+            src="assets/img/user_profile.svg"
+        />
+    </ion-avatar>
+  
+    <ion-img
+        class="left-image-header"
+        src="/assets/img/icons/booking-header-left.svg"
+    ></ion-img>
+   
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="goback()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">
+         OTA Rate Update</ion-text>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content no-padding class="animated fadeIn fast">
+    <ion-card class="card-layout text-white">
+        <ion-grid no-padding>
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 15px"
+                            >OTA Name</ion-text
+                        >
+                        <ion-col size="12">
+                            <div>
+                                <div
+                                    class="add_noofperson"
+                                    style="height: 54px;"
+                                >
+                                    <ion-input
+                                        type="text"
+                                        style="
+                                            --padding-top: 0px !important;
+                                            font-size: 25px;
+                                        "
+                                        placeholder="Enter OTA Name"
+                                        [formControl]="OTAList"
+                                        min="1"
+                                        clearInput="true"
+                                        [(ngModel)]="this.otaPlan.otaName"
+                                    ></ion-input>
+                                </div>
+                            </div>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 15px"
+                            >OTA Plan Id</ion-text
+                        >
+                        <ion-col size="12">
+                            <div>
+                                <div
+                                    class="add_noofperson"
+                                    style="height: 54px;"
+                                >
+                                    <ion-input
+                                        type="number"
+                                        style="
+                                            --padding-top: 0px !important;
+                                            font-size: 25px;
+                                        "
+                                        placeholder="Enter OTA Plan Id"
+                                        [formControl]="OtaPlanId"
+                                        min="1"
+                                        clearInput="true"
+                                        [(ngModel)]="this.otaPlan.otaPlanId"
+                                    ></ion-input>
+                                </div>
+                            </div>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>  
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 15px"
+                            >OTA Plan Name</ion-text
+                        >
+                        <ion-col size="12">
+                            <div>
+                                <div
+                                    class="add_noofperson"
+                                    style="height: 54px;"
+                                >
+                                    <ion-input
+                                        type="text"
+                                        style="
+                                            --padding-top: 0px !important;
+                                            font-size: 25px;
+                                        "
+                                        placeholder="Enter Plan Name"
+                                        [formControl]="PlanName"
+                                        min="1"
+                                        clearInput="true"
+                                        [(ngModel)]="this.otaPlan.planName"
+                                    ></ion-input>
+                                </div>
+                            </div>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 15px"
+                            >Price</ion-text
+                        >
+                        <ion-col size="12">
+                            <div>
+                                <div
+                                    class="add_noofperson"
+                                    style="height: 54px;"
+                                >
+                                    <ion-input
+                                        type="number"
+                                        style="
+                                            --padding-top: 0px !important;
+                                            font-size: 25px;
+                                        "
+                                        placeholder="Enter Price"
+                                        [formControl]="Price"
+                                        min="1"
+                                        clearInput="true"
+                                        [(ngModel)]="otaPlan.price"
+                                    ></ion-input>
+                                </div>
+                            </div>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>   <ion-row>
+                    <ion-col
+                        style="margin-bottom: 10px"
+                        size="12"
+                        size-xl="12"
+                        size-sm="12"
+                        size-md="12"
+                        size-lg="12"
+                    >
+                        <ion-button
+                        style="font-size: 25px;"
+                            size="small"
+                            expand="block"
+                            class="button-submit"
+                            (click)="onSubmit()"
+                            >Update</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        
+  
+           
+          
+  
+        </ion-grid>
+  
+    </ion-card>
+    <div class="loader-every" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+  </ion-content>

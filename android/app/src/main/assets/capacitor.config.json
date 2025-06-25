@@ -1,0 +1,31 @@
+{
+  "appId": "nz.co.credencesoft.bookone",
+  "appName": "BookOne Business",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "linuxAndroidStudioPath": "/home/dylan/Data/android-studio/bin/studio.sh",
+  "cordova": {
+    "preferences": {
+      "ScrollEnabled": "false",
+      "android-minSdkVersion": "19",
+      "BackupWebStorage": "none",
+      "SplashMaintainAspectRatio": "true",
+      "FadeSplashScreenDuration": "1000",
+      "SplashShowOnlyFirstTime": "false",
+      "SplashScreen": "screen",
+      "AutohideSplashScreen": "false",
+      "SplashScreenDelay": "10000",
+      "FadeSplashScreen": "true"
+    }
+  },
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
+    }
+  }
+}

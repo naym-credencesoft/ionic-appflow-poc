@@ -1,0 +1,206 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light">
+            <ion-text class="HeaderTitle"
+                >Today's Rate And Availability</ion-text
+            >
+        </ion-text>
+        <!-- </ion-title> -->
+        <!-- <ion-buttons slot="end">
+            <ion-button icon-left size="small" shape="round" color="tertiary">
+                  <ion-icon name="mail"></ion-icon>
+            </ion-button>
+            <ion-button icon-left size="small" shape="round" color="tertiary" >
+              <ion-icon name="contact"></ion-icon>
+            </ion-button>
+          </ion-buttons> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-progress-bar
+        type="indeterminate"
+        *ngIf="isProgressing"
+        reversed="true"
+    ></ion-progress-bar>
+    <ion-card class="bg-white" (click)="propertyClick()">
+        <ion-card-header color="primary">
+            <ion-text style="font-size: 15px">{{ property.name }}</ion-text>
+        </ion-card-header>
+        <ion-card-content *ngIf="isPropertyClick">
+            <div>
+                <div *ngFor="let rateInfo of ratesAndAvailabilitiesProperties">
+                    <!-- <ion-grid class="bg-white rate-list"> -->
+                    <ion-row>
+                        <ion-col size="4">
+                            <ion-text>Date :</ion-text>
+                        </ion-col>
+                        <ion-col size="6">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.date| date: 'EEE, MMM d,
+                                y'}}</ion-text
+                            >
+                        </ion-col>
+
+                        <ion-col size="2">
+                            <ion-row>
+                                <ion-icon
+                                    color="primary"
+                                    style="font-size: 17px"
+                                    name="checkbox-outline"
+                                    (click)="EditItemRoom(rateInfo,property)"
+                                >
+                                </ion-icon>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Price :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.price | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Total :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text"
+                                >{{rateInfo.totalNoRooms}}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Booked :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text"
+                                >{{rateInfo.noOfBooked}}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Hold :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text"
+                                >{{rateInfo.noOfOnHold}}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Available :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text"
+                                >{{rateInfo.noOfAvailable}}
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+                </div>
+            </div>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card
+        class="bg-white"
+        *ngFor="let room of roomsWithData; let i = index"
+    >
+        <ion-card-header (click)="listToggle(i)" color="primary">
+            <ion-text style="font-size: 15px">{{room.name}}</ion-text>
+        </ion-card-header>
+
+        <ion-card-content *ngIf="isListToggle">
+            <div *ngIf="selectedIndexNumber ===i">
+                <div *ngFor="let rateInfo of ratesAndAvailabilities;">
+                    <!-- <ion-grid class="bg-white rate-list"> -->
+                    <ion-row *ngIf="room.name==rateInfo.roomName">
+                        <ion-col size="4">
+                            <ion-text>Date :</ion-text>
+                        </ion-col>
+                        <ion-col size="6">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.date| date: 'EEE, MMM d,
+                                y'}}</ion-text
+                            >
+                        </ion-col>
+
+                        <ion-col size="2">
+                            <ion-row>
+                                <ion-icon
+                                    color="primary"
+                                    (click)="EditItemRoom(rateInfo,room)"
+                                    style="font-size: 17px"
+                                    name="checkbox-outline"
+                                >
+                                </ion-icon>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Price :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.price | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Total :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.totalNoRooms}}</ion-text
+                            >
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Booked :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.noOfBooked}}</ion-text
+                            >
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Hold :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.noOfOnHold}}</ion-text
+                            >
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text>Available :</ion-text>
+                        </ion-col>
+                        <ion-col size="8">
+                            <ion-text class="name-title-text">
+                                {{rateInfo.noOfAvailable}}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+
+                    <!-- </ion-grid> -->
+                </div>
+            </div>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style="height: 50px">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

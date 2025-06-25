@@ -1,0 +1,103 @@
+
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+    
+        <ion-buttons slot="start">
+            <ion-back-button mode ="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light">
+         
+         <ion-text color="secondary" class="HeaderTitle">Update</ion-text>
+        </ion-text>
+    
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content>
+
+    <ion-card class="bg-white card">
+    
+        <ion-grid no-padding  no-margin>  
+          
+                    <ion-row center no-margin no-padding> 
+                        <ion-col no-margin no-padding width-50 style="text-align: center" >
+                                <ion-text color="primary" style="font-size: 18px;" >{{ this.room.name }}</ion-text>
+                                
+                        </ion-col>                   
+                        
+                    </ion-row>
+                    <ion-row center no-margin no-padding> 
+                            <ion-col no-margin no-padding width-50 style="text-align: center" >
+                                    <ion-text color="primary" style="font-size: 12px;" >{{ this.rate.date  | date:'MMM d, y' }}</ion-text>
+                            </ion-col>                   
+                    </ion-row>
+            
+                    <form [formGroup]="onEditRateForm">
+                    <ion-row no-margin no-padding>
+                            
+                        <ion-col  size="12">
+                            <ion-text color="primary" style="font-size: 10px;" >Price </ion-text>
+                            <ion-input formControlName="price" [(ngModel)]="rate.price" class="input-background" min="0"  placeholder="0" type="number" ></ion-input>
+                        </ion-col>
+                    </ion-row>
+    
+                    <ion-row no-margin no-padding>
+                        <ion-col size="12">
+                            <ion-text color="primary" style="font-size: 10px;" >Total</ion-text>
+                            <ion-input class="input-background" formControlName="total" [(ngModel)]="rate.totalNoRooms"  min="0"  placeholder="0" type="number" ></ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row no-margin no-padding>
+                        <ion-col size="12">
+                            <ion-text color="primary" style="font-size: 10px;" >Booked</ion-text>
+                            <ion-input  formControlName="booked" 
+                            [(ngModel)]="rate.noOfBooked" 
+                            class="input-background"  min="0" max = "{{rate.totalNoRooms}}" 
+                            placeholder="0"
+                            
+                            type="number" ></ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row no-margin no-padding>
+                        <ion-col size="12">
+                            <ion-text color="primary" style="font-size: 10px;" >Hold</ion-text>
+                            <ion-input formControlName="hold" [(ngModel)]="rate.noOfOnHold"   class="input-background"  min="0"  placeholder="0" type="number" ></ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row no-margin no-padding>
+                        <ion-col size="12">
+                            <ion-text color="primary" style="font-size: 10px;" >Available</ion-text>
+                            <ion-input formControlName="Available" 
+                            [(ngModel)]="rate.noOfAvailable" 
+                            class="input-background" min="0" 
+                           
+                            max = "{{rate.totalNoRooms}}"  
+                            placeholder="0" type="number" ></ion-input>
+                        </ion-col>
+                    </ion-row>
+    
+            
+    
+                <ion-row>
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+    
+                        <ion-button size="small" round expand="block" color="primary"  [disabled]="!onEditRateForm.valid|| isRequested" (click)="submit()" >Update</ion-button>
+                    </ion-col>
+    
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                            <ion-button size="small" round expand="block" color="primary" (click)="close()">Cancel</ion-button>
+                    </ion-col>
+            </ion-row>
+        
+            </form>
+                 
+              
+            </ion-grid>
+    
+    </ion-card>
+    
+
+</ion-content>

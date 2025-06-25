@@ -1,0 +1,631 @@
+<style>
+/* Screen styles */
+.print-black {
+  color:white
+}
+
+/* Print styles */
+@media print {
+  .print-black {
+    color: black;
+  }
+}
+</style>
+
+<ion-header class="ion-no-border print-black">
+    <ion-img class="header-image" src="/assets/img/icons/booking_round_header.svg"></ion-img>
+
+    <ion-avatar class="profile">
+        <img 
+        style="object-fit: fill;"
+        src="{{this.property?.logoUrl}}" onerror="this.src='/assets/img/app-logo.png'" />
+    </ion-avatar>
+
+    <ion-img class="left-image-header" src="/assets/img/icons/booking-header-left.svg"></ion-img>
+    <ion-text class="HeaderSubTitle"> Order Details </ion-text>
+    <ion-toolbar>
+        <!-- <ion-buttons slot="start" class="back" (click)="back()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons> -->
+        <ion-text color="light" class="HeaderTitle">Order Invoice</ion-text>
+    </ion-toolbar>
+
+
+
+</ion-header>
+
+
+<ion-content class="print-black" >
+    <table  class="print-black" style="width: 100%; font-size: 12px; font-family: Arial !important;">
+        <tr>
+          <td>
+            <div class="profile-sidebar mb-1 pb-0" style="text-align: center">
+             <div
+             class="text-center logo"
+             style="margin-left: auto; margin-right: auto; width: 100%"
+             *ngIf="isPropertyLogoAdded || businessService?.logoEnabled"
+           >
+             <img
+               class="imgProperty"
+               src="{{ LogoURL }}"
+               width="100"
+               height="100"
+               alt=""
+             />
+           </div>
+              <div
+                class="profile-title text-center mb-1"
+                style="font-size: large"
+              >
+             
+                <div
+                  class="main-title"
+                  *ngIf="
+                    (businessService != null &&
+                      businessService != undefined &&
+                      businessService.brandName == undefined) ||
+                    (businessService != null &&
+                      businessService != undefined &&
+                      businessService.brandName == '') ||
+                    (businessService != null &&
+                      businessService != undefined &&
+                      businessService.brandName == null)
+                  "
+                >
+                  {{ property.name }}
+                </div>
+                <div
+                  class="main-title"
+                  *ngIf="
+                    businessService != null &&
+                    businessService != undefined &&
+                    businessService.brandName != undefined &&
+                    businessService.brandName != null
+                  "
+                >
+                  {{ businessService.brandName }}
+                </div>
+                
+              </div>
+              <div style="width: 100%; font-size: 12px" *ngIf="property?.address">
+                {{
+                  property?.address.streetNumber
+                    ? property?.address.streetNumber + ", "
+                    : ""
+                }}
+                {{
+                  property?.address.streetName
+                    ? property?.address.streetName + ", "
+                    : ""
+                }}{{
+                  property?.address.suburb ? property?.address.suburb + ", " : ""
+                }}
+                {{ property?.address.city ? property?.address.city + ", " : "" }}
+              
+                {{ property?.address.state ? property?.address.state + ", " : ""
+                }}
+                {{
+                 property?.address.postcode
+                   ? property?.address.postcode 
+                   : ""
+               }}
+              </div>
+             
+              <div>Email: {{ property?.email }}</div>
+             
+              <div>
+               Mobile:
+               <span *ngIf="
+               businessService != null &&
+               businessService != undefined &&
+               (businessService?.phoneNumber != undefined &&
+               businessService?.phoneNumber != null && businessService?.phoneNumber.trim != '')
+             ">{{businessService.phoneNumber}}</span>
+               <span *ngIf="
+               (
+               businessService?.phoneNumber == undefined ||
+               businessService?.phoneNumber == null || businessService?.phoneNumber.trim == '')  && property?.mobile != null"> {{ property?.mobile }} </span>
+             </div>
+              <div *ngIf="getGST() != null">GSTN: {{ getGST() }}</div>
+            </div>
+          </td>
+        </tr>
+      </table>
+   
+      <div class="row print-black" style="display: flex;padding: 20px;justify-content: space-between; ;">
+        <div
+        style="
+          font-family: Arial, sans-serif !important;
+          width: 50%;
+          font-size: 10px;
+        "
+      >
+        <div style="width: 100%; margin-top: 10px">
+          Bill No : {{ order.bookOneOrderId }}
+        </div>
+        <div
+            *ngIf="
+              this.businessService?.name.toLocaleLowerCase() ===
+                'restaurants' ||
+              this.businessService?.name.toLocaleLowerCase() === 'cafes' ||
+              this.businessService?.name.toLocaleLowerCase() === 'bar'
+            "
+          >
+            <div *ngIf="order.roomNo != undefined && order.roomNo != null">
+              Room No : {{ order.roomNo }}
+            </div>
+            <div
+              *ngIf="
+                (this.businessService != null &&
+                  this.businessService != undefined &&
+                  this.businessService?.name != null &&
+                  this.businessService?.name != undefined &&
+                  this.businessService?.name == 'Accommodation') ||
+                (this.businessService?.name == 'Restaurants' &&
+                  order.resourceName != undefined &&
+                  order.resourceName != null)
+              "
+            >
+              Table No. : {{ order.resourceName }}
+            </div>
+    
+            <div
+            *ngIf="
+            order.firstName != null &&
+            order.firstName != undefined &&
+            order.lastName != null &&
+            order.lastName != undefined
+          "
+            >
+            Guest: {{ order.firstName }} {{ order.lastName }}
+            </div>
+            <div
+            *ngIf="
+            order.customerName != null &&
+            order.customerName != undefined &&
+            order.customerName.trim() != ''
+          "
+            >
+            Guest: {{ order.customerName }}
+            </div>
+    
+            <div *ngIf="getGST() != null">GSTN: {{ getGST() }}</div>
+          </div>
+    
+      </div>
+    
+      <div
+      style="
+        font-family: Arial, sans-serif !important;
+        width: 50%;
+        font-size: 10px;
+        margin-top: 10px;
+        text-align: right;
+      "
+    >
+    
+        <div>
+    
+          <div>
+            Date :
+            <span
+              *ngIf="
+                order.orderedDate != null && order.orderedDate != undefined
+              "
+            >
+              {{
+                dateService.convertMillisecondsToDateFormat(order.orderedDate)
+              }}
+              </span
+            >
+          </div>
+          <div>
+            Time :
+            <span
+              *ngIf="
+                order?.orderedTime != null && order?.orderedTime != undefined
+              "
+            >
+              {{ order?.orderedTime }}</span
+            >
+          </div>
+          <div
+            *ngIf="
+              order.orderCompleteTime != null &&
+              order.orderCompleteTime != undefined
+            "
+          >
+            <strong>Order Completed Time: </strong>
+            <span>
+              {{ order.orderCompleteTime | date : "d MMM hh:mm aa" }}</span
+            >
+          </div>
+          <div
+          *ngIf="
+            this.businessService?.name == 'Accommodation' ||
+            this.businessService?.name == 'Restaurants'
+          "
+        >
+          No Of Pax: {{ order.noOfPerson }}
+        </div>
+    
+        <Div *ngIf="order.mobile != null">
+          Mobile : {{ order.mobile }}
+        </Div>
+    
+        </div>
+    
+    </div>
+       </div> 
+        
+       <ion-row>
+        <ion-col size="12">
+          <hr style="height: 1px;
+          border-width: thin;
+          box-sizing: border-box;">
+        </ion-col>
+      </ion-row>
+           
+        
+
+          <div class="print-black" style="font-family: Arial !important; width: 100%;">
+   
+          <div style="padding: 20px;">
+            <table
+            style="font-family: Arial !important; width: 100%; font-size: 10px;padding: 20px;"
+          >
+           
+            <thead style="text-align: left;">
+              <tr>
+                <th>Items</th>
+                <th  style="text-align: end;">Qty</th>
+                <th style="text-align: end;">Rate</th>
+                <th  style="text-align: end;">Amount</th>
+              </tr>
+             
+            </thead>
+            
+            <tbody>
+              <tr *ngFor="let row of this.orderLineList">
+                <td *ngIf="row.status != 'Out Of Stock'">{{ row.name }}</td>
+                <td *ngIf="row.status != 'Out Of Stock'"  style="text-align: end;">
+                  {{ row.unitsInOrder }}
+                </td>
+                <td *ngIf="row.status != 'Out Of Stock'"  style="text-align: end;">
+                 <span
+                   *ngIf="
+                     row.discountedPrice != null &&
+                     row.discountedPrice != undefined &&
+                     row.discountedPrice > 0
+                   "
+                   ><span
+                     style="
+                       font-family: Arial !important;
+                       text-decoration: line-through;
+                     "
+                     >{{
+                       row.sellUnitPrice | currency : currency : "symbol" : "1.2-2"
+                     }}</span
+                   >
+                   {{
+                     row.discountedPrice | currency : currency : "symbol" : "1.2-2"
+                   }}
+                   ({{
+                     100 - (100 / row.sellUnitPrice) * row.discountedPrice
+                       | number : "1.0-2"
+                   }}% Off)</span
+                 >
+                 <span
+                   *ngIf="
+                     row.discountedPrice == null ||
+                     row.discountedPrice == undefined ||
+                     row.discountedPrice == 0
+                   "
+                   >{{
+                     row.sellUnitPrice | currency : currency : "symbol" : "1.2-2"
+                   }}</span
+                 >
+               </td>
+                <td *ngIf="row.status != 'Out Of Stock'"  style="text-align: end;">
+                  <span
+                    *ngIf="row.discountedPrice !== null && row.discountedPrice > 0"
+                    >{{
+                      row.discountedPrice * row.unitsInOrder
+                        | currency : currency : "symbol" : "1.2-2"
+                    }}</span
+                  >
+                  <span
+                    *ngIf="row.discountedPrice == null || row.discountedPrice == 0"
+                    >{{
+                      row.sellUnitPrice * row.unitsInOrder
+                        | currency : currency : "symbol" : "1.2-2"
+                    }}</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+            <ion-row style="padding: 0px !important;">
+                <ion-col size="12">
+                  <hr style="height: 1px;
+                  border-width: thin;
+                  box-sizing: border-box;">
+                </ion-col>
+              </ion-row>
+       
+ <div style="padding-right: 20px;padding-left: 20px;">
+    <div class="row" style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;"  *ngIf="
+    calculateTotalProductAmount() != null &&
+    calculateTotalProductAmount() > 0
+  ">
+    <div class="price-section" style="text-align: right;margin-right: 5px;">Total Amount:</div>
+     <div
+     class="price-subsection"
+    
+   >
+       {{
+         calculateTotalProductAmount()
+           | currency : currency : "symbol" : "1.2-2"
+       }}
+     
+   </div>
+    </div>
+   <div class="row" style="font-family: Arial !important; font-size: 10px;display: flex;justify-content:space-between ;"
+   *ngIf="
+          order.discountAmount != undefined &&
+          order.discountAmount != null &&
+          order.discountAmount != 0
+        ">
+     <div class="price-section" style="text-align: right;margin-right: 5px;"></div>
+     <div class="price-subsection">
+       Discount:
+   
+       {{
+       order.discountAmount
+       | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;"
+   *ngIf="
+            order.deliveryMethod === 'Home Delivery' &&
+            order.deliveryChargeAmount != undefined &&
+            order.deliveryChargeAmount != null &&
+            order.deliveryChargeAmount > 0
+          ">
+     <div class="price-section" style="text-align: right;margin-right: 5px;"></div>
+     <div class="price-subsection" >
+       Delivery Charge:
+       {{
+       order.deliveryChargeAmount
+       | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;"
+   *ngIf="
+              order.deliveryMethod === 'Home Delivery' &&
+              order.deliveryChargeAmount != undefined &&
+              order.deliveryChargeAmount != null &&
+              order.deliveryChargeAmount > 0
+            ">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">Delivery Charge:</div>
+     <div  class="price-subsection" >
+       
+       {{
+       order.deliveryChargeAmount
+       | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;justify-content: space-between;display: flex;"
+   *ngIf="
+              order.refundAmount != undefined &&
+              order.refundAmount != null &&
+              order.refundAmount > 0
+            ">
+     <div class="price-section" style="text-align: right;margin-right: 5px;"> Refund Amount (-):</div>
+     <div  class="price-section" >
+      
+       {{
+       order.refundAmount
+       | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;"
+   *ngIf="
+              order.serviceChargeAmount != undefined &&
+              order.serviceChargeAmount != null &&
+              order.serviceChargeAmount != 0
+              ">
+              <div class="price-section" style="text-align: right;margin-right: 5px;">Service Amount:</div>
+             <div class="price-subsection" >
+               
+              
+               {{
+               order?.serviceChargeAmount
+               | currency : currency : "symbol" : "1.2-2"
+               }}
+           
+             </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">
+       Sub Total:
+     </div>
+     <div class="price-subsection"  *ngIf="
+                    calculateSubTotal() != null &&
+                    calculateSubTotal() != undefined &&
+                    calculateSubTotal() > 0
+                  ">
+       {{
+       calculateSubTotal() | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">
+       <div *ngFor="let taxSlab of order.taxDetails">
+         <span *ngIf="taxSlab.taxAmount !== 0">
+           {{ taxSlab.name }} ({{ taxSlab.percentage }}%):
+         </span>
+       </div>
+   
+     </div>
+     <div class="price-subsection" *ngIf="order.taxAmount != undefined && order.taxAmount != null">
+       <div *ngFor="let taxSlab of order.taxDetails">
+         <span *ngIf="taxSlab.taxAmount !== 0">{{
+           taxSlab.taxAmount | currency : currency : "symbol" : "1.0"
+           }}</span>
+       </div>
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;"
+   *ngIf="order.taxAmount != undefined && order.taxAmount != null">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">
+       Total Tax:
+     </div>
+     <div class="price-subsection">
+       {{
+       order.taxAmount | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;" *ngIf="
+                       order.totalOrderAmount != null &&
+                       order.totalOrderAmount != undefined &&
+                       order.totalOrderAmount > 0
+                     ">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">
+       Grand Total:
+     </div>
+     <div class="price-subsection" >
+       {{
+       order.totalOrderAmount | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;" *ngIf="
+                         order.advanceAmount != null &&
+                         order.advanceAmount != undefined &&
+                         order.advanceAmount > 0
+                       ">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">
+       Advance Amount:
+     </div>
+     <div  class="price-subsection" >
+       {{
+       order.advanceAmount | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row" style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;" *ngIf="
+                         getTotalPaidPaymentAmount() != null &&
+                         getTotalPaidPaymentAmount() != undefined &&
+                         getTotalPaidPaymentAmount() > 0
+                       ">
+     <div  class="price-section" style="text-align: right;margin-right: 5px;">
+       Received Amount:
+     </div>
+     <div class="price-subsection" >
+       {{
+       getTotalPaidPaymentAmount() | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row" style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;" *ngIf="
+              getTotalRoomBill() != null &&
+              getTotalRoomBill() != undefined &&
+              getTotalRoomBill() > 0
+            ">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">
+       Room Bill:
+     </div>
+     <div  class="price-subsection">
+       {{
+       getTotalRoomBill() | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;display: flex;justify-content: space-between;" *ngIf="
+                         getTotalCreditBill() != null &&
+                         getTotalCreditBill() != undefined &&
+                         getTotalCreditBill() > 0           
+            ">
+     <div class="price-section" style="text-align: right;margin-right: 2px;">
+       Bill To Company:
+     </div>
+     <div class="price-subsection">
+       {{
+       getTotalCreditBill() | currency : currency : "symbol" : "1.2-2"
+       }}
+   
+     </div>
+   </div>
+   <div class="row"  style="font-family: Arial !important; font-size: 10px;justify-content: space-between;display: flex;">
+     <div class="price-section" style="text-align: right;margin-right: 5px;">
+       <span *ngIf="getBalanceAmount() <= 0">Tips / Excess Amount: </span>
+       <span *ngIf="getBalanceAmount() > 0">Due Amount: </span>
+   
+     </div>
+     <div class="price-subsection">
+       <span *ngIf="getBalanceAmount() <= 0">
+         {{
+         getTips() | currency : currency : "symbol" : "1.2-2"
+         }}
+       </span>
+       <span *ngIf="getBalanceAmount() > 0">{{
+         getBalanceAmount() | currency : currency : "symbol" : "1.2-2"
+         }} </span>
+   
+     </div>
+   </div>
+ </div>
+           
+           <ion-row>
+            <ion-col size="12">
+              <hr style="height: 1px;
+              border-width: thin;
+              box-sizing: border-box;">
+            </ion-col>
+          </ion-row>
+           
+            <div
+              style="
+                font-family: Arial !important;
+                text-align: center;
+                font-size: 10px;
+                margin-top: 5px;
+              "
+            >
+              Thank You! Visit us again.
+            </div>
+          </div>
+
+          <!-- Content of your page here -->
+          
+          <!-- Button at the bottom -->
+          <ion-button 
+  (click)="printDocument()" 
+  class="print-button hide-on-print" 
+  style="margin-top: 50px; margin-left: auto; margin-right: auto; display: block;">
+  Print
+</ion-button>
+
+ 
+  </ion-content>
+
+  

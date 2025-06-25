@@ -1,0 +1,1065 @@
+<ion-header>
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Night Audit Report  </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()"  style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+
+    <ion-grid class="headerColor nightSect">
+        <form [formGroup]="onNightAuditForm">
+            <ion-row>
+                <ion-col size="12">
+                    <ion-item>
+                        <ion-text style="color: #1D174D">Date : </ion-text>
+
+                        <ion-datetime
+                        style="color: #1D174D;margin-left: 16px;"
+                            formControlName="FromDate"
+                            [(ngModel)]="booking.fromDate"
+                            no-padding
+                            class="text-white"
+                            displayFormat="DD/MM/YYYY"
+                            pickerFormat="DD/MM/YYYY"
+                            placeholder="Select Date"
+                            min= "2000-12-31"
+                            max="2100-12-31"
+                        ></ion-datetime>
+                    </ion-item>
+                </ion-col>
+                <!-- <ion-col size="6">
+                    <ion-item class="text-white" style="font-size: 13px">
+                        <ion-checkbox
+                            style="height: 3vh"
+                            formControlName="ShowCheckOut"
+                            [(ngModel)]="addCheckoutBooking"
+                        ></ion-checkbox
+                        >Checkout Booking
+                    </ion-item>
+                </ion-col> -->
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="5" *ngIf="isRead == false">
+                    <ion-button
+                        expand="block"
+                        color="primary"
+                        [disabled]="!onNightAuditForm.valid"
+                        (click)="onSearchDate()"
+                    >
+                        Find Report</ion-button
+                    >
+                </ion-col>
+
+                <ion-col size="5" *ngIf="isRead == true">
+                    <ion-button
+                        expand="block"
+                        color="primary"
+                        disabled
+                        (click)="onSearchDate()"
+                    >
+                        Find Report</ion-button
+                    >
+                </ion-col>
+
+                <ion-col size="5">
+                    <ion-button expand="block" color="primary" (click)="Reset()"
+                        >Reset
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="2">
+                    <ion-button
+                        [disabled]="!onNightAuditForm.valid"
+                        expand="block"
+                        color="primary"
+                        (click)="isFilterVisible =! isFilterVisible"
+                    >
+                        <ion-icon name="filter-circle-outline"></ion-icon>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </form>
+
+        <ion-grid *ngIf="isFilterVisible">
+            <form [formGroup]="onFilterForm">
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-item style="color:#1D174D" style="font-size: 13px" >
+                            <ion-checkbox                            
+                            (ionChange)="filterByDropdown()"
+                                style="height: 3vh; border-radius: 50%"
+                                formControlName="ShowCheckOut"
+                                [(ngModel)]="addCheckoutBooking"
+                            ></ion-checkbox
+                            >Checkout Booking
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="12">
+                        <ion-item>
+                            <ion-label style="color:#1D174D"> Room Type</ion-label>
+                            <ion-select
+                                multiple="true"
+                                cancelText="Cancel"
+                                okText="Apply"
+                                style="color:#1D174D"
+                                formControlName="roomType"
+                                [(ngModel)]="roomName"
+                                (ionChange)="filterByDropdown()"
+                            >
+                                <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
+                                <ion-select-option (click)="filterModal()"
+                                    *ngFor="let room of rooms; let i = index;"
+                                >
+                                    <div>{{room.name}}</div>
+                                </ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+
+                    <ion-col size="12">
+                        <ion-item>
+                            <ion-label style="color:#1D174D"> Source</ion-label>
+                            <ion-select
+                                multiple="true"
+                                cancelText="Cancel"
+                                okText="Apply"
+                                style="color:#1D174D"
+                                formControlName="externalSite"
+                                [(ngModel)]="sourceOfBooking"
+                                (ionChange)="filterByDropdown()"
+                            >
+                                <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
+                                <ion-select-option (click)="filterModal()"
+                                    *ngFor="let externalSite of this.externalSiteList.externalBookingSites"
+                                    [value]="externalSite.value"
+                                >
+                                    {{ externalSite.viewValue }}
+                                </ion-select-option>
+
+                                <ion-select-option
+                                    *ngFor="let externalSite of propertyOTA"
+                                    [value]="externalSite.onlineTravelAgencyName"
+                                >
+                                    {{ externalSite.onlineTravelAgencyName }}
+                                </ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-col>
+
+                    <ion-col size="12">
+                        <ion-item>
+                            <ion-datetime
+                                formControlName="bookingDateControll"
+                                [(ngModel)]="BookingDate"
+                                no-padding
+                                style="color:#1D174D"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                placeholder="Select Date"
+                                (ionChange)="filterByDropdown()"
+                            ></ion-datetime>
+                        </ion-item>
+                    </ion-col>
+                    <ion-col size="12">
+                        <ion-item style="color:#1D174D">
+                            <ion-checkbox
+                                style="height: 3vh; border-radius: 50%"
+                                formControlName="DueFilter"
+                                [(ngModel)]="isDueAmount"
+                                (ionChange)="filterByDropdown()"
+                            ></ion-checkbox>
+                            Due Amount
+                        </ion-item>
+                    </ion-col>
+
+                    <ion-col size="12">
+                        <ion-item style="color:#1D174D">
+                            <ion-checkbox
+                                style="height: 3vh; border-radius: 50%"
+                                formControlName="SameDayFilter"
+                                [(ngModel)]="isSameDayBooking"
+                                (ionChange)="filterByDropdown()"
+                            >
+                            </ion-checkbox>
+                            Same Day Booking
+                        </ion-item>
+                    </ion-col>
+
+                    <ion-col size="12">
+                        <ion-item style="color:#1D174D">
+                            <ion-checkbox
+                                style="height: 3vh; border-radius: 50%"
+                                formControlName="CheckedINFilter"
+                                [(ngModel)]="isCheckedIn"
+                                (ionChange)="filterByDropdown()"
+                            >
+                            </ion-checkbox>
+                            Checked In
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+
+        <ion-row>
+            <!-- <ion-col size="11"> -->
+            <ion-segment
+                *ngIf="this.bookings.length >0"
+                [(ngModel)]="SearchSelection"
+            >
+                <ion-segment-button value="0">
+                    <ion-label>All Data</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="1">
+                    <ion-label>Total</ion-label>
+                </ion-segment-button>
+            </ion-segment>
+        </ion-row>
+    </ion-grid>
+</ion-header>
+
+<ion-content>
+    <!-- <ion-progress-bar type="indeterminate" *ngIf="isProgressing" reversed="true"></ion-progress-bar> -->
+    <!-- <div class="custom-loader" *ngIf="isProgressing">
+        <img src="/assets/img/app-logo.png" alt="Loader Image" class="loader-image">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+      </div> -->
+
+    <ion-list *ngIf="SearchSelection === '0'">
+        <ion-card style="border: 1px solid gray"
+            *ngFor="let row of bookings| paginate: { itemsPerPage: 5, currentPage: p }; let i = index"
+            class="bg-white"
+        >
+            <ion-card-header color="primary" class="cardnighthead" (click)="toggleCardVisibility(i)">
+                <ion-row>
+                    <ion-col size="12">
+                        <a class="rev"
+                            ><u>{{ row.propertyReservationNumber }}</u> <br />
+                            <span *ngIf="row.groupBooking">GROUP</span>
+                        </a>
+                        <ion-text>
+                            <b>{{ row.firstName }} {{ row.lastName }}</b>
+                            <br />
+                            <span
+                                *ngIf="row.fromDate != null && row.fromDate != undefined"
+                                >{{ row.fromDate | date:'MMM d, y' }} to
+                               
+                                {{row.toDate | date:'MMM d, y'}}
+                            </span>
+                        </ion-text>
+                        <ion-icon _ngcontent-rjc-c188="" *ngIf="!visibleCards[i]" name="caret-down-outline" style="position: absolute; top: 50%; font-size: 20px; right: 10px; transform: translateY(-50%); color: white;" ng-reflect-name="caret-down-outline" role="img" class="ios hydrated" aria-label="caret down outline"></ion-icon>
+                        <ion-icon _ngcontent-rjc-c188="" *ngIf="visibleCards[i]" name="caret-up-outline" style="position: absolute; top: 50%; font-size: 20px; right: 10px; transform: translateY(-50%); color: white;" ng-reflect-name="caret-up-outline" role="img" class="ios hydrated" aria-label="caret up outline"></ion-icon>
+                    </ion-col>
+
+                </ion-row>
+            </ion-card-header>
+            <ion-card-content *ngIf="visibleCards[i]">
+                <ion-grid>
+                    <ion-label style="font-size: 13px; font-size: 16px; color: black;">Booking:</ion-label>
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Status :</ion-text>
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span> {{ row.bookingStatus }} </span>
+                            <span
+                                class="batch-expected"
+                                *ngIf="
+                            row.dateRollOver != null &&
+                            row.dateRollOver != undefined &&
+                            row.dateRollOver == true
+                          "
+                                color="primary"
+                                >Auto Extend</span
+                            >
+                        </ion-text>
+                        
+                        
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Source :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="row.externalSite != null && row.externalSite != undefined && row.externalSite !=''"
+                            >
+                                {{ row.externalSite }}
+                                <span
+                                    class="TextValue"
+                                    *ngIf=" row.externalBookingId !=null &&  row.externalBookingId != undefined"
+                                    >{{row.externalBookingId}}</span
+                                >
+                            </span>
+                        </ion-text>
+                    </ion-row>
+                    <ion-row class="col"></ion-row>
+                    <ion-label style="font-size: 13px">Room:</ion-label>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Name :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="row.roomName != null && row.roomName != undefined && row.roomName !=''"
+                            >
+                                {{ row.roomName }}
+                            </span>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >No :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <div *ngIf="row.bookingStatus != 'CHECKEDOUT'">
+                                <div
+                                    *ngFor="
+                                    let roominfo of row.roomDetails;
+                                    let isLast = last;
+                                    let i = index
+                                  "
+                                >
+                                    {{ roominfo.roomNumber }} {{ isLast ? "" :
+                                    ", " }}<br />
+                                </div>
+                            </div>
+                            <div *ngIf="row.bookingStatus === 'CHECKEDOUT'">
+                                {{ row.roomNumbers }}
+                            </div>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Count :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span *ngIf="!isCheckOutDay(row) || sameDay(row)"
+                                >{{ row.noOfRooms }}</span
+                            >
+                            <span *ngIf="isCheckOutDay(row) && !sameDay(row)"
+                                >0</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Plan :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            {{ row.roomRatePlanName }}
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Rate/Night :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                              (!isCheckOutDay(row) &&
+                                row.payableAmount != null &&
+                                row.payableAmount != undefined &&
+                                this.getNoOfNight(row) != null &&
+                                this.getNoOfNight(row) != undefined) ||
+                              (sameDay(row) &&
+                                row.payableAmount != null &&
+                                row.payableAmount != undefined &&
+                                this.getNoOfNight(row) != null &&
+                                this.getNoOfNight(row) != undefined)
+                            "
+                                >{{ ratePerNight(row) | currency : currency :
+                                "symbol" : "1.2-2" }}</span
+                            >
+                            <span
+                                *ngIf="row.payableAmount == null ||
+                              row.payableAmount == undefined ||
+                              (isCheckOutDay(row) && !sameDay(row))"
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Current outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                        balanceRoomTarif(row) != null &&
+                        balanceRoomTarif(row) != undefined
+                      "
+                            >
+                                <a
+                                    *ngIf="balanceRoomTarif(row) > 0"
+                                    class="dueAmount"
+                                    >
+                                    <u
+                                        >{{ balanceRoomTarif(row) | currency :
+                                        currency : "symbol" : "1.2-2" }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Due</span>
+                                </a>
+
+                                <!--  balanceRoomTarif(row) -->
+                                <a *ngIf="balanceRoomTarif(row) <= 0"
+                                    ><u
+                                        >{{ 0 | currency : currency : "symbol" :
+                                        "1.2-2" }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Balance</span>
+                                </a>
+                            </span>
+                            <span
+                                *ngIf="
+                        balanceRoomTarif(row) == null ||
+                        balanceRoomTarif(row) == undefined
+                      "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >OTA Charges :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            {{ getCommitionAmount(row) | currency : currency :
+                            "symbol" : "1.2-2" }}
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Total :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            {{ hotelCollect(row) | currency : currency :
+                            "symbol" : "1.2-2" }}
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                              getTotalPaidRoomAmount(row) != null &&
+                              getTotalPaidRoomAmount(row) != undefined
+                            "
+                                >{{ getTotalPaidRoomAmount(row) | currency :
+                                currency : "symbol" : "1.2-2" }}</span
+                            >
+                            <span
+                                *ngIf="
+                              getTotalPaidRoomAmount(row) == null ||
+                              getTotalPaidRoomAmount(row) == undefined
+                            "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                              getTotalRoomTariffAmountNotPaid(row) != null &&
+                              getTotalRoomTariffAmountNotPaid(row) != undefined
+                            "
+                                >{{ getTotalRoomTariffAmountNotPaid(row) |
+                                currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                            <span
+                                *ngIf="
+                              getTotalRoomTariffAmountNotPaid(row) == null ||
+                              getTotalRoomTariffAmountNotPaid(row) == undefined
+                            "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="col"></ion-row>
+                    <ion-label style="font-size: 13px">Service:</ion-label>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Total :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                        row.totalServiceAmount != null &&
+                        row.totalServiceAmount != undefined
+                      "
+                                >{{ row.totalServiceAmount | currency : currency
+                                : "symbol" : "1.2-2" }}</span
+                            >
+                            <span
+                                *ngIf="
+                        row.totalServiceAmount == null ||
+                        row.totalServiceAmount == undefined
+                      "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                              serviceAmountPaid(row) != null &&
+                              serviceAmountPaid(row) != undefined
+                            "
+                                >{{ serviceAmountPaid(row) | currency : currency
+                                : "symbol" : "1.2-2" }}</span
+                            >
+                            <span
+                                *ngIf="
+                              serviceAmountPaid(row) == null ||
+                              serviceAmountPaid(row) == undefined
+                            "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                        serviceAmountNotPaid(row) != null &&
+                        serviceAmountNotPaid(row) != undefined
+                      "
+                                >{{ serviceAmountNotPaid(row) | currency :
+                                currency : "symbol" : "1.2-2" }}</span
+                            >
+                            <span
+                                *ngIf="
+                        serviceAmountNotPaid(row) == null ||
+                        serviceAmountNotPaid(row) == undefined
+                      "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="col"></ion-row>
+                    <ion-label style="font-size: 13px">Credit:</ion-label>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Total :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                >{{ getCreditAmount(row) | currency : currency :
+                                "symbol" : "1.2-2" }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                >{{ getCreditPaidAmount(row) | currency :
+                                currency : "symbol" : "1.2-2" }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Bill To Room :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                >{{ getBillToRoomAmount(row) | currency :
+                                currency : "symbol" : "1.2-2" }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-label style="font-size: 13px"
+                        >Booking Total:</ion-label
+                    >
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                        row.totalPaymentAmount != null &&
+                        row.serviceAmountPaid != undefined
+                      "
+                                >{{ row.totalPaymentAmount -
+                                getCreditPaidAmount(row) | currency : currency :
+                                "symbol" : "1.2-2" }}</span
+                            >
+                            <span
+                                *ngIf="
+                        row.totalPaymentAmount == null ||
+                        row.totalPaymentAmount == undefined
+                      "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                *ngIf="
+                              row.outstandingAmount != null &&
+                              row.outstandingAmount != undefined
+                            "
+                            >
+                                <a
+                                    *ngIf="row.outstandingAmount < 0"
+                                    class="dueAmount"
+                                    ><u
+                                        >{{ row.outstandingAmount -
+                                        getCreditPaidAmount(row) | currency :
+                                        currency : "symbol" : "1.2-2" }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Due</span>
+                                </a>
+
+                                <a *ngIf="row.outstandingAmount >= 0"
+                                    ><u
+                                        >{{ row.outstandingAmount -
+                                        getCreditPaidAmount(row) | currency :
+                                        currency : "symbol" : "1.2-2" }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Balance</span>
+                                </a>
+                            </span>
+                            <span
+                                *ngIf="
+                              row.outstandingAmount == null ||
+                              row.outstandingAmount == undefined
+                            "
+                                >{{ 0 | currency : currency : "symbol" : "1.2-2"
+                                }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Income :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <span
+                                >{{ getTotalIncome(row) | currency : currency :
+                                "symbol" : "1.2-2" }}</span
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-label style="font-size: 13px">Note:</ion-label>
+
+                    <ion-row class="payment-row">
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            {{ row.notes }}
+                        </ion-text>
+                    </ion-row>
+                </ion-grid>
+            </ion-card-content>
+        </ion-card>
+        <pagination-controls
+            *ngIf="this.bookings.length >0"
+            (pageChange)="p = $event"
+        ></pagination-controls>
+    </ion-list>
+
+    <ion-list *ngIf="SearchSelection === '1'">
+        <ion-card class="bg-white" style="border: 1px solid gray">
+            <ion-card-header color="primary">
+                <ion-row>
+                    <ion-col size="6">
+                        <span>Total</span>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-row float-right>
+                            <ion-text
+                                class="TextValue rev"
+                                style="font-size: 13px"
+                            >
+                            </ion-text>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-grid>
+                    <ion-label style="font-size: 13px">Room:</ion-label>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Count :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b> {{ getNoOfRooms() }} </b>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Rate/Night :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getRoomAmountPerNight() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Current outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b>
+                                <a
+                                    *ngIf="getTotalRoomPriceTillToday() > 0"
+                                    class="dueAmount"
+                                    >
+                                    <u
+                                        >{{ getTotalRoomPriceTillToday() |
+                                        currency : currency : "symbol" : "1.2-2"
+                                        }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Due</span>
+                                </a>
+                                <a *ngIf="getTotalRoomPriceTillToday() <= 0"
+                                    ><u
+                                        >{{ 0 | currency : currency : "symbol" :
+                                        "1.2-2" }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Balance</span>
+                                </a>
+                            </b>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >OTA Charges :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b>
+                                {{ getTotalComission() | currency : currency :
+                                "symbol" : "1.2-2" }}
+                            </b>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Total :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getPayableAmount() | currency : currency :
+                                "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getTotalRoomTariffAmountPaid() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getTotalRoomTariffAmountPending() | currency
+                                : currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="col"></ion-row>
+                    <ion-label style="font-size: 13px">Service:</ion-label>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Total :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getTotalServiceAmount() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getTotalServiceAmountPaid() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getTotalServiceAmountPending() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="col"></ion-row>
+                    <ion-label style="font-size: 13px">Credit:</ion-label>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Total :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ this.getTotalCreditAmount() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ this.getTotalCreditPaidAmount() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Bill To Room :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ this.getTotalBillToRoomAmount() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-label style="font-size: 13px"
+                        >Booking Total:</ion-label
+                    >
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Paid :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getTotalPaymentAmount() | currency :
+                                currency : "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Outstanding :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b>
+                                <a
+                                    *ngIf="getTotalOutstandingAmount() < 0"
+                                    class="dueAmount"
+                                    ><u
+                                        >{{ getTotalOutstandingAmount() |
+                                        currency : currency : "symbol" : "1.2-2"
+                                        }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Due</span>
+                                </a>
+
+                                <a *ngIf="getTotalOutstandingAmount() >= 0"
+                                    ><u
+                                        >{{ getTotalOutstandingAmount() |
+                                        currency : currency : "symbol" : "1.2-2"
+                                        }}</u
+                                    >
+                                    <br />
+                                    <span class="batch-expected">Balance</span>
+                                </a>
+                            </b>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Income :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getTotalAllIncome() | currency : currency :
+                                "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="col"></ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Room Sale Amount :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b
+                                >{{ getRoomSaleAmount() | currency : currency :
+                                "symbol" : "1.2-2" }}</b
+                            >
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >Room Sale Count :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b>{{ getRoomSaleCount() }}</b>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >No Of Checkedouts :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b>{{ getNoOfCheckedOuts() }}</b>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary"
+                            >No Of In House :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b> {{ getNoByStatus("CHECKEDIN") }}</b>
+                        </ion-text>
+                    </ion-row>
+
+                    <ion-row class="payment-row">
+                        <ion-text style="font-size: 13px" color="primary">
+                            No Of Checkedin Awaited :</ion-text
+                        >
+                        <ion-text class="TextValue" style="font-size: 13px">
+                            <b> {{ getNoByStatus("CONFIRMED") }}</b>
+                        </ion-text>
+                    </ion-row>
+                </ion-grid>
+            </ion-card-content
+            ></ion-card
+        ></ion-list
+    >
+
+    <!-- <div class="custom-loader" *ngIf="isProgressing" >
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+        <div class="loader-text">Please wait...</div>
+      </div> -->
+
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+            <img
+                src="/assets/img/loader-logo.png"
+                alt="Loader Image"
+                class="loader-image"
+            />
+            <div class="loader-text">Please wait...</div>
+        </div>
+    </div>
+</ion-content>

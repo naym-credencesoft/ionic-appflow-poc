@@ -1,0 +1,240 @@
+<ion-header>
+    <ion-toolbar  class="animated fadeIn sectionedHead">
+        <ion-buttons slot="start" class="header-back">
+            <ion-back-button mode="md" icon="arrow-back" style="color: #fff"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Variation</ion-text>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card class="bg-white">
+        <ion-grid no-padding>
+            <form [formGroup]="onProductVariationForm">
+                <ion-row>
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-text
+                            color="primary"
+                            style="font-size: 12px"
+                            class="title"
+                            >Name*</ion-text
+                        >
+                        <ion-card no-margin>
+                            <ion-row>
+                                <ion-col
+                                    no-padding
+                                    size="12"
+                                    size-xl="12"
+                                    size-sm="12"
+                                    size-md="12"
+                                    size-lg="12"
+                                >
+                                    <ion-input
+                                        formControlName="Name"
+                                        [(ngModel)]="productVariation.name"
+                                        placeholder="Name"
+                                        inputmode="text"
+                                    ></ion-input>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                    </ion-col>
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-text
+                            color="primary"
+                            style="font-size: 12px"
+                            class="title"
+                            >Code*</ion-text
+                        >
+                        <ion-card no-margin>
+                            <ion-row>
+                                <ion-col
+                                    no-padding
+                                    size="12"
+                                    size-xl="12"
+                                    size-sm="12"
+                                    size-md="12"
+                                    size-lg="12"
+                                >
+                                    <ion-input
+                                        formControlName="productCode"
+                                        [(ngModel)]="productVariation.code"
+                                        placeholder="Code"
+                                        inputmode="text"
+                                    ></ion-input>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-text
+                            color="primary"
+                            style="font-size: 12px"
+                            class="title"
+                            >Sell Unit Price*</ion-text
+                        >
+                        <ion-card no-margin>
+                            <ion-row>
+                                <ion-col
+                                    no-padding
+                                    size="12"
+                                    size-xl="12"
+                                    size-sm="12"
+                                    size-md="12"
+                                    size-lg="12"
+                                >
+                                    <ion-input
+                                        formControlName="SellUnitPrice"
+                                        [(ngModel)]="productVariation.sellUnitPrice"
+                                        placeholder="Sell Unit Price"
+                                        inputmode="number"
+                                        type="number"
+                                        (ngModelChange)="priceToFactorRow(productVariation)"
+                                    ></ion-input>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                    </ion-col>
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-text
+                            color="primary"
+                            style="font-size: 12px"
+                            class="title"
+                            >Factor to Product*</ion-text
+                        >
+                        <ion-card no-margin>
+                            <ion-row>
+                                <ion-col
+                                    no-padding
+                                    size="12"
+                                    size-xl="12"
+                                    size-sm="12"
+                                    size-md="12"
+                                    size-lg="12"
+                                >
+                                    <ion-input
+                                        formControlName="FactortoProduct"
+                                        [(ngModel)]="productVariation.factorToProduct"
+                                        placeholder="Factor to Product"
+                                        inputmode="number"
+                                        type="number"
+                                        (change)="factorTopriceRow(productVariation)"
+                                    ></ion-input>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text
+                            color="primary"
+                            style="font-size: 12px"
+                            class="title"
+                            >Discount Price</ion-text
+                        >
+                        <ion-card no-margin>
+                            <ion-row>
+                                <ion-col
+                                    no-padding
+                                    size="12"
+                                    size-xl="12"
+                                    size-sm="12"
+                                    size-md="12"
+                                    size-lg="12"
+                                >
+                                    <ion-input
+                                        formControlName="DiscountedPrice"
+                                        [(ngModel)]="productVariation.discountedPrice"
+                                        placeholder="Discount Price"
+                                        inputmode="number"
+                                        type="number"
+                                        min="0"
+                                    ></ion-input>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row style="margin:10px">
+                    
+                    <ion-checkbox
+                        class="OutOfStock"
+                        formControlName="OutOfStock"
+                        [(ngModel)]="productVariation.outOfStock"
+                    ></ion-checkbox>
+                    <ion-text
+                        color="primary"
+                        style="font-size: 12px"
+                        class="title"
+                        >Product out of stock</ion-text
+                    >
+
+                </ion-row>
+
+                <ion-row>
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            expand="block"
+                            class="cancel-btn"
+                            (click)="cancel()"
+                            >Cancel</ion-button
+                        >
+                    </ion-col>
+
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="4"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            expand="block"
+                            color="primary"
+                            (click)="submit()"
+                            [disabled]="!onProductVariationForm.valid|| loader"
+                        >
+                            {{ ButtonLabel }}</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+    </ion-card>
+</ion-content>

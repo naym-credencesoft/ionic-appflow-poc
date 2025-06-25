@@ -1,0 +1,172 @@
+<!-- <ion-header>
+    <ion-toolbar class="text-white" class="animated fadeIn">
+
+        <ion-buttons slot="start" >
+            <ion-icon (click)="onBackBookingPage()" class="back-button" mode ="md" icon="arrow-back" ></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Checkout Detail</ion-text>
+        
+    
+    </ion-toolbar>
+  </ion-header> -->
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Checkout Detail </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="onBackBookingPage()"  style="font-size: 20px; margin-top: -10px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+   
+
+    <ion-card class="list-back sectiondiv">
+        <ion-grid no-padding>
+
+            <ion-row>
+                <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                    <ion-row style="background: white; border-radius: 7px;">
+                            <ion-text color="danger" style="font-size: 13px; padding: 10px;" >CheckOut Error,Please check booking status and outstanding amount in booking details section</ion-text>
+                    </ion-row>
+                     
+                </ion-col>
+
+            </ion-row>
+           
+            <!-- <ion-row>
+                <ion-item-divider>
+                  </ion-item-divider>
+            </ion-row> -->
+
+            <ion-row class="content-2-row info-content">
+                <ion-col no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                    <ion-text style="font-size: 10px;" class="text-white">Booking Reference</ion-text>
+                        <ion-row >
+                            <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                <ion-text class="text-white" >{{booking.id}}</ion-text> 
+                            </ion-col>
+                        </ion-row>
+                </ion-col>
+                <ion-col no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                        <ion-text style="font-size: 10px;" class="text-white">Booking Status</ion-text>
+                       
+                            <ion-row >
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                    <ion-text class="text-white">{{booking.bookingStatus}}</ion-text>  
+                                </ion-col>
+                            </ion-row>
+                </ion-col>
+        </ion-row>
+
+
+        <ion-row class="content-2-row">
+            <ion-col no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                <ion-text style="font-size: 10px;" class="text-white">First Name</ion-text>
+                    <ion-row >
+                        <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                            <ion-text class="text-white" >{{booking.firstName}}</ion-text> 
+                        </ion-col>
+                    </ion-row>
+            </ion-col>
+            <ion-col no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                    <ion-text style="font-size: 10px;" class="text-white">Last Name</ion-text>
+                   
+                        <ion-row >
+                            <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                <ion-text class="text-white" >{{booking.lastName}}</ion-text>  
+                            </ion-col>
+                        </ion-row>
+            </ion-col>
+    </ion-row>
+
+           
+    <ion-row *ngIf="booking.id > 0" class="content-2">
+        <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+            <ion-row>
+                <ion-chip class="bg-primary" *ngIf="booking.payableAmount > 0"  style="height: 20px">
+                    <ion-label  style="font-size: 13px; color: white;" >Room: {{ booking.payableAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-label></ion-chip>
+            </ion-row>
+
+            <ion-row>
+
+                <ion-chip class="bg-secondary" *ngIf="booking.discountAmount > 0"  style="height: 20px">
+                    <ion-label  style="font-size: 13px; color: white;">Discount: {{ booking.discountAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-label></ion-chip>
+                
+            </ion-row>
+                
+            <ion-row>
+                <ion-chip class="bg-primary" *ngIf="booking.totalServiceAmount > 0"  style="height: 20px">
+                    <ion-label  style="font-size: 13px; color: white;" >Services: {{ booking.totalServiceAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-label></ion-chip>
+                
+            </ion-row>
+            <ion-row>
+                <ion-chip class="bg-primary" *ngIf="booking.totalExpenseAmount > 0"  style="height: 20px">
+                    <ion-label  style="font-size: 13px; color: white;" >Expenses: {{ booking.totalExpenseAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-label></ion-chip>
+                
+            </ion-row>
+
+            <ion-row>
+                <ion-chip class="bg-success" *ngIf="booking.totalPaymentAmount > 0"  style="height: 20px">
+                    <ion-label  style="font-size: 13px; color: white;" >Paid:  {{ booking.totalPaymentAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-label></ion-chip>
+            
+            </ion-row>
+        
+            <ion-row>
+                <ion-chip class="bg-danger" *ngIf="booking.outstandingAmount > 0"  style="height: 20px">
+                    <ion-label  style="font-size: 13px; color: white;" >Balance:  {{ booking.outstandingAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-label></ion-chip>
+            
+            </ion-row>
+
+            <ion-row>
+
+                <ion-chip class="bg-danger" *ngIf="booking.outstandingAmount < 0"  style="height: 20px">
+                    <ion-label  style="font-size: 13px; color: white;" >Balance:  {{ booking.outstandingAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-label></ion-chip>
+            
+            </ion-row>
+                
+        </ion-col>
+
+    </ion-row>
+           
+        <ion-row class="content-button">
+                <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                    <ion-button size="small" expand="block" class="button-submit" (click)="onpayment()">Make a Payment</ion-button>
+                </ion-col>
+        </ion-row>
+
+        </ion-grid>
+    </ion-card>
+
+    <!-- <app-checkout-payment *ngIf="isPayment"></app-checkout-payment> -->
+     
+
+</ion-content>

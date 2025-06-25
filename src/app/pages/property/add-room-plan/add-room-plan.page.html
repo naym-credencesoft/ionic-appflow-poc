@@ -1,0 +1,263 @@
+<ion-header> 
+    <ion-toolbar  class="animated fadeIn customixed">
+    
+    <ion-buttons slot="start">
+        <ion-back-button mode ="md" icon="arrow-back" style="color:#fff"></ion-back-button>
+    </ion-buttons>
+      <ion-text color="light" class="HeaderTitle" >Add Room Plan</ion-text>
+    </ion-toolbar>
+
+  </ion-header>
+
+<ion-content>
+
+    
+        <ion-grid no-padding>
+            <form [formGroup]="onPlanForm">
+                <ion-card class="bg-white">
+                    <ion-card-header style="color: #333">Plan Info</ion-card-header>
+                    <div style="margin:10px; margin-top: -10px;">
+                <ion-row>
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Name*</ion-text>
+
+                        <ion-input formControlName="Name" [(ngModel)]="plan.name"
+                        placeholder="Name" inputmode="text" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-input>
+                        
+                    </ion-col>
+
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Code*</ion-text>
+
+                        <ion-input formControlName="PlanCode" [(ngModel)]="plan.code"
+                        placeholder="Code" inputmode="text"  [disabled]="!!plan.code || isInventoryPlanUpdate" class="input-background"></ion-input>
+                        
+                    </ion-col>
+                </ion-row>
+
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Description</ion-text>
+                        <ion-textarea formControlName="Description" [(ngModel)]="plan.description" name="Description"
+                        clearOnEdit="true" placeholder="Description" rows="2" disabled="{{isInventoryPlanUpdate}}"  class="input-background"></ion-textarea>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Minimum Occupancy</ion-text>
+                        <ion-input formControlName="MinimumOccupancy" [(ngModel)]="plan.minimumOccupancy"
+                            placeholder="0" inputmode="number" type ="number" min="0" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-input>
+                        
+                    </ion-col>
+
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Maximum Occupancy</ion-text>
+                        
+                        <ion-input formControlName="MaximumOccupancy" [(ngModel)]="plan.maximumOccupancy"
+                        placeholder="0" inputmode="number" type="number" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-input>
+                        
+                    </ion-col>
+                </ion-row>
+
+                
+                <ion-row>
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Extra Charge Per Person*</ion-text>
+                        
+                        <ion-input formControlName="ExtraChargePerPerson" [(ngModel)]="plan.extraChargePerPerson"
+                        placeholder="0" inputmode="number" type ="number" min="0" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-input>
+                        
+                    </ion-col>
+
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Extra Charge Per Child*</ion-text>
+                        
+                        <ion-input formControlName="ExtraChargePerChild" [(ngModel)]="plan.extraChargePerChild"
+                        placeholder="0" inputmode="number" type="number" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-input>
+                        
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+               
+                    <ion-col size="12">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">No of Children*</ion-text>
+                        
+                        <ion-input formControlName="NoOfChildren" [(ngModel)]="plan.noOfChildren"
+                            placeholder="0" inputmode="number" type="number" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-input>
+                        
+                    </ion-col>
+                </ion-row>
+            </div>
+            </ion-card>
+           
+
+            <!-- *ngIf="!isInventoryPlanUpdate" -->
+            <ion-card >
+                <ion-card-header>Week Days</ion-card-header>
+                <ion-row>
+                    <ion-col size="12">
+    
+                        <ion-row class="forecast_container">
+                            <ion-col size="6"*ngFor="let day of daysList">
+                                <ion-item (click)="daySelection(day)">
+                                    <ion-icon *ngIf="checkWeekDays(day)" name="checkbox-outline"></ion-icon> 
+                                    <ion-icon *ngIf="!checkWeekDays(day)" name="stop-outline"></ion-icon><span class="weekdayusText">{{day}}</span>
+                                </ion-item>
+                            
+                            </ion-col>
+                          </ion-row>
+    
+                    </ion-col>
+                </ion-row>
+            </ion-card>
+
+            <ion-card>
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size="6">
+
+                            <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Effective Date
+                            </ion-text>
+
+                            <ion-datetime  [(ngModel)]="plan.effectiveDate" min="2000-01-01"
+                            max="2100-12-31" (ionChange)="fromDateChange()"
+                            formControlName="EffectiveDate" no-padding class="check-in-out-date"
+                            color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                            placeholder="Effective Date" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-datetime>
+                            <ion-icon _ngcontent-wcm-c196="" name="calendar" style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
+
+                        </ion-col>
+    
+                        <ion-col size="6">
+
+                            <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Expiry Date
+                            </ion-text>
+
+                            <ion-datetime [(ngModel)]="plan.expiryDate"
+                            min="{{plan.effectiveDate}}"
+                            max="2100-12-31"
+                            formControlName="ExpiryDate" no-padding class="check-in-out-date"
+                            color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                            placeholder="Expiry Date" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-datetime>
+
+                            <ion-icon _ngcontent-wcm-c196="" name="calendar" style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
+    
+                        </ion-col>
+    
+                    </ion-row>
+                </ion-grid>
+            </ion-card>
+
+            
+
+            <ion-card>
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-text class="title-text" color="primary" style="font-size: 12px;">Currency*</ion-text>
+                            <ion-select placeholder="Select Room Type" value="{{plan.currencyCode}}"
+                                    [(ngModel)]="plan.currencyCode" name="Room" okText="Done" class="input-background" cancelText="Dismiss"
+                                    formControlName="CurrencyCode">
+        
+                                    <ion-row>
+                                       
+                                        <ion-select-option value="AUD">Austrilia Dollar(AUD)</ion-select-option>
+                                        <ion-select-option value="USD">United States Dollar (USD)</ion-select-option>
+                                        <ion-select-option value="GBP">British Pound (GBP)</ion-select-option>
+                                        <ion-select-option value="EUR">Euro (EUR)</ion-select-option>
+                                        <ion-select-option value="NZD">New Zealand Dollar (NZD)</ion-select-option>
+                                        <ion-select-option value="INR">Indian Rupee (INR)</ion-select-option>
+                                        <ion-select-option value="BDT">Bangladeshi Taka (BDT)</ion-select-option>
+                                        <ion-select-option value="SAR">Saudi Riyal (SAR)</ion-select-option>
+                                        <ion-select-option value="SGD">Singapore Dollar (SGD)</ion-select-option>
+                                        <ion-select-option value="FJD">Fiji Dollar (FJD)</ion-select-option>
+        
+                                    </ion-row>
+                                </ion-select>
+                        </ion-col>
+                       
+                        
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="12">
+        
+                            <ion-text class="title-text" color="primary" style="font-size: 12px;">Room Standard Price</ion-text>
+                            <ion-input formControlName="RoomStandardPrice" [(ngModel)]="roomStandardPrice"
+                            placeholder="Amount" inputmode="number" type="number" readonly class="input-background"></ion-input>
+                            
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="12">
+    
+                            <ion-text class="title-text" color="primary" style="font-size: 12px;">{{ planStandardrateheaderTitle }} (%)</ion-text>
+                            
+                            <ion-input formControlName="DiscountAmount" [(ngModel)]="discountAmount"
+                            (ngModelChange)="discountAmountChange($event)"
+                            placeholder="0" inputmode="number" type ="number" min="0" class="input-background"></ion-input>
+                            
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="12">
+    
+                            <ion-text class="title-text" color="primary" style="font-size: 12px;">Amount</ion-text>
+                            
+                            <ion-input formControlName="Amount" [(ngModel)]="plan.amount"  (ngModelChange)="amountChange($event)"
+                            placeholder="0" inputmode="number" type="number" class="input-background"></ion-input>
+                            
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-card>
+
+
+            <ion-card>
+                <ion-grid>
+                    <ion-row>
+                        <ion-list>
+                            <ion-item>
+                              <ion-label>Applicable To Ota</ion-label>
+                              <ion-toggle formControlName="applicableToOta" [(ngModel)]="plan.isApplicableToOta" disabled="{{isInventoryPlanUpdate}}"></ion-toggle>
+                            </ion-item>
+                        </ion-list>
+                    </ion-row>
+                </ion-grid>
+            </ion-card> 
+            
+            <ion-row>
+                
+
+                    <ion-col size="6" >
+                        <ion-button expand="block" class="cancelD" (click)="cancel()">Cancel</ion-button>
+                    </ion-col>
+
+                    <ion-col size="6" *ngIf="!isInventoryPlanUpdate">
+                    <ion-button  expand="block" color="primary" (click)="submit()" [disabled]="!onPlanForm.valid|| loader">
+                        Update</ion-button>
+                    </ion-col>
+
+                    <ion-col size="6" *ngIf="isInventoryPlanUpdate">
+                    <ion-button  expand="block" color="primary" (click)="AddOrUpdateInventory()" [disabled]="!onPlanForm.valid|| loader">
+                        Update</ion-button>
+                    </ion-col>
+
+            </ion-row>
+
+            </form>
+
+        </ion-grid>
+
+
+</ion-content>

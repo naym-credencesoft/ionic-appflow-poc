@@ -1,0 +1,445 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Today's Order Report </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="menuAction()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Service Dashboard</ion-text
+            >
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+  <div style="margin-top: 15px; margin-left: 5px; margin-right: 5px; margin-bottom: 20px;">
+    <!-- select services -->
+    <ion-row>
+      <ion-col size="12">
+        <ion-datetime value="2" style=" font-size: 15px; text-align: left; color: #333"
+          [formControl]="FromDateController" [(ngModel)]="selectedDateString" (ionChange)="dateChange()" no-padding
+          class="card-item" displayFormat="DD/MM/YYYY" placeholder="From Date" min= "2000-12-31"
+          max="2100-12-31"></ion-datetime>
+        <ion-icon name="calendar"
+          style="position: absolute;
+          top: 50%;
+          font-size: 20px;
+          right: 20px;
+          transform: translateY(-50%);
+          color: #333;
+          z-index: 7;"></ion-icon>
+      </ion-col>
+      <ion-col size="12">
+        <ion-select class="card-item" [formControl]="BusinesService" [(ngModel)]="bserviceid"
+          (ionChange)="setService(bserviceid)" name="Room" okText="Done" cancelText="Dismiss"
+          style=" font-size: 15px; text-align: left; color:#333">
+          <ion-select-option value="0">
+            All
+          </ion-select-option>
+        <ng-container *ngFor="let Service of businessServiceList">
+            <ion-select-option *ngIf="Service.active" [value]="Service.id" class="text-wrap">
+                <p class="text-wrap" *ngIf="Service.name == 'Restaurants' && Service.brandName != null && Service.brandName !=''">{{ Service.name
+                }}-{{Service.brandName}}</p>
+              <p *ngIf="Service.name == 'Restaurants' && (Service.brandName == null || Service.brandName =='')">{{ Service.name }}</p>
+              <p *ngIf="Service.name != 'Restaurants'">{{ Service.name }}</p>
+            </ion-select-option>
+        </ng-container>
+        </ion-select>
+        <ion-text *ngIf="!serviceSelected"
+          style="position: absolute; top: 50%; left: 20px; z-index: 4; font-size: 20px; transform: translateY(-50%); color: #333;">
+          Select Services
+        </ion-text>
+        <ion-icon name="caret-down-outline"
+          style="position: absolute;
+          top: 50%;
+          right: 9px;
+          z-index: 4;
+          font-size: 20px;
+          transform: translateY(-50%);
+          color: #333;"></ion-icon>
+      </ion-col>
+    </ion-row>
+
+
+
+    <ion-row class="orderPage">
+      <ion-col size="12">
+        <div style="    display: flex;
+                background-color: #D3EBF2;
+            justify-content: space-between;
+            width: 58%;
+            padding: 10px;
+            margin-top: -31px; 
+            border-radius: 15px; align-items: center;">
+          <div style="color: black; font-weight: 600; font-size: 17px;">
+            Total Orders
+          </div>
+          <div class="dot">
+            <p style="margin-top: 5px;
+    font-size: 19px;">
+              {{ totalOrder() }}
+            </p>
+          </div>
+        </div>
+        <table style="border: 4px solid gray;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-radius: 15px;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: #333;">
+          <tr>
+            <th class="table-head-design">Order Type</th>
+            <th class="table-head-design">Qty</th>
+            <th class="table-head-design">Price</th>
+          </tr>
+          <tr *ngIf="checkRestaurantService() === true">
+            <td class="table-body-design">Dine In</td>
+            <td class="table-body-design">{{ totalTableOrder() }}</td>
+            <td class="table-body-design">{{totalTableOrderPrice() | currency : currency : "symbol" : "1.2-2" }}</td>
+          </tr>
+          <tr *ngIf="checkRestaurantService() === false">
+            <td class="table-body-design">Instore</td>
+            <td class="table-body-design">{{ totalTableOrder() }}</td>
+            <td class="table-body-design">{{totalTableOrderPrice() | currency : currency : "symbol" : "1.2-2" }}</td>
+          </tr>
+          <tr>
+            <td class="table-body-design">Room</td>
+            <td class="table-body-design">{{ totalRoomOrder() }}</td>
+            <td class="table-body-design">{{getTotalRoomAmount() | currency : currency : "symbol" : "1.2-2" }}</td>
+          </tr>
+          <tr>
+            <td class="table-body-design">Takeaway</td>
+            <td class="table-body-design">{{ totalTAOrder() }}</td>
+            <td class="table-body-design">{{getTotalTAAmount() | currency : currency : "symbol" : "1.2-2" }}</td>
+          </tr>
+          <!-- <tr>
+            <td class="table-body-design">Delivery</td>
+            <td class="table-body-design">{{ totalHDOrder() }}</td>
+            <td class="table-body-design">{{getTotalHDAmount() | currency : currency : "symbol" : "1.2-2" }}</td>
+          </tr> -->
+          <tr>
+            <td class="table-body-design" colspan="2">Total Sales</td>
+            <td class="table-body-design">{{ getTotalSalesAmount() | currency : currency : 'symbol' : '1.2-2' }}</td>
+            
+          </tr>
+        </table>
+
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="orderPage">
+      <ion-col size="12">
+        <div style="display: flex;
+            background-color: #D3EBF2;
+        justify-content: space-between;
+        width: 84%;
+        padding: 10px;
+        margin-top: -31px;
+        border-radius: 15px;
+        align-items: center;">
+          <div style="color: black; font-weight: 600; font-size: 17px; margin-top: 5px;">
+            Total Revenue
+          </div>
+          <div class="dottwo">
+           <p style="    margin-top: 9px; font-size: 17px;">
+            {{ getTotalAmount() | currency : currency : "symbol" : "1.2-2" }}
+           </p>
+          </div>
+        </div>
+        <ion-row>
+        <ion-col size="6" style="margin-top: 20px;">
+<div class="row " style="display: flex; font-size: 13px; color: #333">
+    <div style="display: flex;">
+        <div style="background-color: #5AB3CF; height: 20px; width: 20px;"></div>
+        <div style="margin-left: 12px; font-weight: 20px; font-weight: 700;">Paid:</div> 
+        
+      </div>
+
+      <div style="margin-left: 8px; font-weight: 20px; font-weight: 700;">
+        <span class="m-0 font-normal text-danger">
+            {{
+              getTotalPaymentAmountByStatus("Paid")
+                | currency : currency : "symbol" : "1.2-2"
+            }}
+          </span>
+    </div>
+</div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'Cash') > 0" style="display: flex; margin-top: 15px; font-size: 13px;color: #333">
+            <div style="font-weight: 700;">Cash:</div>
+            <div style="margin-left: 8px; "> {{
+              getTotalAmountStatusAndMode("Paid", "Cash")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'Card') > 0" style="display: flex; margin-top: 15px; font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Card:</div>
+            <div style="margin-left: 8px; "> {{
+              getTotalAmountStatusAndMode("Paid", "Card")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'Prepaid') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Prepaid:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "Prepaid")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+          
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'CreditIndividual') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Credit Individual:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "CreditIndividual")
+              | currency : currency : "symbol" : "1.2-2"
+              }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'PaymentTerminal') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Payment Terminal:</div>
+            <div style="margin-left: 8px; ">   {{
+              getTotalAmountStatusAndMode("Paid", "PaymentTerminal")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'BankTransfer') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">BankTransfer:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "BankTransfer")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'Wallet') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Wallet:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "Wallet")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'Cheque') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Cheque:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "Cheque")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'DemandDraft') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Demand Draft:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "DemandDraft")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'Credit') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Credit:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "Credit")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'UPI') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">UPI:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "UPI")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'BillToRoom') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Credit Bill:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "BillToRoom")
+                | currency : currency : "symbol" : "1.2-2"
+            }}</div>
+          </div>
+          <div *ngIf="getTotalAmountStatusAndMode('Paid', 'PrePaid') > 0" style="display: flex; margin-top: 15px;font-size: 13px; color: #333">
+            <div style="font-weight: 700;">Prepaid:</div>
+            <div style="margin-left: 8px; ">  {{
+              getTotalAmountStatusAndMode("Paid", "PrePaid")
+              | currency : currency : "symbol" : "1.2-2"
+              }}</div>
+          </div>
+          
+         <div class="row" style="display: flex;font-size: 13px; color: #333">
+            <div style="display: flex; margin-top: 15px;">
+                <div style="background-color: #D16562; height: 20px; width: 20px;"></div>
+                <div style="margin-left: 12px; font-weight: 20px; font-weight: 700;">Not Paid:</div>
+              </div>
+              <div  style="display: flex; ">
+                
+                <div  style="margin-left: 8px;font-weight: 20px; font-weight: 700;    margin-top: 15px;
+"> 
+                     <span >
+                {{
+                  getTotalPaymentAmountByStatus("NotPaid")
+                    | currency : currency : "symbol" : "1.2-2"
+                }}
+              </span>
+                </div>
+              </div>
+         </div>
+         
+        </ion-col>
+        <ion-col size="6" style=" margin-top: 20px;">
+          <div *ngIf="shouldShowPieChart()">
+            <canvas 
+                        #circleCanvas
+                        style="border: 1px solid white; border-radius: 50%"
+                    ></canvas>
+          </div>
+        </ion-col>
+        
+      </ion-row>
+      <div style="display: flex;
+     border: 2px solid #745264;
+     color: #fff;
+      justify-content: space-between;
+      width: 100%;
+      padding: 6px;
+      margin-top: 20px;
+      border-radius: 15px; align-items: center;">
+        <div style="color: #333; font-weight: 500; font-size: 17px; ">
+          Expenses
+        </div>
+        <div class="dotthree" style=" width:134px !important">
+         <p style="    margin-top: 9px; font-size: 17px;">
+          {{ getTotalExpense() | currency : currency : "symbol" : "1.2-2" }}
+         </p>
+           
+          
+        </div>
+      </div>
+      </ion-col>
+
+    </ion-row>
+
+    <ion-row class="orderPage">
+      <ion-col size="12">
+        <div style="display: flex;
+            background-color: #D3EBF2;
+        justify-content: space-between;
+        width: 50%;
+        padding: 10px;
+        margin-top: -31px;
+        border-radius: 15px;">
+          <div style="color: black; font-weight: 600; font-size: 17px;">
+            Steward
+          </div>
+         
+        </div>
+
+        <div *ngFor="let pos of pointOfSaleList; let ci = index">
+          <table style="width: 100%; color: #333">
+            <tbody *ngFor="let op of pos.operatorName; let oi = index">
+              <tr *ngIf="getTotalOperatorPaymentAmount(op) > 0">
+                <td>
+                  <h4>{{ op }}</h4>
+                </td>
+                <td>
+                  <h4>
+                    {{
+                      getTotalOperatorPaymentAmount(op)
+                        | currency : currency : "symbol" : "1.2-2"
+                    }}
+                  </h4>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="allOperatorsHaveZeroAmount(pos)" style="padding: 20px;">
+          <!-- <h3 style="text-align: center;">No Operator's Name found</h3>   -->
+          </div>
+        </div>
+        
+        
+
+
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="orderPage">
+      <ion-col size="12">
+        <div style="display: flex;
+            background-color: #D3EBF2;
+        justify-content: space-between;
+        width: 50%;
+        padding: 10px;
+        margin-top: -31px;
+        border-radius: 15px;">
+          <div style="color: black; font-weight: 600; font-size: 17px;">
+            Counter
+          </div>
+         
+        </div>
+
+        <div >
+          <table style="width: 100%; color: #333">
+            <tbody *ngFor="let pos of pointOfSaleList">
+              <tr *ngIf="getTotalCounterPaymentAmount(pos.counterName) > 0">
+                <td>
+                  <h4>{{ pos.counterName }}</h4>
+                </td>
+                <td>
+                  <h4>
+                    {{
+                      getTotalCounterPaymentAmount(pos.counterName)
+                        | currency : currency : "symbol" : "1.2-2"
+                    }}
+                  </h4>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="allOperatorsHavecounter()">
+          <h6 style="text-align: center;color: #333">No Counter Name found</h6>  
+          </div>
+        </div>
+        
+        
+
+
+      </ion-col>
+    </ion-row>
+   
+
+    <div class="loader-everyOne" *ngIf="loader">
+      <ion-spinner name="crescent" class="spinner-service"></ion-spinner>
+      <div class="loader-content-service">
+        <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+        <div class="loader-text">Please wait...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="loader-every" *ngIf="loader">
+    <ion-spinner name="crescent" class="spinner"></ion-spinner>
+    <div class="loader-content">
+      <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+      <div class="loader-text">Please wait...</div>
+    </div>
+  </div> -->
+
+</ion-content>

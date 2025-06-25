@@ -1,0 +1,155 @@
+<ion-header>
+    <ion-toolbar  class="animated fadeIn customizedheader">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back" style="color: #fff;"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light">
+            <ion-text color="secondary" class="HeaderTitle">KYC List</ion-text>
+        </ion-text>
+
+        <ion-buttons slot="end">
+            <ion-button
+                icon-left
+                size="small"
+                shape="round"
+                color="tertiary"
+                (click)="addKYC()"
+            >
+                <img src="assets/img/customer/add.png" width="25" height="25" />
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div
+    *ngIf="
+    this.kyc !== null ||
+    this.kyc !== undefined"
+    >
+        <ion-list>
+            <ion-item detail="true" (click)="updateKYC(kyc, 0)" lines="none" style="    
+             margin-top: 30px;
+            border: 1px solid gray; border-radius: 10px;
+            margin-left: 10px;
+            margin-right: 10px;">
+                <ion-thumbnail slot="start">
+                    <img src="assets/img/kyc.png" width="40" height="40" />
+                </ion-thumbnail>
+                <ion-label>
+                    <h3>Identity Document Type : {{this.kyc.identityDocumentType }}</h3>
+                    <p>
+                        Identity Document Number : {{ this.kyc.identityDocumentNumber }}
+                    </p>
+                    <ng-container
+                *ngIf="kyc.kycDocUrl != null && kyc.kycDocUrl != undefined"
+            >
+                <!-- <ion-thumbnail slot="start">
+            <img
+                alt="Silhouette of mountains"
+                src="{{kycdata.kycDocUrl}}"
+            />
+        </ion-thumbnail> -->
+
+                <a href="{{ kyc.kycDocUrl }}" download target="_blank">
+                    <a class="download" target="_blank"
+                        ><u> Document Front </u></a
+                    >
+                    <br/>
+                </a>
+            </ng-container>
+
+            <ng-container
+                *ngIf="
+        kyc.kycDocBackPageUrl != null &&
+        kyc.kycDocBackPageUrl != undefined
+            "
+            >
+                <!-- <ion-thumbnail slot="start">
+            <img
+                alt="Silhouette of mountains"
+                src="{{kycdata.kycDocBackPageUrl}}"
+            />
+        </ion-thumbnail> -->
+
+                <a href="{{ kyc.kycDocBackPageUrl }}" download target="_blank">
+                    <a class="download" target="_blank"
+                        ><u> Document Back </u></a
+                    >
+                </a>
+            </ng-container>
+                </ion-label>
+            </ion-item>
+            
+        </ion-list>
+    </div>
+    <div  
+        *ngIf="
+    this.kycList != null &&
+    this.kycList != undefined &&
+    this.kycList.length > 0
+  "
+    >
+        <ion-list *ngFor="let kycdata of kycList; let i = index">
+            <ion-item lines="none" detail="true" (click)="updateKYC(kycdata, i)" style="    border: 1px solid gray; 
+            margin-top: 12px;
+            border-radius: 10px;
+            margin-left: 10px;
+            margin-right: 10px;">
+                <ion-thumbnail slot="start">
+                    <img src="assets/img/kyc.png" width="40" height="40" />
+                </ion-thumbnail>
+                <ion-label>
+                    <h3>
+                        Identity Document Type : {{this.kycdata.identityDocumentType}}
+                    </h3>
+                    <p>
+                        Identity Document Number : {{this.kycdata.identityDocumentNumber }}
+                    </p>
+                    <ng-container
+                *ngIf="kycdata.kycDocUrl != null && kycdata.kycDocUrl != undefined"
+            >
+                <!-- <ion-thumbnail slot="start">
+                    <img
+                        alt="Silhouette of mountains"
+                        src="{{kycdata.kycDocUrl}}"
+                    />
+                </ion-thumbnail> -->
+
+                <a href="{{ kycdata.kycDocUrl }}" download target="_blank">
+                    <a class="download" target="_blank"
+                        ><u> Document Front </u></a
+                    >
+                    <br/>
+                </a>
+            </ng-container>
+
+            <ng-container
+                *ngIf="
+                        kycdata.kycDocBackPageUrl != null &&
+                        kycdata.kycDocBackPageUrl != undefined
+                    "
+            >
+                <!-- <ion-thumbnail slot="start">
+                    <img
+                        alt="Silhouette of mountains"
+                        src="{{kycdata.kycDocBackPageUrl}}"
+                    />
+                </ion-thumbnail> -->
+
+                <a
+                    href="{{ kycdata.kycDocBackPageUrl }}"
+                    download
+                    target="_blank"
+                >
+                    <a class="download" target="_blank"
+                        ><u> Document Back </u></a
+                    >
+                </a>
+            </ng-container>
+                </ion-label>
+            </ion-item>
+            
+        </ion-list>
+    </div>
+</ion-content>

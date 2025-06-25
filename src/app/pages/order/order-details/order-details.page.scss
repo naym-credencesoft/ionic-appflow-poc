@@ -1,0 +1,397 @@
+:host {
+    @media (min-width: 576px) {
+        .header-image {
+            display: none !important;
+        }
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+
+        .image-holder .avatar {
+            width: 6vw;
+            height: 6vw;
+            overflow: hidden;
+            border-radius: 50%;
+          }
+   
+
+    }
+    @media (max-width: 576px) 
+    {
+        ion-toolbar {
+          
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+
+        .image-holder .avatar {
+            width: 8vw;
+            height: 8vw;
+            overflow: hidden;
+            border-radius: 50%;
+          }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    .HeaderTitle {
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: -17px;
+
+    }
+
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 37px;
+        left: 41px;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+    .discounted-price {
+        text-decoration: line-through;
+      }
+
+    .order-bol-1{
+        position: absolute;
+        top: 35%;
+        left: 0px;
+        height: 30vw;
+        z-index: 1;
+    }
+
+    .order-bol-2{
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        height: 30vw;
+        z-index: 1;
+    }
+
+    ion-content {
+        --background: linear-gradient(
+            -180deg,
+            var(--ion-color-tm3-primary),
+            var(--ion-color-tm3-terciary1)
+        );
+    }
+
+    .orderInfo {
+        z-index: 2;
+        position: relative;
+    }
+
+    .card{
+        border-radius: 10px 10px 10px 10px;
+        background-color: #ffffff;
+    }
+    .card2{
+        border-radius: 5px;
+        background-color: #ffffff;
+    }
+    .grid{
+        margin: 10px;
+    }
+    .text-color{
+        color: black;
+    }
+    .text-color-2{
+        color: white;
+    }
+    .font-1{
+        font-size: clamp( 12px, 3.3vw, 30px);//3.3vw;
+        // font-family: 'SofiaSans-Regular' !important;
+    }
+    .font-1-1{
+        font-size: clamp( 12px, 3.3vw, 30px);//3.3vw;
+        // font-family: 'SofiaSans-Medium' !important;
+    }
+    .font-2{
+        font-size: clamp( 12px, 2.8vw, 28px);//2.8vw;
+        // font-family: 'SofiaSans-Bold' !important;
+    }
+    .font-2-1{
+        font-size: clamp( 12px, 2.8vw, 28px);//2.8vw;
+        // font-family: 'SofiaSans-Medium' !important;
+    }
+    .font-3{
+        font-size: clamp( 12px, 3.6vw, 28px);
+        // font-family: 'SofiaSans-Bold' !important;
+        text-align: center;
+    }
+    .allcenter{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .font-3-1{
+        font-size: clamp( 8px, 2.5vw, 20px);
+        // font-family: 'SofiaSans-Medium' !important;
+    }
+    .text-color-complete{
+        color: #49A148;
+    }
+    .sec-1{
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+    .sec-3{
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 5px;
+        padding-right: 15px;
+    }
+    .sec-2{
+       padding: 15px;
+    }
+    .row-break{
+        margin-top: 20px;
+    }
+    .row-break-2{
+        margin-top: 10px;
+    }
+    .text-holder{
+       margin-top: 5px;
+    }
+    .profile-User{
+        min-height: 30vw;
+    }
+    .sec-2-1{
+        min-height: 50vw;
+    }
+    .sec-2-2{
+        min-height: 10vw;
+    }
+    .source{
+        min-height: 30vw;
+        display: flex;
+        justify-content: center;
+    }
+    .site{
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .center{
+        display: flex;
+        justify-content: center;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 0 auto;
+        border-style: hidden;
+    }
+      
+     
+     
+      .product-table{
+        color: white;
+        font-size: clamp( 9px, 2.8vw, 25px);// 2.8vw;
+        border-radius: 20px;
+        background: #5D5B7D;
+        // font-family: 'SofiaSans-Medium' !important;
+      }
+
+      .clip{
+        color: #ffffff;
+        --background: linear-gradient(
+            -90deg,
+            #16113E,
+            #264D71
+        );
+      }
+
+      .line {
+        border: 1px solid #ABADBF;
+      }
+
+      ion-footer{
+        padding: 10px;
+        background: #FFFFFF;
+        color: #919191;
+      }
+
+      .selectItem{
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+      }
+
+      .title{
+        margin-top: 5px;
+      }
+      .CenterItem{
+        display: flex;
+        justify-content: center;
+    }
+
+    .customercards{
+        background-color: #fff;
+        border-radius: 10px;
+        border:1px solid gray;
+        padding: 5px;
+      }
+      .dividesec{
+        display: flex;
+        gap:10px;
+        align-items: center;
+        padding:10px;
+      }
+
+      .customer-card {
+        border: 1px solid #333;
+        border-radius: 10px;
+        background-color: #fff;
+        padding: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+      }
+      
+      .card-header {
+        margin-bottom: 16px;
+        text-align: center;
+      }
+      
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+      }
+      
+      .profile-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      
+      
+      
+      .name-text {
+        font-size: 15px;
+        font-weight: bold;
+        color: #555;
+      }
+      
+      .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      
+      .details-table .label {
+        font-weight: bold;
+        padding: 8px;
+        text-align: left;
+        color: #666;
+
+      }
+
+      .details-table td {
+        width: 50%; /* Ensures all <td> elements have the same width */
+        padding: 8px;
+        text-align: left;
+        vertical-align: middle; /* Align text vertically */
+        line-break: anywhere;
+      }
+      
+      .details-table .value {
+        padding: 8px;
+        color: #333;
+
+      }
+      
+      .details-table tr:not(:last-child) {
+        border-bottom: 1px solid #ddd;
+      }
+}
+.responsive-table {
+    font-size: 0.9rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  
+  .header-row {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .data-row {
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+  }
+  
+  
+  
+  .discounted-price {
+    text-decoration: line-through;
+    color: #d9534f;
+  }
+  .responsive-table td {
+    padding: 5px;
+    color:#333
+  }
+  
+  @media (max-width: 768px) {
+    .responsive-table {
+      font-size: 0.8rem;
+    }
+  
+   
+  }
+  

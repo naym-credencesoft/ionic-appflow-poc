@@ -1,0 +1,54 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-title>Shift Item</ion-title>
+      <ion-buttons slot="end">
+        <ion-icon name="close-circle-outline" style="font-size: 20px; color: #fff;" (click)="dismiss()"></ion-icon>
+  
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+
+
+<ion-content>
+
+    <ion-row class="forecast_container" formControlName="ResourceSelection">
+        <ion-col size="4" *ngFor="let item of orders">
+            <ion-card 
+                class="bottom-item-card ion-no-margin ion-no-padding"
+                [ngClass]="{'selected-card': selectedOrder === item}"
+                (click)="onOrderDetailsSelected(item)">
+                <ion-row class="ion-justify-content-center ion-no-margin ion-no-padding">
+                    <ion-col>
+                        <ion-row class="ion-justify-content-center">
+                            <ion-text class="item-text">
+                                <span style="text-align:center">
+                                    <b> {{ item.bookOneOrderId}} </b>
+                                    <br />
+                                    <b>{{item.deliveryMethod}}</b>
+                                    <br/>
+                                    <span>
+                                      {{item.resourceName}}
+                                      {{item.roomNo}}
+                                    </span>
+                                    </span>
+                            </ion-text>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+    <ion-row style="display:flex;justify-content:center;margin-top:10px;margin-bottom:10px;">
+        <ion-button (click)="submitOrder()" style="color:white !important">
+            Submit
+        </ion-button>
+    </ion-row>  
+    <div class="loader-everyOne" *ngIf="loader">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div> 
+</ion-content>

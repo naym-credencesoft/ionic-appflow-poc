@@ -1,0 +1,231 @@
+ion-content {
+    --padding-start:10px;
+    --padding-end : 10px;
+    --padding-top : 10px;
+    --padding-bottom: 10px;
+    --background: #fff;
+}
+
+.profile {
+    z-index: 11;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 15vw;
+    width: 15vw;
+    border: 2px solid white !important;
+    box-shadow: 2px 2px 3px #999;
+
+    margin-right: 6px;
+    margin-top: 6px;
+}
+.label {
+    color:#333;
+}
+
+ion-input {
+    color: #333;
+}
+
+@media (min-width: 576px) {
+    .header-image {
+        display: none !important;
+    }
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: -4px;
+        right: 0px;
+        height: 70px !important;
+        width: 70px !important;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    ion-toolbar {
+        --background: #1D174D;
+        height: 80px;
+        border: none;
+    }
+}
+
+.HeaderSubTitle {
+    position: absolute;
+    top: 45px;
+    left: 45px;
+    font-weight: 700;
+    font-size: medium;
+}
+
+.HeaderTitle {
+    color: white;
+}
+
+.header-image {
+    background: var(--ion-color-tm2-terciary2);
+}
+
+.left-image-header {
+    z-index: 1;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 22.5vw;
+}
+
+@media (max-width: 576px) {
+    ion-toolbar {
+        top: 0px;
+        --background: #1D174D;
+        border: none;
+        height: 71px;
+        
+    }
+}
+
+.cardStyle{
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    backdrop-filter: blur(21px);
+    border-radius: 16px;
+    border: 2px solid  #AA979A;;
+    border-radius: 5px;
+}
+
+.back {
+    margin-left: 10px;
+    color: white;
+}
+
+.update-button{
+  border: 1px solid white;
+ margin-bottom: 30px;
+ border-radius: 20px;
+}
+.profile {
+  ion-card {
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    margin: 0 auto;
+    box-shadow: none;
+    background-color: #fff;
+    ion-card-content {
+      background-color: #f5f5f5;
+      box-shadow: none;
+      color: #fff;
+      text-align: center;
+    }
+  }
+
+  .bg-profile {
+    
+    background-color: #9c90d8;
+    .sub-text {
+      color: var(--ion-edit-profile-text);
+    }
+    .sub-text-search{
+      color: var(--ion-edit-profile-text);
+    }
+    .rounded-button {
+      width: 120px !important;
+      padding: 5px !important;
+      font-size: 10px;
+    }
+  }
+  .form-holder {
+     padding-right: 25px;
+     padding-left: 25px;
+     padding-bottom: 25px;
+     .form-heading {
+      background: var(--ion-background-secondary);
+      border-radius: 5px 5px 5px 5px;
+      color: var(--ion-color-text-tertiary);
+    }
+
+    .label {
+      color: var(--ion-edit-profile-text);
+    }
+
+    ion-buttom {
+      button {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.button-padding{
+  margin-top: 20px;
+}
+
+.standard-button:disabled, noactualbutton[disabled]{
+  color: white;
+  opacity: 1;
+  background: #b3b3b3;
+}
+
+
+.button-padding {
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.list-search{
+  margin-top: 5px;
+  margin-bottom: 4px;
+}
+
+ion-searchbar {
+  width: 100%;
+  height: 34px;
+  --border-radius: 33px 33px 33px 33px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+.list-holder {
+  --background: #eceff1;
+  // border: 1px solid red;
+  .title {
+    color: #252525;
+    // margin-top: 30px;
+    // margin-left: 20px;
+  }
+
+  .item {
+    --background: #eceff1;
+    .business-indicator {
+      width: 8px;
+      height: 8px;
+    }
+    .business-text {
+      padding-left: 18px;
+    }
+  }
+}
+
+.no-address-found{
+  text-align: center;
+}
+
+.update-button{
+    
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 30px;
+ }

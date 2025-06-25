@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Open Product</ion-title>
+    <ion-buttons slot="end">
+      <ion-icon name="close-circle-outline" style="font-size: 20px; color: #fff;" (click)="dismiss()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="ProductForm">
+    <ion-col size="12">
+      <ion-list no-margin>
+        <ion-item class="card" lines="none">
+          <ion-label position="stacked" color="primary" class="rpc-text" style="font-size: 10px">
+            Enter Product Name*</ion-label>
+          <div   no-padding size="12" style="width:100%">
+            <ion-input placeholder="Enter Product Name" no-padding [(ngModel)]="this.product.name" 
+              formControlName="name" class="paymentamount" 
+              ></ion-input>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+    <ion-col size="12">
+      <ion-list no-margin>
+        <ion-item class="card" lines="none">
+          <ion-label position="stacked" color="primary" class="rpc-text" style="font-size: 10px">
+            Sell Unit Price*</ion-label>
+          <div type="number" min="0" inputmode="number" no-padding size="12" style="width:100%">
+            <ion-input placeholder="Sell Unit Price" no-padding [(ngModel)]="this.product.sellUnitPrice" 
+              formControlName="sellUnitPrice" class="paymentamount" type="number" min="0" inputmode="number"
+              ></ion-input>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+
+    <ion-col size="12">
+      <ion-list no-margin>
+        <ion-item class="card" lines="none">
+          <ion-label position="stacked" color="primary" class="rpc-text" style="font-size: 10px">
+            Quantity*</ion-label>
+          <div type="number" min="0" inputmode="number" no-padding size="12" style="width:100%">
+            <ion-input placeholder="Quantity" no-padding [(ngModel)]="quantity" 
+              formControlName="Quantity" class="paymentamount" type="number" min="0" inputmode="number"
+              ></ion-input>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+            <div style="display: flex; justify-content: center;">
+              <button  
+              style="padding: 8px;
+              width: 100px;
+              border-radius: 10px;"
+              [disabled]="!ProductForm.valid || loader"
+              (click)="onSubmit()">
+                Save
+              </button>
+            </div>
+   
+
+  </form>
+</ion-content>

@@ -1,0 +1,152 @@
+
+
+  <ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Manage Product </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Service Dashboard</ion-text
+            >
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+<ion-content no-margin>
+    <ion-card no-margin no-padding style="padding: 10px; border:1px solid gray; ">
+
+        <ion-searchbar
+        class="list-search"
+        mode ="md"
+        (ionClear) ="clear($event)"
+        (ionInput)="getItems($event)" 
+        no-margin no-padding>
+        </ion-searchbar>
+
+        <form [formGroup]="onProductForm">
+
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text color="primary" style="font-size: 12px;" class="title">Service Type*</ion-text>
+                    <ion-card no-margin no-padding style=" margin-left: 0px; margin-right: 0px;">
+                        <ion-select placeholder="Service Type" value="{{businessServiceId}}" style=" color: #333; border: 1px solid gray;"
+                            (ionChange)="setService(businessServiceId)" [(ngModel)]="businessServiceId" okText="Done"
+                            cancelText="Dismiss" formControlName="BusinessService">
+    
+                            <ion-row *ngFor="let service of businessServices">
+                                <ion-select-option value={{service.id}}>
+                                    <p *ngIf="service.name == 'Restaurants' && service.brandName != null && service.brandName !=''">{{ service.name
+                                    }}-{{service.brandName}}</p>
+                                  <p *ngIf="service.name == 'Restaurants' && (service.brandName == null || service.brandName =='')">{{ service.name }}</p>
+                                  <p *ngIf="service.name != 'Restaurants'">{{ service.name }}</p>
+                                </ion-select-option>
+    
+                            </ion-row>
+                        </ion-select>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+
+                <ion-col size="12">
+                    <ion-text color="primary" style="font-size: 12px;" class="title">Product Group*</ion-text>
+                    <ion-card no-margin no-padding style=" margin-left: 0px; margin-right: 0px;">
+                        <ion-select placeholder="Product Group" value="{{productGroupId}}" style=" color: #333; border: 1px solid gray;"
+                            (ionChange)="setProduct(productGroupId)" [(ngModel)]="productGroupId" okText="Done"
+                            cancelText="Dismiss" formControlName="ProductGroupId">
+    
+                            <ion-row *ngFor="let group of productGroups">
+                                <ion-select-option value={{group.id}}>
+                                    {{group.name}}
+                                </ion-select-option>
+    
+                            </ion-row>
+                        </ion-select>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </form>
+    
+    </ion-card>
+    <!-- <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar> -->
+
+    <div class="loader-everyOne" *ngIf="loader">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+    
+    <ion-grid no-margin no-padding>
+        
+        <ion-row>
+                <ion-col no-margin no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                    <div class="item-list" *ngFor="let product of products" no-margin no-padding>
+                        
+                        <div no-margin no-padding lines="none" class="item" (click)="viewdetail(product)" style="    display: flex;
+                            gap: 24px;
+                            align-items: flex-start;">        
+                            
+                            <ion-avatar slot="start" no-margin no-padding class="image">
+                                <div 
+                                    *ngIf="product.imageList.length != 0" 
+                                    style="background-color: #344279;
+                                           padding: 6px;
+                                           width: 60px;
+                                           height: 46px;
+                                           border-radius: 8px;
+                                           display: flex;
+                                           align-items: center;
+                                           justify-content: center;
+                                           overflow: hidden;">
+                                    <img 
+                                        [src]="product.imageList[0].url" 
+                                        style="max-width: 100%; 
+                                               max-height: 100%; 
+                                               object-fit: cover;">
+                                </div>
+                            </ion-avatar>
+                            
+
+                                <ion-label class="group-item">
+                                    <ion-text color="primary" style="font-size: 16px;" ><b>{{product.name}}</b></ion-text> 
+                                    <!-- <ion-icon name="md-more" style="float: right;"(click)="onMenu(customer)" ></ion-icon> -->
+                                    <ion-row>
+                                        <ion-text color="primary" style="font-size: 14px;" >Sell Unit Price : {{product.sellUnitPrice}}</ion-text> 
+                                     </ion-row>
+                                     <ion-row *ngIf="product.unitsInOrder != undefined && product.unitsInOrder !=null">
+                                        <ion-text color="primary" style="font-size: 14px;" >Unit In Order : {{product.unitsInOrder}}</ion-text> 
+                                     </ion-row>
+                                  </ion-label>
+                            </div>
+                    </div>
+                </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="onCreateProduct()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>
+
+<ion-footer>
+        <ion-toolbar style=" height: 50px;">
+                <app-footer></app-footer>
+        </ion-toolbar>
+</ion-footer>
+    

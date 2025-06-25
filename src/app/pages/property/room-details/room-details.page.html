@@ -1,0 +1,151 @@
+<ion-header> 
+    <ion-toolbar  class="animated fadeIn shadeCol">
+    
+    <ion-buttons slot="start">
+        <ion-back-button mode ="md" icon="arrow-back" style="color: #fff;"></ion-back-button>
+    </ion-buttons>
+      <ion-text color="light" class="HeaderTitle" >Room Details</ion-text>
+    </ion-toolbar>
+
+  </ion-header>
+
+<ion-content>
+
+    <!-- <ion-grid>
+        <ion-list-header>
+            Room Image
+          </ion-list-header>
+        <ion-row class="forecast_container">
+          <ion-col size="12" *ngFor="let data of room.imageList">
+            <img [src]="data.url" />
+            <ion-row style="align-items: center; justify-content: center;">
+                <ion-icon class="arrow-back" name="arrow-back-outline"></ion-icon>
+                <ion-icon class="arrowforward" name="arrow-forward-outline"></ion-icon>
+            </ion-row>
+          
+          </ion-col>
+        </ion-row>
+      </ion-grid> -->
+
+      <ion-grid>
+        <ion-list-header style="display: block;font-size: 1.5rem; font-weight: bold; color: #333; ">
+            Room Image
+          </ion-list-header>
+        <ion-row>
+          <ion-col size="12">
+    
+            <ion-slides pager="true" [options]="slideOptsOne" #slideWithNav class="sildersec"
+            (ionSlideDidChange)="SlideDidChange(room.imageList,slideWithNav)">
+              <ion-slide *ngFor="let data of room.imageList; let i = index">
+                <img [src]="data.url" />
+              </ion-slide>
+            </ion-slides>
+    
+          </ion-col>
+    
+        </ion-row>
+      </ion-grid>
+
+      <ion-grid no-padding>
+
+        <ion-row>
+          <!-- <ion-col size="12" class="nav-link">
+           
+            <ion-item>
+              <ion-icon size="large" color="primary" class="ion-padding" name="medical-outline"></ion-icon>
+              <ion-label>
+                <p class="text text-align heading-medium"  style="font-size: 17px;">{{ room.noOfRooms }}</p>
+                <p>No of Room</p>
+              </ion-label>
+            </ion-item>
+
+            <ion-item>
+                <ion-icon size="large" color="primary" class="ion-padding" name="medical-outline"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 17px;">{{ room.minimumLengthOfStay }}</p>
+                  <p>Minimum Length Of Stay</p>
+                </ion-label>
+            </ion-item>
+
+            <ion-item>
+                <ion-icon size="large" color="primary" class="ion-padding" name="medical-outline"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 17px;">{{ room.maximumLengthOfStay }}</p>
+                  <p>Maximum Length Of Stay</p>
+                </ion-label>
+            </ion-item>
+
+            <ion-item>
+                <ion-icon size="large" color="primary" class="ion-padding" name="medical-outline"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 17px;">{{ room.roomOnlyPrice }}</p>
+                  <p>Room Only Price</p>
+                </ion-label>
+              </ion-item>
+
+          </ion-col> -->
+
+       
+
+                <!-- <div>
+                    <ion-avatar slot="start" *ngIf="room.imageList == null ||(room.imageList != null && room.imageList.length==0)">
+                        <img src="assets/img/room/roomimage.png">
+                    </ion-avatar>
+                    <ion-avatar slot="start" *ngIf="room.imageList != null && room.imageList.length > 0">
+                        <img src="{{ room.imageList[0].url}}">
+                    </ion-avatar> 
+                </div> -->
+
+                <div style="
+                margin: 1rem auto;
+                padding: 1rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+                width: 90%;
+                box-sizing: border-box;
+                border:1px solid gray;
+            ">
+            <ion-text 
+                style="display: block;font-size: 1.5rem; font-weight: bold; color: #333; margin-bottom: 1rem;">
+                Room Details
+            </ion-text>
+            <table style="
+                width: 100%;
+                border-collapse: collapse;
+                text-align: left;
+                font-size: 1rem;
+                color: #555;
+            ">
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: 600;">Room Type</td>
+                        <td style="padding: 0.5rem; color: #333;">{{ this.room.name }}</td>
+                    </tr>
+                    <tr style="background-color: #f4f4f4;">
+                        <td style="padding: 0.5rem; font-weight: 600;">No of Rooms</td>
+                        <td style="padding: 0.5rem; color: #333;">{{ room.noOfRooms }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: 600;">Minimum Stay</td>
+                        <td style="padding: 0.5rem; color: #333;">{{ room.minimumLengthOfStay }}</td>
+                    </tr>
+                    <tr style="background-color: #f4f4f4;">
+                        <td style="padding: 0.5rem; font-weight: 600;">Maximum Stay</td>
+                        <td style="padding: 0.5rem; color: #333;">{{ room.maximumLengthOfStay }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem; font-weight: 600;">Room Price</td>
+                        <td style="padding: 0.5rem; color: #333;">{{ room.roomOnlyPrice }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        
+                
+
+        </ion-row>
+      </ion-grid>
+
+</ion-content>

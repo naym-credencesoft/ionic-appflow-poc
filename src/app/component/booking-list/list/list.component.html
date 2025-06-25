@@ -1,0 +1,721 @@
+
+
+<ion-content>
+
+    <div class="sectionUp">
+     <!-- <ion-searchbar
+         placeholder="Search"
+         class="list-search"
+         mode="md"
+         (ionClear)="clear($event)"
+         (ionChange)="getItems($event)"
+         padding-left
+         padding-right
+         class="ion-no-padding"
+     >
+     </ion-searchbar> -->
+ 
+     <ion-grid>
+         <form [formGroup]="onFindBookingForm">
+             <ion-row>
+                 <ion-col size="8">
+                     <ion-select
+                         placeholder="Search by Booking"
+                         [(ngModel)]="filterName"
+                         class="card-item"
+                         okText="Done"
+                         formControlName="FilterbySearch"
+                         cancelText="Dismiss"
+                         style="text-align: left;"
+                     >
+                         <ion-row>
+                             <ion-select-option value="rn"
+                                 >Reservation Number</ion-select-option
+                             >
+                             <ion-select-option value="ExternalBookingId"
+                             >External Booking Id</ion-select-option
+                         >
+                             <ion-select-option value="Date"
+                                 >Arrival Date</ion-select-option
+                             >
+                             <ion-select-option value="DateDeparture"
+                             >Departure Date</ion-select-option
+                         >
+                             <ion-select-option value="Name"
+                                 >Name</ion-select-option
+                             >
+                             <ion-select-option value="Email"
+                                 >Email</ion-select-option
+                             >
+                             <ion-select-option value="Phone"
+                                 >Phone</ion-select-option
+                             >
+                         </ion-row>
+                     </ion-select>
+                     <ion-icon name="caret-down-outline" style="    position: absolute;
+                     top: 50%;
+                     font-size: 20px;
+                     right: 9px;
+                     transform: translateY(-50%);
+                     color: white;
+                     z-index: 2;"></ion-icon>
+                 </ion-col>
+ 
+                 <ion-col size="4">
+                     <button class="card-item" style="font-size: 17px;width:100%;cursor: pointer; height: 100%;" (click)="recentBookingData()">
+                             Refresh
+                             <!-- <ion-icon name="refresh" style="font-size: 18px;"></ion-icon> -->
+                     </button>
+                 </ion-col>
+             </ion-row>
+ 
+             <div
+                 *ngIf="this.filterName != null && this.filterName != undefined"
+             >
+                 <div *ngIf="this.filterName === 'Name'" style="color: #1d174d">
+                     <ion-row>
+                         <ion-col size="6">
+                             <ion-text style="font-size: 12px"
+                                 >First Name</ion-text
+                             >
+                             <ion-input
+                                 class="filter-card-item"
+                                 formControlName="firstName"
+                                 [(ngModel)]="firstNameString"
+                                 placeholder="First Name"
+                                 inputmode="text"
+                             ></ion-input>
+                         </ion-col>
+                         <ion-col
+                             size="6"
+                             size-xl="6"
+                             size-sm="6"
+                             size-md="6"
+                             size-lg="6"
+                         >
+                             <ion-text style="font-size: 12px"
+                                 >Last Name</ion-text
+                             >
+                             <ion-input
+                                 class="filter-card-item"
+                                 formControlName="lastName"
+                                 [(ngModel)]="lastNameString"
+                                 placeholder="Last Name"
+                                 inputmode="text"
+                             ></ion-input>
+                         </ion-col>
+                     </ion-row>
+                 </div>
+ 
+                 <div *ngIf="this.filterName === 'Date'" style="color: #1d174d">
+                     <ion-row>
+                         <ion-col size="12">
+                             <ion-text style="font-size: 12px"
+                                 >Arrival
+                             </ion-text>
+                             <ion-row>
+                                 <ion-col no-padding size="12">
+                                     <ion-datetime
+                                         [(ngModel)]="fromDateString"
+                                         (ionChange)="fromDateChange()"
+                                         formControlName="bookingFromDate"
+                                         no-padding
+                                         class="filter-card-item"
+                                         color="primary"
+                                         displayFormat="DD/MM/YYYY"
+                                         pickerFormat="DD/MM/YYYY"
+                                         placeholder="Arrival Date"
+                                         min= "2000-12-31"
+                                         max="2100-12-31"
+                                     ></ion-datetime>
+                                     <!-- -->
+                                 </ion-col>
+                             </ion-row>
+                         </ion-col>
+ 
+                        
+                     </ion-row>
+                 </div>
+ 
+                 <div *ngIf="this.filterName === 'DateDeparture'" style="color: #1d174d">
+                     <ion-row>
+                         <ion-col size="12">
+                             <ion-text style="font-size: 12px"
+                                 >Departure
+                             </ion-text>
+ 
+                             <ion-row>
+                                 <ion-col no-padding size="12">
+                                     <ion-datetime
+                                         [(ngModel)]="toDateString"
+                                         (ionChange)="fromDateChange()"
+                                         formControlName="bookingToDate"
+                                         no-padding
+                                         class="filter-card-item"
+                                         color="primary"
+                                         displayFormat="DD/MM/YYYY"
+                                         pickerFormat="DD/MM/YYYY"
+                                         placeholder="Departure Date"
+                                         min= "2000-12-31"
+                                         max="2100-12-31"
+                                     ></ion-datetime>
+                                 </ion-col>
+                             </ion-row>
+                         </ion-col>
+                     </ion-row>
+                 </div>
+ 
+                 <div *ngIf="this.filterName === 'rn'" style="color: #1d174d">
+                     <ion-row>
+                         <ion-col>
+                             <ion-text style="font-size: 12px"
+                                 >Property Reservation Number</ion-text
+                             >
+                         </ion-col>
+                     </ion-row>
+ 
+                     <ion-row class="filter-card-item" style="color: #1d174d">
+                         <ion-col size="3" style="margin-top: 10px">
+                             <span>{{
+                                 propertyReservationNumberFirstPart
+                             }}</span>
+                         </ion-col>
+                         <ion-col size="9">
+                             <ion-input
+                                 class="filter-card-item"
+                                 formControlName="PropertyReservationNumber"
+                                 [(ngModel)]="reservationNumber"
+                                 inputmode="number"
+                                 type="number"
+                             ></ion-input>
+                         </ion-col>
+                     </ion-row>
+                 </div>
+ 
+                 <div *ngIf="this.filterName === 'ExternalBookingId'" style="color: #1d174d">
+                     <ion-row>
+                         <ion-col size="12">
+                             <ion-text style="font-size: 12px">External Booking Id</ion-text>
+                             <ion-input
+                                 class="filter-card-item"
+                                 formControlName="externalBookingIdFilter"
+                                 [(ngModel)]="externalBookingId"
+                                 placeholder="External Booking Id"
+                                 inputmode="text"
+                             ></ion-input>
+                         </ion-col>
+                     </ion-row>
+                 </div>
+ 
+                 <div *ngIf="this.filterName === 'Email'" style="color: #1d174d">
+                     <ion-row>
+                         <ion-col size="12">
+                             <ion-text style="font-size: 12px">Email</ion-text>
+                             <ion-input
+                                 class="filter-card-item"
+                                 formControlName="emailFilter"
+                                 [(ngModel)]="emailString"
+                                 placeholder="Email address"
+                                 inputmode="email"
+                             ></ion-input>
+                         </ion-col>
+                     </ion-row>
+                 </div>
+ 
+                 <div *ngIf="this.filterName === 'Phone'" style="color: #1d174d">
+                     <ion-row>
+                         <ion-col size="12">
+                             <ion-text style="font-size: 12px">Phone</ion-text>
+                             <ion-input
+                                 class="filter-card-item"
+                                 formControlName="mobileFilter"
+                                 [(ngModel)]="mobileString"
+                                 placeholder="Phone Number"
+                                 inputmode="text"
+                             ></ion-input>
+                         </ion-col>
+                     </ion-row>
+                 </div>
+ 
+                 <ion-row>
+                     <ion-col size="6">
+                         <ion-button
+                             expand="block"
+                             color="primary"
+                             (click)="recentBookingData()"
+                             >Reset</ion-button
+                         >
+                     </ion-col>
+                     <ion-col size="6">
+                         <ion-button
+                             expand="block"
+                             color="primary"
+                             (click)="findBooking()"
+                             [disabled]="
+                                 (this.filterName === 'rn' &&
+                                     reservationNumber === null) ||
+                                 (this.filterName === 'rn' &&
+                                     reservationNumber === undefined) ||
+                                 (this.filterName === 'Date' &&
+                                     fromDateString === null) ||
+                                 (this.filterName === 'Date' &&
+                                     fromDateString === undefined) ||
+                                 (this.filterName === 'Date' &&
+                                     fromDateString === '') ||
+                                 (this.filterName === 'DateDeparture' &&
+                                     toDateString === null) ||
+                                 (this.filterName === 'DateDeparture' &&
+                                     toDateString === undefined) ||
+                                 (this.filterName === 'DateDeparture' &&
+                                     toDateString === '') ||
+                                 (this.filterName === 'Name' &&
+                                     firstNameString === null) ||
+                                 (this.filterName === 'Name' &&
+                                     firstNameString === undefined) ||
+                                 (this.filterName === 'Name' &&
+                                     firstNameString === '') ||
+                                 (this.filterName === 'Name' &&
+                                     lastNameString === null) ||
+                                 (this.filterName === 'Name' &&
+                                     lastNameString === undefined) ||
+                                 (this.filterName === 'Name' &&
+                                     lastNameString === '') ||
+                                 (this.filterName === 'Phone' &&
+                                     mobileString === null) ||
+                                 (this.filterName === 'Phone' &&
+                                     mobileString === undefined) ||
+                                 (this.filterName === 'Phone' &&
+                                     mobileString === '') ||
+                                 (this.filterName === 'Email' &&
+                                     emailString === null) ||
+                                 (this.filterName === 'Email' &&
+                                     emailString === undefined) ||
+                                 (this.filterName === 'Email' &&
+                                     emailString === '') ||
+                                     (this.filterName === 'ExternalBookingId' &&
+                                     externalBookingId === null) ||
+                                 (this.filterName === 'ExternalBookingId' &&
+                                     externalBookingId === undefined) ||
+                                 (this.filterName === 'ExternalBookingId' && externalBookingId === '') ||
+                                 isProgressing
+                             "
+                         >
+                             Find</ion-button
+                         >
+                     </ion-col>
+                 </ion-row>
+             </div>
+         </form>
+ 
+         <ion-row>
+             <ion-segment scrollable mode="md"
+                 class="segmentSec"
+                 (ionChange)="bookingChanged()"
+                 *ngIf="this.listStatus == 'bookingList'"
+                 [(ngModel)]="bookingSearchSelection"
+             >
+                 <ion-segment-button value="rb">
+                     <div style=" border-right: 2px solid #1D174D;
+                     padding: 7px; padding-right: 20px;">
+                         <ion-label style="padding-right: 10px;" >Recent</ion-label>
+                     </div>
+                     
+                 </ion-segment-button>
+                 <!-- <ion-segment-button value="allb">
+                     <div style=" border-right: 2px solid #1D174D;
+                     padding: 7px; padding-right: 20px;">
+                     <ion-label>All</ion-label>
+                     </div>  
+                 </ion-segment-button> -->
+                 <ion-segment-button value="tab" >
+                     <div style=" border-right: 2px solid #1D174D;
+                     padding: 7px; padding-right: 20px;">
+                     <ion-label>Today's Arrival</ion-label>
+                     </div>  
+                 </ion-segment-button>
+                 <ion-segment-button value="tdb">
+                     <div style=" border-right: 2px solid #1D174D;
+                     padding: 7px; padding-right: 20px;">
+                     <ion-label>Today's Departure</ion-label>
+                     </div>
+                 </ion-segment-button>
+                 <ion-segment-button value="ihb">
+                     <div style=" border-right: 2px solid #1D174D;
+                     padding: 7px; padding-right: 20px;">
+                     <ion-label>In House</ion-label>
+                     </div>
+                 </ion-segment-button>
+                 <ion-segment-button value="fbb">
+                     <div style=" border-right: 2px solid #1D174D;
+                     padding: 7px; padding-right: 20px;
+                    ">
+                     <ion-label>Future Booking</ion-label>
+                     </div>
+                 </ion-segment-button>
+ 
+                 <!-- <ion-segment-button value="find">
+                 <ion-label>Find</ion-label>
+             </ion-segment-button> -->
+             </ion-segment>
+         </ion-row>
+     </ion-grid>
+     <!-- <ion-progress-bar
+         type="indeterminate"
+         *ngIf="isProgressing"
+         reversed="true"
+     ></ion-progress-bar> -->
+ 
+     <div *ngIf="isFilterSection">
+         <form [formGroup]="onFilterForm">
+             <ion-row>
+                 <ion-col size="12">
+                     <ion-text
+                         color="primary"
+                         class="check-in-out-text"
+                         style="font-size: 12px"
+                         >Filter By Room Type
+                     </ion-text>
+                     <ion-select
+                         placeholder="Select Room Type"
+                         [(ngModel)]="roomName"
+                         value="{{ roomName }}"
+                         class="dropdown"
+                         (ionChange)="filterByDropdown()"
+                         name="Room"
+                         okText="Done"
+                         cancelText="Dismiss"
+                         formControlName="RoomType"
+                     >
+                         <ion-row>
+                             <ion-select-option value="All">
+                                 <p>All</p>
+                             </ion-select-option>
+ 
+                             <ion-select-option
+                                 *ngFor="let room of rooms"
+                                 value="{{ room.name }}"
+                             >
+                                 {{ room.name }}
+                             </ion-select-option>
+                         </ion-row>
+                     </ion-select>
+                    
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="12">
+                     <ion-text
+                         color="primary"
+                         class="check-in-out-text"
+                         style="font-size: 12px"
+                         >Filter By Booking Status
+                     </ion-text>
+                     <ion-select
+                         placeholder="Filter By Booking Status"
+                         [(ngModel)]="BookingStatus"
+                         value="{{ BookingStatus }}"
+                         class="dropdown"
+                         (ionChange)="filterByDropdown()"
+                         name="Room"
+                         okText="Done"
+                         cancelText="Dismiss"
+                         formControlName="BookingStatusControll"
+                     >
+                         <ion-row>
+                             <ion-select-option value="All">
+                                 <p>All</p>
+                             </ion-select-option>
+ 
+                             <ion-select-option value="ENQUIRY">
+                                 <p>ENQUIRY</p>
+                             </ion-select-option>
+ 
+                             <ion-select-option value="CONFIRMED">
+                                 <p>Confirmed</p>
+                             </ion-select-option>
+ 
+                             <ion-select-option value="CHECKEDIN">
+                                 <p>Checked In</p>
+                             </ion-select-option>
+ 
+                             <ion-select-option value="CHECKEDOUT">
+                                 <p>Checked Out</p>
+                             </ion-select-option>
+ 
+                             <ion-select-option value="CANCELLED">
+                                 <p>Cancelled</p>
+                             </ion-select-option>
+                         </ion-row>
+                     </ion-select>
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="12">
+                     <ion-text
+                         color="primary"
+                         class="check-in-out-text"
+                         style="font-size: 12px"
+                         >Filter By Booking Source
+                     </ion-text>
+                     <ion-select
+                         placeholder="Select Room Type"
+                         [(ngModel)]="sourceOfBooking"
+                         value="{{ sourceOfBooking }}"
+                         class="dropdown"
+                         (ionChange)="filterByDropdown()"
+                         name="Room"
+                         okText="Done"
+                         cancelText="Dismiss"
+                         formControlName="externalSite"
+                     >
+                         <ion-row>
+                             <ion-select-option value="All">
+                                 <p>All</p>
+                             </ion-select-option>
+ 
+                             <ion-select-option
+                                 *ngFor="
+                                     let externalSite of externalBookingSites
+                                 "
+                                 value="{{ externalSite.value }}"
+                             >
+                                 {{ externalSite.viewValue }}
+                             </ion-select-option>
+                         </ion-row>
+                     </ion-select>
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="12">
+                     <ion-text
+                         color="primary"
+                         class="check-in-out-text"
+                         style="font-size: 12px"
+                         >Booking Date Filter
+                     </ion-text>
+                     <ion-row>
+                         <ion-col no-padding size="12">
+                             <ion-datetime
+                                 [(ngModel)]="BookingDate"
+                                 (ionChange)="filterByDropdown()"
+                                 formControlName="bookingDateControll"
+                                 no-padding
+                                 class="datepicker"
+                                 color="primary"
+                                 displayFormat="DD/MM/YYYY"
+                                 pickerFormat="DD/MM/YYYY"
+                                 placeholder="Select Date"
+                             ></ion-datetime>
+                             <!-- -->
+                         </ion-col>
+                     </ion-row>
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="12">
+                     <ion-text
+                         color="primary"
+                         class="check-in-out-text"
+                         style="font-size: 12px"
+                         >Arrival Date Filter
+                     </ion-text>
+                     <ion-row>
+                         <ion-col no-padding size="12">
+                             <ion-datetime
+                                 [(ngModel)]="CheckedInDate"
+                                 (ionChange)="filterByDropdown()"
+                                 formControlName="CheckedInDateControll"
+                                 no-padding
+                                 class="datepicker"
+                                 color="primary"
+                                 displayFormat="DD/MM/YYYY"
+                                 pickerFormat="DD/MM/YYYY"
+                                 placeholder="Select Date"
+                             ></ion-datetime>
+                             <!-- -->
+                         </ion-col>
+                     </ion-row>
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="12">
+                     <ion-text
+                         color="primary"
+                         class="check-in-out-text"
+                         style="font-size: 12px"
+                         >Departure Date Filter
+                     </ion-text>
+                     <ion-row>
+                         <ion-col no-padding size="12">
+                             <ion-datetime
+                                 [(ngModel)]="CheckedOutDate"
+                                 (ionChange)="filterByDropdown()"
+                                 formControlName="CheckedOutDateControll"
+                                 no-padding
+                                 class="datepicker"
+                                 color="primary"
+                                 displayFormat="DD/MM/YYYY"
+                                 pickerFormat="DD/MM/YYYY"
+                                 placeholder="Select Date"
+                             ></ion-datetime>
+                             <!-- -->
+                         </ion-col>
+                     </ion-row>
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="12">
+                     <ion-button expand="block" color="primary" (click)="Reset()"
+                         >Reset</ion-button
+                     >
+                 </ion-col>
+             </ion-row>
+         </form>
+     </div>
+ 
+     <ion-list lines="none" class="list-back list">
+ 
+          
+ 
+         <ion-card
+         style="cursor: pointer;"
+             *ngFor="
+                 let booking of bookings
+                     | paginate : { itemsPerPage: 5, currentPage: p };
+                 let i = index
+             "
+             (click)="viewdetail(booking)"
+             class="card"
+         >
+ 
+        
+             <ion-row>
+                 <ion-col size="5" class="text-1">
+                     {{ booking.firstName }} {{ booking.lastName }}
+                 </ion-col>
+                 <ion-col size="3">
+                     <ion-text class="text-3">Check In Date </ion-text><br />
+                     <ion-text class="text-4">
+                         {{ booking.fromDate | date : " MMM d, y" }}
+                     </ion-text>
+                 </ion-col>
+                 <ion-col size="3">
+                     <ion-text class="text-3">Checkout Date </ion-text><br />
+                     <ion-text class="text-4">
+                         {{ booking.toDate | date : "MMM d, y" }}
+                     </ion-text>
+                 </ion-col>
+                 <ion-col size="1" >
+                     <img style="max-width:50px" *ngIf="booking.groupBookingId != null &&
+                     booking.groupBookingId != undefined" src="assets/img/icons/tag/booking-list-tag-multi.svg" />
+                     <img style="max-width:50px" *ngIf="timeCheck(booking) === true && !booking.groupBookingId" src="assets/img/icons/tag/booking-list-tag-late.svg" />
+                     <img style="max-width:50px" *ngIf="isFutureBooking(booking) && !booking.groupBookingId" src="assets/img/icons/tag/booking-list-tag-future.svg" />
+                     <img style="max-width:50px" *ngIf="checkBookingStatus(booking, 'CHECKEDIN') && !booking.groupBookingId" src="assets/img/icons/tag/booking-list-tag-checkedin.svg" />
+                     <img style="max-width:50px" *ngIf="checkBookingStatus(booking, 'CHECKEDOUT') && !booking.groupBookingId" src="assets/img/icons/tag/booking-list-tag-checkedout.svg" />
+ 
+                     <img style="max-width:50px" *ngIf="!checkBookingStatus(booking, 'CHECKEDOUT') &&
+                                 !checkBookingStatus(booking, 'CHECKEDIN') &&
+                                 !isFutureBooking(booking) && !booking.groupBookingId &&
+                                 !timeCheck(booking)" src="assets/img/icons/tag/booking-list-tag.svg" />
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="5" class="text-2">
+                     <ion-text
+                         >Room No:
+                         <span
+                             *ngFor="
+                                 let roominfo of booking.roomDetails;
+                                 let isLast = last
+                             "
+                         >
+                             <ion-text color="primary"
+                                 >{{ roominfo.roomNumber }}
+                                 {{ isLast ? "" : ", " }}
+                             </ion-text>
+                         </span>
+                     </ion-text>
+                 </ion-col>
+                 <ion-col size="3" class="text-Checkout" [ngClass]="{
+                     multiBookingT:
+                       booking.groupBookingId != null &&
+                       booking.groupBookingId != undefined,
+                     LateCheckoutT: timeCheck(booking) === true,
+                     futureBookingT: isFutureBooking(booking),
+                     CheckedinListT: checkBookingStatus(booking, 'CHECKEDIN'),
+                     CheckedOutListT: checkBookingStatus(booking, 'CHECKEDOUT')
+                   }">
+                     {{ booking.bookingStatus }}
+                 </ion-col>
+                 <!-- <ion-col size="3"> </ion-col> -->
+                 <ion-col size="4" style="text-align: right">
+                     <ion-text class="text-4">
+                         {{ booking.externalSite }} </ion-text
+                     ><br />
+                     <ion-text class="text-3">
+                         {{ booking.externalBookingId }}
+                     </ion-text>
+                 </ion-col>
+             </ion-row>
+ 
+             <ion-row>
+                 <ion-col size="5">
+                     <ion-text class="text-3">Bill Amt</ion-text>
+                     <ion-text class="text-31" 
+                     [ngClass]="{
+                         multiBooking:
+                           booking.groupBookingId != null &&
+                           booking.groupBookingId != undefined,
+                         LateCheckout: timeCheck(booking) === true,
+                         futureBooking: isFutureBooking(booking),
+                         CheckedinList: checkBookingStatus(booking, 'CHECKEDIN'),
+                         CheckedOutList: checkBookingStatus(booking, 'CHECKEDOUT')
+                       }"
+                     *ngIf="booking.currency">
+                         {{
+                             booking.payableAmount + booking.totalServiceAmount + booking.totalExpenseAmount
+                                 | currency
+                                     : booking.currency.toUpperCase()
+                                     : "symbol"
+                                     : "1.2-2"
+                         }}
+                     </ion-text>
+                 </ion-col>
+                 <ion-col size="3" class="text-3" *ngIf="booking.propertyReservationNumber">
+                     {{ booking.propertyReservationNumber }}</ion-col
+                 >
+                 <ion-col size="3" class="text-3" *ngIf="!booking.propertyReservationNumber">
+                     {{ booking.id }}</ion-col
+                 >
+                 <ion-col size="4"> </ion-col>
+             </ion-row>
+         </ion-card>
+     </ion-list>
+ 
+     <pagination-controls
+         class="text-white"
+         (pageChange)="p = $event"
+     ></pagination-controls>
+ </div> 
+     <!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+         <ion-fab-button (click)="createBooking()">
+             <ion-icon name="add"></ion-icon>
+         </ion-fab-button>
+     </ion-fab> -->
+     <div class="loader-everyOne" *ngIf="isProgressing">
+         <ion-spinner name="crescent" class="spinner"></ion-spinner>
+         <div class="loader-content">
+           <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+           <div class="loader-text">Please wait...</div>
+         </div>
+         </div>
+ 
+ </ion-content>
+ 

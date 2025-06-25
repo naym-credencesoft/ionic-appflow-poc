@@ -1,0 +1,132 @@
+<ion-header>
+    <ion-toolbar class="animated fadeIn sectionedHead">
+      <!-- <ion-buttons slot="start">
+        <ion-menu-button color="secondary"></ion-menu-button>
+      </ion-buttons> -->
+      <!-- <ion-title> -->
+        <ion-buttons slot="start" (click)="cancel()">
+            <ion-icon mode ="md" icon="arrow-back" style="color:#fff"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Variation</ion-text>
+
+    
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content>
+
+    <ion-searchbar
+    class="list-search"
+    mode ="md"
+    (ionClear) ="clear($event)"
+    (ionInput)="getItems($event)" 
+    no-margin no-padding>
+    </ion-searchbar>
+
+    <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar>
+    
+    <ion-grid no-margin no-padding>
+
+
+        <ion-card>
+        <ion-row>
+            <ion-col no-margin no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                <ion-list class="item-list" no-margin no-padding>
+                    
+                    <div no-margin no-padding class="item" style=" display: flex;
+                    gap: 24px;
+                    align-items: flex-start;">        
+                        
+                        <ion-avatar slot="start" no-margin no-padding class="image" >
+
+                            <div *ngIf="product.imageList.length != 0"  style="background-color: #344279;
+                            padding: 6px;
+                            width: 60px;
+                            height: 46px;
+                            border-radius: 8px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            overflow: hidden;">
+                                <img src="{{product.imageList[0].url}}"  style="max-width: 100%; 
+                                max-height: 100%; 
+                                object-fit: cover;">
+                              </div>
+                            <!-- <img src="assets/img/user_profile.svg"> -->
+                        </ion-avatar>
+
+                            <ion-label class="group-item">
+                                <ion-text color="primary" style="font-size: 16px;" ><b>{{product.name}}</b></ion-text> 
+                                <!-- <ion-icon name="md-more" style="float: right;"(click)="onMenu(customer)" ></ion-icon> -->
+                                <ion-row>
+                                    <ion-text color="primary" style="font-size: 14px;" >Sell Unit Price : {{product.sellUnitPrice}}</ion-text> 
+                                 </ion-row>
+                                 <ion-row *ngIf="product.unitsInOrder != undefined && product.unitsInOrder !=null">
+                                    <ion-text color="primary" style="font-size: 14px;" >Unit In Order : {{product.unitsInOrder}}</ion-text> 
+                                 </ion-row>
+                              </ion-label>
+                        </div>
+                </ion-list>
+            </ion-col>
+
+            
+    </ion-row>
+</ion-card>
+    <ion-row>
+        <ion-col no-margin no-padding size="12">
+
+            <ion-text color="primary" style="font-size: 18px;" ><b>Variation List</b></ion-text> 
+
+            <ion-list  *ngFor="let variation of productVariations" no-margin no-padding>
+                
+                <ion-item no-margin no-padding class="item" (click)="viewdetail(variation)">
+                    <ion-label class="group-item" style="width: 100%; padding: 10px;">
+                      <ion-text color="primary" style="font-size: 18px; font-weight: bold; display: block; margin-bottom: 6px;">
+                        <ion-icon name="pricetag-outline" color="primary" style="margin-right: 6px;"></ion-icon>{{variation.name}}
+                      </ion-text>
+                  
+                      <ion-row>
+                        <ion-col size="12" size-sm="6" style="display: flex; align-items: center; margin-bottom: 4px;">
+                          <ion-icon name="barcode-outline" style="margin-right: 6px; color: #6c757d;"></ion-icon>
+                          <ion-text color="medium" style="font-size: 14px;">Code: <b>{{variation.code}}</b></ion-text>
+                        </ion-col>
+                        <ion-col size="12" size-sm="6" style="display: flex; align-items: center; margin-bottom: 4px;">
+                          <ion-icon name="cash-outline" style="margin-right: 6px; color: #6c757d;"></ion-icon>
+                          <ion-text color="medium" style="font-size: 14px;">Sell Price: <b>{{variation.sellUnitPrice}}</b></ion-text>
+                        </ion-col>
+                      </ion-row>
+                  
+                      <ion-row>
+                        <ion-col size="12" size-sm="6" style="display: flex; align-items: center; margin-bottom: 4px;">
+                          <ion-icon name="layers-outline" style="margin-right: 6px; color: #6c757d;"></ion-icon>
+                          <ion-text color="medium" style="font-size: 14px;">Factor: <b>{{variation.factorToProduct}}</b></ion-text>
+                        </ion-col>
+                        <ion-col size="12" size-sm="6" style="display: flex; align-items: center; margin-bottom: 4px;">
+                          <ion-icon name="pricetag-outline" style="margin-right: 6px; color: #6c757d;"></ion-icon>
+                          <ion-text color="medium" style="font-size: 14px;">Discount: <b>{{variation.discountedPrice}}</b></ion-text>
+                        </ion-col>
+                      </ion-row>
+                    </ion-label>
+                  </ion-item>
+                  
+            </ion-list>
+        </ion-col>
+</ion-row>
+        
+      
+    </ion-grid>
+
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="onAdd()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style=" height: 50px;">
+            <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

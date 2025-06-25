@@ -1,0 +1,82 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Rates & Availability </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="onback()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-row class="main-card">
+        <ion-col size="12" class="card" >
+            <div size="12" class="mt-1" (click)="navigatetonextpage()">
+                <ion-row class="threeItemRow2">
+                    <ion-col size="12" class="centerCol">
+                        <ion-text class="twoItemRowtext">Master Availability Update</ion-text>
+                    </ion-col>
+                    <ion-col size="12" class="centerCol">
+                        <ion-img
+                            style="height: 83px"
+                            src="/assets/img/icons/Availability.png"
+                        ></ion-img>
+                    </ion-col>
+                </ion-row>
+            </div>
+        </ion-col>
+
+        <ion-col size="12" class="card">
+            <div size="12" class="mt-1" (click)="masterrateupdatepage()">
+                <ion-row class="threeItemRow2">
+                    <ion-col size="12" class="centerCol">
+                        <ion-text class="twoItemRowtext"
+                            >Master Rates Update
+                        </ion-text>
+                    </ion-col>
+                    <ion-col size="12" class="centerCol">
+                        <ion-img
+                            style="height: 60px"
+                            src="/assets/img/icons/Rates.png"
+                        ></ion-img>
+                    </ion-col>
+                </ion-row>
+            </div>
+        </ion-col>
+
+        <ion-col size="12" class="card" *ngIf="isChannelManager">
+            <div size="12" class="mt-1" (click)="stopSell()">
+                <ion-row class="threeItemRow2">
+                    <ion-col size="12" class="centerCol">
+                        <ion-text class="twoItemRowtext"
+                            >Stop Sell
+                        </ion-text>
+                    </ion-col>
+                    <ion-col size="12" class="centerCol">
+                        <ion-img
+                            style="height: 60px"
+                            src="/assets/img/icons/stopsell.png"
+                        ></ion-img>
+                    </ion-col>
+                </ion-row>
+            </div>
+        </ion-col>
+
+    </ion-row>
+</ion-content>

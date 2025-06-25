@@ -1,0 +1,235 @@
+:host {
+    .card-layout {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 16px;
+        margin: 20px;
+        border: 1px solid #7b6e72 !important;
+        padding: 10px;
+    }
+    .list-card-item{
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 5px;
+        color: white;
+    }
+    .card-item {
+        border-radius: 5px;
+        color: #333;
+        text-align: center;
+        border: 1px solid #333;
+        margin-bottom: 5px;
+    }
+
+    ion-searchbar {
+        --icon-color: white; 
+        --background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        color: white;
+    }
+    .button-reset{
+        --background: #259BBF;
+        color: #fff;
+    }
+    .button-cancel{
+        --background: #E84424;
+        color: #fff;
+    }
+
+    @media (min-width: 576px) {
+
+        .marginnn{
+            margin-top: 20px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        // .header-image {
+        //     display: none !important;
+        // }
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+    }
+    @media (max-width: 576px) {
+        ion-toolbar {
+            position: absolute;
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+
+        .marginnn{
+            margin-top: 90px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    .HeaderTitle {
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: -17px;
+
+    }
+
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 37px;
+        left: 41px;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+
+    .priceing-details {
+        color: white;
+        margin: 10px;
+    }
+
+    .text-white {
+        color: #333;
+    }
+
+    .card-data-list
+    {
+        margin-top: 10px;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+    .insert-data-card{
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+    .headertitle
+    {
+        margin-left: 10px;
+    }
+    .headericon{
+        margin-left: 10px;
+    }
+
+    .payment_List_Title{
+        margin-top: 5px;
+    }
+    .TextValue{
+        margin-left: 5px;
+    }
+    .payment-row{
+        margin-left: 10px;
+        margin-top: 10px;
+    }
+    .payment-row-last{
+
+        margin-left: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px; 
+    }
+
+    .list-back{
+        background: #FFFFFF00;
+        z-index: 2;
+        position: relative;
+    }
+
+   
+
+    .text-2{
+        font-size: 14px;
+        color: #1E1E1E;
+    }
+
+    // ion-input,ion-textarea{
+    //     --background: #F1F3F4;
+    //     border-radius: 5px;
+    // }
+    
+    // .dropdown{
+    //     background: #F1F3F4;
+    //     border-radius: 5px;
+    //     border: 5px;
+    // }
+    
+    
+    // .datepicker{
+    //     background: #F1F3F4;
+    //     border-radius: 5px;
+    //     border: 5px;
+    // }
+
+
+    .button-submit{
+        --background: #1D174D;
+        border-radius: 16px;
+        color: #fff !important;
+    }
+    
+
+}

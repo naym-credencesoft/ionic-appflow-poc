@@ -1,0 +1,164 @@
+<ion-header>
+    <ion-toolbar class="animated fadeIn backgroundHead">
+
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back" style="color:#fff"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Reservation Details</ion-text>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <!-- Business Information -->
+    <ion-card class="reservation-card">
+        <ion-grid>
+            <ion-row>
+                <ion-text color="primary" class="business-name">
+                    <b>Business Name: {{ slotReservation.businessName }}</b>
+                </ion-text>
+            </ion-row>
+            <ion-row>
+                <ion-text color="primary" class="booking-status" *ngIf="slotReservation.bookingStatus">
+                    <b>Status: {{ capitalize(slotReservation.bookingStatus) }}</b>
+                </ion-text>
+            </ion-row>
+            <ion-row>
+                <ion-col size="6">
+                    <ion-text color="primary" class="reservation-number">
+                        #{{ slotReservation.businessReservationNumber }}
+                    </ion-text>
+                </ion-col>
+                <ion-col size="6" class="text-right">
+                    <ion-text color="primary" class="reservation-date" *ngIf="slotReservation.date">
+                        {{ slotReservation.date | date: 'dd/MM/yyyy' }}
+                    </ion-text>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-text color="primary" class="business-type">
+                        <b>{{ slotReservation.businessTypeName }}</b>
+                    </ion-text>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-card>
+
+    <!-- Customer Details -->
+    <ion-card class="customer-details-card">
+        <ion-card-title>Customer Details</ion-card-title>
+        <ion-grid>
+            <ion-row>
+                <ion-text color="primary" class="customer-name">
+                    <b>{{ slotReservation.firstName }} {{ slotReservation.lastName }}</b>
+                </ion-text>
+            </ion-row>
+            <ion-row>
+                <ion-text color="primary" class="customer-email">{{ slotReservation.email }}</ion-text>
+            </ion-row>
+            <ion-row>
+                <ion-text color="primary" class="customer-phone">{{ slotReservation.mobile }}</ion-text>
+            </ion-row>
+        </ion-grid>
+    </ion-card>
+
+    <!-- Address Information -->
+    <ion-card *ngIf="slotReservation.serviceAddress" class="address-card">
+        <ion-card-title>{{ businessAddressName }} Address</ion-card-title>
+        <ion-text color="primary" class="address-line">
+            {{ slotReservation.serviceAddress.streetNumber }}, {{ slotReservation.serviceAddress.streetName }},
+        </ion-text>
+        <ion-text color="primary" class="address-line">
+            {{ slotReservation.serviceAddress.city }}, {{ slotReservation.serviceAddress.suburb }},
+        </ion-text>
+        <ion-text color="primary" class="address-line">
+            {{ slotReservation.serviceAddress.country }}, {{ slotReservation.serviceAddress.postcode }}
+        </ion-text>
+    </ion-card>
+
+    <ion-card *ngIf="customerAddress" class="address-card">
+        <ion-card-title>{{ customerAddressName }} Address</ion-card-title>
+        <ion-text color="primary" class="address-line">
+            {{ customerAddress.streetNumber }}, {{ customerAddress.streetName }},
+        </ion-text>
+        <ion-text color="primary" class="address-line">
+            {{ customerAddress.city }}, {{ customerAddress.suburb }},
+        </ion-text>
+        <ion-text color="primary" class="address-line">
+            {{ customerAddress.country }}, {{ customerAddress.postcode }}
+        </ion-text>
+    </ion-card>
+
+    <!-- Notes -->
+    <ion-card *ngIf="slotReservation.notes" class="notes-card">
+        <ion-card-title>Note</ion-card-title>
+        <ion-text color="primary" class="note-text">
+            {{ slotReservation.notes }}
+        </ion-text>
+    </ion-card>
+
+    <!-- Slot Details -->
+    <ion-card class="slot-details-card"> 
+        <ion-card-title>Slot List</ion-card-title>
+        <ion-grid>
+            <ng-container *ngFor="let slotdata of slotReservation.slotReservationDtos">
+                <ion-row>
+                    <ion-text color="primary" class="slot-name">
+                        <b>{{ slotdata.offeringName }}</b>
+                    </ion-text>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-text color="primary" class="slot-timing">
+                            Slot: {{ slotdata.startTime }} - {{ slotdata.finishTime }}
+                        </ion-text>
+                    </ion-col>
+                    <ion-col size="6" class="text-right">
+                        <ion-text color="primary" class="slot-date">
+                            {{ slotdata.date | date: 'dd/MM/yyyy' }}
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-text color="primary" class="slot-resource">
+                        Resource: {{ slotdata.resourceName }}
+                    </ion-text>
+                </ion-row>
+                <ion-row>
+                    <ion-text color="primary" class="slot-location">
+                        Location: {{ slotdata.locationName }}
+                    </ion-text>
+                </ion-row>
+                <ion-row>
+                    <ion-text color="primary" class="slot-notes">
+                        Notes: {{ slotdata.notes }}
+                    </ion-text>
+                </ion-row>
+                <ion-row>
+                    <ion-text color="primary" class="slot-amount">
+                        Total Amount: {{ slotdata.afterTaxAmount }}
+                    </ion-text>
+                </ion-row>
+            </ng-container>
+        </ion-grid>
+    </ion-card>
+
+    <!-- Payment Information -->
+    <ion-card class="payment-card">
+        <ion-grid>
+            <ion-row>
+                <ion-col size="6">
+                    <ion-text color="primary" class="payment-mode">
+                        Payment Mode: {{ slotReservation.modeOfPayment }}
+                    </ion-text>
+                </ion-col>
+                <ion-col size="6" class="text-right">
+                    <ion-text color="primary" class="total-amount">
+                        <b>{{ slotReservation.afterTaxAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                            {{ slotReservation.currency }}</b>
+                    </ion-text>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-card>
+</ion-content>

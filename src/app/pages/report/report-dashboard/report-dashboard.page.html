@@ -1,0 +1,111 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Reports  </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()"  style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid class="reportSect">
+        <ion-row>
+            <ion-col size="12" >
+                <ion-card *ngIf="isAccomodationReport" 
+                    style="border-radius: 0px; border:1px solid gray; border-radius: 10px;"
+                    class="bg-white bottom-item-card ion-no-margin ion-no-padding cardsrepo"
+                    (click)="nightAuditReports()"
+                >
+                <div style="display: flex;
+                align-items: flex-start;
+                gap: 20px;">
+                    <div>
+                        <ion-img
+                            no-margin
+                            style=" width: 71px; height: 86px;"
+                            src="assets/img/report/audit.png"
+                        ></ion-img>
+                    </div>
+
+                    <div >
+                                <ion-text
+                                class="headingSec"
+                                    style="
+                                    text-align: center;
+                                    font-weight: bold;"
+                                    color="primary"
+                                    >Night Audit Report</ion-text>
+                                    <div class="semisec" style="margin-top: 5px;color:#1D174D">
+                                        It includes key metrics such as total revenue from rooms, 
+                                        food and beverage, and other services, along with occupancy 
+                                        rates and average daily rates.
+                                    </div>
+                    </div>
+                </div>
+                </ion-card>
+            </ion-col>
+
+            <ion-col size="12" >
+                <ion-card *ngIf="isDailySummaryReport" 
+                    style="border-radius: 0px; border:1px solid gray; border-radius: 10px;margin-top: 20px;"
+                    class="bg-white bottom-item-card ion-no-margin ion-no-padding cardsrepo"
+                    (click)="dailyReport()"
+                >
+                <div style="display: flex;
+                align-items: flex-start;
+                gap: 20px;">
+                    <div>
+                        <ion-img
+                            no-margin
+                            style=" width: 71px; height: 86px;"
+                            src="assets/img/report/dailyreport.png"
+                        ></ion-img>
+                    </div>
+
+                    <div >
+                                <ion-text
+                                class="headingSec"
+                                    style="
+                                    text-align: center;
+                                    font-weight: bold;"
+                                    color="primary"
+                                    >Daily Report</ion-text>
+                                    <div class="semisec" style="margin-top: 5px;color:#1D174D">
+                                        The Daily Summary Report highlights a hotel’s revenue, occupancy, 
+                                        and guest activities, helping management track performance and optimize operations.
+                                    </div>
+                    </div>
+                </div>
+                </ion-card>
+            
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style="height: 50px">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

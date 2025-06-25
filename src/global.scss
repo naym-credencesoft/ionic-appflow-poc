@@ -1,0 +1,506 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+@import "theme/animate.css";
+
+ion-item {
+    --ion-item-background: transparent;
+}
+
+@font-face {
+    font-family: 'SofiaProRegular';
+    src: url('./assets/fonts/SofiaProRegular.ttf');//mine
+  }
+  @font-face {
+    font-family: 'BC-Alphapipe-Bold';
+    src: url('./assets/fonts/BC Alphapipe RB Bold.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaPro-Bold';
+    src: url('./assets/fonts/SofiaPro-Bold.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaPro-ExtraLight';
+    src: url('./assets/fonts/SofiaPro-ExtraLight.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaPro-Light';
+    src: url('./assets/fonts/sofiapro-light.otf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaPro-Medium';
+    src: url('./assets/fonts/SofiaPro-Medium.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaPro-SemiBold';
+    src: url('./assets/fonts/SofiaPro-SemiBold.ttf');//mine
+  }
+  @font-face {
+    font-family: 'Inter-Medium';
+    src: url('./assets/fonts/Inter/Inter-Medium.ttf');//mine
+  }
+  @font-face {
+    font-family: 'Inter-Light';
+    src: url('./assets/fonts/Inter/Inter-Light.ttf');//mine
+  }
+  @font-face {
+    font-family: 'Inter-Thin';
+    src: url('./assets/fonts/Inter/Inter-Thin.ttf');//mine
+  }
+  @font-face {
+    font-family: 'Inter-Regular';
+    src: url('./assets/fonts/Inter/Inter-Regular.ttf');//mine
+  }
+  @font-face {
+    font-family: 'lato-Regular';
+    src: url('./assets/fonts/lato/Lato-Regular.ttf');//mine
+  }
+  @font-face {
+    font-family: 'rubik-Regular';
+    src: url('./assets/fonts/rubik/Rubik-Regular.ttf');//mine
+  }
+  @font-face {
+    font-family: 'rubik-Medium';
+    src: url('./assets/fonts/rubik/Rubik-Medium.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaSans-Bold';
+    src: url('./assets/fonts/SofiaSans/SofiaSans-Bold.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaSans-ExtraBold';
+    src: url('./assets/fonts/SofiaSans/SofiaSans-ExtraBold.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaSans-Medium';
+    src: url('./assets/fonts/SofiaSans/SofiaSans-Medium.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaSans-Regular';
+    src: url('./assets/fonts/SofiaSans/SofiaSans-Regular.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaSans-SemiBold';
+    src: url('./assets/fonts/SofiaSans/SofiaSans-SemiBold.ttf');//mine
+  }
+  @font-face {
+    font-family: 'SofiaSans-Light';
+    src: url('./assets/fonts/SofiaSans/SofiaSans-Light.ttf');//mine
+  }
+
+*{
+    font-family: 'SofiaPro-Medium' !important;
+    // font-family: 'Montserrat', sans-serif;
+    --color:var(--ion-color-three);
+}
+
+.HeaderTitle{
+    font-family: 'SofiaPro-Bold' !important;
+    font-size: 20px;
+}
+
+.HeaderSubTitle {
+    font-family: 'SofiaPro-Light' !important;
+    font-size: 15px;
+}
+
+.alert-tappable.alert-radio {
+  height: auto;
+  contain: content;
+}
+
+.alert-radio-label.sc-ion-alert-md,
+.alert-radio-label.sc-ion-alert-ios {
+  white-space: normal;
+}
+
+h1, h2, h3, h4, h5, h6,ion-title{
+    
+    font-family: 'SofiaPro-Medium' !important;
+}
+///............
+
+.actionsheet-close{
+    --color:var(--ion-color-three);
+}
+.actionsheet-cancel{
+    --color:var(--ion-color-danger); 
+}
+
+// backgrounds //
+.HeaderTitle{
+    margin-left: 15px;
+}
+
+.bg-white {
+  background-color: #fff;
+}
+
+.bg-back {
+    background-color: #e0e0e0;
+  }
+
+  .bg-seven {
+    background-color: #7168a1;
+  }
+
+.bg-six {
+    background-color: #c4bac2;
+  }
+
+.bg-light {
+  background-color: var(--ion-color-light);
+}
+
+.bg-dark {
+    background-color: var(--ion-color-dark);
+}
+
+.bg-primary {
+    background-color: var(--ion-color-primary);
+}
+
+.bg-secondary {
+    background-color: var(--ion-color-secondary);
+}
+
+.bg-danger {
+    background-color: var(--ion-color-danger);
+}
+.bg-success {
+    background-color: var(--ion-color-success);
+}
+
+.bg-tertiary {
+    background-color: var(--ion-color-tertiary);
+}
+
+.bg-profile {
+  background-image: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary))
+}
+
+.bg-main {
+    background-image: linear-gradient(-135deg, var(--ion-color-primary), var(--ion-color-secondary))
+}
+
+.home-background {
+    --background: var(--ion-color-primary-gradient);
+    color: var(--ion-color-text-primary);
+  }
+  .header-background {
+    --background: var(--ion-color-secondary-gradient);
+  }
+  .header-background-three {
+    --background: var(--ion-color-secondary-one-gradient);
+  }
+  .header-background-two {
+    --background: var(--ion-color-third-gradient);
+  }
+// Helpers //
+.w100 {
+  width: 100%;
+}
+
+.bold,
+.fw500 {
+    font-weight: 500 !important;
+}
+
+.fw700 {
+    font-weight: 700 !important;
+}
+
+.text08 {
+  font-size: .8rem;
+}
+
+.text1 {
+  font-size: 1rem !important;
+}
+
+.text15 {
+  font-size: 1.5rem;
+}
+.text20 {
+  font-size: 2rem;
+}
+
+.text-white {
+    color: #fff;
+}
+
+.text-primary {
+    color: var(--ion-color-primary);
+}
+
+.text-dark {
+  color: var(--ion-color-dark);
+}
+
+// menu //
+// Menu user profile
+ion-toolbar.user-profile {
+
+  .user-avatar {
+    width: 68px;
+    height: 68px;
+  }
+  .item-inner {
+    border-width: 0;
+  }
+}
+
+// Custom ionBooking toolbar (overriding Shadow DOM)
+ion-toolbar {
+  &.ion-color-primary {
+    --ion-color-base: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary)) !important;
+  }
+}
+
+// Android card shadow
+ion-card {
+  &.sc-ion-card-md-h {
+    box-shadow: 0 2px 4px rgba(var(--ion-color-dark-rgb),.24);
+  }
+}
+
+// style for auth pages
+.auth-page {
+  background-image: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+
+  .grid {
+    padding: 0;
+    .col {
+      padding: 0;
+    }
+  }
+
+  .btn-group {
+    .button-ios,
+    .button-md {
+      border-radius: 0;
+      &:first-of-type {
+        border-radius: 2px 0 0 2px;
+      }
+      &:last-of-type {
+        border-radius: 0 2px 2px 0;
+      }
+    }
+  }
+
+  .auth-content {
+    margin: 0 5%;
+
+    .logo {
+        width: 74px;
+        height: 74px;
+        margin: auto;
+        border-radius: 48%;
+        background: url(/assets/img/ionbooking-ico.png) no-repeat;
+        background-size: 100%;
+        border: 3px solid gray;
+    }
+
+    .list-form {
+      padding: 0;
+      margin-bottom: 0;
+
+      ion-item {
+        background: none;
+        padding: 0;
+
+        &:first-child {
+          border-top: none;
+        }
+
+        &:after {
+          display: none;
+        }
+
+        ion-label {
+          font-size: 1em;
+          color: var(--ion-color-light);
+        }
+
+        input {
+          color: var(--ion-color-light);
+        }
+      }
+    }
+  }
+
+}
+
+// Custom ionBooking Menu styles (overriding Shadow DOM)
+ion-menu {
+  ion-header {
+    ion-toolbar {
+      &.ion-color-dark {
+        --ion-color-base: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary)) !important;
+      }
+    }
+  }
+}
+
+.mto {
+  margin-top: 12px;
+  ion-icon {
+    margin-bottom: -2px;
+  }
+}
+.text-center {
+    text-align: center;
+  }
+  .light{
+      color: var(--ion-color-light)!important;
+  }
+  
+.font-08 {
+    font-size: 08px;
+  }
+  .font-09 {
+    font-size: 9px;
+  }
+  .font-10 {
+    font-size: 10px;
+  }
+  .font-11 {
+    font-size: 11px;
+  }
+  .font-12 {
+    font-size: 12px !important;
+  }
+  .font-13 {
+    font-size: 13px;
+  }
+  .font-14 {
+    font-size: 14px;
+  }
+  .font-15 {
+    font-size: 15px;
+  }
+  .font-16 {
+    font-size: 16px;
+  }
+  .font-17 {
+    font-size: 17px;
+  }
+  .font-18 {
+    font-size: 18px;
+  }
+  .font-20 {
+    font-size: 20px;
+  }
+  .font-24 {
+    font-size: 24px;
+  }
+  .loader-every {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff; /* Adjust the background color and opacity */
+    z-index: 9999;
+    height: 100vh;/* Adjust the z-index to make sure it's on top */
+  }
+
+  .loader-everyOne {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff; /* Adjust the background color and opacity */
+    z-index: 9999;
+    height: 100vh; /* Adjust the z-index to make sure it's on top */
+  }
+
+  .loader-service {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(62, 63, 118); /* Adjust the background color and opacity */
+    z-index: 9999; /* Adjust the z-index to make sure it's on top */
+  }
+  
+  .loader-content {
+    position: relative;
+    text-align: center;
+    color: #252541;
+  }
+  
+  .loader-image {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px; /* Adjust the width of the image as needed */
+    height: 100px; /* Adjust the height of the image as needed */
+  }
+  
+  .loader-text {
+    margin-top: 100px; /* Optional: Adjust the margin to separate the text from the image */
+  }
+  
+  .spinner {
+    color: #252541;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 200px; /* Adjust the width of the image as needed */
+    height: 200px;
+  }
+
+  .spinner-service {
+    color: #fff;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 200px; /* Adjust the width of the image as needed */
+    height: 200px;
+  }
+
+  .loader-content-service {
+    position: relative;
+    text-align: center;
+    color: #fff;
+  }

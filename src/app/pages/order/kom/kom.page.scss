@@ -1,0 +1,81 @@
+:host {
+    ion-content {
+        --background: linear-gradient(-135deg, var(--ion-color-booking_back), var(--ion-color-booking_back));
+        --padding-start:10px;
+        --padding-end : 10px;
+        --padding-top : 10px;
+        --padding-bottom: 10px;
+    }
+    .guest-back{
+        --background: linear-gradient(-135deg, var( --ion-color-six), var( --ion-color-six));
+    }
+    .money-card{
+        --background: linear-gradient(-135deg, var(--ion-color-card-money), var(--ion-color-card-money));
+        margin-right: 5px;      
+    }
+    .icon-value{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .item-name{
+        margin-left: 10px;
+    }
+    .item-list{
+        margin-top: 5px;
+    }
+    .list-search{
+        margin-bottom: 5px;
+    }
+    .header-card-1{
+        padding: 5px;
+        margin-top: 5px;
+    }
+    .uservalue{
+        margin-left: 5px;
+    }
+    // .row-guest{
+    //     margin-top: 5px;
+    // }
+    .listcard-2{
+       padding-left: 5px;
+    }
+    hr.line {
+        border-top: 1px solid #ECECEC;
+        margin-top: 5px;
+    }
+    .room-vacant{
+        padding: 5px;
+    }
+    .check-in-out-date{
+        padding: 10px;
+    }
+    .first{
+        padding: 10px;
+    }
+    .listcard{
+        padding: 10px;
+    }
+    .list-room{
+        margin-top: 5px;
+    }
+    .datavalue{
+        margin-left: 5px;
+    }
+    .row-room{
+        margin-top: 5px;
+    }
+
+    // .room-detail-floor
+    // {
+    //     //--background: linear-gradient(-135deg, var(--ion-color-card-money), var(--ion-color-card-money));
+    // }
+    .cell-class {
+        border: 1px solid #1D174D;
+        background :  #aeb7ca;
+    }
+
+    .cell-class2 {
+    border: 1px solid #1D174D;
+    }
+}

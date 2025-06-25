@@ -1,0 +1,345 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Order Details  </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="onBack()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Order </ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar>
+    <ion-grid class="grid orderInfo">
+        <div class="customer-card" *ngIf="order.firstName">
+            <div class="card-header">
+              <ion-text class="card-title">Customer Details</ion-text>
+            </div>
+          
+            <div class="card-content" >
+              <div class="profile-section">
+                <div class="image-holder">
+                  <ion-avatar class="avatar">
+                    <img src="assets/img/user_profile.svg" alt="Customer Profile" />
+                  </ion-avatar>
+                </div>
+                <div class="text-holder">
+                  <ion-text class="name-text">{{order.firstName}} {{order.lastName}}</ion-text>
+                </div>
+              </div>
+
+          
+              <table class="details-table">
+               
+                <tr *ngIf="order.email != null">
+                  <td class="label">Email:</td>
+                  <td class="value">{{order.email}}</td>
+                </tr>
+
+                <tr *ngIf="order.mobile != null">
+                    <td class="label">Mobile:</td>
+                    <td class="value">{{order.mobile}}</td>
+                  </tr>
+                
+                  <tr *ngIf="customerAddress != null && customerAddress != undefined">
+                    <td class="label">Mobile:</td>
+                    <td class="value">{{this.customerAddress.streetNumber}}, {{this.customerAddress.streetName}},
+                      {{this.customerAddress.suburb}}, {{this.customerAddress.state}} ,<br/>
+                      {{this.customerAddress.city}}, {{this.customerAddress.country}}, {{this.customerAddress.postcode}}.
+                    </td>
+                  </tr>
+                  
+       
+              </table>
+            </div>
+          </div>
+
+          <div class="customer-card" style="margin-top: 10px;">
+            <div class="card-header">
+              <ion-text class="card-title">Order Details</ion-text>
+            </div>
+          
+            <div class="card-content" >
+          
+              <table class="details-table">
+               
+                <tr >
+                  <td class="label">Order Id:</td>
+                  <td class="value">{{order.bookOneOrderId}}</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Delivery Method:</td>
+                    <td class="value">{{order.deliveryMethod}}</td>
+                  </tr>
+
+                  <tr >
+                    <td class="label">Resource:</td>
+                    <td class="value">{{order.resourceName}}</td>
+                  </tr>
+
+                  <tr >
+                    <td class="label">No. of Pax:</td>
+                    <td class="value">{{order.noOfPerson}}</td>
+                  </tr>
+
+                  <tr >
+                    <td class="label">Order Status:</td>
+                    <td class="value" *ngIf="order.orderStatus === 'Completed'"> {{order.orderStatus}}</td>
+                    <td class="value" *ngIf="order.orderStatus != 'Completed'">  {{order.orderStatus}}</td>
+                  </tr>
+
+                  <tr >
+                    <td class="label">Source of Order:</td>
+                    <td class="value" > {{order.externalSite}}</td>
+                   
+                  </tr>
+
+
+       
+              </table>
+            </div>
+          </div>
+
+          <div class="customer-card" style="margin-top: 10px;">
+            <div class="card-header">
+              <ion-text class="card-title">Order Items</ion-text>
+            </div>
+          
+            <div class="card-content" >
+          
+                <table class="responsive-table">
+                    <tr class="header-row">
+                      <td>Product</td>
+                      <td>Code</td>
+                      <td>Quantity</td>
+                      <td>Sell Price</td>
+                      <td>Amount</td>
+                    </tr>
+                    <tr *ngFor="let product of this.order.orderLineDtoList" class="data-row">
+                      <td>{{product.name}}  </td>
+                      <td>{{product.productCode}}</td>
+                      <td>{{product.unitsInOrder}}</td>
+                      <td>
+                        <span
+                             *ngIf="
+                               product.discountedPrice !== null && product.discountedPrice >= 0 && 
+                               product.discountInPercentage > 0
+                             "
+                             ><span class="discounted-price">{{
+                               product.sellUnitPrice | currency : currency : "symbol" : "1.2-2"
+                             }}</span>
+                             {{
+                               product.discountedPrice | currency : currency : "symbol" : "1.2-2"
+                             }}
+                             ({{
+                               100 - (100 / product.sellUnitPrice) * product.discountedPrice
+                                 | number : "1.0-2"
+                             }}% Off)</span
+                           >
+                           <span
+                             *ngIf="product.discountedPrice == null || product.discountedPrice == undefined || 
+                             product.discountInPercentage == null"
+                             >{{
+                               product.sellUnitPrice | currency : currency : "symbol" : "1.2-2"
+                             }}</span>
+                     
+                     </td>
+                     <td>
+                        <span
+                    *ngIf="
+                    product.discountedPrice !== null && product.discountedPrice >= 0 && 
+                      product.discountInPercentage > 0
+                    "
+                    >{{
+                      product.discountedPrice * product.unitsInOrder
+                        | currency : currency : "symbol" : "1.2-2"
+                    }}</span
+                  >
+                  <span
+                    *ngIf="product.discountedPrice == null || product.discountedPrice == undefined || 
+                    product.discountInPercentage == null"
+                    >{{
+                      product.sellUnitPrice * product.unitsInOrder
+                        | currency : currency : "symbol" : "1.2-2"
+                    }}</span
+                  >
+                     </td>
+                      <!-- <td>{{product.sellUnitPrice | currency: currency:'symbol':'1.2-2' }}</td> -->
+                    
+                        <!-- <span
+                          *ngIf="
+                            product.discountedPrice !== null && product.discountedPrice >= 0 && 
+                            product.discountInPercentage > 0
+                          "
+                          ><span class="discounted-price">{{
+                            product.sellUnitPrice | currency : currency : "symbol" : "1.2-2"
+                          }}</span>
+                          {{
+                            product.discountedPrice | currency : currency : "symbol" : "1.2-2"
+                          }}
+                          ({{
+                            100 - (100 / product.sellUnitPrice) * product.discountedPrice
+                              | number : "1.0-2"
+                          }}% Off)</span
+                        >
+                        <span
+                          *ngIf="product.discountedPrice == null || product.discountedPrice == undefined || 
+                          product.discountInPercentage == null"
+                          >{{
+                            product.sellUnitPrice | currency : currency : "symbol" : "1.2-2"
+                          }}</span
+                        > -->
+                     
+                      
+                      <!-- <td>
+                        <ion-chip *ngIf="!isProductStatusDisabled" (click)="changeStatus(product)" class="clip">
+                            <ion-label>
+                                {{checkStatus(product)}}</ion-label>
+                        </ion-chip> 
+    
+                        <ion-chip *ngIf="isProductStatusDisabled && isShowToKitchen(product)" (click)="changeStatusKitchen(product)" class="clip">
+                            <ion-label>
+                                {{checkStatus(product)}}</ion-label>
+                        </ion-chip> 
+                      </td> -->
+                    </tr>
+                 
+                  </table>
+            </div>
+          </div>
+
+          <div class="customer-card" style="margin-top: 10px;">
+            <div class="card-header">
+              <ion-text class="card-title">Payment Details</ion-text>
+            </div>
+          
+            <div class="card-content" >
+          
+              <table class="details-table">
+               
+                <tr >
+                  <td class="label">Total Product Amount:</td>
+                  <td class="value"> {{
+                    calculateTotalProductAmount()
+                      | currency : currency : "symbol" : "1.2-2"
+                  }}</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Discount Amount:</td>
+                    <td class="value" *ngIf="this.order.discountAmount!=undefined || this.order.discountAmount!= null">
+                        {{ this.order.discountAmount| currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</td>
+                    <td class="value" *ngIf="this.order.discountAmount==undefined || this.order.discountAmount== null">
+                        0</td>
+                  </tr>
+
+                  <tr *ngIf="this.order.serviceChargeAmount!=undefined || this.order.serviceChargeAmount!= null">
+                    <td class="label">Service Charge Amount:</td>
+                    <td class="value" *ngIf="this.order.serviceChargeAmount!=undefined || this.order.serviceChargeAmount!= null">{{ this.order.serviceChargeAmount| currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</td>
+                    <td class="value" *ngIf="this.order.serviceChargeAmount==undefined || this.order.serviceChargeAmount== null">0</td>
+                  </tr>
+
+                  <tr >
+                    <td class="label"> Sub Total:</td>
+                    <td class="value">{{
+                        calculateSubTotal()
+                          | currency : currency : "symbol" : "1.2-2"
+                      }}</td>
+                  </tr>
+
+                  <tr >
+                    <td class="label">Tax Amount:</td>
+                    <td class="value" *ngIf="this.order.taxAmount!=undefined || this.order.taxAmount!= null"> 
+                         {{ this.order.taxAmount| currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</td>
+                    <td class="value" *ngIf="this.order.taxAmount==undefined || this.order.taxAmount== null"> 0 </td>
+                  </tr>
+
+                  <tr >
+                    <td class="label">Total Amount:</td>
+                    <td class="value"  *ngIf="this.order.totalOrderAmount!=undefined || this.order.totalOrderAmount!= null"> 
+                        {{ this.order.totalOrderAmount| currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }} </td>
+                        <td class="value" *ngIf="this.order.totalOrderAmount==undefined || this.order.totalOrderAmount== null">0</td>
+                   
+                  </tr>
+
+                  <tr >
+                    <td class="label"> Notes:</td>
+                    <td class="value">{{this.order.specialNotes}}</td>
+                  </tr>
+       
+              </table>
+            </div>
+          </div>
+
+    </ion-grid>
+
+</ion-content>
+
+<ion-footer style="min-height: 50px;">
+    
+    <!-- <ion-row class="selectItem">
+        <ion-col  *ngIf="order.orderStatus != 'Completed'" size="3" (click)="onUpdate()">
+            <p class="title">Update</p> 
+        </ion-col>
+        <ion-col  *ngIf="order.orderStatus != 'Completed'" size="3" (click)="onConvert()">
+            <p class="title">Convert</p>  
+        </ion-col>
+        <ion-col  *ngIf="order.orderStatus === 'Submitted'" size="3"  (click)="onConfirmOrder()">
+            <p class="title">Confirm</p>   
+        </ion-col>
+        <ion-col size="2" (click)="onMenu(order)"> <ion-icon
+            style="font-size: 30px"
+            name="menu-outline"
+            class="colorWhite"
+        ></ion-icon>
+        </ion-col>
+    
+    </ion-row> -->
+   
+    <ion-tabs>
+        <ion-tab-bar slot="top">
+          <ion-tab-button tab="Update" *ngIf="order.orderStatus != 'Completed' && order.orderStatus != 'Cancelled'"  (click)="onUpdate()">
+            <ion-icon name="pencil-outline"></ion-icon>
+            Update
+          </ion-tab-button>
+          <ion-tab-button tab="Convert"  *ngIf="order.orderStatus != 'Completed' && order.orderStatus != 'Cancelled'" (click)="onConvert()">
+            <!-- <ion-icon name="radio"></ion-icon> -->
+            <ion-icon name="repeat-outline"></ion-icon>
+            Convert
+          </ion-tab-button>
+          <ion-tab-button tab="Confirm"  *ngIf="order.orderStatus === 'Submitted'" (click)="onConfirmOrder()">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            Confirm
+          </ion-tab-button>
+          <ion-tab-button tab="menu" (click)="onMenu(order)">
+            <ion-icon
+            name="menu-outline"
+            class="colorWhite"
+        ></ion-icon>
+          </ion-tab-button>
+        </ion-tab-bar>
+      </ion-tabs>
+    
+</ion-footer>

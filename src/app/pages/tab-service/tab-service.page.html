@@ -1,0 +1,320 @@
+<!-- <ion-header *ngIf="AddOnService">
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Add On Service </ion-text>
+    </ion-toolbar>
+</ion-header> -->
+
+
+
+<ion-header class="ion-no-border" *ngIf="AddOnService">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Add On Service </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="back()"  style="font-size: 20px; margin-top: -10px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+
+    <ion-button
+    class="button-submit text-white marginnn"
+    expand="block"
+    (click)="toggleLayout()"
+    style="font-size: 14px"
+>
+    <ion-icon
+        class="headericon"
+        name="{{headerIcon}}"
+    ></ion-icon>
+    <ion-text class="headertitle newpaymentcreate"
+        >{{headerTitle}}</ion-text
+    >
+</ion-button>
+    <ion-grid class="card-layout text-white" *ngIf="isCreateExpence">
+        <form [formGroup]="onServiceForm" style="    padding: 6px;">
+            <ion-row>
+                <ion-text style="font-size: 12px">Date of Services*</ion-text>
+                <ion-col size="12">
+                    <ion-datetime
+                        class="card-item"
+                        [(ngModel)]="service.date"
+                        formControlName="date"
+                        color="primary"
+                        displayFormat="DD/MM/YYYY"
+                        pickerFormat="DD/MM/YYYY"
+                        placeholder="Select Date"
+                        [disabled]="isView"
+                    ></ion-datetime>
+                    <!--  [(ngModel)]="search.to" -->
+                </ion-col>
+            </ion-row>
+
+            <!--  -->
+
+            <ion-row>
+                <ion-text style="font-size: 12px">Service*</ion-text>
+                <ion-col size="12">
+                    <ion-select
+                        class="card-item"
+                        [(ngModel)]="service.name"
+                        formControlName="serviceType"
+                        placeholder="Service"
+                        (ionChange)="setService(service.name)"
+                        [disabled]="isView"
+                    >
+                        <ion-select-option
+                            *ngFor="let serviceType of propertyServices"
+                            value="{{serviceType.name}}"
+                        >
+                            {{serviceType.name}} &nbsp;
+                            <b>({{ serviceType.serviceType }})</b>
+                            Price: {{ service.afterTaxAmount | currency:
+                            Currency:"symbol":"1.2-2" }}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-col>
+            </ion-row>
+            <!--  -->
+
+            <ion-row>
+                <ion-text style="font-size: 12px">Description/Notes</ion-text>
+                <ion-col size="12">
+                    <ion-input
+                        [(ngModel)]="service.description"
+                        formControlName="description"
+                        placeholder=""
+                        class="card-item"
+                        inputmode="text"
+                        readonly="{{isView}}"
+                    ></ion-input>
+                </ion-col>
+            </ion-row>
+            <!--  -->
+
+            <ion-row>
+                <ion-text style="font-size: 12px">Before Tax Amount*</ion-text>
+                <ion-col size="12">
+                    <ion-input
+                        [(ngModel)]="service.beforeTaxAmount"
+                        formControlName="beforeTax"
+                        min="0"
+                        class="card-item"
+                        oninput="this.value = Math.abs(this.value)"
+                        (ngModelChange)="beforeTaxChange($event)"
+                        inputmode="text"
+                        readonly="{{isView}}"
+                    ></ion-input>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-text style="font-size: 12px">Quantity*</ion-text>
+                <ion-col size="12">
+                    <ion-input
+                        [(ngModel)]="service.count"
+                        formControlName="Count"
+                        min="0"
+                        class="card-item"
+                        oninput="this.value = Math.abs(this.value)"
+                        (ngModelChange)="beforeTaxChange($event)"
+                        inputmode="number"
+                        type="number"
+                        readonly="{{isView}}"
+                    ></ion-input>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-text style="font-size: 12px">Tax Percentage</ion-text>
+                <ion-col size="12">
+                    <ion-input
+                        [(ngModel)]="service.taxPercentage"
+                        formControlName="TaxPercentage"
+                        min="0"
+                        class="card-item"
+                        oninput="this.value = Math.abs(this.value)"
+                        (ngModelChange)="beforeTaxChange($event)"
+                        inputmode="number"
+                        type="number"
+                        readonly="{{isView}}"
+                    ></ion-input>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-text style="font-size: 12px">Tax*</ion-text>
+                <ion-col size="12">
+                    <ion-input
+                        [(ngModel)]="service.taxAmount"
+                        formControlName="slotTax"
+                        min="0"
+                        class="card-item"
+                        oninput="this.value = Math.abs(this.value)"
+                        inputmode="number"
+                        type="number"
+                        readonly
+                    >
+                    </ion-input>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-text style="font-size: 12px">Amount After Tax*</ion-text>
+                <ion-col size="12">
+                    <ion-input
+                        [(ngModel)]="service.afterTaxAmount"
+                        formControlName="servicePrice"
+                        placeholder=""
+                        class="card-item"
+                        inputmode="number"
+                        type="number"
+                        readonly
+                    ></ion-input>
+                </ion-col>
+            </ion-row>
+            <!--  -->
+            <ion-row *ngIf="!isView">
+                <ion-col size="4">
+                    <ion-button
+                        size="small"
+                        expand="block"
+                        class="button-submit"
+                        [disabled]="!onServiceForm.valid"
+                        (click)="onSubmit()"
+                        >Add</ion-button
+                    >
+                </ion-col>
+
+                <ion-col size="4">
+                    <ion-button
+                        size="small"
+                        expand="block"
+                        class="button-reset"
+                        (click)="reset()"
+                        >Reset</ion-button
+                    >
+                </ion-col>
+
+                <ion-col size="4">
+                    <ion-button
+                        size="small"
+                        expand="block"
+                        class="button-cancel"
+                        (click)="toggleLayout()"
+                        >Cancel
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+
+            <!--  -->
+        </form>
+    </ion-grid>
+
+    <ion-grid *ngIf="!isCreateExpence">
+        <!--  -->
+
+        <ion-row class="text-white">
+            <ion-col size="12">
+                <ion-list class="list-back">
+                    <ion-item lines="none">
+                        <ion-text
+                            class="payment_List_Title text-white"
+                            style="font-size: 17px; color: #333; font-weight: bold;"
+                            >List of Service</ion-text
+                        >
+                    </ion-item>
+
+                    <ion-card *ngFor="let service of services" style="    border: 1px solid gray;">
+                        <ion-card-header class="Crad-Header">
+                            <ion-row>
+                                <ion-col size="6">
+                                    <ion-text class="text-2">Date:</ion-text>
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        style="font-size: 13px"
+                                    >
+                                        {{service.date| date : "MMM d, y"}}
+                                    </ion-text>
+                                </ion-col>
+                                <ion-col size="5" class="text-2">
+                                    <ion-text style="font-size: 13px"
+                                        >Amount:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue"
+                                        style="font-size: 13px"
+                                    >
+                                        {{service.afterTaxAmount | currency:
+                                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                        }}
+                                    </ion-text>
+                                </ion-col>
+                                <ion-col size="1" class="text-2">
+                                    <ion-row>
+                                        <ion-icon
+                                            (click)="onServiceOption(service);"
+                                            name="ellipsis-vertical-outline"
+                                        >
+                                        </ion-icon>
+                                    </ion-row>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card-header>
+                        <ion-card-content style="margin-top: -12px;">
+                            <ion-row>
+                                <ion-col size="12" class="text-2">
+                                    <ion-text>Service Type:</ion-text>
+                                    <ion-text class="TextValue"
+                                        >{{service.serviceType}}
+                                    </ion-text>
+                                </ion-col>
+                                <ion-col size="12" class="text-2">
+                                    <ion-text>Name:</ion-text>
+                                    <ion-text class="TextValue"
+                                        >{{service.name}}</ion-text
+                                    >
+                                </ion-col>
+
+                                <ion-col size="12" class="text-2">
+                                    <ion-text>Description:</ion-text>
+                                    <ion-text class="TextValue"
+                                        >{{service.description}}
+                                    </ion-text>
+                                </ion-col>
+
+                                <!-- <ion-row class="payment-row-last">
+                                                <ion-text style="font-size: 13px;" color="primary" >Mode:</ion-text>
+                                                <ion-text  class="TextValue" style="font-size: 13px;" >Card</ion-text> 
+                                        </ion-row> -->
+                            </ion-row>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

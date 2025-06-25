@@ -1,0 +1,283 @@
+:host {
+    .card-layout {
+      
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 16px;
+        padding: 10px;
+        border: 1px solid #7b6e72 !important;
+    }
+    .card-item {
+
+        border-radius: 5px;
+        color: #333;
+        text-align: center;
+        border: 1px solid gray;
+    }
+
+    ion-searchbar {
+        --icon-color: #333; 
+        --background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        color: #333;
+    }
+
+    .line {
+        border: 1px dashed white;
+    }
+
+
+    @media (min-width: 576px) {
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+    }
+    @media (max-width: 576px) {
+        ion-toolbar {
+            position: absolute;
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+
+        .marginnn {
+            margin-top: 90px;
+        }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    .HeaderTitle {
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: -17px;
+
+    }
+
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 37px;
+        left: 41px;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+    .button-cancel {
+        --background: #E84424;
+        color: #fff !important;
+    }
+
+    .priceing-details {
+        color: #333;
+        margin: 10px;
+    }
+    .bookingPadding{
+        padding: 10px;
+    }
+
+    .text-white {
+        color: #333;
+    }
+
+    .status-check {
+        display: block;
+        text-align: right;
+        margin-right: 5px;
+        height: 30px;
+        width: 30px;
+    }
+
+    .content-header-title {
+        margin-top: 5px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .price-room-title {
+        display: flex;
+        justify-content: center;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .plan-default-price {
+        margin-right: 5px;
+        text-decoration: line-through;
+    }
+
+    .price-room-value {
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 5px;
+        font-size: 20px;
+        color: #333;
+    }
+
+    .room-info
+    {
+        margin-left: 10px;
+    }
+
+    .check-in-out-text
+    {
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .check-in-out-date
+    {
+        padding: 5px;
+    }
+    .rpc-text
+    {
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .rpc-number
+    {
+        padding-bottom: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .roomexceederror
+    {
+        margin-left: 5px;
+    }
+    .titleMessage
+    {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    
+    .editicon{
+        margin-left: 10px;
+    }
+    
+    .discount-icon{
+        margin-top: 5px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    
+    .taxName-selection{
+        margin-left: 10px;
+    }
+    
+    .button-action-text{
+        margin-left: 5px;
+    }
+
+    .dueAmount {
+        color: red !important;;
+      }
+      
+      .paidAmount {
+        color: #221950 !important;;
+      }
+
+      .todoNotes {
+        display: flex;
+        justify-content: center;
+      }
+      
+      
+      .error {
+        border: 2px transparent;
+        color: #d8000c;
+        background-color: #ffbaba;
+        border-radius: 3px;
+        margin: auto;
+        width: 70%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+
+      .button-submit{
+        --background: #1D174D;
+        border-radius: 16px;
+        color: #fff !important;
+    }
+
+    table{
+        // font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 14px;
+        border: none;
+        border-style: hidden;
+    }
+    
+    tr{
+        height: 80px;
+    }
+    
+    th {
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    td {
+        border: 1px solid white;
+        border-top: none !important;
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+      
+}
+

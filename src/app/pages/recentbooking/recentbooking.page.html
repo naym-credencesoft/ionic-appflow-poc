@@ -1,0 +1,38 @@
+<ion-header>
+    <ion-img
+    class="header-image headerColor"
+    src="/assets/img/icons/booking_round_header.svg"
+></ion-img>
+
+<ion-avatar class="profile">
+    <img
+    style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+</ion-avatar>
+
+<ion-img
+    class="left-image-header"
+    src="/assets/img/icons/booking-header-left.svg"
+></ion-img>
+<ion-text class="HeaderSubTitle">Recent Booking</ion-text>
+<ion-toolbar>
+    <ion-buttons slot="start" class="back" (click)="navigateToPage()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-text color="light" class="HeaderTitle">Accommodation</ion-text>
+</ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <app-list [listStatus]="listName"></app-list>
+
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style=" height: 50px;">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

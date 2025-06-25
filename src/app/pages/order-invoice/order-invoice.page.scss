@@ -1,0 +1,718 @@
+.header-title {
+    margin-top: 8px;
+  }
+  .header-toolbar {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  
+  .header-title-2 {
+    margin-top: 13px;
+    margin-left: 20px;
+  }
+  
+  .header-title-3 {
+    margin-top: 14px;
+    margin-left: 20px;
+  }
+  
+  @media print {
+    .table-frame {
+      padding: 2px;
+      border: 1px solid #dddddd;
+      border-radius: 10px;
+    }
+
+        body {
+          color: black !important;
+          background-color: white !important;
+        }
+        .print-black {
+          color: black !important;
+        }
+      
+  
+    .tdth {
+      border: 0.1px solid #c1c1c1;
+      text-align: center;
+      padding: 2px;
+    }
+  
+    :host {
+      .breadcrumb {
+        display: none !important;
+      }
+    }
+    .screen-area {
+      display: none !important;
+    }
+  
+    .print-area {
+      display: block !important;
+    }
+  
+    .no-print,
+    .logo,
+    .topbar,
+    .header-toolbar,
+    .breadcrumb-bar,
+    .item-table,
+    .no-print * {
+      display: none !important;
+    }
+  
+    .header-title {
+      margin-top: 5px;
+    }
+  
+    .header-toolbar {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+  
+    .header-title-2 {
+      margin-top: 5px;
+      margin-left: 5px;
+    }
+  
+    .header-title-3 {
+      margin-top: 5px;
+      margin-left: 5px;
+    }
+  
+    mat-header-row,
+    mat-footer-row,
+    mat-row {
+      min-height: 25px;
+    }
+  
+    .mat-card {
+      padding: 10px;
+      border-radius: 4px;
+    }
+  }
+  
+  @media screen {
+    .print-area {
+      display: none !important;
+    }
+  
+    .screen-area {
+      display: block !important;
+    }
+    .print-Kot-button{
+      display: none !important;
+    }
+  }
+  
+  // .invoiceTableHeader{
+  //   height: 20px;
+  // }
+  
+  // .invoiceTablerow{
+  //   height: 20px;
+  // }
+  
+  .cancel-button {
+    background-color: #970101;
+    color: #fff;
+  }
+  
+  .confirm-button {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  .discounted-price {
+    text-decoration: line-through;
+  }
+  
+  .inputTotalAmount {
+    background-color: #e9ebec;
+  }
+  
+  .margin-top {
+    margin-top: 10px;
+  }
+  
+  @page {
+    margin-top: 5;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 10;
+  }
+  @media (min-width: 301px) {
+    .print-table-css {
+      font-size: 1.5vmax !important;
+    }
+    .main-title {
+      font-size: 2vmax !important;
+    }
+    .bookone-order-id {
+      font-size: 2.5vmax !important;
+    }
+    .room-no {
+      font-size: 2.5vmax !important;
+    }
+    .room-no {
+      font-size: 2vmax !important;
+    }
+    .table-frame {
+      font-size: 2.5vmax !important;
+    }
+    .power-by {
+      font-size: 2.5vmax !important;
+    }
+    .notes-width {
+      width: 100% !important;
+    }
+  }
+  @media (max-width: 300px) {
+    .print-table-css {
+      font-size: 1vmax !important;
+    }
+    .bookone-order-id {
+      font-size: 2vmax !important;
+    }
+    .main-title {
+      font-size: 2vmax !important;
+    }
+    .room-no {
+      font-size: 2vmax !important;
+    }
+    .text-size {
+      font-size: 1.5vmax !important;
+    }
+    .table-frame {
+      font-size: 1.5vmax !important;
+    }
+    .power-by {
+      font-size: 1.5vmax !important;
+    }
+    .notes-width {
+      width: 20px !important;
+    }
+  }
+  .order-background{
+      --background: linear-gradient( -0deg, var(--ion-color-tm2-primary), var(--ion-color-tm2-terciary1), var(--ion-color-tm2-terciary2) );
+
+  }
+  :host {
+
+    .text-white {
+        color: white;
+    }
+    .card-layout {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 16px;
+        margin: 20px;
+        border: 1px solid #7b6e72 !important;
+    }
+    .card-item {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+    }
+
+    // ion-content {
+    //     --background: linear-gradient(
+    //         -0deg,
+    //         var(--ion-color-tm2-primary),
+    //         var(--ion-color-tm2-terciary1),
+    //         var(--ion-color-tm2-terciary2)
+    //     );
+    // }
+
+    .room-info
+    {
+        margin-left: 10px;
+    }
+    .content-header-title {
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 5px;
+        font-size: 18px;
+        color: white;
+    }
+
+
+    .price-room-title {
+        display: flex;
+        justify-content: center;
+        font-size: 12px;
+        color: white;
+    }
+    .price-room-value {
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 5px;
+        font-size: 20px;
+        color: white;
+    }
+    .check-in-out-text
+    {
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .check-in-out-date
+    {
+        padding: 5px;
+    }
+    .rpc-text
+    {
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+    .rpc-number
+    {
+        padding-bottom: 5px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .roomexceederror
+    {
+        margin-left: 5px;
+    }
+    .titleMessage
+    {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    
+    .editicon{
+        margin-left: 10px;
+    }
+    
+    .discount-icon{
+        margin-top: 5px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    
+    .taxName-selection{
+        margin-left: 10px;
+    }
+    
+}
+
+.dueAmount {
+    color: red !important;;
+  }
+  
+  .paidAmount {
+    color: #221950 !important;;
+  }
+  
+  .plan-default-price {
+    margin-right: 5px;
+    text-decoration: line-through;
+  }
+
+  .room-edit {
+    display: block;
+    text-align: right;
+    margin-right: 5px;
+    height: 23px;
+    width: 23px;
+}
+
+  .roompriceedit {
+    background: white;
+    text-align: center;
+    border: 1px solid #221950;
+  }
+
+  .gap-planamount {
+    margin-left: 5px;
+  }
+
+  .line {
+    border: 1px dashed white;
+}
+
+.button-submit{
+    --background: linear-gradient(
+        -0deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    filter: drop-shadow(0px 4px 4px rgba(255, 255, 255, 0.25));
+    backdrop-filter: blur(17.7692px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 16px;
+    color: var(--ion-color-tm2-primary);
+}
+
+:host {
+   
+    .bottom-item-card {
+        padding: 10px;
+    }
+    .item-text {
+        margin-top: 5px;
+    }
+    .listcard {
+        padding: 10px;
+    }
+    .checkindate-row {
+        margin-top: 5px;
+    }
+    .datavalue {
+        margin-left: 5px;
+    }
+
+    .status {
+        margin-left: 5px;
+    }
+
+    ion-toolbar {
+        --background: var(--ion-color-tm2-terciary2);
+        min-height: 80px;
+        border: none;
+    }
+
+  
+    .card-layout {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 16px;
+        margin: 20px;
+        border: 1px solid #7b6e72 !important;
+    }
+    .card-item {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+    }
+    .text-white{
+        color: white;
+    }
+}
+
+:host {
+    @media (min-width: 576px) {
+        .header-image {
+            display: none !important;
+        }
+        .profile {
+            display: none !important;
+            margin-top: 6px;
+            margin-right: 6px;
+        }
+        .left-image-header {
+            display: none !important;
+        }
+
+        ion-toolbar {
+            --background: #fff;
+            min-height: 80px;
+            border: none;
+        }
+    }
+    @media (max-width: 576px) {
+        ion-toolbar {
+            position: absolute;
+            top: 0px;
+            --background: 00000000;
+            border: none;
+            --border-style: none;
+        }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+    .header-image {
+        background: var(--ion-color-tm2-terciary2);
+    }
+    .HeaderTitle {
+        color: white;
+    }
+
+    .profile {
+        z-index: 2;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 43px;
+        left: 45px;
+        font-size: 10px;
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+  
+
+    .list-back{
+        background: #FFFFFF00;
+        z-index: 2;
+        position: relative;
+    }
+    .text-white{
+        color: white;
+    }
+
+    .footer {
+        --background: var(--ion-color-tm2-terciary1);
+        color: white;
+    }
+}
+.order-info{
+    padding: 20px;
+    color: white;
+}
+.header-title {
+    margin-top: 8px;
+  }
+  .header-toolbar {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  
+  .header-title-2 {
+    margin-top: 13px;
+    margin-left: 20px;
+  }
+  
+  .header-title-3 {
+    margin-top: 14px;
+    margin-left: 20px;
+  }
+  @media print {
+    .hide-on-print {
+      display: none !important; /* Ensure it overrides any other styles */
+    }
+  }
+  @media print {
+    .table-frame {
+      padding: 2px;
+      border: 1px solid #dddddd;
+      border-radius: 10px;
+    }
+  
+    .tdth {
+      border: 0.1px solid #c1c1c1;
+      text-align: center;
+      padding: 2px;
+    }
+  
+    :host {
+      .breadcrumb {
+        display: none !important;
+      }
+    }
+    .screen-area {
+      display: none !important;
+    }
+  
+    .print-area {
+      display: block !important;
+    }
+  
+    .no-print,
+    .logo,
+    .topbar,
+    .header-toolbar,
+    .breadcrumb-bar,
+    .item-table,
+    .no-print * {
+      display: none !important;
+    }
+  
+    .header-title {
+      margin-top: 5px;
+    }
+  
+    .header-toolbar {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+  
+    .header-title-2 {
+      margin-top: 5px;
+      margin-left: 5px;
+    }
+  
+    .header-title-3 {
+      margin-top: 5px;
+      margin-left: 5px;
+    }
+  
+    mat-header-row,
+    mat-footer-row,
+    mat-row {
+      min-height: 25px;
+    }
+  
+    .mat-card {
+      padding: 10px;
+      border-radius: 4px;
+    }
+  }
+  
+  @media screen {
+    .print-area {
+      display: none !important;
+    }
+  
+    .screen-area {
+      display: block !important;
+    }
+    .print-Kot-button{
+      display: none !important;
+    }
+  }
+  
+  // .invoiceTableHeader{
+  //   height: 20px;
+  // }
+  
+  // .invoiceTablerow{
+  //   height: 20px;
+  // }
+  ion-content{
+    --background:linear-gradient(
+      -0deg,
+      var(--ion-color-tm2-primary),
+      var(--ion-color-tm2-terciary1),
+      var(--ion-color-tm2-terciary2)
+  )
+  }
+  .cancel-button {
+    background-color: #970101;
+    color: #fff;
+  }
+  
+  .confirm-button {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  .discounted-price {
+    text-decoration: line-through;
+  }
+  
+  .inputTotalAmount {
+    background-color: #e9ebec;
+  }
+  
+  .margin-top {
+    margin-top: 10px;
+  }
+  
+  @page {
+    margin-top: 5;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 10;
+  }
+  @media (min-width: 301px) {
+    .print-table-css {
+      font-size: 1.5vmax !important;
+    }
+    .main-title {
+      font-size: 3vmax !important;
+    }
+    .bookone-order-id {
+      font-size: 2.5vmax !important;
+    }
+    .room-no {
+      font-size: 2.5vmax !important;
+    }
+    .room-no {
+      font-size: 2vmax !important;
+    }
+    .table-frame {
+      font-size: 2.5vmax !important;
+    }
+    .power-by {
+      font-size: 2.5vmax !important;
+    }
+    .notes-width {
+      width: 100% !important;
+    }
+  }
+  @media (max-width: 300px) {
+    .print-table-css {
+      font-size: 1vmax !important;
+    }
+    .bookone-order-id {
+      font-size: 2vmax !important;
+    }
+    .main-title {
+      font-size: 2vmax !important;
+    }
+    .room-no {
+      font-size: 2vmax !important;
+    }
+    .text-size {
+      font-size: 1.5vmax !important;
+    }
+    .table-frame {
+      font-size: 1.5vmax !important;
+    }
+    .power-by {
+      font-size: 1.5vmax !important;
+    }
+    .notes-width {
+      width: 20px !important;
+    }
+  }
+
+  .price-section{
+   
+    width: 92%;
+  }
+ 
+  .print-button {
+    width: 50%;
+    height: 7%;
+color: white;
+    padding: 8px 16px; /* Adjust padding as needed */
+    text-align: center; /* Center text inside button */
+  }
+  
+  

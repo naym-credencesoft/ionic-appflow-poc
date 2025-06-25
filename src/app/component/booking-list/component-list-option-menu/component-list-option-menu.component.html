@@ -1,0 +1,37 @@
+ <!-- <ion-list no-padding no-margin>
+        <ion-list-header>
+          <ion-label class="fw700">List Option</ion-label>
+        </ion-list-header>
+    
+        <ion-item (click)="detail()">
+          <ion-icon name="document" color="primary"></ion-icon>
+          <ion-label class="text-show-detail">Show Detail</ion-label>
+        </ion-item>
+</ion-list> -->
+
+<ion-list no-padding no-margin>
+        <ion-list-header>
+          <ion-label class="fw700">More Option</ion-label>
+        </ion-list-header>
+    
+        <!-- <ion-item (click)="onCreateBooking()">
+          <ion-icon name="bookmarks" color="primary"></ion-icon>
+          <ion-label class="text-show-detail">Create Booking</ion-label>
+        </ion-item>
+
+        <ion-item (click)="onManageRateAvailbility()">
+            <ion-icon name="cash" color="primary" ></ion-icon>
+            <ion-label class="text-show-detail">Manage Rates & Availability</ion-label>
+        </ion-item> -->
+
+        
+        <ion-item  (click)="onManagePayment()" >
+                <ion-icon name="card" color="primary"></ion-icon>
+                <ion-label class="text-show-detail">Manage Payment</ion-label>
+        </ion-item>
+
+        <ion-item (click)="onManageExpence()" *ngIf="this.property.plan ==='Business Premium'">
+                <ion-icon name="logo-usd" color="primary"></ion-icon>
+                <ion-label class="text-show-detail">Manage Expense</ion-label>
+        </ion-item>
+</ion-list>

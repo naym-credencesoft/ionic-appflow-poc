@@ -1,0 +1,935 @@
+
+<ion-header class="ion-no-border" >
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Booking Details </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="back()"  style="font-size: 20px; margin-top: -10px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Booking</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content>
+
+
+
+    <ion-card class="card-layout text-white paginating" style="margin-bottom: 100px;">
+        <ion-grid no-padding>
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text style="font-size: 10px">Reservation Number</ion-text>
+                    <ion-row>
+                        <ion-input class="card-item" readonly value="{{booking.propertyReservationNumber}}"></ion-input>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+
+            <form [formGroup]="onAvailabilityTabForm">
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px">Room Type</ion-text>
+
+                        <ion-select class="card-item" placeholder="Select Room Type" [value]="booking.roomId"
+                            name="Room" okText="Done" cancelText="Dismiss" formControlName="RoomType" disabled="true">
+                            <ng-container *ngFor="let room of rooms">
+                                <ion-select-option *ngIf="room.name" [value]="room.id">
+                                    {{ room.name }}
+                                </ion-select-option>
+                            </ng-container>
+                        </ion-select>
+
+
+                    </ion-col>
+                </ion-row>
+
+
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-text class="check-in-out-text" style="font-size: 10px">Check-In</ion-text>
+                        <ion-col size="12">
+                            <ion-datetime [(ngModel)]="booking.fromDate" formControlName="bookingFromDate" no-padding
+                                class="card-item" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                placeholder="Select Date" [disabled]="true">
+                            </ion-datetime>
+                        </ion-col>
+
+                        <!-- </ion-card> -->
+                    </ion-col>
+
+                    <ion-col size="6">
+                        <!-- <ion-card no-margin> -->
+                        <ion-text class="check-in-out-text" style="font-size: 10px">Check-Out
+                        </ion-text>
+                        <ion-col size="12">
+                            <ion-datetime [(ngModel)]="booking.toDate" formControlName="bookingToDate" no-padding
+                                class="card-item" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                placeholder="Select Date" [disabled]="true">
+                            </ion-datetime>
+                        </ion-col>
+
+                        <!-- </ion-card> -->
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-text class="check-in-out-text" style="font-size: 10px">Arrival</ion-text>
+                        <ion-col size="12">
+                            <ion-datetime value="{{ booking.fromTime | date: 'EEE, MMM d, yyyy hh:mm aa' }}"
+                                [(ngModel)]="booking.fromTime" formControlName="bookingFromDate" no-padding
+                                class="card-item" displayFormat="DD/MM/YYYY HH:mm" placeholder="Select Date">
+                            </ion-datetime>
+                        </ion-col>
+
+
+                        <!-- </ion-card> -->
+                    </ion-col>
+
+                    <ion-col size="6">
+                        <!-- <ion-card no-margin> -->
+                        <ion-text class="check-in-out-text" style="font-size: 10px">Departure
+                        </ion-text>
+                        <ion-col size="12">
+                            <ion-datetime value="{{booking.toTime | date: 'EEE, MMM d, yyyy hh:mm aa' }}"
+                                [(ngModel)]="booking.toTime" formControlName="bookingToDate" no-padding
+                                class="card-item" displayFormat="DD/MM/YYYY HH:mm " placeholder="Select Date">
+                            </ion-datetime>
+                        </ion-col>
+
+                        <!-- </ion-card> -->
+                    </ion-col>
+                </ion-row>
+                <!-- room *ngIf="this.plans.length >0" person and children rpc-->
+
+                <ion-row *ngIf="plans != null && plans.length >0">
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                        <ion-text style="font-size: 10px">Plan</ion-text>
+                        <ion-select placeholder="Select Plan" value="{{booking.roomRatePlanName}}" class="card-item"
+                            (ionChange)="setPlan(booking.roomRatePlanName)" [(ngModel)]="booking.roomRatePlanName"
+                            name="Room" okText="Done" cancelText="Dismiss" formControlName="PlanControll"
+                            [disabled]="true">
+                            <ion-row *ngFor="let plan of plans">
+                                <ion-select-option value="{{plan.name}}">
+                                    <p>
+                                        <b> {{ plan.name }} </b><span style="color: blueviolet">Amount
+                                            {{plan.amount|
+                                            currency:
+                                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                            }}
+                                        </span>
+                                    </p>
+                                </ion-select-option>
+
+                                <ion-select-option *ngFor="let plan of planCodes" value="{{plan.code}}">
+                                    <p>
+                                        <b> {{ plan.name }} </b><span style="color: blueviolet">
+                                            Description: {{ plan.description }}
+                                            Amount {{ plan.amount | currency:
+                                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                            }}
+                                        </span>
+                                    </p>
+                                </ion-select-option>
+
+                                <ion-select-option *ngFor="let otaPlan of otaPlans" value="{{otaPlan.otaPlanId}}">
+                                    <p>
+                                        <b>Plan: {{ otaPlan.planName }}. </b><span style="color: blueviolet">
+                                            OTA Name : {{ otaPlan.otaName }}.
+                                            Code: {{ otaPlan.bookonePlanCode }}.
+                                            Amount {{ otaPlan.price | currency:
+                                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                            }}.
+                                        </span>
+                                    </p>
+                                </ion-select-option>
+                            </ion-row>
+                        </ion-select>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row *ngIf="booking.roomId >0 ">
+                    <ion-col size="4">
+                        <ion-text class="rpc-text" style="font-size: 10px">Room(s)</ion-text>
+                        <ion-row *ngFor="let room of rooms">
+                            <ion-col *ngIf="room.id == booking.roomId" no-padding size="12" size-xl="12" size-sm="12"
+                                size-md="12" size-lg="12">
+                                <ion-input formControlName="RoomNo" name="RoomNo" no-padding placeholder="0" no-margin
+                                    class="card-item" type="number" [(ngModel)]="booking.noOfRooms"
+                                    value="{{booking.noOfRooms}}" clearInput="true" min="1" readonly
+                                    max="{{room.noOfRooms}}">
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+
+                    <ion-col size="4">
+                        <ion-text class="rpc-text" style="font-size: 10px">Person(s)</ion-text>
+                        <ion-row *ngFor="let room of rooms">
+                            <ion-col *ngIf="room.id == booking.roomId" no-padding size="12" size-xl="12" size-sm="12"
+                                size-md="12" size-lg="12">
+                                <ion-input formControlName="PersonNo" name="PersonNo" no-padding placeholder="0"
+                                    no-margin readonly class="card-item" type="number" [(ngModel)]="booking.noOfPersons"
+                                    value="{{booking.noOfPersons}}" clearInput="true" min="0"
+                                    max="{{ room.maximumOccupancy*booking.noOfRooms}}"></ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+
+                    <ion-col size="4">
+                        <ion-text class="rpc-text" style="font-size: 10px">Child(ren)</ion-text>
+                        <ion-row>
+                            <ion-col no-padding size="12">
+                                <ion-input formControlName="ChildrenNo" no-padding placeholder="0" no-margin readonly
+                                    class="card-item" type="number" [(ngModel)]="childrenno" clearInput="true" min="0">
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+
+        <ion-grid no-padding id="second-content">
+            <form [formGroup]="onSaveTabForm">
+                <!-- -->
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-text style="font-size: 10px">First Name</ion-text>
+                        <ion-row>
+                            <ion-input formControlName="firstName" [(ngModel)]="booking.firstName"
+                                value="{{booking.firstName}}" placeholder="First Name" class="card-item"
+                                inputmode="text"></ion-input>
+                        </ion-row>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-text style="font-size: 10px">Last Name</ion-text>
+                        <ion-row>
+                            <ion-input formControlName="lastName" [(ngModel)]="booking.lastName"
+                                value="{{booking.lastName}}" placeholder="Last Name" inputmode="text"
+                                class="card-item"></ion-input>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <!-- email -->
+                <ion-row>
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                        <ion-text style="font-size: 10px">Email</ion-text>
+                        <ion-col no-padding size="12">
+                            <ion-input disabled formControlName="email" [(ngModel)]="booking.email"
+                                value="{{booking.email}}" placeholder="Email address" inputmode="email"
+                                class="card-item"></ion-input>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <p ion-text class="text08"
+                    *ngIf="onSaveTabForm.get('email').touched && onSaveTabForm.get('email').hasError('required')">
+                    <ion-text color="danger">
+                        {{ 'app.label.errors.field' | translate }}
+                    </ion-text>
+                </p>
+                <p ion-text class="text08"
+                    *ngIf=" onSaveTabForm.get('email').hasError('email') && onSaveTabForm.controls.email.dirty">
+                    <ion-text color="danger">
+                        {{ 'app.pages.reg.text.emailvalidation' | translate }}
+                    </ion-text>
+                </p>
+
+                <!-- phone -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px">Phone</ion-text>
+                        <ion-col no-padding size="12">
+                            <ion-input formControlName="mobile" [(ngModel)]="booking.mobile" value="{{booking.mobile}}"
+                                placeholder="Phone Number" inputmode="text" class="card-item"></ion-input>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                        <ion-text style="font-size: 10px;">Source Of Booking</ion-text>
+
+                        <ion-col no-padding size="12">
+                            <ion-select class="card-item" [(ngModel)]="otaChannelId" formControlName="externalSite"
+                                [value]='otaChannelId' name="externalSite" placeholder="Source Of Booking"
+                                (ionChange)="getOTAPropertyDetails(otaChannelId)">
+
+                                <ion-select-option
+                                    *ngFor="let externalSite of this.externalSiteList.externalBookingSites"
+                                    [value]="externalSite.id">
+                                    {{ externalSite.viewValue }}
+                                </ion-select-option>
+
+                                <ion-select-option *ngFor="let externalSite of propertyOTA" [value]="externalSite.id">
+                                    {{ externalSite.onlineTravelAgencyName }}
+                                </ion-select-option>
+
+                            </ion-select>
+                        </ion-col>
+                    </ion-col>
+
+                    <ion-col size="6">
+                        <ion-text style="font-size: 10px">External Booking Number</ion-text>
+
+                        <ion-col no-padding size="12">
+                            <ion-input formControlName="externalBookingID" [(ngModel)]="booking.externalBookingId"
+                                value="{{booking.externalBookingId}}" placeholder="External Booking Number"
+                                inputmode="text" class="card-item"></ion-input>
+                        </ion-col>
+                    </ion-col>
+
+
+                </ion-row>
+
+
+
+                <!-- booking note -->
+
+                <ion-row>
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                        <ion-text style="font-size: 10px">Booking Notes</ion-text>
+
+                        <ion-col no-padding size="12">
+                            <ion-textarea formControlName="notes" [(ngModel)]="booking.notes" value="{{booking.notes}}"
+                                name="notes" clearOnEdit="true" placeholder="Notes" class="card-item"
+                                rows="3"></ion-textarea>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <ion-grid no-padding>
+                    <ion-row style="    display: flex;
+                    justify-content: space-between;
+                    padding: 10px;">
+                        <ion-text class="content-header-title">Pricing Details</ion-text>
+                        <img
+                            class="status-check"
+                            src="assets/img/icons/check-booking.svg"
+                        />
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col style="display: flex;align-items: center;gap:10px">
+                            <div>
+                                <ion-text class="price-room-title text-white">Room Price</ion-text>
+                            </div>
+                            
+                            <div class="price-room-value">
+                                <span class="plan-default-price" *ngIf="
+                                      this.plan != null &&
+                                      this.plan != undefined &&
+                                      this.plan.amount != null &&
+                                      this.totalPlanAmount != null &&
+                                      this.totalPlanAmount != undefined &&
+                                      this.totalPlanAmount != this.plan.amount
+                                    " (click)="setDefaultPlanAmount()">
+                                    {{ plan.amount | currency : currency : "symbol"
+                                    : "1.2-2" }}</span>
+    
+                                <span class="gap-planamount" *ngIf="
+                                      this.totalPlanAmount != null &&
+                                      this.totalPlanAmount != undefined &&
+                                      isPlanAmountEditMode === false
+                                    ">
+                                    {{ this.totalPlanAmount | currency : currency :
+                                    "symbol" : "1.2-2" }}</span>
+                                <ion-input class="card-item" *ngIf="isPlanAmountEditMode" formControlName="PlanAmountChange"
+                                    [(ngModel)]="totalPlanAmount" no-padding placeholder="0" no-margin type="number"
+                                    clearInput="true" min="0"></ion-input>
+                            </div>
+                            <div> 
+                            <img *ngIf="
+                                isPlanAmountEditMode === false &&
+                                bookingRoomPriceChangeAccess() === true &&
+                                checkAmountEditAccess()
+                            " (click)="planAmountEditButtonClick()" class="room-edit"
+                                src="assets/img/icons/room-price-edit.svg" />
+    
+                            <ion-icon *ngIf="isPlanAmountEditMode === true" (click)="planAmountButtonClick()"
+                                class="room-edit" style="color: white" name="checkmark-done-outline"></ion-icon>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        
+                    </ion-row>
+                    <ion-row class="mt-1">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Plan</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">{{this.booking.roomRatePlanName }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="4" style="text-align: center;">
+                            <ion-text style="font-size: 12px">Night(s)</ion-text>
+                            <ion-row>
+                                <ion-col no-padding size="12">
+                                    <ion-text style="
+                                            font-size: 12px;
+                                            margin-left: 10px;
+                                        ">
+                                        {{ booking.noOfNights }}</ion-text>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="4"  style="text-align: center;">
+                            <ion-text style="font-size: 12px">Room Quantity</ion-text>
+                            <ion-row>
+                                <ion-col no-padding size="12">
+                                    <ion-text style="
+                                            font-size: 12px;
+                                            margin-left: 15px;
+                                        ">
+                                        {{ booking.noOfRooms }}</ion-text>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="4"  style="text-align: center;">
+                            <ion-text style="font-size: 12px">Guest(s)</ion-text>
+                            <ion-row>
+                                <ion-col no-padding size="12">
+                                    <ion-text style="
+                                            font-size: 12px;
+                                            margin-left: 10px;
+                                        ">
+                                        {{ booking.noOfPersons }}</ion-text>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+
+                    <p class="line"></p>
+
+                    <ion-row style="background-color: #259BBf; padding: 7px; margin-top: 10px; color: #fff;">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Description</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">Amount</ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Total Booking Amount</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">
+                                {{ calculateRoomPrice() | currency : currency :
+                                "symbol" : "1.2-2" }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Extra Guest(s) Charge ({{
+                                this.booking.noOfExtraPerson }})</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">
+                                {{ this.booking.extraPersonCharge | currency :
+                                currency : "symbol" : "1.2-2" }}</ion-text>
+                            <ion-icon style="font-size: 18px" name="create" class="editicon"
+                                *ngIf="!isExtraPersonCharge" (click)="
+                                onchangePersonCharge(this.booking.extraPersonCharge)
+                              "></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isExtraPersonCharge">
+                        <ion-col size="8">
+                            <ion-input formControlName="ExtraPersonChange" no-padding class="card-item" placeholder="0"
+                                no-margin type="number" clearInput="true" [(ngModel)]="bookingExtraPersonCharge"
+                                min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="onchangeExtraPerson()"></ion-icon>
+
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Extra Child(ren) Charge ({{
+                                this.booking.noOfExtraChild }})</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">{{ this.booking.extraChildCharge | currency :
+                                currency : "symbol" : "1.2-2" }}</ion-text>
+                            <ion-icon style="font-size: 18px" name="create" class="editicon" *ngIf="!isExtraChildCharge"
+                                (click)="
+                                onchangeChildCharge(this.booking.extraChildCharge)
+                              "></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isExtraChildCharge">
+                        <ion-col size="8">
+                            <ion-input formControlName="ExtraChildChange" no-padding class="card-item" placeholder="0"
+                                no-margin type="number" clearInput="true" [(ngModel)]="bookingExtraChildCharge"
+                                min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="onchangeExtraChild()"></ion-icon>
+
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <div>
+                                <ion-text style="font-size: 12px">
+                                    Discount (-)({{ booking.discountPercentage |
+                                    number: "1.2-2" }}%)
+                                </ion-text>
+                           
+                            </div>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">
+                                {{ this.booking.discountAmount | currency :
+                                currency : "symbol" : "1.2-2" }}</ion-text>
+                                <span>
+                                    <ion-icon style="font-size: 18px" *ngIf="!isDiscountEditMode && checkAmountEditAccess()"
+                                    name="create" class="editicon" (click)="
+                                discountEditButtonClick(
+                                  booking.discountPercentage
+                                )
+                              "></ion-icon>
+                                </span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="isDiscountEditMode">
+                        <ion-col size="8">
+                            <ion-input formControlName="DiscountPercentage" no-padding placeholder="0" no-margin
+                                class="card-item" type="number" clearInput="true"
+                                [(ngModel)]="booking.discountPercentage" (ngModelChange)="taxChange($event)"
+                                min="0"></ion-input>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                *ngIf="isDiscountEditMode" (click)="discountButtonClick()"></ion-icon>
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="close"
+                                *ngIf="isDiscountEditMode" (click)="discountButtonClosed()"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">
+                                Net Amount
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">{{afterDiscountAmount | currency :currency :
+                                "symbol" : "1.2-2" }}</ion-text>
+                            <ion-icon style="font-size: 18px" name="create" class="editicon"
+                                *ngIf="!isPriceEditMode  && checkAmountEditAccess()" (click)="
+                                    onchangeEditPrice(afterDiscountAmount)
+                              "></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isPriceEditMode">
+                        <ion-col size="8">
+                            <ion-input formControlName="RoomPlanChangeAmount" no-padding class="card-item"
+                                placeholder="0" no-margin type="number" clearInput="true"
+                                [(ngModel)]="afterDiscountAmount"
+                                (ngModelChange)="calculateDiscountAmounts(afterDiscountAmount)" min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="onchangePrice()"></ion-icon>
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="close"
+                                (click)="onchangeClosedPrice()"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-text style="font-size: 12px">
+                                Tax Type
+                            </ion-text>
+
+                            <ion-row class="forecast_container text-white">
+                                <ion-col size="4" *ngFor="let tax of propertyTaxDetails">
+                                    <ion-item lines="none" (click)="taxSelection(tax)">
+                                        <ion-icon class="text-white" style="font-size: 16px" *ngIf="checkTaxType(tax)"
+                                            name="checkbox-outline"></ion-icon>
+                                        <ion-icon class="text-white" style="font-size: 16px" *ngIf="!checkTaxType(tax)"
+                                            name="stop-outline"></ion-icon><span style="font-size: 12px"
+                                            class="taxName-selection text-white">{{tax.name}}</span>
+                                    </ion-item>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngFor="let spliteTax of totalSplitTax">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">
+                                {{spliteTax.name}} ({{ spliteTax.percentage |
+                                number: "1.2-2"}}%)
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">
+                                {{ spliteTax.taxAmount | currency :property
+                                .localCurrency.toUpperCase() : "symbol" :
+                                "1.2-2" }}
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Tax Amount</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">
+                                {{ this.booking.taxAmount | currency : currency
+                                : "symbol" : "1.2-2" }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Total Payable Amount</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">{{ booking.payableAmount | currency : currency
+                                : "symbol" : "1.2-2" }}
+                                <ion-icon *ngIf="checkAmountEditAccess()" style="font-size: 18px" name="create"
+                                    class="editicon" (click)="onchangeEditTotalPrice(booking.payableAmount)"></ion-icon>
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isTotalPriceEditMode">
+                        <ion-col size="8">
+                            <ion-input formControlName="roomPlanChangeAmountTotalPrice" no-padding placeholder="0"
+                                no-margin class="card-item" type="number" [(ngModel)]="booking.payableAmount"
+                                (ngModelChange)="amountTotalPayableAmounts(booking.payableAmount)" min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="onchangeTotalPrice()"></ion-icon>
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="close"
+                                (click)="onchangeClosedTotalPrice()"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="this.propertyOTADetails != null && this.propertyOTADetails!= undefined">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">
+                                Convenience Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <div *ngIf="!isConveninceFeeChangeRq">
+                                <ion-text style="font-size: 12px" *ngIf="isPaymentConveninceFee">
+                                    {{ booking.convenienceFee | currency
+                                    :currency : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" *ngIf="checkAmountEditAccess()" name="create"
+                                        class="editicon" (click)="convinenceFeeEdit()"></ion-icon>
+                                </ion-text>
+
+                                <ion-text style="font-size: 12px" *ngIf="!isPaymentConveninceFee">
+                                    {{ convenienceFeeCalculate(
+                                    this.propertyOTADetails,
+                                    this.booking.beforeTaxAmount ) | currency :
+                                    currency : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" name="create" *ngIf="checkAmountEditAccess()"
+                                        class="editicon" (click)="convinenceFeeEdit()"></ion-icon>
+                                </ion-text>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isConvienceFeeEditMode">
+                        <ion-col size="8">
+                            <ion-input formControlName="conveninceFeeChangeAmount" no-padding placeholder="0" no-margin
+                                type="number" clearInput="true" [(ngModel)]="booking.convenienceFee"
+                                min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="convinenceFeeCheck()"></ion-icon>
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="close"
+                                (click)="convinenceFeeClosed()"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="this.propertyOTADetails != null && this.propertyOTADetails!= undefined">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">
+                                Booking Commission Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <div *ngIf="!isBConveninceFeeChangeRq">
+                                <ion-text style="font-size: 12px" *ngIf="isPaymentBConveninceFee">
+                                    {{ this.booking.bookingCommissionAmount |
+                                    currency :currency : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" name="create" *ngIf="checkAmountEditAccess()"
+                                        class="editicon" (click)="bConvinenceFeeEdit()"></ion-icon>
+                                </ion-text>
+
+                                <ion-text style="font-size: 12px" n *ngIf="!isPaymentBConveninceFee">
+                                    {{ bookingCommissionAmountCalculate(
+                                    this.propertyOTADetails,
+                                    this.booking.beforeTaxAmount ) | currency :
+                                    currency : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" name="create" *ngIf="checkAmountEditAccess()"
+                                        class="editicon" (click)="bConvinenceFeeEdit()"></ion-icon>
+                                </ion-text>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isBConvienceFeeEditMode">
+                        <ion-col size="8">
+                            <ion-input formControlName="ComissionFeeChangeAmount" no-padding placeholder="0"
+                                class="card-item" no-margin type="number" clearInput="true"
+                                [(ngModel)]="booking.bookingCommissionAmount" min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="bConvinenceFeeCheck()"></ion-icon>
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="close"
+                                (click)="bConvinenceFeeClosed()"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="
+                                     (this.propertyOTADetails != null &&
+                                     this.propertyOTADetails != undefined) ||
+                                     (this.booking.tcsFee != null &&
+                                     this.booking.tcsFee != undefined)
+                                 ">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">
+                                TCS Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <div *ngIf="!isTCSFeeChangeRq">
+                                <ion-text style="font-size: 12px" *ngIf="isPaymentTCSFee">
+                                    {{ this.booking.tcsFee | currency :currency
+                                    : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" name="create" class="editicon"
+                                        (click)="tcsFeeEdit()"></ion-icon>
+                                </ion-text>
+
+                                <ion-text style="font-size: 12px" n *ngIf="!isPaymentTCSFee">
+                                    {{ tcsAmountCalculate(
+                                    this.propertyOTADetails,
+                                    this.booking.beforeTaxAmount ) | currency :
+                                    currency : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" name="create" class="editicon"
+                                        (click)="tcsFeeEdit()"></ion-icon>
+                                </ion-text>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isTCSFeeChangeRq">
+                        <ion-col size="8">
+                            <ion-input formControlName="TCSAmount" no-padding class="card-item" placeholder="0"
+                                no-margin type="number" clearInput="true" [(ngModel)]="booking.tcsFee"
+                                min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="tcsCheck()"></ion-icon>
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="close"
+                                (click)="tcsClosed()"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="
+                            (this.propertyOTADetails != null &&
+                              this.propertyOTADetails != undefined) ||
+                            (this.booking.tdsFee != null &&
+                              this.booking.tdsFee != undefined)
+                          ">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">
+                                TDS Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <div *ngIf="!isTDSFeeChangeRq">
+                                <ion-text style="font-size: 12px" *ngIf="isPaymentTDSFee">
+                                    {{ this.booking.tdsFee | currency :currency
+                                    : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" name="create" class="editicon"
+                                        (click)="tdsFeeEdit()"></ion-icon>
+                                </ion-text>
+
+                                <ion-text style="font-size: 12px" n *ngIf="!isPaymentTDSFee">
+                                    {{ tdsAmountCalculate(
+                                    this.propertyOTADetails,
+                                    this.booking.beforeTaxAmount ) | currency :
+                                    currency : "symbol" : "1.2-2" }}
+                                    <ion-icon style="font-size: 18px" name="create" class="editicon"
+                                        (click)="tcsFeeEdit()"></ion-icon>
+                                </ion-text>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isTDSFeeChangeRq">
+                        <ion-col size="8">
+                            <ion-input formControlName="TDSAmount" no-padding class="card-item" placeholder="0"
+                                no-margin type="number" clearInput="true" [(ngModel)]="booking.tdsFee"
+                                min="0"></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="checkmark"
+                                (click)="tdsCheck()"></ion-icon>
+                            <ion-icon style="font-size: 19px" class="discount-icon" name="close"
+                                (click)="tdsClosed()"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">
+                                Hotel Collect Amount
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">
+                                <span>{{ getAmount(booking.payableAmount) -
+                                    getCommitionAmount() | currency : currency :
+                                    "symbol" : "1.2-2" }}</span>
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 12px">Advance Amount</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px">{{ advancePaidAmount | currency :currency :
+                                "symbol" : "1.2-2" }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="getReceivedAmountInCredit() > 0">
+                        <ion-col size="8">
+                            <ion-text class="paidAmount" style="font-size: 12px">Paid Amount</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px" class="paidAmount">{{ getReceivedAmountInCredit() |
+                                currency
+                                :currency : "symbol" : "1.2-2" }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="getBookingRefundAmount() > 0">
+                        <ion-col size="8">
+                            <ion-text class="paidAmount" style="font-size: 12px">Refund to Customer</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px" class="paidAmount">{{ getBookingRefundAmount() |
+                                currency
+                                :currency : "symbol" : "1.2-2" }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="getBalaneAmountInCredit() > 0">
+                        <ion-col size="8">
+                            <ion-text class="dueAmount" style="font-size: 12px">Due Amount</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 12px" class="dueAmount">
+                                {{ getBalaneAmountInCredit() | currency
+                                :currency : "symbol" : "1.2-2" }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+
+
+
+                <ion-row *ngIf="!isEnquiryBooking">
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                        <ion-button size="small" expand="block" class="button-submit" (click)="FormSubMit()"
+                            [disabled]="!onSaveTabForm.valid">Save</ion-button>
+                    </ion-col>
+                </ion-row>
+            </form>
+
+            <!--  -->
+        </ion-grid>
+    </ion-card>
+    <!-- <ion-scroll style="height: calc(100% - 50px);" scrollY="true">
+    </ion-scroll> -->
+
+
+
+
+
+
+
+
+
+</ion-content>
+
+<div class="footer" style="position: fixed; bottom: 0; left: 0; right: 0; height: 50px;">
+    <ion-tabs>
+        <ion-tab-bar class="footer" slot="bottom">
+            <ion-tab-button class="text-whitess sctionedDev" (click)="bookingTab()">
+                <ion-icon name="calendar"></ion-icon>
+                <ion-label>Booking</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-whitess sctionedDev" (click)="setLocation('payment')">
+                <ion-icon name="card"></ion-icon>
+                <ion-label>Payments</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-whitess sctionedDev" (click)="servicesTab()">
+                <ion-icon name="happy"></ion-icon>
+                <ion-label>Services</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-whitess sctionedDev" (click)="expenseTab()">
+                <ion-icon name="cash"></ion-icon>
+                <ion-label>Expense</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-whitess sctionedDev" (click)="customerTab('fromBooking')">
+                <ion-icon name="cash"></ion-icon>
+                <ion-label>Customer Info</ion-label>
+            </ion-tab-button>
+        </ion-tab-bar>
+    </ion-tabs>
+</div>

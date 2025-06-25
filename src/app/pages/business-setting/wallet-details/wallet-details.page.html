@@ -1,0 +1,159 @@
+
+
+<ion-header class="headerColor">
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
+    </ion-avatar>
+    
+    
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="navigateToPage()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Business Information</ion-text>
+        
+    </ion-toolbar>
+    </ion-header>
+
+<ion-content>
+
+  
+    <ion-grid fixed no-padding>
+
+
+        <form  [formGroup]="walletDetailsForm" > 
+
+            <ion-row>
+                <ion-col size="12" padding>
+            
+                    <ion-list margin-bottom>
+                        <!-- <ion-list-header color="light">
+                          <ion-label class="fw700">Business Infor</ion-label>
+                        </ion-list-header> -->
+                
+                    <ion-row>
+                        <ion-col size ="6" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">First Name*</ion-label>
+                                    <ion-input inputmode="text"  formControlName="FName"  [(ngModel)]="mobileWallet.firstName" ></ion-input>
+                                </ion-item>
+                            </ion-list>
+                            <p ion-text color="danger" class="text08" *ngIf="walletDetailsForm.get('FName').dirty && walletDetailsForm.get('FName').hasError('required')">
+                                <ion-text color="danger">
+                                       Input Field Empty
+                                </ion-text>
+                                </p>  
+                        </ion-col>
+
+                        <ion-col size ="6" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Last Name*</ion-label>
+                                    <ion-input inputmode="text"  formControlName="LName"  [(ngModel)]="mobileWallet.lastName" ></ion-input>
+                                </ion-item>
+                            </ion-list>
+                            <p ion-text color="danger" class="text08" *ngIf="walletDetailsForm.get('LName').dirty && walletDetailsForm.get('LName').hasError('required')">
+                                <ion-text color="danger">
+                                       Input Field Empty
+                                </ion-text>
+                                </p>  
+                        </ion-col>
+                            
+                    </ion-row>     
+                        
+                    <ion-row>
+                        <ion-col size ="12" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Phone Number*</ion-label>
+                                    <ion-input inputmode="text"  formControlName="PhoneNumber"  [(ngModel)]="mobileWallet.phoneNumber" ></ion-input>
+                                </ion-item>
+                                <p ion-text color="danger" class="text08" *ngIf="walletDetailsForm.get('PhoneNumber').dirty && walletDetailsForm.get('PhoneNumber').hasError('required')">
+                                    <ion-text color="danger">
+                                           Input Field Empty
+                                    </ion-text>
+                                    </p>  
+                            </ion-list>
+                        </ion-col>
+                           
+                    </ion-row> 
+                    
+                    <ion-row>
+                        <ion-col size ="12" >
+                        <ion-list>    
+                            <ion-item>
+                                <ion-label color="dark" position="stacked">Wallet Provider*</ion-label>
+                                <ion-select placeholder="Select Wallet Provider"
+                                [(ngModel)]="mobileWallet.walletProvider" 
+                                okText="Done" cancelText="Dismiss" formControlName="WalletProvider">
+
+                                <ion-row>
+                    
+
+                                    <ion-select-option value="Google Pay">Google Pay</ion-select-option>
+                                    <ion-select-option value="Phone Pay">Phone Pay</ion-select-option>
+                                    <ion-select-option value="PayTM">PayTM</ion-select-option>
+                                    <ion-select-option value="Mobikwik">Mobikwik</ion-select-option>
+                                    <ion-select-option value="Dhani">Dhani</ion-select-option>
+                                    <ion-select-option value="BHIM Axis Pay">BHIM Axis Pay</ion-select-option>
+
+                                </ion-row>
+                            </ion-select>
+                            </ion-item>
+                            <p ion-text color="danger" class="text08" *ngIf="walletDetailsForm.get('WalletProvider').dirty && walletDetailsForm.get('WalletProvider').hasError('required')">
+                                <ion-text color="danger">
+                                       Input Field Empty
+                                </ion-text>
+                                </p>  
+                        </ion-list>
+                      </ion-col>
+                    </ion-row>  
+
+                    <ion-row>
+                        <ion-col size ="12" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Wallet Url</ion-label>
+                                    <ion-input inputmode="text"  formControlName="WalletUrl"  [(ngModel)]="mobileWallet.walletUrl" ></ion-input>
+                                </ion-item>
+                                <p ion-text color="danger" class="text08" *ngIf="walletDetailsForm.get('WalletUrl').dirty && walletDetailsForm.get('WalletUrl').hasError('required')">
+                                    <ion-text color="danger">
+                                           Input Field Empty
+                                    </ion-text>
+                                    </p>  
+                            </ion-list>
+                        </ion-col>
+                           
+                    </ion-row>  
+
+                   
+        
+                    </ion-list>
+            
+              
+                    </ion-col>
+                  </ion-row>
+
+                  <div class="ion-margin-vertical">
+                    <ion-button
+                    [disabled]="!walletDetailsForm.valid || loader"
+                    icon-left size="medium" class="update-button" expand="full" shape="round" (click)="onSubmit()"
+                    tappable style="color:white">
+                  
+                    Save
+                    </ion-button>
+            
+            
+                </div>
+
+    </form>
+
+      
+    </ion-grid>
+</ion-content>

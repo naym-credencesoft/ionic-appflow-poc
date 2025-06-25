@@ -1,0 +1,2125 @@
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> {{headerTitle}} </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="back()"  style="font-size: 20px; margin-top: -10px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content >
+    
+
+    <ion-card class="card-layout text-white marginnn">
+        <span
+        *ngIf="
+         isDateChangeOperation &&
+      !isAvailabilityAvailable
+    "
+        class="error todoNotes mb-1 "
+        >Room Availability not avilable for the selected date range.
+    </span>
+
+    <span
+        *ngIf="
+        isDateChangeOperation &&
+        !isAvailabilityRoom
+    "
+        class="error todoNotes mb-1"
+        >To change the date, switch the room category based on your selected
+        date before making any adjustments.
+    </span>
+        <ion-grid>
+            <form [formGroup]="onAvailabilityMenuActionForm">
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text
+                            class="check-in-out-text"
+                            style="font-size: 12px"
+                            >Room Type
+                        </ion-text>
+                        <ion-select
+                            placeholder="Select Room Type"
+                            class="card-item"
+                            [formControl]="RoomType"
+                            (ionChange)="roomSelect(selectedRoomId)"
+                            [(ngModel)]="selectedRoomId"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                        >
+                            <ion-row *ngFor="let room of rooms">
+                                <ion-select-option [value]="room.id">
+                                    {{room.name}}
+                                </ion-select-option>
+                            </ion-row>
+                        </ion-select>
+                    </ion-col>
+                </ion-row>
+
+                <!-- checkin out date -->
+                <ion-row
+                    *ngIf="booking.roomId >0 && this.sameDayBooking == false "
+                >
+                    <ion-col size="6">
+                        <ion-text
+                            class="check-in-out-text"
+                            style="font-size: 10px"
+                            >Check-in</ion-text
+                        >
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-datetime
+                                value="{{booking.fromDate}}"
+                                [(ngModel)]="booking.fromDate"
+                                (ionChange)="fromDateChange()"
+                                [formControl]="bookingFromDate"
+                                no-padding
+                                class="card-item"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                placeholder="Select Date"
+                                min= "2000-12-31"
+                                max="2100-12-31"
+                            ></ion-datetime>
+                            <!-- -->
+                        </ion-col>
+                    </ion-col>
+
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-text
+                            class="check-in-out-text"
+                            style="font-size: 10px"
+                            >Check-Out</ion-text
+                        >
+
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-datetime
+                                value="{{booking.toDate}}"
+                                [(ngModel)]="booking.toDate"
+                                (ionChange)="PlanChangeBaseOnDate()"
+                                min= "{{booking.fromDate}}"
+                                max="2100-12-31"
+                                [formControl]="bookingToDate"
+                                no-padding
+                                class="card-item"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                placeholder="Select Date"
+                               
+                            ></ion-datetime>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row
+                    *ngIf="booking.roomId >0 && this.sameDayBooking == true"
+                >
+                    <ion-col size="12">
+                        <ion-text
+                            class="check-in-out-text"
+                            style="font-size: 10px"
+                            >Check-in</ion-text
+                        >
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-datetime
+                                value="{{booking.fromDate}}"
+                                [(ngModel)]="booking.fromDate"
+                                (ionChange)="sameDayDateChange()"
+                                [formControl]="bookingFromDate"
+                                no-padding
+                                class="card-item"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                placeholder="Select Date"
+                            ></ion-datetime>
+                            <!-- -->
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row *ngIf="plans != null && plans.length >0">
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                        <ion-text style="font-size: 10px">Plan</ion-text>
+                        <ion-select placeholder="Select Plan" value="{{booking.roomRatePlanName}}" class="card-item"
+                            (ionChange)="setPlan(booking.roomRatePlanName)" [(ngModel)]="booking.roomRatePlanName"
+                            name="Room" okText="Done" cancelText="Dismiss" formControlName="PlanControll"
+                            >
+                            <ion-row *ngFor="let plan of plans">
+                                <ion-select-option value="{{plan.name}}">
+                                    <p>
+                                        <b> {{ plan.name }} </b><span style="color: blueviolet">Amount
+                                            {{plan.amount|
+                                            currency:
+                                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                            }}
+                                        </span>
+                                    </p>
+                                </ion-select-option>
+
+                                <ion-select-option *ngFor="let plan of planCodes" value="{{plan.code}}">
+                                    <p>
+                                        <b> {{ plan.name }} </b><span style="color: blueviolet">
+                                            Description: {{ plan.description }}
+                                            Amount {{ plan.amount | currency:
+                                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                            }}
+                                        </span>
+                                    </p>
+                                </ion-select-option>
+
+                                <ion-select-option *ngFor="let otaPlan of otaPlans" value="{{otaPlan.otaPlanId}}">
+                                    <p>
+                                        <b>Plan: {{ otaPlan.planName }}. </b><span style="color: blueviolet">
+                                            OTA Name : {{ otaPlan.otaName }}.
+                                            Code: {{ otaPlan.bookonePlanCode }}.
+                                            Amount {{ otaPlan.price | currency:
+                                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                            }}.
+                                        </span>
+                                    </p>
+                                </ion-select-option>
+                            </ion-row>
+                        </ion-select>
+                    </ion-col>
+                </ion-row>
+                <!--  -->
+
+                <!-- room person and children rpc-->
+
+                <ion-row *ngIf="booking.roomId >0 ">
+                    <ion-col size="4">
+                        <ion-text class="rpc-text" style="font-size: 10px"
+                            >Rooms</ion-text
+                        >
+                        <ion-row *ngFor="let room of rooms">
+                            <ion-col
+                                *ngIf="room.id == booking.roomId"
+                                no-padding
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-input
+                                    [formControl]="RoomNo"
+                                    name="RoomNo"
+                                    no-padding
+                                    placeholder="0"
+                                    no-margin
+                                    class="card-item"
+                                    type="number"
+                                    [(ngModel)]="booking.noOfRooms"
+                                    value="{{booking.noOfRooms}}"
+                                    clearInput="true"
+                                    min="1"
+                                    max="{{room.noOfRooms}}"
+                                    (change)="onRoomQuantityChange(room.noOfRooms)"
+                                ></ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+
+                    <ion-col size="4">
+                        <ion-text class="rpc-text" style="font-size: 10px"
+                            >Person</ion-text
+                        >
+
+                        <ion-row *ngFor="let room of rooms">
+                            <ion-col
+                                *ngIf="room.id == booking.roomId"
+                                no-padding
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-input
+                                    [formControl]="PersonNo"
+                                    name="PersonNo"
+                                    no-padding
+                                    placeholder="0"
+                                    no-margin
+                                    class="card-item"
+                                    type="number"
+                                    [(ngModel)]="booking.noOfPersons"
+                                    value="{{booking.noOfPersons}}"
+                                    clearInput="true"
+                                    min="1"
+                                    max="{{ maxOccupancy()}}"
+                                    (change)="onPersonChange((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)"
+                                    (ngModelChange)="onPersonChange((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)"
+                                ></ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+
+                    <ion-col
+                        size="4"
+                        size-xl="4"
+                        size-sm="4"
+                        size-md="4"
+                        size-lg="4"
+                    >
+                        <ion-text class="rpc-text" style="font-size: 10px"
+                            >Children</ion-text
+                        >
+                        <ion-row>
+                            <ion-col
+                                no-padding
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-input
+                                    [formControl]="ChildrenNo"
+                                    no-padding
+                                    placeholder="0"
+                                    no-margin
+                                    class="card-item"
+                                    type="number"
+                                    [(ngModel)]="booking.noOfChildren"
+                                    clearInput="true"
+                                    min="0"
+                                    max="{{ maxOccupancy() - this.booking.noOfPersons}}"
+                                    (change)="onPersonChange((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)"
+                                    (ngModelChange)="onPersonChange((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)"
+                                ></ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+
+                <p ion-text color="danger">
+                    <ion-text color="danger">
+                        <ion-grid
+                            no-padding
+                            *ngIf="statusType ==='Room-Change' && this.booking.noOfRooms > noOfRooomNumber"
+                        >
+                            <ion-col size="12" no-margin>
+                                <ion-row style="font-size: 13px">
+                                    You have exceed the limit.
+                                </ion-row>
+                                <ion-row style="font-size: 13px">
+                                    No of room available {{noOfRooomNumber}}
+                                </ion-row>
+                            </ion-col>
+                        </ion-grid>
+
+                        <ion-grid
+                            no-padding
+                            *ngIf="statusType ==='Room-Change' && this.booking.noOfPersons > noOfPersonNumber"
+                        >
+                            <ion-col size="12" no-margin>
+                                <ion-row style="font-size: 13px">
+                                    For {{this.booking.noOfPersons}} Person
+                                </ion-row>
+                                <ion-row style="font-size: 13px">
+                                    you can select min room :
+                                    {{this.minNoOfRoom}}
+                                </ion-row>
+                            </ion-col>
+                        </ion-grid>
+
+                        <ion-grid
+                            no-padding
+                            *ngIf="statusType ==='Add/Remove-Guest' && this.booking.noOfPersons > noOfPersonNumber"
+                        >
+                            <ion-col size="12" no-margin>
+                                <ion-row style="font-size: 13px">
+                                    For {{this.booking.noOfRooms}} Room
+                                </ion-row>
+                                <ion-row style="font-size: 13px">
+                                    you can select min person :
+                                    {{this.noOfPersonNumber}}
+                                </ion-row>
+                            </ion-col>
+                        </ion-grid>
+                        <ion-grid
+                        no-padding
+                        *ngIf="statusType ==='Add/Remove-Guest' && (booking.noOfChildren > (maxOccupancy() - this.booking.noOfPersons) * this.booking.noOfRooms)"
+                    >
+                        <ion-col size="12" no-margin>
+                            <ion-row style="font-size: 13px">
+                                For {{this.booking.noOfRooms}} Room
+                            </ion-row>
+                            <ion-row style="font-size: 13px">
+                                you can select max child :
+                                {{((maxOccupancy() - this.booking.noOfPersons) * this.booking.noOfRooms)}}
+                            </ion-row>
+                        </ion-col>
+                    </ion-grid>
+                    </ion-text>
+                </p>
+
+                <ion-row
+                    *ngIf="isCopyBooking && !isCheckAvailability && booking.roomId >0"
+                    no-padding
+                    id="first-content"
+                >
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            shape="round"
+                            expand="full"
+                            (click)="CheckAvailability()"
+                            [disabled]="booking.roomId === undefined ||  booking.fromDate === undefined || booking.toDate === undefined   
+                                        || booking.noOfRooms ===0 || booking.noOfPersons ===0"
+                        >
+                            Check</ion-button
+                        >
+                    </ion-col>
+
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            shape="round"
+                            expand="full"
+                            (click)="Reset()"
+                            >Reset</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+
+        <ion-grid
+            no-padding
+            id="second-content"
+            *ngIf="!isCopyBooking || isCopyBooking && isCheckAvailability"
+        >
+            <form [formGroup]="onSaveMenuActionForm">
+                <!-- -->
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-text style="font-size: 10px">First Name</ion-text>
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-input
+                                class="card-item"
+                                formControlName="firstName"
+                                readonly="{{isReadOnlyField}}"
+                                [(ngModel)]="booking.firstName"
+                                value="{{booking.firstName}}"
+                                placeholder="First Name"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-text style="font-size: 10px">Last Name</ion-text>
+
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-input
+                                class="card-item"
+                                formControlName="lastName"
+                                readonly="{{isReadOnlyField}}"
+                                [(ngModel)]="booking.lastName"
+                                value="{{booking.lastName}}"
+                                placeholder="Last Name"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+                <!-- email -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px">Email</ion-text>
+
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-input
+                                disabled
+                                class="card-item"
+                                formControlName="email"
+                                readonly="{{isReadOnlyField}}"
+                                [(ngModel)]="booking.email"
+                                value="{{booking.email}}"
+                                placeholder="Email address"
+                                inputmode="email"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <p
+                    ion-text
+                    class="text08"
+                    *ngIf="onSaveMenuActionForm.get('email').touched && onSaveMenuActionForm.get('email').hasError('required')"
+                >
+                    <ion-text color="danger">
+                        {{ 'app.label.errors.field' | translate }}
+                    </ion-text>
+                </p>
+                <p
+                    ion-text
+                    class="text08"
+                    *ngIf=" onSaveMenuActionForm.get('email').hasError('email') && onSaveMenuActionForm.controls.email.dirty"
+                >
+                    <ion-text color="danger">
+                        {{ 'app.pages.reg.text.emailvalidation' | translate }}
+                    </ion-text>
+                </p>
+
+                <!-- phone -->
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px">Phone</ion-text>
+
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-input
+                                class="card-item"
+                                formControlName="mobile"
+                                readonly="{{isReadOnlyField}}"
+                                [(ngModel)]="booking.mobile"
+                                value="{{booking.mobile}}"
+                                placeholder="Phone Number"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px"
+                            >Source Of Booking</ion-text
+                        >
+
+                        <ion-select
+                            class="card-item"
+                            [(ngModel)]="otaChannelId"
+                            [disabled]="isReadOnlyField"
+                            formControlName="externalSite"
+                            name="externalSite"
+                            placeholder="Source Of Booking"
+                            (ionChange)="getOTAPropertyDetails(otaChannelId)"
+                        >
+                            <!-- <ion-select-option value="Agoda"
+                                >Agoda</ion-select-option
+                            >
+                            <ion-select-option value="AirBnB"
+                                >AirBnB</ion-select-option
+                            >
+                            <ion-select-option value="BookABach"
+                                >BookABach</ion-select-option
+                            >
+                            <ion-select-option value="Booking.com"
+                                >Booking.com</ion-select-option
+                            >
+                            <ion-select-option value="goibibo"
+                                >goibibo</ion-select-option
+                            >
+                            <ion-select-option value="Expedia"
+                                >Expedia</ion-select-option
+                            >
+                            <ion-select-option value="Google"
+                                >Google</ion-select-option
+                            >
+                            <ion-select-option value="Homes&Away"
+                                >Homes&Away</ion-select-option
+                            >
+                            <ion-select-option value="MakeMyTrip"
+                                >MakeMyTrip</ion-select-option
+                            >
+                            <ion-select-option value="WebSite"
+                                >WebSite</ion-select-option
+                            >
+                            <ion-select-option value="Others"
+                                >Others</ion-select-option
+                            > -->
+
+                            <ion-select-option
+                                *ngFor="let externalSite of this.externalSiteList.externalBookingSites"
+                                [value]="externalSite.id"
+                            >
+                                {{ externalSite.viewValue }}
+                            </ion-select-option>
+
+                            <ion-select-option
+                                *ngFor="let externalSite of propertyOTA"
+                                [value]="externalSite.id"
+                            >
+                                {{ externalSite.onlineTravelAgencyName }}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px"
+                            >Booking Reference Number</ion-text
+                        >
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-input
+                                class="card-item"
+                                formControlName="externalBookingID"
+                                readonly="{{isReadOnlyField}}"
+                                [(ngModel)]="booking.externalBookingId"
+                                value="{{booking.externalBookingId}}"
+                                placeholder="Reference Number"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <!-- booking note -->
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px"
+                            >Booking Notes</ion-text
+                        >
+
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-textarea
+                                class="card-item"
+                                formControlName="notes"
+                                readonly="{{isReadOnlyField}}"
+                                [(ngModel)]="booking.notes"
+                                value="{{booking.notes}}"
+                                name="notes"
+                                clearOnEdit="true"
+                                placeholder="Notes"
+                                rows="3"
+                            ></ion-textarea>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <ion-grid no-padding class="priceing-details">
+                    <ion-row style="    display: flex;
+                        justify-content: space-between;
+                        padding: 10px;">
+                        <ion-text class="content-header-title"
+                            >Pricing Details</ion-text
+                        >
+                        <img
+                            class="status-check"
+                            src="assets/img/icons/check-booking.svg"
+                        />
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col style="display: flex;
+                            align-items: center;
+                            gap: 10px;">
+                            <div class="price-room-title"
+                                >Room Price</div>
+
+                                <div class="price-room-value">
+                                    <span
+                                        class="plan-default-price"
+                                        *ngIf="
+                                          this.plan != null &&
+                                          this.plan != undefined &&
+                                          this.plan.amount != null &&
+                                          this.totalPlanAmount != null &&
+                                          this.totalPlanAmount != undefined &&
+                                          this.totalPlanAmount != this.plan.amount
+                                        "
+                                    >
+                                        {{ plan.amount | currency : currency : "symbol"
+                                        : "1.2-2" }}</span
+                                    >
+        
+                                    <span
+                                        class="gap-planamount"
+                                        *ngIf="
+                                          this.totalPlanAmount != null &&
+                                          this.totalPlanAmount != undefined
+                                        "
+                                    >
+                                        {{ this.totalPlanAmount | currency : currency :
+                                        "symbol" : "1.2-2" }}</span
+                                    >
+                                </div>
+                        </ion-col>
+                    </ion-row>
+                   
+                    <ion-row class="mt-1">
+                        <ion-col size="8">
+                            <ion-text style=" font-size: 14px;font-weight: bold;">Plan</ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px;"
+                                >{{this.booking.roomRatePlanName }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    
+                    <ion-row>
+                        <ion-col size="4" style="text-align: center;">
+                            <ion-text style="    font-size: 14px;font-weight: bold;"
+                                >Night(s)</ion-text
+                            >
+                            <ion-row>
+                                <ion-col no-padding size="12" >
+                                    <ion-text
+                                        style="
+                                            font-size: 14px;
+                                            margin-left: 10px;
+                                        "
+                                    >
+                                        {{ booking.noOfNights }}</ion-text
+                                    >
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="4" style="text-align: center;">
+                            <ion-text style=" font-size: 14px;font-weight: bold;"
+                                >Room Quantity</ion-text
+                            >
+                            <ion-row>
+                                <ion-col no-padding size="12">
+                                    <ion-text
+                                        style="
+                                            font-size: 14px;
+                                            margin-left: 15px;
+                                        "
+                                    >
+                                        {{ booking.noOfRooms }}</ion-text
+                                    >
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+
+                        <ion-col size="4" style="text-align: center;">
+                            <ion-text style=" font-size: 14px;font-weight: bold;"
+                                >Guest(s)</ion-text
+                            >
+                            <ion-row>
+                                <ion-col no-padding size="12">
+                                    <ion-text
+                                        style="
+                                            font-size: 14px;
+                                            margin-left: 10px;
+                                        "
+                                    >
+                                        {{ booking.noOfPersons }}</ion-text
+                                    >
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+
+                    <hr style="flex-grow: 1; border: none; border-top: 1px solid #259BBf; margin: 0 10px;" />
+
+                    <ion-row style="background-color: #259BBf; padding: 7px; margin-top: 10px; color: #fff">
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px"
+                                >Description</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">Amount</ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px"
+                                >Total Booking Amount</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ calculateRoomPrice() | currency : currency :
+                                "symbol" : "1.2-2" }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px"
+                                >Extra Guest(s) Charge ({{
+                                this.booking.noOfExtraPerson }})</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ this.booking.extraPersonCharge | currency :
+                                currency : "symbol" : "1.2-2" }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px"
+                                >Extra Child(ren) Charge ({{
+                                this.booking.noOfExtraChild }})</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px"
+                                >{{ this.booking.extraChildCharge | currency :
+                                currency : "symbol" : "1.2-2" }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="8">
+                            <div>
+                                <ion-text style="font-size: 14px">
+                                    Discount (-)({{ booking.discountPercentage |
+                                    number: "1.2-2" }}%)
+                                </ion-text>
+                                <ion-icon
+                                    style="font-size: 18px"
+                                    *ngIf="!isDiscountEditMode"
+                                    name="create"
+                                    class="editicon"
+                                    (click)="
+                                        discountEditButtonClick(
+                                          booking.discountPercentage
+                                        )
+                                      "
+                                ></ion-icon>
+                            </div>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ this.booking.discountAmount | currency :
+                                currency : "symbol" : "1.2-2" }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="isDiscountEditMode">
+                        <ion-col size="8">
+                            <ion-input
+                                formControlName="DiscountPercentage"
+                                no-padding
+                                placeholder="0"
+                                no-margin
+                                class="card-item"
+                                type="number"
+                                clearInput="true"
+                                [(ngModel)]="booking.discountPercentage"
+                                (ngModelChange)="taxChange($event)"
+                                min="0"
+                            ></ion-input>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-icon
+                                style="font-size: 19px"
+                                class="discount-icon"
+                                name="checkmark"
+                                *ngIf="isDiscountEditMode"
+                                (click)="discountButtonClick()"
+                            ></ion-icon>
+                            <ion-icon
+                                style="font-size: 19px"
+                                class="discount-icon"
+                                name="close"
+                                *ngIf="isDiscountEditMode"
+                                (click)="discountButtonClosed()"
+                            ></ion-icon>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px">
+                                Net Amount
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px"
+                                >{{afterDiscountAmount | currency :currency :
+                                "symbol" : "1.2-2" }}</ion-text
+                            >
+                            <ion-icon
+                                style="font-size: 14px"
+                                name="create"
+                                class="editicon"
+                                *ngIf="!isPriceEditMode"
+                                (click)="
+                                        onchangeEditPrice(afterDiscountAmount)
+                                      "
+                            ></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row *ngIf="isPriceEditMode">
+                        <ion-col size="8">
+                            <ion-input
+                                formControlName="RoomPlanChangeAmount"
+                                no-padding
+                                class="card-item"
+                                placeholder="0"
+                                no-margin
+                                type="number"
+                                clearInput="true"
+                                [(ngModel)]="afterDiscountAmount"
+                                (ngModelChange)="calculateDiscountAmounts(afterDiscountAmount)"
+                                min="0"
+                            ></ion-input>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-icon
+                                style="font-size: 19px"
+                                class="discount-icon"
+                                name="checkmark"
+                                (click)="onchangePrice()"
+                            ></ion-icon>
+                            <ion-icon
+                                style="font-size: 19px"
+                                class="discount-icon"
+                                name="close"
+                                (click)="onchangeClosedPrice()"
+                            ></ion-icon>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row style="display: flex; align-items: center;">
+                        <ion-col>
+                            <ion-text style="font-size: 13px">
+                                Tax Type
+                            </ion-text>
+                        </ion-col>
+                      
+                            <ion-col
+          
+                            *ngFor="let tax of propertyTaxDetails"
+                        >
+                            <ion-item
+                                (click)="taxSelection(tax)"
+                                class="text-white"
+                            >
+                                <ion-icon
+                                    style="font-size: 16px"
+                                    *ngIf="checkTaxType(tax)"
+                                    name="checkbox-outline"
+                                ></ion-icon>
+                                <ion-icon
+                                    style="font-size: 16px"
+                                    *ngIf="!checkTaxType(tax)"
+                                    name="stop-outline"
+                                ></ion-icon
+                                ><span
+                                    style="font-size: 14px"
+                                    class="taxName-selection"
+                                    >{{tax.name}}</span
+                                >
+                            </ion-item>
+                        </ion-col>
+                      
+                        <ion-col size="12">
+                           
+
+                            <ion-row>
+                             
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row *ngFor="let spliteTax of totalSplitTax">
+                        <ion-col size="8" class="text-white">
+                            <ion-text style="font-size: 14px">
+                                {{spliteTax.name}} ({{ spliteTax.percentage |
+                                number: "1.2-2"}}%)
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ spliteTax.taxAmount | currency :property
+                                .localCurrency.toUpperCase() : "symbol" :
+                                "1.2-2" }}
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px"
+                                >Tax Amount</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ this.booking.taxAmount | currency : currency
+                                : "symbol" : "1.2-2" }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px"
+                                >Total Payable Amount</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px"
+                                >{{ booking.payableAmount | currency : currency
+                                : "symbol" : "1.2-2" }}
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row
+                        *ngIf="this.propertyOTADetails != null && this.propertyOTADetails!= undefined"
+                    >
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px">
+                                Convenience Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <div>
+                                <ion-text style="font-size: 14px">
+                                    {{ booking.convenienceFee | currency
+                                    :currency : "symbol" : "1.2-2" }}
+                                </ion-text>
+                            </div>
+                        </ion-col>
+                    </ion-row>
+
+                    <!--  -->
+                    <ion-row
+                        *ngIf="this.propertyOTADetails != null && this.propertyOTADetails!= undefined"
+                    >
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px">
+                                Booking Commission Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ this.booking.bookingCommissionAmount |
+                                currency :currency : "symbol" : "1.2-2" }}
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <!-- TCS -->
+                    <ion-row
+                        *ngIf="
+                                (this.propertyOTADetails != null &&
+                                this.propertyOTADetails != undefined) ||
+                                (this.booking.tcsFee != null &&
+                                this.booking.tcsFee != undefined)
+                            "
+                    >
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px">
+                                TCS Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ this.booking.tcsFee | currency :currency :
+                                "symbol" : "1.2-2" }}
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <!-- TDS -->
+                    <ion-row
+                        *ngIf="
+                                   (this.propertyOTADetails != null &&
+                                     this.propertyOTADetails != undefined) ||
+                                   (this.booking.tdsFee != null &&
+                                     this.booking.tdsFee != undefined)
+                                 "
+                    >
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px">
+                                TDS Fee
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ this.booking.tdsFee | currency :currency :
+                                "symbol" : "1.2-2" }}
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+
+                    <!-- TDS END  -->
+
+                    <!-- Hotel Collect AMount -->
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px">
+                                Hotel Collect Amount
+                            </ion-text>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                <span
+                                    >{{ getAmount(booking.payableAmount) -
+                                    getCommitionAmount() | currency : currency :
+                                    "symbol" : "1.2-2" }}</span
+                                >
+                            </ion-text>
+                        </ion-col>
+                    </ion-row>
+                    <!-- Hotel COllect Amount ENd  -->
+
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text style="font-size: 14px"
+                                >Advance Amount</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px"
+                                >{{ advancePaidAmount | currency :currency :
+                                "symbol" : "1.2-2" }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="8">
+                            <ion-text
+                                style="font-size: 14px"
+                                *ngIf="booking.payableAmount - advancePaidAmount >= 0"
+                                >Due Amount</ion-text
+                            >
+                            <ion-text
+                                style="font-size: 14px"
+                                *ngIf="booking.payableAmount - advancePaidAmount < 0"
+                                >Surplus Amount</ion-text
+                            >
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text style="font-size: 14px">
+                                {{ booking.payableAmount - advancePaidAmount |
+                                currency :currency : "symbol" : "1.2-2"
+                                }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+
+                   
+
+                
+                    <ion-row class="mt-15"  *ngIf="
+                    planPropertyServicesList != null &&
+                    planPropertyServicesList != undefined &&
+                    planPropertyServicesList.length > 0
+                  ">
+                   <div
+                   *ngIf="booking.id != null && booking.id != undefined && planBookingServicesList != null && planBookingServicesList != undefined && planBookingServicesList.length >0 ||
+                     booking.id != null && booking.id != undefined && servicesChild != null && servicesChild != undefined ||
+                     booking.id != null && booking.id != undefined && servicesAdult != null && servicesAdult != undefined" style="color: red;">
+                     <p>
+                       The price for your services will be increased based on the date range or guest change you select. If you prefer not to use this feature, you can deactivate the service inclusion toggle button on the booking details page.
+                     </p>
+                   </div>
+
+                        <ion-col size="12">
+                            <ion-text class="price-room-title"
+                            >Plan Service List</ion-text>
+                        </ion-col>
+                        
+        
+                        <div
+                       
+                        style="overflow-x:auto;"
+                      >
+        
+                        <table cellspacing="0" cellpadding="0">
+                          <thead>
+                            <th >
+                            Service
+                            Name
+                            </th>
+                            <th >
+                            Service
+                               Type
+                            </th>
+                            <th >
+                              Price
+                            </th>
+                            <th >
+                              Quantity
+                            </th>
+                            <th >
+                              Net Amount
+                            </th>
+                            <th >
+                              Tax Percentage
+                            </th>
+                            <th>
+                              Tax Amount
+                            </th>
+                            <th>Total</th>
+                          </thead>
+                          <tbody>
+                            <tr
+                              *ngFor="let service of planPropertyServicesList"
+                            >
+                              <td >
+                                {{ service.name }}
+                              </td>
+                              <td >
+                                {{ service.serviceType }}
+                              </td>
+                              <td >
+                                {{ getServiceValue(service.servicePrice) | currency
+                                  : currency
+                                  : "symbol"
+                                  : "1.2-2" }}
+                              </td>
+                              <td >
+                                {{ service.count }}
+                              </td>
+                              <td >
+                                {{
+                                  getServiceValue(service.beforeTaxAmount)
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </td>
+                              <td >
+                                {{ getServiceValue(service.taxPercentage) }}%
+                              </td>
+                              <td>
+                                {{
+                                  getServiceValue(service.taxAmount)
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </td>
+                              <td>
+                                {{
+                                  getServiceValue(service.afterTaxAmount)
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </td>
+                            </tr>
+                            <hr />
+        
+                            <tr>
+                              <th ></th>
+                              <th >Total</th>
+                              <th >
+                                {{
+                                  getServicePrice()
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </th>
+                              <th >
+                                {{  getServiceCount() }}
+                              </th>
+                              <th >
+                                {{
+                                  getServiceBeforeAmount()
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </th>
+                              <th ></th>
+                              <th>
+                                {{
+                                  getServiceTaxAmount()
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </th>
+                              <th>
+                                {{
+                                  getServiceAfterTaxAmount()
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </th>
+                            </tr>
+        
+                            <tr>
+                              <th ></th>
+                              <th ></th>
+                              <th ></th>
+                              <th ></th>
+                              <th ></th>
+                              <th ></th>
+                              <th>
+                                Total Booking Amount
+                              </th>
+                              <th>
+                                {{
+                                  getServiceAfterTaxAmount() +
+                                    booking.payableAmount
+                                    | currency
+                                      : currency
+                                      : "symbol"
+                                      : "1.2-2"
+                                }}
+                              </th>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </ion-row>
+
+                </ion-grid>
+
+          
+
+                <ion-card
+                    class="card-layout text-white bookingPadding"
+                    fxLayoutAlign.gt-xs="space-between start"
+                    fxLayout.xs="column"
+                    *ngIf="isDateChangeOperation && notAvailableRoomAndDate.length >0"
+                >
+                    <ion-list>
+                        <ion-list-header style="font-size: 17px">
+                            Selected room not available for this date
+                        </ion-list-header>
+
+                        <ion-item
+                            *ngFor="let roomAvailable of notAvailableRoomAndDate; let i =index"
+                        >
+                            <ion-label style="color: red">
+                                <span
+                                    ><b
+                                        >{{roomAvailable.date |
+                                        date:'dd-MM-yyyy'}}</b
+                                    >
+                                    &nbsp;Room No :
+                                    <b>{{roomAvailable.roomNumber}}</b></span
+                                >
+                            </ion-label>
+                        </ion-item>
+                    </ion-list>
+
+                    <div
+                        class="button-action-text mt-1"
+                        fxLayoutAlign.gt-xs="space-between start"
+                        fxLayout.xs="column"
+                    >
+                        <div
+                            fxLayout="grid"
+                            fxFlex="1 1 0%"
+                            fxLayoutAlign="start"
+                        >
+                            <span
+                                ><p>
+                                    If you want to change the date ,please
+                                    allowcate the room first.
+                                    <a
+                                        class="searchCustomer ml-1"
+                                        target="_blank"
+                                        (click)="onRoomAllowcationSection()"
+                                        ><u> <b> Room Allocation</b></u></a
+                                    >
+                                </p>
+                            </span>
+                        </div>
+                    </div>
+                </ion-card>
+
+                <ion-row *ngIf="this.statusType === 'Date-Change'">
+                    <ion-col size="12">
+                        <ion-text style="font-size: 10px"
+                            >Reason*</ion-text
+                        >
+
+                        <ion-col
+                            no-padding
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-textarea
+                                class="card-item"
+                                style="text-align: left;"
+                                formControlName="NotesValue"
+                                [(ngModel)]="booking.operatorNotes"
+                                name="notes"
+                                clearOnEdit="true"
+                                placeholder="Reason"
+                                rows="3"
+                            ></ion-textarea>
+                        </ion-col>
+                    </ion-col>
+                </ion-row>
+
+                <ion-card
+                    no-margin
+                    class="card-layout text-white bookingPadding"
+                    *ngIf="isDateChangeOperation && isRoomAllowcationSection || isRoomChangeOperation && isRoomAllowcationSection"
+                >
+                    <ion-card-title style="font-size: 17px"
+                        >Select Room</ion-card-title
+                    >
+                    <p>No of Room have to allocate : {{booking.noOfRooms}}</p>
+                    <p>No of Room selected : {{ this.roomNumbers.length}}</p>
+                    <form [formGroup]="onRoomTypeForm">
+                        <ion-select
+                            multiple="true"
+                            placeholder="Select Room Type"
+                            [(ngModel)]="roomNumbers"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            formControlName="RoomType"
+                        >
+                            <ion-row *ngFor="let room of availableRoomDetail">
+                                <ion-select-option [value]="room">
+                                    Room No : {{room.roomNumber}}
+                                </ion-select-option>
+                            </ion-row>
+                        </ion-select>
+                    </form>
+                </ion-card>
+
+                <ion-row *ngIf="isAvailable && isCopyBooking">
+                    <ion-col size="12">
+                        <ion-text style="font-size: 14px"
+                            >Payment Method</ion-text
+                        >
+
+                        <ion-select
+                            formControlName="paymentMode"
+                            [(ngModel)]="booking.modeOfPayment"
+                            class="card-item"
+                            (ionChange)="paymentModeChange()"
+                            placeholder="Select"
+                        >
+                            <ion-select-option
+                                value="Card"
+                                *ngIf="businessPlan === 'Business Premium'"
+                                >Card</ion-select-option
+                            >
+                            <ion-select-option value="Cash"
+                                >Cash</ion-select-option
+                            >
+                            <ion-select-option
+                                value="BankTransfer"
+                                *ngIf="isBankTransferAvailable"
+                            >
+                                BankTransfer</ion-select-option
+                            >
+                            <ion-select-option value="Credit"
+                                >Credit</ion-select-option
+                            >
+                            <ion-select-option
+                                value="Wallet"
+                                *ngIf="isWalletAvailable"
+                                >Wallet</ion-select-option
+                            >
+                            <!-- <ion-select-option value="Cheque">Cheque</ion-select-option>
+                                    <ion-select-option value="DemandDraft">DemandDraft</ion-select-option> -->
+                        </ion-select>
+                    </ion-col>
+                </ion-row>
+
+                <div
+                    fxLayoutAlign.gt-xs="space-between start"
+                    fxLayout.xs="column"
+                    *ngIf="isRoomChangeOperation && isRoomAllowcationMessageSection"
+                >
+                    <ion-card
+                        class="card-layout text-white bookingPadding"
+                        fxFlex="100"
+                        fxFlex.gt-xs="100"
+                    >
+                        <!-- <mat-card-title>Selected room not available for this date</mat-card-title> -->
+
+                        <div
+                            class="button-action mt-1"
+                            fxLayoutAlign.gt-xs="space-between start"
+                            fxLayout.xs="column"
+                        >
+                            <div
+                                fxLayout="grid"
+                                fxFlex="1 1 0%"
+                                fxLayoutAlign="start"
+                            >
+                                <p>
+                                    If you want to change the room ,please
+                                    allowcate the room first.<a
+                                        class="searchCustomer ml-1"
+                                        target="_blank"
+                                        (click)="onRoomAllowcationSection()"
+                                        ><u> <b> Room Allocation</b></u></a
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </ion-card>
+                </div>
+                <!-- bookk  -->
+
+                <ion-card
+                    no-margin
+                    no-padding
+                    *ngIf="booking.modeOfPayment==='Wallet'"
+                >
+                    <form [formGroup]="onWalletForm">
+                        <ion-row>
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >First Name</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="WalletClientFN"
+                                    [(ngModel)]="mobileWallet.firstName"
+                                    placeholder="First Name"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Last Name</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="WalletClientLN"
+                                    [(ngModel)]="mobileWallet.lastName"
+                                    placeholder="Last Name"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Phone Number</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="WalletClientPhone"
+                                    [(ngModel)]="mobileWallet.phoneNumber"
+                                    placeholder="Phone Number"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Wallet Provider</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="WalletClientWP"
+                                    [(ngModel)]="mobileWallet.walletProvider"
+                                    placeholder="Wallet Provider"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Wallet Url</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="WalletURL"
+                                    [(ngModel)]="mobileWallet.walletUrl"
+                                    placeholder="Wallet Url"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <p class="mb-5">
+                                Please pay {{ payment.transactionAmount |
+                                currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }} using following wallet details and share
+                                transaction details in the given below.
+                            </p>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Transaction Reference Number
+                                </ion-text>
+                                <ion-input
+                                    class="input-background"
+                                    formControlName="TransactionReferenceNumber"
+                                    [(ngModel)]="payment.receiptNumber"
+                                    placeholder="Transaction Reference Number"
+                                    inputmode="text"
+                                ></ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </form>
+                </ion-card>
+
+                <ion-card
+                    no-margin
+                    no-padding
+                    *ngIf="booking.modeOfPayment==='BankTransfer'"
+                >
+                    <form [formGroup]="onbankForm">
+                        <ion-row>
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Bank Name</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="branchName"
+                                    [(ngModel)]="bankAccount.branchName"
+                                    placeholder="Bank Name"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Branch Name</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="branchName"
+                                    [(ngModel)]="bankAccount.branchName"
+                                    placeholder="Branch Name"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Account Name</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="accountName"
+                                    [(ngModel)]="bankAccount.branchName"
+                                    placeholder="Account Name"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+
+                            <ion-col
+                                size="6"
+                                size-xl="6"
+                                size-sm="6"
+                                size-md="6"
+                                size-lg="6"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Account Number</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="accountNumber"
+                                    [(ngModel)]="bankAccount.branchName"
+                                    placeholder="Account Number"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Swift Code</ion-text
+                                >
+                                <ion-input
+                                    class="input-background"
+                                    readonly
+                                    formControlName="swiftCode"
+                                    [(ngModel)]="bankAccount.swiftCode"
+                                    placeholder="Swift Code"
+                                    inputmode="text"
+                                >
+                                </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <p class="mb-5">
+                                Please pay {{ payment.transactionAmount |
+                                currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }} using following bank details and share
+                                transaction details in the given below.
+                            </p>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Transaction Reference Number
+                                </ion-text>
+                                <ion-input
+                                    class="input-background"
+                                    formControlName="TransactionReferenceNumber"
+                                    [(ngModel)]="payment.receiptNumber"
+                                    placeholder="Transaction Reference Number"
+                                    inputmode="text"
+                                ></ion-input>
+                            </ion-col>
+                        </ion-row>
+                    </form>
+                </ion-card>
+
+                <ion-card no-margin no-padding *ngIf="isCard">
+                    <form [formGroup]="onCardBookForm">
+                        <ion-row>
+                            <ion-col
+                                size="12"
+                                size-xl="12"
+                                size-sm="12"
+                                size-md="12"
+                                size-lg="12"
+                            >
+                                <ion-text style="font-size: 14px"
+                                    >Card Number</ion-text
+                                >
+                                <ion-col no-padding size="12">
+                                    <ion-input
+                                        [(ngModel)]="payment.cardNumber"
+                                        formControlName="cardNumber"
+                                        type="text"
+                                        maxlength="16"
+                                        placeholder="#"
+                                        inputmode="text"
+                                    ></ion-input>
+                                </ion-col>
+                                <ion-row
+                                    *ngIf="onCardBookForm.get('cardNumber').dirty && onCardBookForm.get('cardNumber').invalid"
+                                >
+                                    <ion-text
+                                        class="heading-medium font-12"
+                                        color="danger"
+                                        >Please type valid card number</ion-text
+                                    >
+                                </ion-row>
+                            </ion-col>
+                        </ion-row>
+                        <!-- row 8 -->
+                        <ion-row>
+                            <ion-text style="font-size: 14px"
+                                >Name on Card</ion-text
+                            >
+                            <ion-col size="12">
+                                <ion-input
+                                    [(ngModel)]="payment.name"
+                                    formControlName="name"
+                                    maxlength="16"
+                                    placeholder="Name"
+                                    inputmode="text"
+                                ></ion-input>
+                            </ion-col>
+                        </ion-row>
+                        <!-- row 9 -->
+                        <ion-row>
+                            <ion-col size="4">
+                                <ion-text
+                                    class="rpc-text"
+                                    style="font-size: 14px"
+                                    >Expire
+                                </ion-text>
+                                <ion-row>
+                                    <ion-select
+                                        [(ngModel)]="payment.expYear"
+                                        formControlName="expYear"
+                                        class="card-item"
+                                        no-margin
+                                        no-padding
+                                        placeholder="Year"
+                                    >
+                                        <ion-select-option value="2021"
+                                            >2021</ion-select-option
+                                        >
+                                        <ion-select-option value="2022"
+                                            >2022</ion-select-option
+                                        >
+                                        <ion-select-option value="2023"
+                                            >2023</ion-select-option
+                                        >
+                                        <ion-select-option value="2024"
+                                            >2024</ion-select-option
+                                        >
+                                        <ion-select-option value="2025"
+                                            >2025</ion-select-option
+                                        >
+                                        <ion-select-option value="2026"
+                                            >2026</ion-select-option
+                                        >
+                                        <ion-select-option value="2027"
+                                            >2027</ion-select-option
+                                        >
+                                        <ion-select-option value="2028"
+                                            >2028</ion-select-option
+                                        >
+                                        <ion-select-option value="2029"
+                                            >2029</ion-select-option
+                                        >
+                                        <ion-select-option value="2030"
+                                            >2030</ion-select-option
+                                        >
+                                    </ion-select>
+                                </ion-row>
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text
+                                    class="rpc-text"
+                                    style="font-size: 14px"
+                                    >Expire
+                                </ion-text>
+
+                                <ion-row>
+                                    <ion-select
+                                        [(ngModel)]="payment.expMonth"
+                                        formControlName="expMonth"
+                                        class="card-item"
+                                        no-margin
+                                        no-padding
+                                        placeholder="Month"
+                                    >
+                                        <ion-select-option value="01"
+                                            >January</ion-select-option
+                                        >
+                                        <ion-select-option value="02"
+                                            >February</ion-select-option
+                                        >
+                                        <ion-select-option value="03"
+                                            >March</ion-select-option
+                                        >
+                                        <ion-select-option value="04"
+                                            >April</ion-select-option
+                                        >
+                                        <ion-select-option value="05"
+                                            >May</ion-select-option
+                                        >
+                                        <ion-select-option value="06"
+                                            >June</ion-select-option
+                                        >
+                                        <ion-select-option value="07"
+                                            >July</ion-select-option
+                                        >
+                                        <ion-select-option value="08"
+                                            >August</ion-select-option
+                                        >
+                                        <ion-select-option value="09"
+                                            >September</ion-select-option
+                                        >
+                                        <ion-select-option value="10"
+                                            >October</ion-select-option
+                                        >
+                                        <ion-select-option value="11"
+                                            >November</ion-select-option
+                                        >
+                                        <ion-select-option value="12"
+                                            >December</ion-select-option
+                                        >
+                                    </ion-select>
+                                </ion-row>
+                            </ion-col>
+
+                            <ion-col size="4">
+                                <ion-text
+                                    class="rpc-text"
+                                    style="font-size: 14px"
+                                    >CVC
+                                </ion-text>
+
+                                <ion-row>
+                                    <ion-input
+                                        no-padding
+                                        [(ngModel)]="payment.cvv"
+                                        formControlName="cvv"
+                                        class="cvv"
+                                        maxlength="4"
+                                        placeholder="0"
+                                        inputmode="text"
+                                    ></ion-input>
+
+                                    <ion-row
+                                        *ngIf="onCardBookForm.get('cvv').dirty && onCardBookForm.get('cvv').invalid"
+                                    >
+                                        <ion-text
+                                            class="heading-medium font-12"
+                                            color="danger"
+                                            >Please type valid cvv</ion-text
+                                        >
+                                    </ion-row>
+                                </ion-row>
+                            </ion-col>
+                        </ion-row>
+                    </form>
+                </ion-card>
+
+                <ion-row>
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            size="small"
+                            expand="block"
+                            (click)="SubMitBooking()"
+                            *ngIf="isCopyBooking"
+                            [disabled]="!onSaveMenuActionForm.valid|| (isCard && !onCardBookForm.valid) || booking.modeOfPayment==='BankTransfer' && !onbankForm.valid
+                                || booking.modeOfPayment==='Wallet' && !onWalletForm.valid"
+                        >
+                            {{ confirmButton }}</ion-button
+                        >
+
+                        <ion-button
+                            size="small"
+                            *ngIf="!isCopyBooking"
+                            expand="block"
+                            class="button-submit text-white"
+                            [disabled]="!isRoomAvailable|| loader ||
+                                (isDateChangeOperation &&
+                                !isAvailabilityRoom) ||
+                                (isDateChangeOperation &&
+                                !isAvailabilityAvailable) || 
+                                (this.statusType === 'Date-Change' && booking.operatorNotes === '') || 
+                                (this.statusType === 'Date-Change' && booking.operatorNotes == null) 
+                                ||
+                                (this.statusType === 'Date-Change'
+                                && isDateChangeOperation === true &&
+                                notAvailableRoomAndDate.length >0) ||
+                                (this.statusType === 'Date-Change' &&
+                                isRoomAllowcationSection === true &&
+                                this.roomNumbers.length !=booking.noOfRooms) ||
+                           
+                              (this.statusType === 'Room-Change' && 
+                                isRoomChangeOperation === true &&
+                                isRoomAllowcationMessageSection === true ) ||
+                              (this.statusType === 'Room-Change' &&
+                                isRoomAllowcationSection === true &&
+                                this.roomNumbers.length !=booking.noOfRooms  )  
+                                || statusType ==='Add/Remove-Guest' && (booking.noOfChildren > (maxOccupancy() - this.booking.noOfPersons) * this.booking.noOfRooms)"
+                            (click)="FormSubMit()"
+                            >{{confirmButton}}</ion-button>
+                    </ion-col>
+                    <!--   -->
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            size="small"
+                            expand="block"
+                            class="button-cancel text-white"
+                            (click)="cancel()"
+                            >Cancel</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </form>
+
+            <!--  -->
+        </ion-grid>
+    </ion-card>
+</ion-content>

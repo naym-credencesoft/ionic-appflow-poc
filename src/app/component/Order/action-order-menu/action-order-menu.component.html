@@ -1,0 +1,144 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="end" class="close-button" (click)="close()">
+            <ion-icon name="close-outline" style=" font-size: 22px; color: #fff"></ion-icon>
+        </ion-buttons>
+        <ion-title color="light">Order List</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-no-margin">
+    <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar>
+
+    <ion-list class="item-list" no-margin no-padding>
+        <!-- <ion-item no-margin no-padding (click)="onDetails()">
+            <ion-icon
+                name="document"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Details</ion-text>
+            </ion-label>
+        </ion-item> -->
+
+        <!-- <ion-item
+            no-margin
+            no-padding
+            *ngIf="order.orderStatus != 'Completed'"
+            (click)="onUpdate()"
+        >
+            <ion-icon
+                name="pencil-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Update Order</ion-text>
+            </ion-label>
+        </ion-item> -->
+
+        <!-- <ion-item
+            no-margin
+            no-padding
+            *ngIf="order.orderStatus != 'Completed'"
+            (click)="onConvert()"
+        >
+            <ion-icon
+                name="pencil-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Convert Order</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="order.orderStatus === 'Submitted'"
+            (click)="onConfirmOrder()"
+        >
+            <ion-icon
+                name="checkmark"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Confirm Order</ion-text>
+            </ion-label>
+        </ion-item> -->
+
+        <ion-item no-margin no-padding *ngIf="
+                order.orderStatus === 'Submitted' ||
+                (order.deliveryMethod === 'Dine In' &&
+                    order.orderStatus === 'Confirmed') ||  (order.deliveryMethod === 'Room Order' &&
+                    order.orderStatus === 'Confirmed')
+            " (click)="onCancel()">
+            <ion-icon name="close" color="primary" style="font-size: 20px"></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Cancel Order</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding *ngIf="
+                order.deliveryMethod === 'Home Delivery' &&
+                order.orderStatus === 'Served'
+            " (click)="onChangeStatus(4)">
+            <ion-icon name="bicycle" color="primary" style="font-size: 20px"></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Out for Delivery</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding (click)="paymentDetail()" *ngIf="
+                (
+                    order.orderStatus != 'Cancelled') ||
+                (order.modeOfPayment === 'Partial Payment' &&
+                    order.orderStatus != 'Cancelled')
+            ">
+            <ion-icon name="cash-outline" color="primary" style="font-size: 20px"></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Payment Details</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding (click)="onAuditReportClick()" >
+            <ion-icon name="repeat-outline" color="primary" style="font-size: 20px"></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Audit Report</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding *ngIf="
+                order.deliveryMethod === 'Home Delivery' &&
+                order.orderStatus === 'OutForDelivery'
+            " (click)="onChangeStatus(5)">
+            <ion-icon name="walk" color="primary" style="font-size: 20px"></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Shipped</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding *ngIf="
+                order.deliveryMethod === 'Home Delivery' &&
+                order.orderStatus === 'Served'
+            " (click)="onChangeStatus(4)">
+            <ion-icon name="bicycle" color="primary" style="font-size: 20px"></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Out for Delivery</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding *ngIf="
+                order.orderStatus != 'Submitted' &&
+                order.orderStatus != 'Completed' &&
+                order.orderStatus != 'Cancelled'
+            " (click)="orderCompleteDialog()">
+            <ion-icon name="checkmark" color="primary" style="font-size: 20px"></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Order Completed</ion-text>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

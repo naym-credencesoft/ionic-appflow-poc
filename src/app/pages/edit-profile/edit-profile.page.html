@@ -1,0 +1,141 @@
+
+
+<ion-header class="headerColor">
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
+    </ion-avatar>
+    
+    
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="navigateToPage()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Profile</ion-text>
+        
+    </ion-toolbar>
+    </ion-header>
+
+<ion-content>
+  
+    <ion-grid  no-padding>
+
+        <div class="ion-margin-vertical upload-logo">
+            <ion-button icon-left size="medium" style="color: white;"
+            #file2
+            (click)="upload2.click()"
+            class="update-button" expand="full" shape="round" 
+            [disabled]="loader" tappable>
+            <ion-icon name="cloud-upload" color="white" style="margin-right: 5px;"></ion-icon>
+            Upload Profile Image
+            </ion-button>
+
+            <input
+            [hidden]="true"
+            type="file"
+            #upload2
+            (change)="onImageSelect($event)"
+            accept="image/*" /> 
+    
+    
+        </div>
+
+
+        <form  [formGroup]="onProfileForm" > 
+
+                <ion-row>
+                        <ion-col size="12" padding>
+                
+                          <ion-list margin-bottom>
+                            <!-- <ion-list-header color="light">
+                              <ion-label class="fw700">{{ 'app.label.userdata' | translate }}</ion-label>
+                            </ion-list-header> -->
+                        
+                            
+                        <ion-row>
+                            <ion-col size ="6" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">First Name*</ion-label>
+                                    <ion-input  inputmode="text"  formControlName="firstname"  [(ngModel)]="userData.firstName" style="color:#333"></ion-input>
+                                </ion-item>
+                            </ion-list>
+                            <p ion-text color="danger" class="text08" *ngIf="onProfileForm.get('firstname').dirty && onProfileForm.get('firstname').hasError('required')">
+                                <ion-text color="danger">
+                                       Input Field Empty
+                                </ion-text>
+                                </p>  
+                            </ion-col>
+                                <ion-col size ="6">
+                                    <ion-list>
+                                        <ion-item>
+                                                <ion-label color="dark" position="stacked">Last Name*</ion-label>
+                                                <ion-input  inputmode="text"  formControlName="lastname" [(ngModel)]="userData.lastName" style="color:#333"></ion-input>
+                                        </ion-item>
+                                    </ion-list>
+                                    <p ion-text color="danger" class="text08" *ngIf="onProfileForm.get('lastname').dirty && onProfileForm.get('lastname').hasError('required')">
+                                        <ion-text color="danger">
+                                               Input Field Empty
+                                        </ion-text>
+                                        </p>  
+                                </ion-col>
+                                
+                            </ion-row>  
+                        
+                            <ion-item>
+                                    <ion-label color="dark" position="stacked">Business Name*</ion-label>
+                                    <ion-input inputmode="text"   formControlName="businessName" [(ngModel)]="userData.businessName" style="color:#333"></ion-input>
+
+                                    <p ion-text color="danger" class="text08" *ngIf="onProfileForm.get('businessName').dirty && onProfileForm.get('businessName').hasError('required')">
+                                        <ion-text color="danger">
+                                               Input Field Empty
+                                        </ion-text>
+                                        </p>  
+                                </ion-item>
+                                <ion-item>
+                                <ion-label color="dark" position="stacked">Email*</ion-label>
+                                <ion-input readonly inputmode="email" formControlName="email"  [(ngModel)]="userData.email" style="color:#333" ></ion-input>
+                                </ion-item>
+                        <!-- readonly -->
+                                <ion-item>
+                                <ion-label color="dark" position="stacked">Mobile</ion-label>
+                                <ion-input inputmode="text"  formControlName="mobileNumber" [(ngModel)]="userData.mobileNumber" style="color:#333"></ion-input>
+                                </ion-item>
+                        
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Landphone</ion-label>
+                                    <ion-input inputmode="text"  formControlName="landphoneNumber"  [(ngModel)]="userData.landphoneNumber" style="color:#333"></ion-input>
+                                </ion-item>
+                            
+                            
+                    
+                          </ion-list>
+                
+                  
+                        </ion-col>
+                      </ion-row>
+
+                
+                      <div class="ion-margin-vertical">
+                        <ion-button icon-left size="medium" class="update-button" expand="full" shape="round" (click)="onSubmit()"
+                        [disabled]="!onProfileForm.valid || loader" tappable style="color: white;" >
+                      
+                        Save
+                        </ion-button>
+                
+                
+                    </div>
+
+
+        </form>
+
+
+      
+    </ion-grid>
+
+</ion-content>
+  

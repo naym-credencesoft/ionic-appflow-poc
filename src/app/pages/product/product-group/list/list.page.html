@@ -1,0 +1,117 @@
+  <ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Manage Product Group </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Service Dashboard</ion-text>
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+
+   
+
+        <ion-searchbar
+        class="list-search"
+        mode ="md"
+        (ionClear) ="clear($event)"
+        (ionInput)="getItems($event)" 
+        no-margin no-padding>
+        </ion-searchbar>
+
+        <form [formGroup]="onProductForm">
+
+            <ion-row>
+                <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                    <ion-card no-margin no-padding style="margin: 0px !important;">
+                        <ion-select placeholder="Select Business Service" value="{{businessServiceId}}" style="color:#333"
+                            (ionChange)="setService(businessServiceId)" [(ngModel)]="businessServiceId" okText="Done"
+                            cancelText="Dismiss" formControlName="BusinessService">
+    
+                            <ion-row *ngFor="let service of businessServices">
+                                <ion-select-option value={{service.id}}>
+                                    <p *ngIf="service.name == 'Restaurants' && service.brandName != null && service.brandName !=''">{{ service.name
+                                    }}-{{service.brandName}}</p>
+                                  <p *ngIf="service.name == 'Restaurants' && (service.brandName == null || service.brandName =='')">{{ service.name }}</p>
+                                  <p *ngIf="service.name != 'Restaurants'">{{ service.name }}</p>
+                                </ion-select-option>
+    
+                            </ion-row>
+                        </ion-select>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </form>
+    
+
+
+    <!-- <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar> -->
+
+    <div class="loader-everyOne" *ngIf="loader">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+
+    <ion-grid no-margin no-padding>
+        
+        <ion-row>
+                <ion-col *ngIf="productGroups.length > 0" no-margin no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12" style="margin: 0px; border:1px solid gray; border-radius:10px">
+
+                    <div  *ngFor="let group of productGroups; let i= index" no-margin no-padding  >
+                        
+                        <ion-item no-margin no-padding class="item"  lines="none">  
+                            <div class="numDIv">
+                                <ion-text  style="font-size: 16px; color:#fff" ><b>{{i+1}}</b></ion-text> 
+                            </div>      
+                          
+                                <ion-label class="group-item">
+                                    
+                                        <ion-text color="primary" style="font-size: 16px;" ><b>{{group.name}}</b></ion-text> 
+                                    
+                                    
+                                    <!-- <ion-icon name="md-more" style="float: right;"(click)="onMenu(customer)" ></ion-icon> -->
+                                    <ion-row>
+                                        <ion-text color="primary" style="font-size: 14px;" >{{group.productCode}}</ion-text> 
+                                     </ion-row>
+                                  </ion-label>
+
+                                  <ion-icon name="ellipsis-vertical" style="text-align: right; color:#333; cursor: pointer;" (click)="viewdetail(group)"></ion-icon>
+                            </ion-item>
+                    </div>
+                </ion-col>
+        </ion-row>
+    </ion-grid>
+
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="onCreateGroup()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
+    
+</ion-content>
+
+<ion-footer>
+        <ion-toolbar style=" height: 50px;">
+                <app-footer></app-footer>
+        </ion-toolbar>
+</ion-footer>
+    

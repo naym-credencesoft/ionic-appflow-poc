@@ -1,0 +1,71 @@
+<ion-header> 
+    <ion-toolbar  class="animated fadeIn headerSec">
+    
+    <ion-buttons slot="start">
+        <ion-back-button mode ="md" icon="arrow-back" style="color: #fff"></ion-back-button>
+    </ion-buttons>
+      <ion-text color="light" class="HeaderTitle" >Room List</ion-text>
+    </ion-toolbar>
+
+  </ion-header>
+      <ion-toolbar class="modifictaon">
+        <ion-card no-margin style="margin: 9px !important; padding: 0px !important;">
+            <ion-card-content style=" display: flex; align-items: center; justify-content: center; gap:15px">
+                <div>
+                    <ion-avatar  style="width: 90px; height: 90px;" *ngIf="room.imageList == null ||(room.imageList != null && room.imageList.length==0)">
+                        <img src="assets/img/room/roomimage.png">
+                    </ion-avatar>
+    
+                    <ion-avatar style="width: 90px; height: 90px;"  *ngIf="room.imageList != null && room.imageList.length > 0">
+                        <img src="{{ room.imageList[0].url}}">
+                    </ion-avatar> 
+                </div>
+
+                <div>
+                  
+
+                    <span class="mat-h5" style="font-size: 14px; ">
+                        <ion-text style="color:#333">
+                            Room Name: {{this.room.name}}</ion-text>
+                        <p style="color:#333" >No of Rooms :{{ room.noOfRooms}}</p>
+                        <p style="color:#333" >Room only Price :{{ room.roomOnlyPrice | currency: currency:'symbol':'1.2-2' }}</p>
+                    </span>
+                </div>
+                
+            </ion-card-content>
+    
+          
+
+              
+        </ion-card>
+
+    </ion-toolbar>
+  <ion-content class="profile">
+
+
+
+
+
+        <ion-list>
+
+            <div *ngIf ="room.roomDetails != undefined && room.roomDetails != null && room.roomDetails.length >0">
+                <div *ngFor ="let data of room.roomDetails; let i = index;">
+                    <ion-item lines="none" style="border:1px solid gray; margin: 10px; border-radius: 10px;">
+                        <ion-avatar slot="start">
+                        <img src="assets/img/room/room.svg">
+                        </ion-avatar>
+
+                        <ion-label>
+                        <h2 style="color:#333">Room No : {{data.roomNumber}}</h2>
+                        <p>Floor No :{{ data.floorNumber}}</p>
+                        <p>Floor Name :{{ data.floorName}}</p>
+                        </ion-label>
+                    </ion-item>
+                </div>
+            </div>
+
+       </ion-list> 
+   
+  </ion-content>
+  
+      

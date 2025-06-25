@@ -1,0 +1,129 @@
+<ion-header> 
+    <ion-toolbar class="animated fadeIn customizedO">
+    
+    <ion-buttons slot="start">
+        <ion-back-button mode ="md" icon="arrow-back" style="color: #fff"></ion-back-button>
+    </ion-buttons>
+      <ion-text color="light" class="HeaderTitle" >Rate and Availability</ion-text>
+    </ion-toolbar>
+
+  </ion-header>
+      <ion-toolbar class="sectionaa">
+        <ion-card no-margin style="margin: 9px !important; padding: 0px !important;border:1px solid gray">
+            <ion-card-content style=" display: flex; align-items: center; justify-content: center; gap:10px">
+                <div>
+                    <ion-avatar  style="width: 60px; height: 60px;" *ngIf="room.imageList == null ||(room.imageList != null && room.imageList.length==0)">
+                        <img src="assets/img/room/roomimage.png">
+                    </ion-avatar>
+    
+                    <ion-avatar style="width: 60px; height: 60px;"  *ngIf="room.imageList != null && room.imageList.length > 0">
+                        <img src="{{ room.imageList[0].url}}">
+                    </ion-avatar> 
+                </div>
+
+                <div>
+                  
+
+                    <span class="mat-h5" style="font-size: 14px; ">
+                        <ion-text style="color:#333">
+                            Room Name: {{this.room.name}}</ion-text>
+                    </span>
+                </div>
+                
+            </ion-card-content>
+    
+
+              
+        </ion-card>
+        
+        <div style="display: flex; gap:10px; justify-content: center; margin-bottom: 10px;">
+            <div style="background-color: #1D174D; color: #fff; border-radius: 10px; padding: 10px;" (click)="onAddInventory()" >
+                <ion-label color="light" style="font-size: 11px;">Add Inventory</ion-label>
+              </div>
+    
+    <!-- slot="end"  -->
+              <div style="background-color: #1D174D; color: #fff; border-radius: 10px; padding: 10px;" (click)="onUpdateInventory()" >
+                <ion-label color="light"  style="font-size: 11px;">Update Inventory</ion-label>
+              </div>
+    
+              <div style="background-color: #1D174D; color: #fff; border-radius: 10px; padding: 10px;" (click)="onAddOrUpdatePlan()">
+                <ion-label color="light"  style="font-size: 11px;">Add or Update Plan</ion-label>
+              </div>
+          </div>
+
+
+    </ion-toolbar>
+
+
+    <ion-content class="profile">
+
+        <ion-card class="card-layout  text-white">
+            <ion-grid no-padding>
+                <form [formGroup]="onFindRateForm">
+
+                    <ion-row>
+                        <ion-col size="6" >
+    
+                                <ion-row>
+                                    <ion-col no-padding size="12">
+                                        <ion-text class="title-text" style="font-size: 12px;color: #333">From Date*
+                                        </ion-text>
+                  
+                                        <ion-datetime [(ngModel)]="ratesAndAvailability.fromDate" (ionChange)="fromDateChange()"
+                                            formControlName="rateAndAvailFromDate" no-padding class=" input-background" style="color:#333"
+                                            min="2000-01-01"
+                                            max="2100-12-31"
+                                            color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                            placeholder="From Date"></ion-datetime>
+                                            <ion-icon _ngcontent-wcm-c196="" name="calendar" style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
+        
+                                    </ion-col>
+                                </ion-row>
+    
+                           
+                        </ion-col>
+    
+                        <ion-col size="6">
+    
+                                <ion-row>
+                                    <ion-col no-padding size="12">
+                                        <ion-text class="title-text" style="font-size: 12px; color: #333">To Date*
+                                        </ion-text>
+                                        
+                                        <ion-datetime [(ngModel)]="ratesAndAvailability.toDate" min="{{ratesAndAvailability.fromDate}}"
+                                        max="2100-12-31"
+                                            formControlName="rateAndAvailToDate" no-padding class="input-background" style="color:#333"
+                                            color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                            placeholder="To Date"></ion-datetime>
+                                            <ion-icon _ngcontent-wcm-c196="" name="calendar" style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
+                                    </ion-col>
+                                </ion-row>
+    
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+
+
+                        <ion-col size="6" >
+                            <ion-button expand="block" class="button-submit" (click)="fiundRates()" [disabled]="!onFindRateForm.valid|| loader">
+                                <ion-text class="text-white">Find Rates</ion-text></ion-button>
+                        </ion-col>
+                
+
+                        <ion-col size="6" >
+                            <ion-button expand="block" class="button-reset" (click)="reset()"><ion-text class="text-white">Reset</ion-text></ion-button>
+                        </ion-col>
+    
+                    </ion-row>
+
+                </form>
+             </ion-grid>
+        </ion-card> 
+
+        <app-rate-update [roomData]="room" (roomItemEvent)="getResponceFromRoomRateComponent($event)"
+        ></app-rate-update>
+
+
+    
+    </ion-content>

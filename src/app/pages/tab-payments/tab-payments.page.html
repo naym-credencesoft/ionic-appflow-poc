@@ -1,0 +1,1223 @@
+<ion-header *ngIf="checkoutPaymentpage">
+    <ion-toolbar  class="checkOutPaymentTab">
+        <!-- <ion-buttons slot="start">
+        <ion-menu-button color="secondary"></ion-menu-button>
+      </ion-buttons> -->
+        <!-- <ion-title> -->
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back" style="color: #fff"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Payment</ion-text>
+    </ion-toolbar>
+</ion-header>
+
+<ion-header class="header ion-no-margin">
+    <div class="header-image">
+        <ion-grid no-margin>
+            <div style="padding: 10px;
+            color: #333;">Note: Please click on Balance Calculator button to get the updated payment details.</div>
+            <ion-row>
+                <ion-col size="6">
+                    <ion-button
+                        expand="block"
+                        class="button-submit"
+                        (click)="toggleLayout()"
+                        tappable
+                        style="font-size: 14px"
+                    >
+                        <ion-icon style="color: #fff;"
+
+                            name="{{headerIcon}}"
+                        ></ion-icon>
+                        <ion-text >{{headerTitle}}</ion-text>
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="6">
+                    <ion-button
+                        expand="block"
+                        class="button-submit text-white"
+                        (click)="onBalanceCalculate()"
+                        style="font-size: 14px"
+                    >
+                    <ion-text >Balance Calculate</ion-text> 
+                    </ion-button>
+                </ion-col>
+            </ion-row> 
+        </ion-grid>
+        <ion-progress-bar
+            type="indeterminate"
+            *ngIf="balanceLoader"
+        ></ion-progress-bar>
+        
+        <!-- <ion-row *ngIf="booking.id > 0" class="content-2">
+            <ion-col size="12">
+                <ion-chip class="bg-primary" *ngIf="booking.payableAmount > 0" style="height: 20px">
+                    <ion-label style="font-size: 13px; color: white;" color="secondary">Room:
+                        {{ booking.payableAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                    </ion-label>
+                </ion-chip>
+
+                <ion-chip class="bg-secondary" *ngIf="booking.discountAmount > 0" style="height: 20px">
+                    <ion-label style="font-size: 13px; color: white;" color="secondary">Discount:
+                        {{ booking.discountAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                    </ion-label>
+                </ion-chip>
+
+                <ion-chip class="bg-primary" *ngIf="booking.totalServiceAmount > 0" style="height: 20px">
+                    <ion-label style="font-size: 13px; color: white;" color="secondary">Services:
+                        {{ booking.totalServiceAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                    </ion-label>
+                </ion-chip>
+
+                <ion-chip class="bg-primary" *ngIf="booking.totalExpenseAmount > 0" style="height: 20px">
+                    <ion-label style="font-size: 13px; color: white;" color="secondary">Expenses:
+                        {{ booking.totalExpenseAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                    </ion-label>
+                </ion-chip>
+
+                <ion-chip class="bg-success" *ngIf="booking.totalPaymentAmount > 0" style="height: 20px">
+                    <ion-label style="font-size: 13px; color: white;" color="secondary">Paid:
+                        {{ booking.totalPaymentAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                    </ion-label>
+                </ion-chip>
+
+                <ion-chip class="bg-danger" *ngIf="booking.outstandingAmount > 0" style="height: 20px">
+                    <ion-label style="font-size: 13px; color: white;" color="secondary">Balance:
+                        {{ booking.outstandingAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                    </ion-label>
+                </ion-chip>
+
+                <ion-chip class="bg-danger" *ngIf="booking.outstandingAmount < 0" style="height: 20px">
+                    <ion-label style="font-size: 13px; color: white;" color="secondary">Balance:
+                        {{ booking.outstandingAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                    </ion-label>
+                </ion-chip>
+
+            </ion-col>
+
+        </ion-row> -->
+    </div>
+</ion-header>
+
+
+<ion-content no-padding class="animated fadeIn fast">
+    <div
+            fxLayoutAlign.gt-xs="space-between start"
+            fxLayout.xs="column"
+            class="mt-1 ml-1"
+        >
+            <ion-row *ngIf="booking.id > 0" fxFlex="100" fxFlex.gt-xs="40">
+                <!-- <ion-chip-list> -->
+                <ion-chip class="text-white"
+                    *ngIf="booking.payableAmount > 0"
+                    selected
+                    >Room Tariff (With Discount): {{ booking.payableAmount |
+                    currency: localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip
+                    class="text-white"
+                    *ngIf="getRoomAmountPaid() > 0"
+                    selected
+                    >Room Tariff Paid: {{ getRoomAmountPaid() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip
+                    class="text-white"
+                    *ngIf="getRoomAmountNotPaid() > 0"
+                    selected
+                    >Room Tariff Due: {{ getRoomAmountNotPaid() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip
+                    class="text-white"
+                    *ngIf="getRoomAmountNotPaid() <= 0"
+                    selected
+                    >Room Tariff Balance: {{ balanceRoomAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip class="egrt-green" *ngIf="booking.discountAmount > 0"
+                    >Discount: {{ booking.discountAmount | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip *ngIf="getPaidRefundAmount() > 0" style="color: red"
+                    >Refund to Customer: {{ getPaidRefundAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <!-- </ion-chip-list> -->
+            </ion-row>
+            <div *ngIf="booking.id > 0" fxFlex="100" fxFlex.gt-xs="28">
+                <!-- <ion-chip-list> -->
+                <ion-chip *ngIf="booking.totalServiceAmount > 0" class="text-white"
+                    >Total Service Amount:{{ booking.totalServiceAmount |
+                    currency: localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip *ngIf="getServiceAmountNotPaid() > 0"
+                    >Services Due:{{ getServiceAmountNotPaid() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip class="text-white"
+                    *ngIf="
+                booking.totalServiceAmount > 0 &&
+                getServiceAmountNotPaid() <= 0
+              "
+                    >Services Balance:{{ balanceServiceAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip class="text-white" *ngIf="getServiceAmountPaid() > 0"
+                    >Services Amount Paid:{{ getServiceAmountPaid()| currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <!--   
+              </ion-chip-list> -->
+            </div>
+            <div *ngIf="booking.id > 0" fxFlex="100" fxFlex.gt-xs="28">
+                <!-- <ion-chip-list> -->
+                <ion-chip
+                class="text-white"
+                    *ngIf="booking.totalExpenseAmount > 0"
+                >
+                    Expenses:{{ booking.totalExpenseAmount | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip class="text-white" *ngIf="getExpenceAmountNotPaid() > 0" selected
+                    >Expenses Due:{{ getExpenceAmountNotPaid() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip class="text-white"
+                    *ngIf="
+                booking.totalExpenseAmount > 0 &&
+                getExpenceAmountNotPaid() <= 0
+              "
+                    selected
+                    >Expenses Balance:{{ balanceExpenceAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip class="text-white" *ngIf="getExpenceAmountPaid() > 0" selected
+                    >Expenses Amount Paid:{{ getExpenceAmountPaid()| currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <!--   
+              </ion-chip-list> -->
+            </div>
+            <div *ngIf="booking.id > 0" fxFlex="100" fxFlex.gt-xs="28">
+                <ion-chip
+                class="text-white"
+                    selected
+                    *ngIf=" getTotalBookingPaymentAmount() > 0"
+                    selected
+                    >Total Tariff: {{ getTotalBookingPaymentAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+
+                <ion-chip
+                class="text-white"
+                    selected
+                    *ngIf="
+                        getAmount(booking.payableAmount) - getCommitionAmount() > 0
+                        "
+                    selected
+                    >Collect Amount: {{  getAmount(booking.payableAmount) - getCommitionAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+
+                <ion-chip
+                class="text-white"
+                selected
+                *ngIf="getCommitionAmount() > 0"
+                selected
+                >OTA Charges: {{  getCommitionAmount() | currency:
+                localCurrency:'symbol':'1.2-2' }}</ion-chip
+            >
+
+                <ion-chip
+                    style="color: yellowgreen"
+                    *ngIf="getTotalPaidPayment() > 0"
+                    selected
+                    >Paid: {{ getTotalPaidPayment() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip
+                class="text-white"
+                    selected
+                    *ngIf="getTotalNotPaidPayment() <= 0"
+                    selected
+                    >Balance: {{ totalBalanceAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip
+                    style="color: red"
+                    selected
+                    *ngIf="getTotalNotPaidPayment() > 0"
+                    selected
+                    >Total Due: {{getTotalNotPaidPayment() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip
+                >
+            </div>
+        </div>
+    <ion-grid class="card-layout card-data text-white" *ngIf="isCreateNewPayment">
+        <form [formGroup]="onPaymentForm">
+            <!-- <ion-row
+                *ngIf="data.id != null && data.id != undefined && data.serviceId != null && data.serviceId != undefined || data.id == null || data.id == undefined"
+            >
+                <ion-text style="font-size: 12px"
+                    >Service</ion-text
+                >
+                <ion-col size="12">
+                    <ion-select
+                        class="card-item"
+                        value="{{ data.serviceId}}"
+                        [(ngModel)]="data.serviceId"
+                        formControlName="serviceType"
+                        placeholder="Service"
+                        [disabled]="data.id != null && data.id != undefined || isView"
+                        (ionChange)="setService(data.serviceId)"
+                    >
+                        <ion-select-option
+                            *ngFor="let service of services"
+                            [value]="service.id"
+                        >
+                            {{ service.name }}({{ service.serviceType }})
+                        </ion-select-option>
+                    </ion-select>
+                </ion-col>
+            </ion-row> -->
+
+            <div class="serviceNotes mb-1" *ngIf="servicePaymentLimit">
+                You have already exceed the payment limit of this service.
+            </div>
+
+            <div class="serviceNotes mb-1" *ngIf="servicePaymentComplete">
+                Payment record for the selected service already exists.
+            </div>
+
+            <ion-row>
+                <ion-text  style="font-size: 12px"
+                    >Transection Reference</ion-text
+                >
+                <ion-col
+                    size="12"
+                    size-xl="12"
+                    size-sm="12"
+                    size-md="12"
+                    size-lg="12"
+                >
+                    <ion-col class="ion-no-padding" size="12">
+                        <ion-input
+                            value="{{ data.referenceNumber}}"
+                            disabled
+                            [(ngModel)]="data.referenceNumber"
+                            formControlName="referenceNumber"
+                            placeholder="#"
+                            class="card-item"
+                            inputmode="text"
+                        ></ion-input>
+                    </ion-col>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Date*
+                    </ion-text>
+                    <ion-datetime
+                        [(ngModel)]="data.date"
+                        formControlName="PaymentDate"
+                        class="card-item"
+                        
+                        displayFormat="DD/MM/YYYY"
+                        pickerFormat="DD/MM/YYYY"
+                        placeholder="Select Date"
+                    ></ion-datetime>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+                    <ion-col class="ion-no-padding" size="12">
+                        <ion-text  style="font-size: 12px"
+                            >Email</ion-text
+                        >
+                        <ion-input
+                            [disabled]="isView"
+                            value="{{ data.email}}"
+                            [(ngModel)]="data.email"
+                            class="card-item"
+                            formControlName="email"
+                            placeholder="Email Address"
+                            inputmode="email"
+                        ></ion-input>
+                    </ion-col>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Business Service Name*</ion-text
+                    >
+                    <ion-select
+                        [disabled]="isView"
+                        value="{{ data.businessServiceName}}"
+                        [(ngModel)]="data.businessServiceName"
+                        formControlName="BusinessServiceName"
+                        placeholder="Business Service Name"
+                        class="card-item"
+                    >
+                        <ion-select-option
+                            *ngFor="let data of businessServices"
+                            [value]="data.name"
+                        >
+                            <p>{{ data.name }}</p></ion-select-option
+                        >
+
+                        <ion-select-option
+                            *ngFor="let serviceType of propertyServices"
+                            [value]="serviceType.name"
+                        >
+                            {{ serviceType.name }} &nbsp;
+                            <b>({{ serviceType.serviceType }})</b>
+                        </ion-select-option>
+
+                        <ion-select-option
+                            *ngFor="let expenseItem of expensesList"
+                            [value]="expenseItem.value"
+                        >
+                            {{ expenseItem.viewValue }}
+                        </ion-select-option>
+
+                        <ion-select-option
+                            *ngFor="let expenseItem of propertyExpenseList"
+                            [value]="expenseItem.name"
+                        >
+                            {{ expenseItem.name }} ({{ expenseItem.type }})
+                        </ion-select-option>
+                    </ion-select>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+                    <!-- <ion-col class="ion-no-padding" size="12"> -->
+                    <ion-text  style="font-size: 12px"
+                        >Description/Notes</ion-text
+                    >
+                    <ion-input
+                        [disabled]="isView"
+                        value="{{ data.description}}"
+                        [(ngModel)]="data.description"
+                        formControlName="description"
+                        placeholder="Note"
+                        inputmode="text"
+                        class="card-item"
+                    ></ion-input>
+                    <!-- </ion-col> -->
+                </ion-col>
+            </ion-row>
+            <!-- row 3 -->
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >External Tracking number</ion-text
+                    >
+                    <ion-col class="ion-no-padding" size="12">
+                        <ion-input
+                            [disabled]="isView"
+                            value="{{ data.externalReference}}"
+                            [(ngModel)]="data.externalReference"
+                            formControlName="externalReference"
+                            placeholder="#"
+                            inputmode="text"
+                            class="card-item"
+                        ></ion-input>
+                    </ion-col>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="4">
+                    <ion-text  style="font-size: 12px"
+                        >Status</ion-text
+                    >
+                    <ion-select
+                        [disabled]="isView"
+                        value="{{ data.status}}"
+                        [(ngModel)]="data.status"
+                        formControlName="status"
+                        placeholder="Status"
+                        class="card-item"
+                    >
+                        <ion-select-option value="Paid">Paid</ion-select-option>
+                        <ion-select-option value="NotPaid"
+                            >NotPaid</ion-select-option
+                        >
+                    </ion-select>
+                </ion-col>
+
+                <ion-col size="4">
+                    <ion-text  style="font-size: 12px"
+                        >Currency</ion-text
+                    >
+                    <ion-select
+                        class="card-item"
+                        value="{{ data.currency}}"
+                        [(ngModel)]="data.currency"
+                        [disabled]="isView"
+                        formControlName="currency"
+                        placeholder="Currency"
+                        class="card-item"
+                    >
+                        <ion-select-option value="aud">AUD</ion-select-option>
+                        <ion-select-option value="usd">USD</ion-select-option>
+                        <ion-select-option value="gbp">GBP</ion-select-option>
+                        <ion-select-option value="eur">EUR</ion-select-option>
+                        <ion-select-option value="nzd">NZD</ion-select-option>
+                        <ion-select-option value="inr">INR</ion-select-option>
+                        <ion-select-option value="bdt">BDT</ion-select-option>
+                        <ion-select-option value="sar">SAR</ion-select-option>
+                        <ion-select-option value="sgd">SGD</ion-select-option>
+                    </ion-select>
+                </ion-col>
+
+                <ion-col size="4">
+                    <ion-text
+                        
+                        class="rpc-text"
+                        style="font-size: 12px"
+                        >Amount</ion-text
+                    >
+                    <ion-col class="ion-no-padding" size="12">
+                        <ion-input
+                            [disabled]="isView"
+                            oninput="this.value = Math.abs(this.value)"
+                            value="{{ data.transactionAmount}}"
+                            readonly="{{isRoomOrder() || isServiceOrExpense()}}"
+                            class="card-item"
+                            [(ngModel)]="data.transactionAmount"
+                            (change)="
+                            this.maxPaymentAmount != null &&
+                            this.maxPaymentAmount != undefined &&
+                            this.maxPaymentAmount > 0 &&
+                            this.data.transactionAmount > this.maxPaymentAmount
+                              ? (this.data.transactionAmount = this.maxPaymentAmount)
+                              : data.transactionAmount;
+                              this.maxPaymentAmount != null &&
+                              this.maxPaymentAmount != undefined &&
+                              this.maxPaymentAmount < 0 
+                                ? (this.data.transactionAmount = 0)
+                                : data.transactionAmount
+                          "
+                            (ngModelChange)="checkPaymentAmount()"
+                            formControlName="amount"
+                            placeholder="0"
+                            inputmode="text"
+                        ></ion-input>
+                    </ion-col>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Mode of Payment</ion-text
+                    >
+                    <ion-col class="ion-no-padding" size="12">
+                        <ion-select
+                            class="card-item"
+                            [(ngModel)]="data.paymentMode"
+                            formControlName="paymentMode"
+                            (ionChange)="paymentModeChange()"
+                            [disabled]="isView"
+                            placeholder="Select Mode of Payment"
+                        >
+                            <!-- <ion-select-option
+                                value="Card"
+                                *ngIf="businessPlan === 'Business Premium'"
+                                >Card
+                            </ion-select-option> -->
+                            <ion-select-option value="Cash"
+                                >Cash</ion-select-option
+                            >
+                            <ion-select-option
+                                value="BankTransfer"
+                                *ngIf="isBankAvailable"
+                                >BankTransfer
+                            </ion-select-option>
+
+                            <ion-select-option
+                                *ngFor="let paymentMode of propertyPaymentList"
+                                [disabled]="!IsActive(paymentMode.paymentMode)"
+                                value="{{paymentMode.paymentMode}}"
+                                >{{paymentMode.name}}</ion-select-option
+                            >
+                        </ion-select>
+                    </ion-col>
+                </ion-col>
+            </ion-row>
+            <!-- Ref  -->
+            <div
+                class="ion-no-margin ion-no-padding"
+                *ngIf="data.paymentMode == 'UPI' || (data.paymentMode != 'PettyCash' && data.paymentMode != 'BankTransfer' && data.paymentMode != 'Wallet') && isPaidPayment(data.paymentMode)"
+                class="paymentfrom"
+            >
+                <form [formGroup]="onTRForm">
+                    <ion-row>
+                        <p class="mb-5 detail-pay">
+                            Please pay {{ data.amount | currency:
+                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                            }} using following wallet details and share
+                            transaction details in the given below.
+                        </p>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Transaction Reference Number
+                            </ion-text>
+                            <ion-input
+                                class="card-item"
+                                formControlName="TransactionReferenceNumber"
+                                [(ngModel)]="data.receiptNumber"
+                                placeholder="Transaction Reference Number"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-row>
+                </form>
+            </div>
+            <!--  -->
+            <div
+                class="ion-no-margin ion-no-padding"
+                *ngIf="data.paymentMode==='Wallet'"
+                class="paymentfrom"
+            >
+                <form [formGroup]="onWalletForm">
+                    <ion-row>
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >First Name</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="WalletClientFN"
+                                [(ngModel)]="mobileWallet.firstName"
+                                placeholder="First Name"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Last Name</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="WalletClientLN"
+                                [(ngModel)]="mobileWallet.lastName"
+                                placeholder="Last Name"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Phone Number</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="WalletClientPhone"
+                                [(ngModel)]="mobileWallet.phoneNumber"
+                                placeholder="Phone Number"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Wallet Provider</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="WalletClientWP"
+                                [(ngModel)]="mobileWallet.walletProvider"
+                                placeholder="Wallet Provider"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Wallet Url</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="WalletURL"
+                                [(ngModel)]="mobileWallet.walletUrl"
+                                placeholder="Wallet Url"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <p class="mb-5 detail-pay">
+                            Please pay {{ data.amount | currency:
+                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                            }} using following wallet details and share
+                            transaction details in the given below.
+                        </p>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Transaction Reference Number
+                            </ion-text>
+                            <ion-input
+                                class="card-item"
+                                formControlName="TransactionReferenceNumber"
+                                [(ngModel)]="data.receiptNumber"
+                                placeholder="Transaction Reference Number"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-row>
+                </form>
+            </div>
+            <div
+                class="ion-no-margin ion-no-padding"
+                *ngIf="data.paymentMode==='BankTransfer'"
+                class="paymentfrom"
+            >
+                <form [formGroup]="onbankForm">
+                    <ion-row>
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Bank Name</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="branchName"
+                                [(ngModel)]="bankAccount.branchName"
+                                placeholder="Bank Name"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Branch Name</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="branchName"
+                                [(ngModel)]="bankAccount.branchName"
+                                placeholder="Branch Name"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Account Name</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="accountName"
+                                [(ngModel)]="bankAccount.branchName"
+                                placeholder="Account Name"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+
+                        <ion-col
+                            size="6"
+                            size-xl="6"
+                            size-sm="6"
+                            size-md="6"
+                            size-lg="6"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Account Number</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="accountNumber"
+                                [(ngModel)]="bankAccount.branchName"
+                                placeholder="Account Number"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Swift Code</ion-text
+                            >
+                            <ion-input
+                                class="card-item"
+                                readonly
+                                formControlName="swiftCode"
+                                [(ngModel)]="bankAccount.swiftCode"
+                                placeholder="Swift Code"
+                                inputmode="text"
+                            >
+                            </ion-input>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row>
+                        <p class="mb-5 detail-pay">
+                            Please pay {{ data.amount | currency:
+                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                            }} using following bank details and share
+                            transaction details in the given below.
+                        </p>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col
+                            size="12"
+                            size-xl="12"
+                            size-sm="12"
+                            size-md="12"
+                            size-lg="12"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Transaction Reference Number
+                            </ion-text>
+                            <ion-input
+                                class="card-item"
+                                formControlName="TransactionReferenceNumber"
+                                [(ngModel)]="data.receiptNumber"
+                                placeholder="Transaction Reference Number"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-row>
+                </form>
+            </div>
+            <div
+                class="ion-no-margin ion-no-padding"
+                *ngIf="isCard"
+                class="paymentfrom"
+            >
+                <form [formGroup]="onCardForm">
+                    <ion-row>
+                        <ion-text  style="font-size: 12px"
+                            >Card Number</ion-text
+                        >
+                        <ion-col class="ion-no-padding" size="12">
+                            <ion-input
+                                [disabled]="isView"
+                                [(ngModel)]="data.cardNumber"
+                                formControlName="cardNumber"
+                                placeholder="#"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-row>
+                    <!-- row 8 -->
+                    <ion-row>
+                        <ion-text  style="font-size: 12px"
+                            >Name on Card</ion-text
+                        >
+                        <ion-col class="ion-no-padding" size="12">
+                            <ion-input
+                                [disabled]="isView"
+                                [(ngModel)]="data.name"
+                                formControlName="name"
+                                placeholder="Name"
+                                inputmode="text"
+                            ></ion-input>
+                        </ion-col>
+                    </ion-row>
+                    <!-- row 9 -->
+                    <ion-row>
+                        <ion-col
+                            size="4"
+                            size-xl="4"
+                            size-sm="4"
+                            size-md="4"
+                            size-lg="4"
+                        >
+                            <ion-text  style="font-size: 12px"
+                                >Expire</ion-text
+                            >
+                            <ion-col class="ion-no-padding" size="12">
+                                <ion-select
+                                    [(ngModel)]="data.expYear"
+                                    formControlName="expYear"
+                                    class="card-item"
+                                    class="ion-no-margin ion-no-padding"
+                                    placeholder="Year"
+                                >
+                                    <ion-select-option value="2021"
+                                        >2021</ion-select-option
+                                    >
+                                    <ion-select-option value="2022"
+                                        >2022</ion-select-option
+                                    >
+                                    <ion-select-option value="2023"
+                                        >2023</ion-select-option
+                                    >
+                                    <ion-select-option value="2024"
+                                        >2024</ion-select-option
+                                    >
+                                    <ion-select-option value="2025"
+                                        >2025</ion-select-option
+                                    >
+                                    <ion-select-option value="2026"
+                                        >2026</ion-select-option
+                                    >
+                                    <ion-select-option value="2027"
+                                        >2027</ion-select-option
+                                    >
+                                    <ion-select-option value="2028"
+                                        >2028</ion-select-option
+                                    >
+                                    <ion-select-option value="2029"
+                                        >2029</ion-select-option
+                                    >
+                                    <ion-select-option value="2030"
+                                        >2030</ion-select-option
+                                    >
+                                </ion-select>
+                            </ion-col>
+                        </ion-col>
+                        <ion-col size="4">
+                            <ion-text
+                                
+                                class="rpc-text"
+                                style="font-size: 12px"
+                                >Expire</ion-text
+                            >
+                            <ion-col class="ion-no-padding" size="12">
+                                <ion-select
+                                    [(ngModel)]="data.expMonth"
+                                    formControlName="expMonth"
+                                    class="card-item"
+                                    class="ion-no-margin ion-no-padding"
+                                    placeholder="Month"
+                                >
+                                    <ion-select-option value="01"
+                                        >January</ion-select-option
+                                    >
+                                    <ion-select-option value="02"
+                                        >February</ion-select-option
+                                    >
+                                    <ion-select-option value="03"
+                                        >March</ion-select-option
+                                    >
+                                    <ion-select-option value="04"
+                                        >April</ion-select-option
+                                    >
+                                    <ion-select-option value="05"
+                                        >May</ion-select-option
+                                    >
+                                    <ion-select-option value="06"
+                                        >June</ion-select-option
+                                    >
+                                    <ion-select-option value="07"
+                                        >July</ion-select-option
+                                    >
+                                    <ion-select-option value="08"
+                                        >August</ion-select-option
+                                    >
+                                    <ion-select-option value="09"
+                                        >September</ion-select-option
+                                    >
+                                    <ion-select-option value="10"
+                                        >October</ion-select-option
+                                    >
+                                    <ion-select-option value="11"
+                                        >November</ion-select-option
+                                    >
+                                    <ion-select-option value="12"
+                                        >December</ion-select-option
+                                    >
+                                </ion-select>
+                            </ion-col>
+                        </ion-col>
+
+                        <ion-col size="4">
+                            <ion-text
+                                
+                                class="rpc-text"
+                                style="font-size: 12px"
+                                >CVC</ion-text
+                            >
+                            <ion-col class="ion-no-padding" size="12">
+                                <ion-input
+                                    class="ion-no-padding"
+                                    [(ngModel)]="data.cvv"
+                                    formControlName="cvv"
+                                    class="cvc"
+                                    placeholder="0"
+                                    inputmode="text"
+                                ></ion-input>
+                            </ion-col>
+                        </ion-col>
+                    </ion-row>
+                </form>
+            </div>
+            <!-- button -->
+
+            <ion-row *ngIf="!isView">
+                <ion-col size="4">
+                    <!-- [disabled]="!onPaymentForm.valid || data.paymentMode==='BankTransfer' && !onbankForm.valid || data.paymentMode === 'Wallet' && !onWalletForm.valid" -->
+                    <ion-button
+                        size="small"
+                        round
+                        expand="block"
+                        class="button-submit"
+                        [disabled]=" servicePaymentComplete ||
+                        servicePaymentLimit ||
+                        !onPaymentForm.valid || data.paymentMode==='BankTransfer' && !onbankForm.valid || data.paymentMode === 'Wallet' && !onWalletForm.valid"
+                        (click)="onSubmit()"
+                        >{{submitButtonText}}</ion-button
+                    >
+                </ion-col>
+
+                <ion-col size="4" *ngIf=" this.submitButtonText==='ADD'">
+                    <ion-button
+                        size="small"
+                        round
+                        expand="block"
+                        class="button-submit"
+                        (click)="reset()"
+                        >Reset
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="4">
+                    <ion-button
+                        size="small"
+                        round
+                        expand="block"
+                        class="button-submit"
+                        (click)="toggleLayout()"
+                        >Cancel
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </form>
+    </ion-grid>
+
+    <ion-grid class="list-back text-white" *ngIf="!isCreateNewPayment">
+        <ion-row>
+            <ion-col size="12">
+
+                <ion-list class="list-back">
+                    <ion-item lines="none">
+                        <ion-text
+                            class="payment_List_Title text-white"
+                            style="    font-size: 18px; font-weight: bold;"
+                            >List of Payment</ion-text
+                        >
+                    </ion-item>
+                    <ion-card *ngFor="let pay of paymentListData" style="border: 1px solid gray;">
+                        <ion-card-header class="Crad-Header">
+                            <ion-row class="ion-no-padding ion-no-margin">
+                                <ion-col size="6">
+                                    <ion-text class="text-2"
+                                        >Date:</ion-text
+                                    >
+                                    <ion-text
+                    
+                                        class="text-2 TextValue"
+                                    >
+                                        {{pay.date | date:'MMM d, y'}}
+                                    </ion-text>
+                                </ion-col>
+                                <ion-col size="5">
+                                    <ion-text class="text-2"
+                                        >Amount:</ion-text
+                                    >
+                                    <ion-text
+                                        class="text-2 TextValue"
+                                    >
+                                        {{pay.transactionAmount| currency:
+                                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                        }}
+                                    </ion-text>
+                                </ion-col>
+                                <ion-col size="1">
+                                    <ion-row>
+                                        <ion-icon class="text-2"
+                                            (click)="onPaymentOption(pay);"
+                                            name="ellipsis-vertical-outline"
+                                        >
+                                        </ion-icon>
+                                    </ion-row>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <ion-row>
+                                <ion-col class="ion-no-padding" size="12">
+                                    <ion-text
+                                        class="text-2"
+                                        >Payment Reference No:
+                                    </ion-text>
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        >{{pay.referenceNumber}}
+                                    </ion-text>
+                                </ion-col>
+                            </ion-row>
+                            <!-- <ion-row>
+                                    <ion-col class="ion-no-padding" size="12">
+                                        <ion-text style="font-size: 13px;" >Date:</ion-text>
+                                        <ion-text class="TextValue" style="font-size: 13px;">
+                                            {{pay.date | date:'MMM d, y'}}
+                                        </ion-text>
+                                    </ion-col>
+                                </ion-row> -->
+                            <ion-row>
+                                <ion-col class="ion-no-padding" size="12">
+                                    <ion-text
+                                       class="text-2"
+                                        >Description:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        >{{pay.description}}
+                                    </ion-text>
+                                </ion-col>
+                            </ion-row>
+
+                            <!-- <ion-row>
+                                    <ion-col class="ion-no-padding" size="12">
+                                        <ion-text style="font-size: 13px;" >Amount:</ion-text>
+                                        <ion-text class="TextValue" style="font-size: 13px;">
+                                            {{pay.transactionAmount| currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                                        </ion-text>
+                                    </ion-col>
+                                </ion-row> -->
+
+                            <ion-row>
+                                <ion-col class="ion-no-padding" size="12">
+                                    <ion-text
+                                       class="text-2"
+                                        >Status:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        >{{pay.status}}</ion-text
+                                    >
+                                </ion-col>
+                            </ion-row>
+
+                            <ion-row>
+                                <ion-col class="ion-no-padding" size="12">
+                                    <ion-text
+                                        class="text-2"
+                                        >Mode:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+
+                                        >{{pay.paymentMode}}
+                                    </ion-text>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card-content>
+                        <!-- <ion-icon (click)="onPaymentOption(pay);" class="viewdetail" name="md-more" style="float: right;" ></ion-icon> -->
+                    </ion-card>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <!--  -->
+    </ion-grid>
+</ion-content>

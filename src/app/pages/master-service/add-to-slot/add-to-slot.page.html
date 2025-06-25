@@ -1,0 +1,82 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+    
+        <ion-buttons slot="start">
+            <ion-back-button mode ="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+            <ion-text color="light" class="HeaderTitle">Reservation</ion-text>
+
+    
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content >
+
+    <ion-list *ngFor="let item of slotReservation.businessServiceTypes; let i = index;">
+      <h6 class="heading-bold ion-padding-start">{{ item.name }} </h6>
+      
+      <div *ngFor="let slot of item.slots; let j = index;">
+        <ion-text class="heading-bold font-14 text-dark-black ion-padding">Date: {{slot.date | date }}</ion-text>
+        <ion-card class="sub-item secondary-gradient" *ngFor="let reservationSlot of slot.resourceList; let r = index ;">
+            
+        
+            <ion-card-title *ngIf="reservationSlot.name"  color="light" class="ion-padding">{{reservationSlot.name }}</ion-card-title>
+            <ion-card-subtitle *ngIf="reservationSlot.desc"  color="light" class="ion-padding-start">{{ reservationSlot.desc }}</ion-card-subtitle>
+        <ion-card-content>
+            <div *ngFor="let bookedTimings of reservationSlot.bookedTimings; let b = index" >
+              <ion-button class="m-1" color="primary" size="small" *ngIf="bookedTimings.duration!=null" (click)="removeSlot(i, r, b); removeTimeSlot(i, r, b)" >
+                 {{'01/01/1900 ' + bookedTimings.startTime  | date: 'hh:mm aa' }} - {{'01/01/1900 ' + bookedTimings.finishTime  | date: 'hh:mm aa'}} <ion-icon class="ion-padding-start" name="close-circle-outline"></ion-icon></ion-button>
+      
+                 <ion-input
+                 [(ngModel)]="bookedTimings.notes" placeholder="Note" inputmode="text"></ion-input>
+         
+              </div>
+            </ion-card-content>
+            <!-- <ion-text class="heading-regular font-14 text-dark-black">{{slotReservation.fromTime}} -
+                {{slotReservation.toTime}}
+            </ion-text> -->
+        </ion-card>
+      </div>
+      
+  </ion-list>
+  
+    <ion-list class="listcard">
+        <ion-grid no-margin no-padding class="item2-checkout">
+            <div class="bg-white">
+       
+             <!-- <h6><b>Tax Amount: </b> <span>{{ slotReservation.taxAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                   {{businessUser.localCurrency | uppercase }}</span></h6>
+  
+             <h6>Total Amount: <span>
+                   {{businessUser.localCurrency | uppercase }}</span></h6> -->
+  
+                <ion-row no-margin no-padding float-right>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-text style="font-size: 13px;"><b>Total Amount</b></ion-text>
+                    </ion-col>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-row no-margin no-padding float-right class="order-amount">
+                            <ion-text style="font-size: 13px;"> </ion-text>
+                            <ion-text style="font-size: 13px;" class="value-text">
+                                <b>{{ slotReservation.totalAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</b></ion-text>
+                        </ion-row>
+                    </ion-col>
+  
+                </ion-row>
+  
+            </div>
+  
+        </ion-grid>
+    </ion-list>
+  
+  </ion-content>
+  <ion-footer>
+    <div *ngIf="slotReservation.totalAmount >0" class="cart" (click)="onBookingClick()">
+        <ion-text class="heading-medium font-14 text-primary">
+            <b>Checkout</b>
+        </ion-text>
+    </div>
+    <!-- <ion-toolbar style=" height: 50px;">
+        <app-footer></app-footer>
+      </ion-toolbar> -->
+  </ion-footer>

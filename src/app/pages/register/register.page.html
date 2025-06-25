@@ -1,0 +1,147 @@
+<ion-content padding class="animated fadeIn login auth-page">
+
+  <div class="auth-content">
+    <!-- Logo -->
+    <div padding-horizontal text-center class="animated fadeInDown">
+      <div class="logo"></div>
+      <h4 no-margin>
+        <ion-text color="light">
+          {{ 'app.name' | translate }}
+          <ion-text color="secondary" class="fw700"></ion-text>
+        </ion-text>
+      </h4>
+    </div>
+
+    <!-- Register form -->
+    <form [formGroup]="onRegisterForm" class="list-form">
+
+<ion-row>
+    <ion-col size ="6" >
+            <ion-item no-padding class="animated fadeInUp">
+                    <ion-label position="floating">
+                      <ion-icon item-start name ="person"></ion-icon>
+                      {{ 'app.pages.reg.text.firstname' | translate }}
+                    </ion-label>
+                    <ion-input color="secondary" type="text"  [(ngModel)]="model.firstName" formControlName="firstname"></ion-input>
+                  </ion-item>
+                  <p ion-text class="text08" *ngIf="onRegisterForm.get('firstname').touched && onRegisterForm.get('firstname').hasError('required')">
+                    <ion-text color="danger">
+                            {{ 'app.label.errors.field' | translate }}
+                    </ion-text>
+                  </p>
+            
+    </ion-col>
+    <ion-col size ="6">
+            <ion-item no-padding class="animated fadeInUp">
+                    <ion-label position="floating">
+                      <ion-icon item-start name ="person"></ion-icon>
+                      {{ 'app.pages.reg.text.lastname' | translate }}
+                    </ion-label>
+                    <ion-input color="secondary" type="text"  [(ngModel)]="model.lastName" formControlName="lastname"></ion-input>
+                  </ion-item>
+                  <p ion-text class="text08" *ngIf="onRegisterForm.get('lastname').touched && onRegisterForm.get('lastname').hasError('required')">
+                    <ion-text color="danger">
+                            {{ 'app.label.errors.field' | translate }}
+                    </ion-text>
+                  </p> 
+    </ion-col>
+    </ion-row>  
+    
+    <ion-item no-padding class="animated fadeInUp">
+    <ion-label position="floating">
+        <ion-icon name="mail" item-start></ion-icon>
+        {{ 'app.pages.reg.text.email' | translate }}
+    </ion-label>
+    <ion-input color="secondary" type="email"  [(ngModel)]="model.email" formControlName="email"></ion-input>
+    </ion-item>
+    <p ion-text class="text08" *ngIf="onRegisterForm.get('email').touched && onRegisterForm.get('email').hasError('required')">
+    <ion-text color="danger">
+            {{ 'app.label.errors.field' | translate }}
+    </ion-text>
+    </p>
+    <p ion-text class="text08" *ngIf=" onRegisterForm.get('email').hasError('email') && onRegisterForm.controls.email.dirty">
+        <ion-text color="danger">
+            {{ 'app.pages.reg.text.emailvalidation' | translate }}
+        </ion-text>
+        </p>
+
+    <ion-item no-padding class="animated fadeInUp">
+    <ion-label position="floating">
+        <ion-icon name="lock" item-start></ion-icon>
+        {{ 'app.pages.reg.text.password' | translate }}
+    </ion-label>
+    <ion-input color="secondary" type="password" 
+        [(ngModel)]="model.password" formControlName="password" (ngModelChange)="passwordFunction($event)"></ion-input>
+    </ion-item>
+    <p ion-text color="danger" class="text08" *ngIf="onRegisterForm.get('password').touched && onRegisterForm.get('password').hasError('required')">
+    <ion-text color="danger">
+            {{ 'app.label.errors.field' | translate }}
+    </ion-text>
+    </p>
+
+    <p ion-text color="danger" class="text08" *ngIf="onRegisterForm.get('password').dirty && !isPasswordValid">
+        <ion-text color="danger">
+            {{ 'app.label.text.passwordvalidation' | translate }}
+        </ion-text>
+    </p>
+
+    <p ion-text class="text08" *ngIf="onRegisterForm.get('password').dirty && isPasswordValid">
+        <ion-text color="light">
+           {{ 'app.label.text.passwordverified'| translate }}
+        </ion-text>
+    </p>
+
+    <ion-item no-padding class="animated fadeInUp">
+        <ion-label position="floating">
+            <ion-icon name="lock" item-start></ion-icon>
+            {{ 'app.pages.reg.text.confirmpassword' | translate }}
+        </ion-label>
+        <ion-input color="secondary" type="password"  [(ngModel)]="model.confirmPassword" formControlName="confirmPassword" (ngModelChange)="confirmPasswordFunction($event)"></ion-input>
+        </ion-item>
+        <p ion-text class="text08" *ngIf="onRegisterForm.get('confirmPassword').touched && onRegisterForm.get('confirmPassword').hasError('required')">
+        <ion-text color="danger">
+                {{ 'app.label.errors.field' | translate }}
+        </ion-text>
+        </p>
+
+        <p ion-text class="text08" *ngIf="onRegisterForm.get('password').touched && passwordMatched" >
+        <ion-text  color="light">
+            {{ 'app.label.text.passwordmatch' | translate }}
+        </ion-text>
+        </p>
+        <p ion-text class="text08" *ngIf="onRegisterForm.get('password').touched && passwordMatched == false" >
+        <ion-text color="danger">
+            {{ 'app.label.text.passworddoesnotmatch' | translate }}
+        </ion-text>
+        </p>
+            
+
+    </form>
+
+    <div margin-top>
+      <ion-button icon-left size="medium" expand="full" shape="round" color="dark" (click)="signUp()" [disabled]="!onRegisterForm.valid || !passwordMatched "
+        tappable>
+        <ion-icon name="log-in"></ion-icon>
+        {{ 'app.pages.reg.text.signup' | translate }}
+      </ion-button>
+
+      <p text-center>
+        <ion-text color="light">
+                {{ 'app.pages.reg.text.or' | translate }}
+        </ion-text>
+      </p>
+
+
+    </div>
+
+    <!-- Other links -->
+    <div text-center margin-top margin-bottom>
+      <span (click)="goToLogin()" tappable>
+        <ion-text color="light">
+          <strong>{{ 'app.pages.reg.text.ihaveaccount' | translate }}</strong>
+        </ion-text>
+      </span>
+    </div>
+
+  </div>
+</ion-content>

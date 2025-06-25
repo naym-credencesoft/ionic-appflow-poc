@@ -1,0 +1,335 @@
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Order Dashboard </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon (click)="menuAction()" style="font-size: 20px; margin-top: -10px;" class="backbutton-icon"
+        src="/assets/img/icons/menu-icon-w.svg"></ion-icon>
+
+            <ion-text color="light" class="HeaderTitle" 
+                >Restaurant Dashboard</ion-text>
+                <ion-img
+                style="margin-left: -20px; margin-top: -9px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onHeaderMenu()"
+            ></ion-img>
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-row>
+        
+        <ion-col size="12" style="margin: 0px; padding: 0px;">
+          <ion-select class="card-itemOne"  [(ngModel)]="bserviceid"
+          (ionChange)="setService(bserviceid)"
+            (ionChange)="setService(bserviceid)" name="Room" okText="Done" cancelText="Dismiss"
+            style="height: 55px; font-size: 20px; text-align: left; color: white;">
+            <ion-select-option value="0">
+                <p>All</p>
+              </ion-select-option>
+            <ng-container *ngFor="let Service of businessServiceList">
+              <ion-select-option *ngIf="Service.active" [value]="Service.id" class="text-wrap">
+                <p  class="text-wrap" *ngIf="Service.name == 'Restaurants' && Service.brandName != null && Service.brandName !=''">{{ Service.name
+                }}-{{Service.brandName}}</p>
+              <p *ngIf="Service.name == 'Restaurants' && (Service.brandName == null || Service.brandName =='')">{{ Service.name }}</p>
+              <p *ngIf="Service.name != 'Restaurants'">{{ Service.name }}</p>
+              </ion-select-option>
+            </ng-container>
+          </ion-select>
+          <!-- <ion-text *ngIf="!serviceSelected"
+            style="position: absolute; top: 50%; left: 20px; z-index: 4; font-size: 20px; transform: translateY(-50%); color: #fff;">
+            Select Services
+          </ion-text> -->
+      
+          <ion-icon name="caret-down-outline"
+            style="    position: absolute;
+            top: 50%;
+            right: 5px;
+            z-index: 4;
+            font-size: 20px;
+            transform: translateY(-50%);
+            color: #fff;"></ion-icon>
+        </ion-col>
+      </ion-row>
+    <ion-row class="selectItem mt-1">
+        <ion-button
+            fill="solid"
+            size="default"
+            class="button-active-change"
+            (click)="manageOrder()"
+        >
+            <ion-text class="header-button">Manage Order</ion-text></ion-button
+        >
+
+        <ion-button
+            fill="solid"
+            size="default"
+            class="button-active-change"
+            (click)="createOrder()"
+        >
+            <ion-text class="header-button">Place a new order</ion-text>
+        </ion-button>
+    </ion-row>
+
+    <div class="section-1">
+        <div>
+
+            <ion-segment mode="md" [(ngModel)]="segment2" class="list-back">
+                <ion-segment-button value="DineIn">
+                    <ion-label style="font-size: 11px; color: #333">Dine In</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="RoomOrder">
+                    <ion-label style="font-size: 11px; color: #333">Room Order</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="TakeAway">
+                    <ion-label style="font-size: 11px; color: #333">Take Away</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="HomeDelivery">
+                    <ion-label style="font-size: 11px; color: #333">Home Delivery</ion-label>
+                </ion-segment-button>
+            </ion-segment>
+            <div *ngIf="segment2 ==='DineIn'">
+                <ion-list class="list-back" lines="none">
+                    <div
+                        *ngFor="let serviceType of this.businessService.businessServiceTypes;let i = index"
+                    >
+                        <div
+                            *ngIf="serviceType.bookable != null && serviceType.bookable != undefined && serviceType.bookable === true"
+                        >
+                            <div *ngFor="let slot of serviceType.slots">
+                                <ion-item style="border: 1px solid gray; margin-top: 10px;">
+                                    
+                                    <ion-col>
+                                        <ion-label class="text-white">
+                                            <h3>{{slot.location.locationName }}</h3>
+                                            <p class="text-white" style="font-size: 11px;">
+                                                {{slot.resource.resourceName }}
+                                            </p>
+                                        </ion-label>
+                                    </ion-col>
+                                    
+                                    <ion-col
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                            margin-right: 5px;
+                                        "
+                                        *ngIf="filterByLocAndRec(slot.location.locationName ,slot.resource.resourceName) != null &&
+                                    filterByLocAndRec(slot.location.locationName ,slot.resource.resourceName) != undefined "
+                                        mat-icon-button
+                                        
+                                    >
+                                        <div>
+                                            <ion-icon
+                                                class="quick-order text-white"
+                                                name="paper-plane"
+                                                style="float: right"
+                                            ></ion-icon>
+                                        </div>
+                                        <div>
+                                            <p
+                                                style="
+                                                    color: #333;
+                                                    font-size: 10px;
+                                                "
+                                            >
+                                                Quick
+                                                Dine In
+                                            </p>
+                                        </div>
+                                    </ion-col>
+
+                                    <ion-col>
+                                        <ion-icon
+                                        class="viewdetail text-white"
+                                        name="add-circle-outline"
+                                        style="float: right; font-size: 25px;"
+                                        *ngIf="filterByLocAndRec(slot.location.locationName ,slot.resource.resourceName) != null &&
+                                    filterByLocAndRec(slot.location.locationName ,slot.resource.resourceName) != undefined"
+                                        mat-icon-button
+                                        (click)="addDyneInOrder(slot,serviceType)"
+                                    ></ion-icon>
+                                    </ion-col>
+                                    
+                            
+                                </ion-item>
+
+                                <ion-list lines="none">
+                                    <ion-item
+                                        *ngFor="let row of filterByLocAndRec(slot.location.locationName ,slot.resource.resourceName);"
+                                        [ngClass]="{'confirmed-clip': row.orderStatus === 'Confirmed',
+                                      'available-clip': row.orderStatus === null || row.orderStatus === '',
+                                      'cooking-clip': row.orderStatus === 'InProgress',
+                                      'ReadyToServe': row.orderStatus === 'ReadyToServe',
+                                      'Served': row.orderStatus === 'Served',
+                                      'OutForDelivery': row.orderStatus === 'OutForDelivery',
+                                      'Shipped': row.orderStatus === 'Shipped',
+                                      'completed': row.orderStatus === 'Completed',
+                                      'cancel': row.orderStatus === 'Cancelled',
+                                      'Submitted' : row.orderStatus === 'Submitted' }"
+                                    >
+                                        <ion-avatar slot="start">
+                                            <img
+                                                src="assets/img/order/order-bag.png"
+                                            />
+                                        </ion-avatar>
+                                        <ion-label>
+                                            <h3>{{row.bookOneOrderId}}</h3>
+                                            <p>{{ row.orderedTime}}</p>
+                                        </ion-label>
+                                        <ion-icon
+                                            class="viewdetail"
+                                            name="ellipsis-vertical-outline"
+                                            style="float: right"
+                                            (click)="onDetails(row)"
+                                        ></ion-icon>
+                                    </ion-item>
+                                </ion-list>
+                            </div>
+                        </div>
+                    </div>
+                </ion-list>
+            </div>
+
+            <div *ngIf="segment2 ==='RoomOrder'">
+                <ion-list lines="none" class="list-back">
+                    <div *ngFor="let book of bookingdata">
+                        <ion-item>
+                            <ion-label>
+                                <p class="text-white">
+                                    {{book.propertyReservationNumber }}
+                                </p>
+                                <p class="text-white">
+                                    {{ book.firstName }} {{ book.lastName }}
+                                </p>
+                                <h3 class="text-white">{{ book.roomNumber}}</h3>
+                            </ion-label>
+                            <ion-icon
+                                class="viewdetail text-white"
+                                name="add-circle-outline"
+                                style="float: right"
+                                (click)="addRoomOrder(book)"
+                            ></ion-icon>
+                        </ion-item>
+
+                        <ion-list lines="none">
+                            <ion-item
+                                *ngFor="let row of filterByBookingId(book.id);"
+                                [ngClass]="{'confirmed-clip': row.orderStatus === 'Confirmed',
+                                'available-clip': row.orderStatus === null || row.orderStatus === '',
+                                'cooking-clip': row.orderStatus === 'InProgress',
+                                'ReadyToServe': row.orderStatus === 'ReadyToServe',
+                                'Served': row.orderStatus === 'Served',
+                                'OutForDelivery': row.orderStatus === 'OutForDelivery',
+                                'Shipped': row.orderStatus === 'Shipped',
+                                'completed': row.orderStatus === 'Completed',
+                                'cancel': row.orderStatus === 'Cancelled',
+                                'Submitted' : row.orderStatus === 'Submitted' }"
+                            >
+                                <ion-avatar slot="start">
+                                    <img src="assets/img/order/order-bag.png" />
+                                </ion-avatar>
+                                <ion-label>
+                                    <p>Order Ref Id</p>
+                                    <h3>{{row.bookOneOrderId}}</h3>
+                                </ion-label>
+                                <ion-icon
+                                    class="viewdetail"
+                                    name="ellipsis-vertical-outline"
+                                    style="float: right"
+                                    (click)="onDetails(row)"
+                                ></ion-icon>
+                            </ion-item>
+                        </ion-list>
+                    </div>
+                </ion-list>
+            </div>
+            <div *ngIf="segment2 ==='TakeAway'">
+                <ion-list lines="none" class="list-back">
+                    <ion-item
+                        *ngFor="let row of takeAwayOrders;let i = index"
+                        [ngClass]="{'confirmed-clip': row.orderStatus === 'Confirmed',
+                    'available-clip': row.orderStatus === null || row.orderStatus === '',
+                    'cooking-clip': row.orderStatus === 'InProgress',
+                    'ReadyToServe': row.orderStatus === 'ReadyToServe',
+                    'Served': row.orderStatus === 'Served',
+                    'OutForDelivery': row.orderStatus === 'OutForDelivery',
+                    'Shipped': row.orderStatus === 'Shipped',
+                    'completed': row.orderStatus === 'Completed',
+                    'cancel': row.orderStatus === 'Cancelled',
+                    'Submitted' : row.orderStatus === 'Submitted' }"
+                    >
+                        <ion-label>
+                            <span
+                                *ngIf=" row.firstName != null &&  row.firstName != undefined"
+                                >{{ row.firstName }} {{ row.lastName }}</span
+                            >
+                            <span
+                                *ngIf=" (row.firstName === null || row.firstName === undefined) && row.customerName !== 'undefined'"
+                                >{{ row.customerName }}</span
+                            >
+                            <h3>{{row.bookOneOrderId}}</h3>
+                        </ion-label>
+                        <ion-icon
+                            class="viewdetail"
+                            name="ellipsis-vertical-outline"
+                            style="float: right"
+                            (click)="onDetails(row)"
+                        ></ion-icon>
+                    </ion-item>
+                </ion-list>
+            </div>
+            <div *ngIf="segment2 ==='HomeDelivery'">
+                <ion-list lines="none" class="list-back">
+                    <ion-item
+                        *ngFor="let row of homeDeliveryOrders;let i = index"
+                        [ngClass]="{'confirmed-clip': row.orderStatus === 'Confirmed',
+                    'available-clip': row.orderStatus === null || row.orderStatus === '',
+                    'cooking-clip': row.orderStatus === 'InProgress',
+                    'ReadyToServe': row.orderStatus === 'ReadyToServe',
+                    'Served': row.orderStatus === 'Served',
+                    'OutForDelivery': row.orderStatus === 'OutForDelivery',
+                    'Shipped': row.orderStatus === 'Shipped',
+                    'completed': row.orderStatus === 'Completed',
+                    'cancel': row.orderStatus === 'Cancelled',
+                    'Submitted' : row.orderStatus === 'Submitted' }"
+                    >
+                        <ion-label>
+                            <span
+                                *ngIf=" row.firstName != null &&  row.firstName != undefined"
+                                >{{ row.firstName }} {{ row.lastName }}</span
+                            >
+                            <span
+                                *ngIf=" (row.firstName === null || row.firstName === undefined) && row.customerName !== 'undefined'"
+                                >{{ row.customerName }}</span
+                            >
+                            <h3>{{row.bookOneOrderId}}</h3>
+                        </ion-label>
+                        <ion-icon
+                            class="viewdetail"
+                            name="ellipsis-vertical-outline"
+                            style="float: right"
+                            (click)="onDetails(row)"
+                        ></ion-icon>
+                    </ion-item>
+                </ion-list>
+            </div>
+        </div>
+    </div>
+</ion-content>
+<!-- <ion-footer class="footer">
+    <app-order-footer></app-order-footer>
+</ion-footer> -->

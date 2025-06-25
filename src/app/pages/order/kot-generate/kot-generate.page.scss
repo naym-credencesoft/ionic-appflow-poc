@@ -1,0 +1,237 @@
+.orderInfo{
+    // font-family: 'SofiaSans-Regular' !important;
+    --background: #F89A34;
+    color: #333
+}
+.SofiaSansLight{
+    // font-family: 'SofiaSans-Light' !important;
+}
+
+hr.line {
+    border-top: 1px solid #1d174d;
+    margin-top: 5px;
+}
+
+.cell-class2 {
+    // border: 1px solid #1d174d;
+}
+
+.cell-class {
+    // border: 1px solid #1d174d;
+    background: #aeb7ca;
+}
+.list-room {
+    margin-top: 5px;
+}
+.dropdown {
+    background: #f1f3f4;
+    border-radius: 5px;
+    border: 5px;
+}
+.datavalue {
+    margin-left: 5px;
+}
+
+// ...............
+:host {
+    @media (min-width: 576px) {
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+    
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+   
+
+    }
+    @media (max-width: 576px) 
+    {
+        ion-toolbar {
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+    }
+
+    
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+    
+    .HeaderTitle {
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: -17px;
+    
+    }
+    
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+    
+    .HeaderSubTitle {
+        position: absolute;
+        top: 37px;
+        left: 41px;
+        font-size: 12px;
+        z-index: 100;
+    }
+    
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+    .order-bol-1{
+        position: absolute;
+        top: 35%;
+        left: 0px;
+        height: 30vw;
+        z-index: 1;
+    }
+
+    .order-bol-2{
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        height: 30vw;
+        z-index: 1;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+}
+
+.selectItem {
+    display: flex;
+    justify-content: center;
+}
+
+.footer {
+    background: linear-gradient(
+        -180deg,
+        var(--ion-color-tm3-terciary1),
+        var(--ion-color-tm3-terciary1)
+    );
+}
+
+.footer-button {
+    color: white;
+    --background: linear-gradient(-270deg, #5095b6, #8cbbd0);
+    // font-family: 'SofiaPro-Medium' !important;
+}
+.voucher-svg{
+    height: 107px;
+}
+
+// @media print {
+//     .table-frame {
+//       padding: 2px;
+//       border: 1px solid #dddddd;
+//       border-radius: 10px;
+//     }
+  
+//     .tdth {
+//       border: 0.1px solid #c1c1c1;
+//       text-align: left;
+//       padding: 2px;
+//     }
+  
+//     :host {
+//       .breadcrumb {
+//         display: none !important;
+//       }
+//     }
+//     .screen-area {
+//       display: none !important;
+//     }
+  
+//     .print-area {
+//       display: block !important;
+//     }
+  
+//     .no-print,
+//     .logo,
+//     .topbar,
+//     .header-toolbar,
+//     .breadcrumb-bar,
+//     .item-table,
+//     .no-print * {
+//       display: none !important;
+//     }
+  
+//     .header-title {
+//       margin-top: 5px;
+//     }
+  
+//     .header-toolbar {
+//       padding-top: 5px;
+//       padding-bottom: 5px;
+//     }
+  
+//     .header-title-2 {
+//       margin-top: 5px;
+//       margin-left: 5px;
+//     }
+  
+//     .header-title-3 {
+//       margin-top: 5px;
+//       margin-left: 5px;
+//     }
+  
+//     mat-header-row,
+//     mat-footer-row,
+//     mat-row {
+//       min-height: 25px;
+//     }
+  
+//     .mat-card {
+//       padding: 10px;
+//       border-radius: 4px;
+//     }
+//   }
+
+  @page {
+    margin-top: 5;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 10;
+  }
+
+  
+  

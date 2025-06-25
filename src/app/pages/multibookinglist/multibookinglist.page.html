@@ -1,0 +1,458 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light">
+            <ion-text class="HeaderTitle">Multi Booking List</ion-text>
+        </ion-text>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-row>
+        <ion-col size="6">
+            <ion-button
+                expand="block"
+                color="primary"
+                [disabled]="checkOutstandingAmount() || checkBookingStatus()"
+                (click)="checkOutTimeDialog()"
+            >
+                Checkout All</ion-button
+            >
+        </ion-col>
+        <ion-col size="6">
+            <ion-button
+                expand="block"
+                color="primary"
+                [disabled]="allBookingCheckOut() > 0  || checkBookingInvoice()"
+                (click)="submit()"
+            >
+                Create Invoice</ion-button
+            >
+        </ion-col>
+    </ion-row>
+
+    <ion-list>
+        <div
+            *ngFor="
+                let booking of bookings
+                let i = index"
+            class="ion-no-padding ion-no-margin"
+        >
+            <ion-card
+                class="bg-white ion-justify"
+                (click)="listIndex(booking)"
+                *ngIf="!booking.isToggle"
+            >
+                <ion-card-header>
+                    <ion-icon
+                        class="viewdetail"
+                        name="ellipsis-vertical-outline"
+                        style="float: right"
+                        (click)="viewdetail(booking)"
+                    ></ion-icon>
+                    <ion-grid class="ion-no-padding">
+                        <ion-row>
+                            <ion-col size="4">
+                                <ion-text>Res. No: </ion-text><br />
+                                <ion-text color="primary"
+                                    >{{ booking.propertyReservationNumber
+                                    }}</ion-text
+                                >
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>Amount: </ion-text><br />
+                                <ion-text
+                                    color="primary"
+                                    *ngIf="booking.currency"
+                                >
+                                    {{ booking.totalAmount | currency : currency
+                                    : "symbol" : "1.2-2" }}
+                                </ion-text>
+                                <ion-text
+                                    color="primary"
+                                    *ngIf="!booking.currency"
+                                >
+                                    {{ booking.totalAmount | currency : currency
+                                    : "symbol" : "1.2-2" }}
+                                </ion-text>
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-row>
+                                    <ion-text>Status:</ion-text><br />
+                                    <ion-text color="primary" class="name-text">
+                                        {{ booking.bookingStatus }}</ion-text
+                                    >
+                                </ion-row>
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>First Name</ion-text><br />
+                                <ion-text color="primary"
+                                    ><i>{{ booking.firstName }}</i></ion-text
+                                >
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>Last Name</ion-text><br />
+                                <ion-text color="primary"
+                                    ><i>{{ booking.lastName }}</i></ion-text
+                                >
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>Room No</ion-text>
+                                <div
+                                    *ngFor="
+                                        let roominfo of booking.roomDetails;
+                                        let isLast = last
+                                    "
+                                >
+                                    <ion-text color="primary"
+                                        >{{ roominfo.roomNumber }} {{ isLast ?
+                                        "" : ", " }}
+                                    </ion-text>
+                                </div>
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text> Paid Amount</ion-text><br />
+                                <ion-text
+                                    ><u
+                                        >{{ getTotalPaidPayment(booking) |
+                                        currency : currency : "symbol" : "1.2-2"
+                                        }}</u
+                                    ></ion-text
+                                >
+                            </ion-col>
+
+                            <ion-col size="4">
+                                <ion-text> Outstanding Amount</ion-text><br />
+                                <ion-text>
+                                    <a
+                                        target="_blank"
+                                        *ngIf="getTotalNotPaidPayment(booking) <= 0"
+                                        style="color: green"
+                                    >
+                                        Balance:<u
+                                            >{{ totalBalanceAmount(booking) |
+                                            currency : currency : "symbol" :
+                                            "1.2-2" }}</u
+                                        ></a
+                                    >
+
+                                    <a
+                                        target="_blank"
+                                        *ngIf="getTotalNotPaidPayment(booking) > 0"
+                                        style="color: red"
+                                    >
+                                        Due:<u>
+                                            {{ getTotalNotPaidPayment(booking) |
+                                            currency : currency : "symbol" :
+                                            "1.2-2" }}</u
+                                        ></a
+                                    ></ion-text
+                                >
+                            </ion-col>
+
+                            <ion-col
+                                size="4"
+                                *ngIf="booking.invoiceId != null && booking.invoiceId != undefined"
+                            >
+                                <ion-text> Invoice</ion-text><br />
+                                <ion-text
+                                    ><u>{{ booking.invoiceId }}</u></ion-text
+                                >
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-card-header>
+
+                <ion-card-content id="first">
+                    <ion-grid class="ion-no-padding"> </ion-grid>
+                </ion-card-content>
+            </ion-card>
+            <ion-card
+                class="bg-white"
+                (click)="listIndex(booking)"
+                *ngIf="booking.isToggle"
+            >
+                <ion-card-header color="primary">
+                    <ion-icon
+                        name="ellipsis-vertical-outline"
+                        style="float: right"
+                        (click)="viewdetail(booking)"
+                    >
+                    </ion-icon>
+                    <ion-grid class="ion-no-padding">
+                        <ion-row>
+                            <ion-col size="4">
+                                <ion-text>Res. No: </ion-text><br />
+                                <ion-text
+                                    >{{ booking.propertyReservationNumber
+                                    }}</ion-text
+                                >
+                                <!-- <ion-text >{{booking.id}}</ion-text> -->
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>Amount: </ion-text><br />
+                                <ion-text *ngIf="booking.currency">
+                                    {{ booking.totalAmount | currency : currency
+                                    : "symbol" : "1.2-2" }}
+                                </ion-text>
+                                <ion-text *ngIf="!booking.currency">
+                                    {{ booking.totalAmount | currency : currency
+                                    : "symbol" : "1.2-2" }}
+                                </ion-text>
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-row>
+                                    <ion-text>Status:</ion-text><br />
+                                    <ion-text class="name-text">
+                                        {{ booking.bookingStatus }}</ion-text
+                                    >
+                                </ion-row>
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>First Name</ion-text><br />
+                                <ion-text
+                                    ><i>{{ booking.firstName }}</i></ion-text
+                                >
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>Last Name</ion-text><br />
+                                <ion-text
+                                    ><i>{{ booking.lastName }}</i></ion-text
+                                >
+                            </ion-col>
+                            <ion-col size="4">
+                                <ion-text>Room No</ion-text>
+                                <div
+                                    *ngFor="
+                                        let roominfo of booking.roomDetails;
+                                        let isLast = last
+                                    "
+                                >
+                                    <ion-text
+                                        >{{ roominfo.roomNumber }} {{ isLast ?
+                                        "" : ", " }}
+                                    </ion-text>
+                                </div>
+                            </ion-col>
+
+                            <ion-col size="4">
+                                <ion-text> Paid Amount</ion-text><br />
+                                <ion-text
+                                    ><u
+                                        >{{ getTotalPaidPayment(booking) |
+                                        currency : currency : "symbol" : "1.2-2"
+                                        }}</u
+                                    ></ion-text
+                                >
+                            </ion-col>
+
+                            <ion-col size="4">
+                                <ion-text> Outstanding Amount</ion-text><br />
+                                <ion-text>
+                                    <a
+                                        target="_blank"
+                                        *ngIf="getTotalNotPaidPayment(booking) <= 0"
+                                        style="color: green"
+                                    >
+                                        Balance:<u
+                                            >{{ totalBalanceAmount(booking) |
+                                            currency : currency : "symbol" :
+                                            "1.2-2" }}</u
+                                        ></a
+                                    >
+
+                                    <a
+                                        target="_blank"
+                                        *ngIf="getTotalNotPaidPayment(booking) > 0"
+                                        style="color: red"
+                                    >
+                                        Due:<u>
+                                            {{ getTotalNotPaidPayment(booking) |
+                                            currency : currency : "symbol" :
+                                            "1.2-2" }}</u
+                                        ></a
+                                    ></ion-text
+                                >
+                            </ion-col>
+                            <ion-col
+                                size="4"
+                                *ngIf="booking.invoiceId != null && booking.invoiceId != undefined"
+                            >
+                                <ion-text> Invoice</ion-text><br />
+                                <ion-text
+                                    ><u>{{ booking.invoiceId }}</u></ion-text
+                                >
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-card-header>
+                <ion-card-content id="second">
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-text> Booking Date:</ion-text><br />
+                                <ion-text color="primary">
+                                    <!-- {{booking.fromDate | date: 'EEE, MMM d, y'}} -->
+                                    <ion-text
+                                        *ngIf="
+                                            booking.fromDate != null &&
+                                            booking.fromDate != undefined
+                                        "
+                                        >{{ booking.fromDate | date : "MMM d, y"
+                                        }} to {{ booking.toDate | date : "MMM d,
+                                        y" }}
+                                    </ion-text>
+                                </ion-text>
+                            </ion-col>
+
+                            <ion-col size="6">
+                                <ion-text>Arrival:</ion-text><br />
+                                <ion-text color="primary">
+                                    <!-- {{booking.fromDate | date: 'EEE, MMM d, y'}} -->
+                                    <ion-text
+                                        *ngIf="
+                                            booking.bookingStatus ===
+                                                'CHECKEDOUT' ||
+                                            booking.bookingStatus ===
+                                                'CHECKEDIN'
+                                        "
+                                    >
+                                        {{ booking.checkinTime | date : "EEE,
+                                        MMM d" }}
+                                        <br />{{ booking.checkinTime | date :
+                                        "hh:mm aa" }}</ion-text
+                                    >
+                                    <ion-text
+                                        *ngIf="
+                                            booking.bookingStatus !=
+                                                'CHECKEDOUT' &&
+                                            booking.bookingStatus !=
+                                                'CHECKEDIN' &&
+                                            booking.fromTime !== 'NaN'
+                                        "
+                                    >
+                                        {{ booking.fromTime | date : "EEE, MMM
+                                        d" }}
+                                        <br />
+                                        {{ booking.fromTime | date : "hh:mm aa"
+                                        }}
+                                        <ion-badge
+                                            color="primary"
+                                            *ngIf="
+                                                booking.fromTime != null &&
+                                                booking.fromTime != undefined
+                                            "
+                                        >
+                                            e</ion-badge
+                                        >
+                                    </ion-text>
+                                </ion-text>
+                            </ion-col>
+
+                            <ion-col size="6">
+                                <ion-text>Departure:</ion-text><br />
+                                <ion-text color="primary">
+                                    <!-- {{booking.toDate | date: 'EEE, MMM d, y'}} -->
+                                    <ion-text
+                                        *ngIf="
+                                            booking.bookingStatus ===
+                                            'CHECKEDOUT'
+                                        "
+                                    >
+                                        {{ booking.checkoutTime | date : "EEE,
+                                        MMM d" }}
+                                        <br />
+                                        {{ booking.checkoutTime | date : "hh:mm
+                                        aa" }}</ion-text
+                                    >
+                                    <ion-text
+                                        *ngIf="
+                                            booking.bookingStatus !=
+                                                'CHECKEDOUT' &&
+                                            booking.toTime !== 'NaN'
+                                        "
+                                    >
+                                        {{ booking.toTime | date : "EEE, MMM d"
+                                        }}
+                                        <br />
+                                        {{ booking.toTime | date : "hh:mm aa" }}
+                                        <ion-badge
+                                            color="primary"
+                                            *ngIf="
+                                                booking.toTime != null &&
+                                                booking.toTime != undefined
+                                            "
+                                            >e</ion-badge
+                                        >
+                                    </ion-text>
+                                </ion-text>
+                            </ion-col>
+
+                            <!-- <ion-col size="6">
+
+                                <ion-text >First Name</ion-text><br>
+                                <ion-text color="primary"><i>{{booking.firstName}}</i></ion-text>
+
+                            </ion-col>
+                            <ion-col size="6">
+
+                                <ion-text >Last Name</ion-text><br>
+                                <ion-text color="primary"><i>{{booking.lastName}}</i></ion-text>
+
+                            </ion-col> -->
+
+                            <ion-col size="6">
+                                <ion-text>Room Name</ion-text><br />
+                                <ion-text color="primary"
+                                    >{{ booking.roomName }}</ion-text
+                                >
+                            </ion-col>
+                            <!-- <ion-col size="6">
+
+                                <ion-text >Room No</ion-text>
+                                <div *ngFor="let roominfo of booking.roomDetails; let isLast=last">
+                                    <ion-text color="primary">{{ roominfo.roomNumber}} {{isLast ? '' : ', '}}
+                                    </ion-text>
+                                </div>
+
+                            </ion-col> -->
+
+                            <ion-col size="6">
+                                <ion-text>No of Guest</ion-text><br />
+                                <ion-text color="primary"
+                                    >{{ booking.noOfPersons }}</ion-text
+                                >
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-text>No of Room</ion-text><br />
+                                <ion-text color="primary"
+                                    >{{ booking.noOfRooms }}</ion-text
+                                >
+                            </ion-col>
+
+                            <ion-col size="6">
+                                <ion-text>Contact</ion-text><br />
+                                <ion-text color="primary"
+                                    ><a href="tel:+{{ booking.mobile }}"
+                                        >{{ booking.mobile }}</a
+                                    >
+                                </ion-text>
+                            </ion-col>
+                            <ion-col size="12">
+                                <ion-text>Email</ion-text><br />
+                                <ion-text color="primary"
+                                    ><a href="mailto:{{ booking.email }}"
+                                        >{{ booking.email }}</a
+                                    >
+                                </ion-text>
+                            </ion-col>
+                        </ion-row>
+                        <!-- row end -->
+                    </ion-grid>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </ion-list>
+</ion-content>

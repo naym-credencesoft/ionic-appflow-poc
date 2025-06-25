@@ -1,0 +1,202 @@
+
+@media (min-width: 576px) {
+  
+
+    ion-toolbar {
+        --background: #fff;
+        min-height: 80px;
+        border: none;
+    }
+}
+
+.advChange {
+    display: flex;
+    margin-top: -22px;
+
+}
+.advmenu {
+    margin-top: -13px;
+    margin-left: 2px;
+    margin-right: 3px;
+}
+
+
+.advdiv {
+    overflow: hidden; /* Ensures image stays within bounds */
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: #fff;
+border-radius: 50%; /* Keeps the div circular */
+border: 6px solid #57C0A2;
+}
+.advimg {
+    width: 100%; /* Ensures image scales within the container */
+height: 100%; /* Ensures image scales within the container */
+object-fit: cover; /* Crops image within the circular frame */
+border-radius: 50%;
+}
+.advdivOne {
+    border: 3px solid #F89A34;
+    border-radius: 50%;
+  }
+  .advdivTwo {
+    width: 70px; /* Set width to match image dimensions */
+    height: 70px; /* Set height to match image dimensions */
+    overflow: hidden; /* Ensures image stays within bounds */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 50%; /* Keeps the div circular */
+    border: 2px solid #fff;
+  }
+@media (min-width: 576px) {
+
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: -4px;
+        right: 0px;
+        height: 70px !important;
+        width: 70px !important;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    ion-toolbar {
+        --background: #1D174D;
+        height: 80px;
+        border: none;
+    }
+    .advContainer {
+        margin-top: 30px;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between; /* Space out the left and right sections */
+
+    }
+}
+@media (max-width: 576px) {
+    .main-card{
+        margin-top: 70px;
+    }
+    ion-toolbar {
+        position: absolute;
+        top: 0px;
+        --background: #1D174D;
+        border: none;
+        height: 71px;
+        
+    }
+    .advContainer {
+        display: flex;
+        justify-content: space-between;
+        background: linear-gradient(182deg, #1D174D -68%, #407C80 90%, #57C0A2 100%);
+        width: 98%;
+        padding: 8px;
+        padding-top: 30px;
+        padding-bottom: 17px;
+        border-radius: 30px;
+        margin: 3px;
+        margin-top: 7px;
+}
+.backbtn {
+    background-color: #3D737B;
+    width: 97%;
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 18px;
+}
+
+}
+
+.left-image-header {
+    z-index: 1;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 22.5vw;
+}
+
+.HeaderTitle {
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: -9px;
+
+}
+
+.profile {
+    z-index: 100;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 15vw;
+    width: 15vw;
+    border: 2px solid white !important;
+    box-shadow: 2px 2px 3px #999;
+    margin-right: 6px;
+    margin-top: 6px;
+}
+
+.HeaderSubTitle {
+    position: absolute;
+    top: 37px;
+    left: 46px;
+    font-size: 12px;
+    z-index: 100;
+}
+
+.back {
+    margin-left: 10px;
+    color: white;
+}
+
+ion-content {
+    --background: #fff;
+}
+
+.mt-1 {
+    margin-top: 10px;
+}
+.threeItemRow2 {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    border: 1px solid rgb(123, 123, 123);
+    color: black;
+    min-height: 60px;
+}
+
+.centerCol {
+    display: flex;
+    justify-content: center;
+}
+.twoItemRowtext {
+    font-size: clamp(14px, 4.5vw, 26px);
+  // font-size: 18px;
+  font-family: 'SofiaPro-Medium' !important;
+   text-align: center;
+   color: black;
+}
+.card{
+    padding:15px;
+    cursor: pointer;
+}
+.main-card{
+    padding: 12px;
+}
+
+

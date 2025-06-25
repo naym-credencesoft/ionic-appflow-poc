@@ -1,0 +1,165 @@
+<ion-header>
+    <ion-toolbar class="animated fadeIn tollbar">
+    
+        <ion-buttons slot="start">
+            <ion-back-button mode ="md" icon="arrow-back" style="  color: #fff;"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Address</ion-text>
+
+        <ion-buttons slot="end" *ngIf="this.isDetails">
+            <ion-button icon-left size="small" shape="round" color="tertiary" (click)="onEdit()">
+                <img src="assets/img/customer/edit.svg" width="23" height="23">
+            </ion-button>
+       </ion-buttons>
+    
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content no-margin>
+    <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar>
+      <ion-card class="bg-white border-section">
+        <ion-grid no-padding>
+                <form [formGroup]="onAddressForm">
+    
+                        <ion-row>
+                                <ion-col size="6">
+                                    <ion-text color="primary" style="font-size: 10px;" >Street Number</ion-text>
+                                    <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="address.streetNumber" formControlName ="StreetNumber" placeholder="Street Number" inputmode="text"></ion-input>                        
+                                </ion-col>
+    
+                                <ion-col size="6">
+                                    <ion-text color="primary" style="font-size: 10px;" >Street Name</ion-text>
+                                    <ion-input readonly="{{isDetails}}"  class="input-background"  [(ngModel)]="address.streetName" formControlName ="streetName" placeholder="Street Name" inputmode="text"></ion-input>                
+                                 </ion-col>
+                                
+                
+                              </ion-row>
+
+                                <ion-row>
+                                    <ion-col size="6" >
+                                        <ion-text color="primary" style="font-size: 10px;" >Locality</ion-text>
+                                        <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="address.locality" formControlName ="locality" placeholder="Locality" inputmode="text"></ion-input>
+                                    </ion-col>
+
+                                    <ion-col size="6">
+                                        <ion-text color="primary" style="font-size: 10px;" >Suburb*</ion-text>
+                                        <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="address.suburb" formControlName ="suburb" placeholder="Suburb" inputmode="text"></ion-input>
+                                      
+
+                                        <p ion-text no-margin no-padding class="text08" *ngIf="onAddressForm.get('suburb').touched && onAddressForm.get('suburb').hasError('required')">
+                                            <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                                Input field required
+                                            </ion-text>
+                                            </p>
+                                            
+                                    </ion-col>
+                                    
+                    
+                            </ion-row>
+
+                            <ion-row>
+                                <ion-col size="6" >
+                                    <ion-text color="primary" style="font-size: 10px;" >City*</ion-text>
+                                    <ion-input readonly="{{isDetails}}"  class="input-background"  [(ngModel)]="address.city" formControlName ="city" placeholder="City" inputmode="text"></ion-input>
+                                   
+
+                                    <p ion-text no-margin no-padding class="text08" *ngIf="onAddressForm.get('city').touched && onAddressForm.get('city').hasError('required')">
+                                        <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                            Input field required
+                                        </ion-text>
+                                        </p>
+                                        
+                                </ion-col>
+
+                                <ion-col size="6" >
+
+                                    <ion-text color="primary" style="font-size: 10px;" >Post Code</ion-text>
+                                    <ion-input readonly="{{isDetails}}"  class="input-background"  [(ngModel)]="address.postcode" formControlName ="postcode" placeholder="Post Code" inputmode="text"></ion-input>
+                                        
+                                </ion-col>
+                                
+                
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="6">
+                                <ion-text color="primary" style="font-size: 10px;" >State*</ion-text>
+                                <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="address.state" formControlName ="state" placeholder="State" inputmode="text"></ion-input>
+            
+                                <p ion-text no-margin no-padding class="text08" *ngIf="onAddressForm.get('state').touched && onAddressForm.get('state').hasError('required')">
+                                    <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                        Input field required
+                                    </ion-text>
+                                    </p>
+                                    
+                            </ion-col>
+
+                            <ion-col size="6">
+                                <ion-text color="primary" class="rpc-text" style="font-size: 10px;" >Country*</ion-text>
+                                <ion-select [disabled]="isDetails" [(ngModel)]="address.country" formControlName ="country" no-padding class="dropdown" placeholder="Country" style="color: black;">
+                                    <ion-select-option  
+                                    *ngFor="let country of CountryArray.countries"
+                                    [value]="country.value">
+                                    {{ country.viewValue }}
+                                </ion-select-option>
+                                    
+                            </ion-select>  
+            
+
+                                <p ion-text no-margin no-padding class="text08" *ngIf="onAddressForm.get('country').touched && onAddressForm.get('country').hasError('required')">
+                                    <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                        Input field required
+                                    </ion-text>
+                                    </p>
+                                    
+                            </ion-col>
+                            
+            
+                            </ion-row>
+
+                            <ion-row>
+                                <ion-col size="6">
+                                    <ion-text color="primary" style="font-size: 10px;" >Address 1</ion-text>
+                                    <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="address.addressLine1" formControlName ="addressLine1" placeholder="Address 1" inputmode="text"></ion-input>
+                                        
+                                </ion-col>
+
+                                <ion-col size="6">
+                                    <ion-text color="primary" style="font-size: 10px;" >Address 2</ion-text>
+                                    <ion-input readonly="{{isDetails}}"  class="input-background"  [(ngModel)]="address.addressLine2" formControlName ="addressLine2" placeholder="Address 2" inputmode="text"></ion-input>
+
+                    
+                                        
+                                </ion-col>
+                                
+
+                        </ion-row>
+    
+    
+                    
+    
+    
+                    <ion-row>
+
+                        <ion-col *ngIf="!this.isDetails" size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                            <ion-button size="small" round expand="block" color="primary"  [disabled]="!onAddressForm.valid || loader"  (click)="onSubmit()">Update</ion-button>
+                        </ion-col>
+    <!-- -->
+    
+                        <ion-col *ngIf="this.isDetails" size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                            <ion-button size="small" round expand="block" color="primary"   (click)="onEdit()">Edit</ion-button>
+                        </ion-col>
+                        
+                        
+                        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                                <ion-button size="small" round expand="block" color="primary" (click)="cancel()" >Cancel</ion-button>
+                        </ion-col>
+                    </ion-row>
+    
+                </form>         
+    
+        </ion-grid>
+    </ion-card>
+    
+</ion-content>
+

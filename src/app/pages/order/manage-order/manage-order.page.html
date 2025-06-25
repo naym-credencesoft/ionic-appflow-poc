@@ -1,0 +1,581 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Manage Order </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon (click)="menuAction()" style="font-size: 20px; margin-top: -10px;" class="backbutton-icon"
+        src="/assets/img/icons/menu-icon-w.svg"></ion-icon>
+
+            <ion-text color="light" class="HeaderTitle" 
+                >Restaurant Dashboard</ion-text>
+                <ion-img
+                style="margin-left: -20px; margin-top: -9px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img>
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+    <ion-row>
+        
+        <ion-col size="12" style="margin: 0px; padding: 0px;">
+          <ion-select class="card-itemOne" [formControl]="BusinesService" [(ngModel)]="bserviceid"
+            (ionChange)="setService(bserviceid)" name="Room" okText="Done" cancelText="Dismiss"
+            style="height: 55px; font-size: 20px; text-align: left; color: white;">
+            <ion-select-option value="0">
+                <p>All</p>
+              </ion-select-option>
+            <ng-container *ngFor="let Service of businessServiceList">
+              <ion-select-option *ngIf="Service.active" [value]="Service.id" class="text-wrap">
+                <p  class="text-wrap" *ngIf="Service.name == 'Restaurants' && Service.brandName != null && Service.brandName !=''">{{ Service.name
+                }}-{{Service.brandName}}</p>
+              <p *ngIf="Service.name == 'Restaurants' && (Service.brandName == null || Service.brandName =='')">{{ Service.name }}</p>
+              <p *ngIf="Service.name != 'Restaurants'">{{ Service.name }}</p>
+              </ion-select-option>
+            </ng-container>
+          </ion-select>
+          <!-- <ion-text *ngIf="!serviceSelected"
+            style="position: absolute; top: 50%; left: 20px; z-index: 4; font-size: 20px; transform: translateY(-50%); color: #fff;">
+            Select Services
+          </ion-text> -->
+      
+          <ion-icon name="caret-down-outline"
+            style="    position: absolute;
+            top: 50%;
+            right: 5px;
+            z-index: 4;
+            font-size: 20px;
+            transform: translateY(-50%);
+            color: #fff;"></ion-icon>
+        </ion-col>
+      </ion-row>
+
+      <ion-row style="display: flex; gap:5px; justify-content: center;">
+      
+            <ion-button
+            fill="solid"
+            class="button-active-change"
+            (click)="dashboard()"
+        >
+            <ion-text class="header-button">Dashboard</ion-text></ion-button
+        >
+      
+       
+            <ion-button
+            fill="solid"
+            class="button-active-change"
+            (click)="createOrder()"
+        >
+            <ion-text class="header-button"
+                >
+              Place new order</ion-text
+            ></ion-button >
+      
+       
+
+            <ion-button   (click)="ResetAllField(); refresh()" class="button-active-change">
+                <ion-icon name="refresh"></ion-icon>
+            </ion-button>
+     
+       
+
+
+
+        
+      </ion-row>
+
+      <ion-row class="selectItem mt-1 ion-justify-content-center">
+       
+          
+        <!-- <ion-button
+        [disabled]="OrderSearchObject === null || OrderSearchObject === undefined || OrderSearchObject.length === 0"
+        expand="block"
+        class="btn-search"
+        (click)="isFilterVisible =! isFilterVisible"
+      >
+        <div class="btn-content">
+          <ion-text>Search By</ion-text>
+          <ion-icon name="caret-down-outline"></ion-icon>
+        </div>
+      </ion-button> -->
+
+
+       
+</ion-row>
+    <ion-segment mode="md" [(ngModel)]="OrderFilterName"  (ionChange)="ResetAllField()" class="list-back segmentButton" style="margin-top: 10px;">
+        <ion-segment-button value="Today" (click)="refresh()" 
+            >Today's Order</ion-segment-button
+        >
+        <!-- <ion-segment-button value="next7days" (click)="refresh()"
+            >Next 7 Days</ion-segment-button
+        >
+        <ion-segment-button value="last7days" (click)="refresh()"
+            >Last 7 Days</ion-segment-button
+        > -->
+        <ion-segment-button value="AllOrder" (click)="refresh()"> Order By Date
+        </ion-segment-button>
+
+        <ion-segment-button value="OrderId" (click)="refresh()" 
+        > Order By Id
+    </ion-segment-button>
+    </ion-segment>
+
+
+     
+   
+    
+
+    <div *ngIf="isFilterVisible" class="list-back mt-1">
+        <form [formGroup]="onFilterForm">
+            <ion-row style="    margin-left: 5px;
+            margin-right: 5px;
+            justify-content: center;
+            gap: 10px;">
+                <ion-col size="5"  class="ItemBox" style="font-size: 14px;">
+ 
+                        <ion-label class="text-white"> Order Status</ion-label>
+                        <ion-select
+                        style="padding: 2px;"
+                            cancelText="Cancel"
+                            okText="Apply"
+                            class="text-white"
+                            formControlName="OrderStatusFilter"
+                            [(ngModel)]="OrderStatus"
+                            (ionChange)="filterByDropdown()"
+                        >
+                            <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
+                            <ion-select-option value="All">
+                                <p>All</p>
+                              </ion-select-option>
+                              <ion-select-option value="Submitted">Submitted</ion-select-option>
+                              <ion-select-option value="Confirmed">Confirmed</ion-select-option>
+                              <!-- <ion-select-option value="Pending">Pending</ion-select-option> -->
+                              <ion-select-option value="InProgress">InProgress</ion-select-option>
+                              <ion-select-option value="ReadyToServe">ReadyToServe</ion-select-option>
+                              <ion-select-option value="Served">Served</ion-select-option>
+                              <ion-select-option value="OutForDelivery"
+                                >Out for Delivery</ion-select-option
+                              >
+                              <ion-select-option value="Shipped">Shipped</ion-select-option>
+                              <ion-select-option value="Completed">Completed</ion-select-option>
+                              <ion-select-option value="Cancelled">Cancelled</ion-select-option>
+                        </ion-select>
+                </ion-col>
+
+                <ion-col size="5"  class="ItemBox" style="font-size: 14px;">
+ 
+                    <ion-label class="text-white"> Delivery Method</ion-label>
+                    <ion-select
+                    style="padding: 2px;"
+                        cancelText="Cancel"
+                        okText="Apply"
+                        class="text-white"
+                        formControlName="DeliveryMethodFilter"
+                        [(ngModel)]="DeliveryMethod"
+                        (ionChange)="filterByDropdown()"
+                    >
+                        <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
+                        <ion-select-option value="All">
+                            <p>All</p>
+                          </ion-select-option>
+                          <ion-select-option value="Home Delivery">Home Delivery</ion-select-option>
+                          <ion-select-option value="Dine In">Dine In</ion-select-option>
+                          <ion-select-option value="Take Away">Take Away</ion-select-option>
+                          <ion-select-option value="Room Order">Room Order</ion-select-option>
+                          <ion-select-option value="Pick From Store"
+                            >Pick From Store</ion-select-option
+                          >
+                    </ion-select>
+            </ion-col>
+         
+
+        <ion-col size="4"  class="ItemBox"  *ngIf="this.bserviceid != '0'">
+ 
+            <ion-label class="text-white"> Select Location</ion-label>
+            <ion-select
+                cancelText="Cancel"
+                okText="Apply"
+                class="text-white"
+                formControlName="LocationController"
+                [(ngModel)]="LocationName"
+                (ionChange)="filterByDropdown()"
+            >
+                <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
+                <ion-select-option value="All">
+                    <strong>All</strong>
+                  </ion-select-option>
+                  <ion-select-option
+                    *ngFor="let loc of locations"
+                    [value]="loc.locationName"
+                  >
+                    <strong>{{ loc.locationName }}</strong>
+                  </ion-select-option>
+            </ion-select>
+    </ion-col>
+
+    <ion-col size="4"  class="ItemBox"  *ngIf="this.bserviceid != '0'">
+ 
+        <ion-label class="text-white"> Select Resource</ion-label>
+        <ion-select
+            cancelText="Cancel"
+            okText="Apply"
+            class="text-white"
+            formControlName="ResourceController"
+            [(ngModel)]="ResourceName"
+            (ionChange)="filterByDropdown()"
+        >
+            <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
+            <ion-select-option value="All">
+                <strong>All</strong>
+              </ion-select-option>
+              <ion-select-option
+                *ngFor="let rec of resources"
+                [value]="rec.resourceName"
+              >
+                <strong>{{ rec.resourceName }}</strong>
+              </ion-select-option>
+        </ion-select>
+</ion-col>
+            </ion-row>
+        </form>
+    </div>
+
+    
+    <div *ngIf="this.OrderFilterName ==='OrderId'" class="list-back">
+        <form [formGroup]="onFindOrderIdForm">
+            <ion-row>
+                <ion-col size="6">
+                    <ion-col no-padding size="12">
+                        <ion-select class="card-item" formControlName="PropertyReservationNumberFirstPart"
+                        [(ngModel)]="propertyReservationNumberFirstPart"
+                      okText="Done" cancelText="Dismiss">
+                    
+                        <ion-select-option *ngFor="let sequence of orderSequenceList"
+                        [value]="sequence.propertyShortName">
+                            <p>
+                                {{ sequence.propertyShortName }}</p>
+                        </ion-select-option>
+                    
+                </ion-select>
+
+                        <!-- <ion-input
+                        type="text"
+                        class="ItemBox input-item"
+                        readonly="{{true}}"
+                        formControlName="PropertyReservationNumberFirstPart"
+                        [(ngModel)]="propertyReservationNumberFirstPart"
+                    ></ion-input> -->
+                    </ion-col>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-col no-padding size="12">
+                    <ion-input
+                    type="text"
+                    class="ItemBox input-item"
+                    formControlName="PropertyReservationNumber"
+                    [(ngModel)]="reservationNumber"
+                ></ion-input>
+            </ion-col>
+                </ion-col>
+                <ion-col size="6" style="margin-top: -24px;">
+                    <ion-col no-padding size="12">
+                    <ion-button
+                    expand="block"
+                    size="small"
+                    class="button-reset"
+                    [disabled]="!onFindOrderIdForm.valid|| loader"
+                    (click)="resetReservation()"
+                >
+                    Reset</ion-button
+                ></ion-col>
+                </ion-col>
+                <ion-col size="6" style="margin-top: -24px;">
+                    <ion-col no-padding size="12">
+                    <ion-button
+                    expand="block"
+                    size="small"
+                    class="button-active"
+                    (click)="getReservationOrderData()"
+                    [disabled]="!onFindOrderIdForm.valid|| loader"
+                >
+                    Search</ion-button
+                ></ion-col>
+                </ion-col>
+             
+            </ion-row>
+        
+        </form>
+    </div>
+
+    <div *ngIf="this.OrderFilterName ==='AllOrder'" class="list-back">
+        <form [formGroup]="onFindOrderForm">
+            <ion-row>
+                <ion-col size="6">
+                    <ion-text
+                        class="title-21"
+                        style="font-size: 12px"
+                        >From
+                    </ion-text>
+
+                        <ion-col no-padding size="12">
+                            <ion-datetime
+                                [(ngModel)]="fromDateString"
+                                (ionChange)="fromDateChange()"
+                                formControlName="bookingFromDate"
+                                no-padding
+                                class="ItemBox"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                placeholder="DD/MM/YYYY"
+                                min= "2000-12-31"
+                                max="2100-12-31"
+                            ></ion-datetime>
+                            <!-- -->
+                        </ion-col>
+
+                </ion-col>
+
+                <ion-col size="6">
+                    <ion-text
+                        class="title-21"
+                        style="font-size: 12px"
+                        >To
+                    </ion-text>
+
+                        <ion-col no-padding size="12">
+                            <ion-datetime
+                                [(ngModel)]="toDateString"
+                                min= "{{fromDateString}}"
+                                max="2100-12-31"
+                                formControlName="bookingToDate"
+                                no-padding
+                                class="ItemBox"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                placeholder="DD/MM/YYYY"
+                            ></ion-datetime>
+                        </ion-col>
+                </ion-col>
+            </ion-row>
+
+            <ion-row class="action-button" style="    margin-top: -17px;">
+                <ion-col size="6">
+                    <ion-button
+                        expand="block"
+                        class="button-reset"
+                        (click)="ResetAllField()"
+                        >Reset</ion-button
+                    >
+                </ion-col>
+                <ion-col size="6">
+                    <ion-button
+                        expand="block"
+                        class="button-active"
+                        (click)="findOrder()"
+                        [disabled]="!onFindOrderForm.valid|| loader"
+                    >
+                        Find</ion-button
+                    >
+                </ion-col>
+            </ion-row>
+        </form>
+    </div>
+
+    <ion-list lines="none" class="list-back list">
+        <div
+            class="message-error"
+            *ngIf="orders != null && orders != undefined && orders.length === 0"
+        >
+            <h6 style="color: #ff0000">No Order Found</h6>
+        </div>
+
+     <ion-card style="margin: 5px; border:1px solid gray; margin-bottom: 10px;"  *ngFor="let order of orders| paginate: {itemsPerPage: PageSize,
+        currentPage: PageNo,
+        totalItems: TotalItem }; let i = index"
+        >
+        <div style="display: flex; justify-content: space-between; padding-top: 2px; padding-bottom: 2px;">
+
+        </div>
+
+        <ion-row style="padding-left: 3px;">
+           
+            <ion-col size="4">
+                <div>
+                    <div *ngIf=" order.firstName != null &&  order.firstName != undefined" class="NameClass">
+                        {{ order.firstName }} {{ order.lastName }}
+                    </div>
+                    <div *ngIf=" order.firstName === null || order.firstName === undefined" class="NameClass">
+                        {{ order.customerName }}
+                    </div>
+                   
+                    <div *ngIf="order.deliveryMethod === 'Dine In'" class="tableClass">
+                        {{order.resourceName}}
+                    </div>
+                    <div *ngIf="order.deliveryMethod === 'Room Order'" class="tableClass">
+                        Room No
+                    </div>
+                    <div *ngIf="order.deliveryMethod === 'Room Order'" class="tableClass">
+                        {{order.roomNo}}
+                    </div>
+                    <div class="tableClass">
+                        {{order.deliveryMethod}}
+                    </div>
+                    <div *ngIf="order.deliveryMethod === 'Dine In'" class="tableClass">
+                        {{order.locationName}}
+                    </div>
+                    <div>
+                        <div style="    display: flex;
+                            align-items: center;
+                            gap: 6px;">
+                            <ion-text class="text-5" style="margin-bottom: 5px;">
+                              Bill Amount
+                            </ion-text>
+                        <ion-text class="price">
+                            {{order.totalOrderAmount| currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}</ion-text>
+                    </div>
+                    </div>
+                </div>
+            </ion-col>
+            <ion-col size="4">
+                <div>
+                    <div *ngIf="order.orderedDate != null || order.orderedDate != undefined" class="datesection">
+                        Order Date
+                    </div>
+                    <div *ngIf="order.orderedDate != null || order.orderedDate != undefined" style="color: #333">
+                        {{
+                            dateService.convertMillisecondsToDateFormat(order.orderedDate)
+                            }}
+                    </div>
+                    <div class="datesection">
+                        Order Id:
+                        </div>
+                        <div class="datesection">
+                            {{order.bookOneOrderId}}
+                            </div>
+                    <div class="datesection">
+                        Paid
+                    </div>
+                    <div class="datesection">
+                        {{order.paidAmount | currency:
+                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}
+
+                    </div>
+                    
+                </div>
+            </ion-col>
+            <ion-col size="4">
+                <div>
+                    <ion-icon name="ellipsis-vertical" style="color: #333;float: right; cursor: pointer;" (click)="onDetails(order)"></ion-icon>
+                    <div  *ngIf="order.requiredDate != null || order.requiredDate != undefined"
+                    class="datesection" >
+                        Deliver Date
+                    </div>
+                    <div  *ngIf="order.requiredDate != null || order.requiredDate != undefined"
+                    style="color:#333"
+                    >
+                    {{
+                        dateService.convertMillisecondsToDateFormat(order.requiredDate)
+                        }}
+                    </div>
+                    <div  >
+                        <ion-text 
+                        class="status" 
+                        [ngClass]="{
+                            'pink': order.orderStatus === 'InProgress',
+                            'red': order.orderStatus === 'Cancelled',
+                            'green': order.orderStatus === 'ReadyToServe' || order.orderStatus === 'Served',
+                            'blue': !['InProgress', 'Cancelled', 'ReadyToServe', 'Served'].includes(order.orderStatus)
+                        }">
+                        {{ order.orderStatus }}
+                    </ion-text>
+                    
+                    </div>
+                    <div *ngIf="order.outstandingAmount >0" class="datesection" >
+                        Outstanding
+                    </div>
+                    <div *ngIf="order.outstandingAmount >0" class="datesection" >
+                        {{
+                            order.outstandingAmount
+                              | currency:
+                              token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                          }}
+                    </div>
+                   
+                <div class="posSet">
+                    {{order.externalSite }}
+                </div>
+                
+                </div>
+            </ion-col>
+            
+            
+        </ion-row>
+
+     </ion-card>
+    </ion-list>
+
+    <ion-grid *ngIf="orders != null && orders != undefined && orders.length >0" style="color:#333">
+        <ion-row>
+            <ion-col size="3" >
+                <!-- <ion-label>Page Size</ion-label> -->
+                <ion-select
+                    [(ngModel)]="PageSize"
+                    class="dropdown"
+                    (ionChange)="changePage()"
+                >
+                    <ion-select-option [value]="2">2</ion-select-option>
+                    <ion-select-option [value]="5">5</ion-select-option>
+                    <ion-select-option [value]="10">10</ion-select-option>
+                    <ion-select-option [value]="15">15</ion-select-option>
+                    <ion-select-option [value]="25">25</ion-select-option>
+                    <ion-select-option [value]="50">50</ion-select-option>
+                </ion-select>
+            </ion-col>
+            <ion-col size="9">
+                <pagination-controls
+                    (pageChange)="onChange($event)"
+                    autoHide="true"
+                    responsive="true"
+                    previousLabel="Prev"
+                    nextLabel="Next"
+                ></pagination-controls>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="createOrder()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
+    
+</ion-content>
+<div class="loader-everyOne" *ngIf="loader">
+    <ion-spinner name="crescent" class="spinner"></ion-spinner>
+    <div class="loader-content">
+      <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+      <div class="loader-text">Please wait...</div>
+    </div>
+  </div>
+
+<!-- <ion-footer>
+    <app-order-footer [isOrderDetailPage]="true"></app-order-footer>
+</ion-footer> -->

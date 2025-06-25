@@ -1,0 +1,224 @@
+<ion-card class="bg-white">
+    <ion-grid no-padding>
+            <form [formGroup]="onCustomerForm">
+
+                    <ion-row>
+                            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+            
+                                <ion-row>
+                                        <ion-text color="primary" style="font-size: 10px;" >First Name</ion-text>
+                                </ion-row>
+                             
+                                <ion-card no-margin>
+                                    <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                            <ion-input [disabled]="isView"  [(ngModel)]="customer.firstName" formControlName ="firstName" placeholder="First Name" inputmode="text"></ion-input>
+                                    </ion-col>
+                                </ion-card>
+                                    
+                            </ion-col>
+
+                            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+            
+                                <ion-row>
+                                        <ion-text color="primary" style="font-size: 10px;" >Last Name</ion-text>
+                                </ion-row>
+                             
+                                <ion-card no-margin>
+                                    <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                            <ion-input [disabled]="isView"  [(ngModel)]="customer.lastName" formControlName ="lastName" placeholder="Last Name" inputmode="text"></ion-input>
+                                    </ion-col>
+                                </ion-card>
+                                    
+                            </ion-col>
+                            
+            
+                    </ion-row>
+
+
+                    <ion-row>
+                            <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+            
+                                <ion-row>
+                                        <ion-text color="primary" style="font-size: 10px;" >Email</ion-text>
+                                </ion-row>
+                             
+                                <ion-card no-margin>
+                                    <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                            <ion-input [disabled]="isView"  [(ngModel)]="customer.email" formControlName ="email" name="email" placeholder="Email Address" inputmode="email"></ion-input>
+                                    </ion-col>
+                                </ion-card>
+                                    
+                            </ion-col>
+            
+                    </ion-row>
+
+                    <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerForm.get('email').touched && onCustomerForm.get('email').hasError('required')">
+                        <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                            {{ 'app.label.errors.field' | translate }}
+                        </ion-text>
+                        </p>
+                        <p ion-text no-margin no-padding class="text08" *ngIf=" onCustomerForm.get('email').hasError('email') && onCustomerForm.controls.email.dirty">
+                            <ion-text color="danger" no-margin no-padding style="font-size: 11px;">
+                                {{ 'app.pages.reg.text.emailvalidation' | translate }}
+                            </ion-text>
+                            </p>
+
+                     <ion-row>
+                         <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+    
+                            <ion-row>
+                                    <ion-text color="primary" style="font-size: 10px;" >Phone</ion-text>
+                            </ion-row>
+                        
+                            <ion-card no-margin>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                        <ion-input [disabled]="isView"  [(ngModel)]="customer.mobile" formControlName ="Phone" placeholder="Phone" inputmode="text"></ion-input>
+                                </ion-col>
+                            </ion-card>
+                            
+                        </ion-col>
+    
+                    </ion-row>
+                    <!-- row 3 -->
+                    <ion-row>
+                            
+                        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6" class="gender-row">
+                    
+                            <ion-card no-margin>
+                                <ion-row>
+                                        <ion-text color="primary" class="rpc-text" style="font-size: 10px;" >Gender</ion-text>
+                                </ion-row>
+                                <ion-row >
+                                        <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                           
+                                                <ion-select [(ngModel)]="customer.gender" formControlName ="gender" no-padding class="rpc-number" placeholder="Gender">
+                                                        <ion-select-option value="male">Male</ion-select-option>
+                                                        <ion-select-option value="female">Female</ion-select-option>
+                                                </ion-select>  
+                                        </ion-col>
+                                </ion-row>
+                             
+                            </ion-card>
+                         </ion-col>
+
+                        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+            
+                            <ion-row>
+                                    <ion-text color="primary" style="font-size: 10px;" >Language</ion-text>
+                            </ion-row>
+                         
+                            <ion-card no-margin>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                        <ion-input [disabled]="isView"  [(ngModel)]="customer.language" formControlName ="language" placeholder="Language" inputmode="text"></ion-input>
+                                </ion-col>
+                            </ion-card>
+                                
+                        </ion-col>
+            
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+        
+                            <ion-row>
+                                    <ion-text color="primary" style="font-size: 10px;" >No of Kids</ion-text>
+                            </ion-row>
+                         
+                            <ion-card no-margin>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                        <ion-input [disabled]="isView"  [(ngModel)]="customer.noOfKids" formControlName ="noOfKids" placeholder="No of Kids" inputmode="Number"></ion-input>
+                                </ion-col>
+                            </ion-card>
+                                
+                        </ion-col>
+
+                        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+        
+                            <ion-row>
+                                    <ion-text color="primary" style="font-size: 10px;" >No of Pets</ion-text>
+                            </ion-row>
+                         
+                            <ion-card no-margin>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                        <ion-input [disabled]="isView"  [(ngModel)]="customer.noOfPets" formControlName ="noOfPets" placeholder="No of Pets" inputmode="Number"></ion-input>
+                                </ion-col>
+                            </ion-card>
+                                
+                        </ion-col>
+                        
+        
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                       <ion-row>
+                               <ion-text color="primary" style="font-size: 10px;" >Company Name</ion-text>
+                       </ion-row>
+                   
+                       <ion-card no-margin>
+                           <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                   <ion-input [disabled]="isView"  [(ngModel)]="customer.company" formControlName ="company" placeholder="Company Name" inputmode="text"></ion-input>
+                           </ion-col>
+                       </ion-card>
+                       
+                   </ion-col>
+
+               </ion-row>
+
+               <ion-row>
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                            <ion-card no-margin>
+                                <ion-row>
+                                        <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Birthday</ion-text>
+                                </ion-row>
+                                <ion-row >
+                                        <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                            <ion-datetime  [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="check-in-out-date" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                            placeholder="Select Date"></ion-datetime>
+                                            <!-- -->
+                                        </ion-col>
+                                </ion-row>
+                            
+                            </ion-card>
+                    </ion-col>
+
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                            <ion-card no-margin>
+                                    <ion-row>
+                                            <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Anniversary Date</ion-text>
+                                    </ion-row>
+                                    <ion-row >
+                                            <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                                <ion-datetime  [(ngModel)]="customer.anniversaryDate"  formControlName="anniversaryDate" no-padding class="check-in-out-date" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                                placeholder="Select Date"></ion-datetime>
+                            
+                                            </ion-col>
+                                    </ion-row>
+                                
+                            </ion-card>
+                    
+                    </ion-col>
+           
+                 </ion-row>
+
+
+                <ion-row *ngIf="!isView" >
+                        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+        
+                            <ion-button size="small" round expand="block" color="primary" [disabled]="!onCustomerForm.valid" (click)="onSubmit()">Submit</ion-button>
+                        </ion-col>
+    
+                     
+                        
+                        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                                <ion-button size="small" round expand="block" color="primary" (click)="cancel()" >Cancel</ion-button>
+                        </ion-col>
+                </ion-row>
+
+            </form>         
+
+    </ion-grid>
+</ion-card>

@@ -1,0 +1,102 @@
+.dropdown{
+    background: #F1F3F4;
+    border-radius: 5px;
+    border: 5px;
+}
+
+
+.datepicker{
+    background: #F1F3F4;
+    border-radius: 5px;
+    border: 5px;
+}
+.action-button{
+    margin-top: 10px;
+}
+
+.room_grid_ok{
+    border: solid 1px green;
+  }
+  .room_grid_notok{
+    border: solid 1px red;
+  }
+
+  
+.room_text_ok{
+    color:  green;
+  }
+  .room_text_notok{
+    color:  red;
+  }
+  
+  .change{
+      margin-top: 5px;
+  }
+
+  .mt-1{
+    margin-top: 10px;
+    color: #333;
+  }
+
+  .status-level{
+      padding: 5px;
+  }
+
+  .list-back{
+    background: #FFFFFF00;
+    z-index: 2;
+    position: relative;
+}
+
+.text-white {
+    color: #333;
+}
+
+.card {
+    color: white;
+    padding: 15px;
+    border: 1px solid gray;
+}
+
+.card-layout {
+    background: linear-gradient(
+        -0deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    backdrop-filter: blur(34px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 16px;
+    margin: 20px;
+    border: 1px solid #7b6e72 !important;
+    padding: 10px;
+}
+.list-card-item{
+    background: linear-gradient(
+        -0deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    backdrop-filter: blur(34px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 5px;
+    color: white;
+}
+.card-item {
+
+    --border-radius: 5px;
+    color: #333;
+    text-align: center;
+    border: 1px solid gray;
+}
+
+.button-submit{
+    --border-radius: 10px;
+    color: #fff;
+}
+
+.button-cancel{
+    --border-radius: 10px;
+    color: #fff;
+    --background: #E84424;
+}

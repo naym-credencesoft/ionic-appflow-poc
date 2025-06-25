@@ -1,0 +1,563 @@
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Daily Dashboards </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon
+                style="font-size: 26px"
+                class="backbutton-icon"
+                (click)="menuAction()"
+                src="/assets/img/icons/menu-icon-white.svg"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle" (click)="onMenu()"
+                >Accommodation</ion-text
+            >
+            <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img>
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-grid class="sectionPadding">
+        <form [formGroup]="onDashBoardForm">
+            <ion-row class="ion-align-items-center">
+              <ion-col size="10">
+                <ion-item lines="none" style="border: 1px solid gray;border-radius: 10px;">
+                  <!-- Date Picker Section -->
+                  <ion-text class="headsec" style=" margin-right: 10px; color:black">Date:</ion-text>
+                  <ion-datetime
+                    [(ngModel)]="rommAvailability.FromDate"
+                    (ionChange)="dateChnageOp()"
+                    formControlName="bookingFromDate"
+                    displayFormat="DD/MM/YYYY"
+                    pickerFormat="DD/MM/YYYY"
+                    min="2000-01-01"
+                    max="2100-12-31"
+                    placeholder="Select Date"
+                    class="headsec"
+                    style="margin-right: 10px; color:black"
+                  ></ion-datetime>
+          
+                  <!-- Filter By Section -->
+                  <ion-text class="headsec" style="margin-right: 10px;color:black;">Type:</ion-text>
+                  <ion-select
+                    placeholder="All"
+                    [value]="currentStatus"
+                    [(ngModel)]="currentStatus"
+                    (ionChange)="filterByStatus()"
+                    okText="Done"
+                    cancelText="Dismiss"
+                    formControlName="StatusChangeControll"
+                    style="flex: 1; color:black"
+                    class="headsec"
+                  >
+                    <ion-select-option value="All">All</ion-select-option>
+                    <ion-select-option value="OCCUPIED">Occupied</ion-select-option>
+                    <ion-select-option value="NOT_READY">Not Ready</ion-select-option>
+                    <ion-select-option value="VACANT_READY">Vacant Ready</ion-select-option>
+                    <ion-select-option value="BLOCKED">Blocked</ion-select-option>
+                    <ion-select-option value="CLEANING_IN_PROGRESS">Cleaning in Progress</ion-select-option>
+                    <ion-select-option value="CHECKING_OUT">Checking Out</ion-select-option>
+                    <ion-select-option value="LATE_CHECK_OUT">Late Checkout</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+          
+              <!-- Reset Button Section -->
+              <ion-col size="2" class="ion-text-center">
+                <ion-button expand="block" (click)="resetFunction()" class="button-action-1a" size="default">
+                  Reset
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </form>
+          
+        <ion-row>
+            <ion-col size="4"  class="ion-text-center">
+                <ion-button
+                    expand="block"
+                    class="button-action-1"
+                    size="default"
+                    (click)="onNewBooking()"
+                    >New Booking</ion-button
+                >
+            </ion-col>
+            <ion-col size="4" class="ion-text-center">
+                <ion-button
+                    expand="block"
+                    class="button-action-1"
+                    size="default"
+                    (click)="onRoomEnquiry()"
+                    >Room Enquiry</ion-button
+                >
+            </ion-col>
+            <ion-col size="4"  class="ion-text-center">
+                <ion-button
+                    expand="block"
+                    class="button-action-1"
+                    size="default"
+                    (click)="onManageBooking()"
+                    >Manage
+                    Booking</ion-button
+                >
+            </ion-col>
+
+          
+
+            <!-- <ion-col size="12">
+                <ion-button  class="button-action-1" size="default" style="width: 100%;">Refresh</ion-button>
+            </ion-col> -->
+        </ion-row>
+
+      
+    </ion-grid>
+
+    
+
+    <ion-card class="card-container">
+        <ion-grid>
+            
+
+            <ion-row>
+                <ion-col
+                    *ngFor="let room of TODAYS_ROOMS; let i = index"
+                    size-xs="6"
+                    size-sm="6"
+                    size-md="4"
+                    size-lg="3"
+                    
+                >
+                    <!-- fxLayoutAlign="start start"  -->
+                    <div>
+                        <div
+                            class="dashboard-card"
+                            [ngClass]="{
+                                'not-ready':
+                                    room.roomStatus === 'NOT_READY' &&
+                                    isCheckoutBooking(room.roomOb) === false,
+                                'not-disturbed': room.roomStatus === 'DO_NOT_DISTRUB',
+                                cleaninprogress:
+                                    room.roomStatus === 'CLEANING_IN_PROGRESS',
+                                sleepout: room.roomStatus === 'SLEEP_OUT',
+                                onQueue: room.roomStatus === 'ON_QUEUE',
+                                late_checkout: room.roomStatus === 'LATE_CHECK_OUT',
+                                Occupied: room.roomStatus === 'OCCUPIED',
+                                blocked: room.roomStatus === 'BLOCKED',
+                                vacantready: room.roomStatus === 'VACANT_READY',
+                                checkout: isCheckoutBooking(room.roomOb) === true || room.roomStatus === 'CHECKING_OUT'
+                                }"
+                        >
+                            <ion-row class="row-1-room">
+                                <ion-col no-margin no-padding size="10">
+                                    <h3 *ngIf="!room.available" class="size-change">
+                                        <strong class="size-change"
+                                            >{{ room.roomNumber }} | {{
+                                            room.roomType }}</strong
+                                        >
+                                    </h3>
+
+                                    <h3
+                                        *ngIf="room.available"
+                                        class="size-change"
+                                    >
+                                        <strong class="size-change"
+                                            >{{ room.roomNumber }} | {{
+                                            room.roomType }}</strong
+                                        >
+                                    </h3>
+                                </ion-col>
+
+                                <ion-col no-margin no-padding size="2">
+                                    <ion-icon
+                                        (click)="checkBookingId(room.roomOb)"
+                                        class="menu-icon"
+                                        name="ellipsis-vertical-outline"
+                                    ></ion-icon
+                                ></ion-col>
+                            </ion-row>
+
+                            <ion-row class="row-1-room">
+                                <ion-icon
+                                    *ngIf="room.available"
+                                    class="isAvailavle size-change2"
+                                    name="checkmark-done-outline"
+                                ></ion-icon>
+
+                                <span
+                                    class="dot size-change"
+                                    [ngClass]="{
+                            'not-ready-dot': room.roomStatus === 'NOT_READY',
+                            'not-disturbed-dot':
+                                room.roomStatus === 'DO_NOT_DISTRUB',
+                            'cleaninprogress-dot':
+                                room.roomStatus === 'CLEANING_IN_PROGRESS',
+                            'sleepout-dot': room.roomStatus === 'SLEEP_OUT',
+                            'onQueue-dot': room.roomStatus === 'ON_QUEUE',
+                            'late_checkout-dot':
+                                room.roomStatus === 'LATE_CHECK_OUT',
+                            'checkout-dot': room.roomStatus === 'CHECKING_OUT',
+                            'Occupied-dot': room.roomStatus === 'OCCUPIED',
+                            'blocked-dot': room.roomStatus === 'BLOCKED',
+                            'vacantready-dot': room.roomStatus === 'VACANT_READY'
+                            }"
+                                ></span>
+
+                                <div
+                                    *ngIf="isCheckoutBooking(room.roomOb) === false"
+                                >
+                                    <span
+                                        *ngIf="room.roomStatus === 'NOT_READY'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                    >
+                                        NOT READY</span
+                                    >
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'DO_NOT_DISTRUB'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                    >
+                                        DO NOT DISTRUB
+                                    </span>
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'CLEANING_IN_PROGRESS'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                    >
+                                        CLEANING IN PROGRESS
+                                    </span>
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'SLEEP_OUT'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                        >SLEEP OUT
+                                    </span>
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'ON_QUEUE'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                    >
+                                        ON QUEUE</span
+                                    >
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'LATE_CHECK_OUT'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                    >
+                                        LATE CHECK OUT</span
+                                    >
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'CHECKING_OUT'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                    >
+                                        CHECKING OUT
+                                    </span>
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'OCCUPIED'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                        >OCCUPIED
+                                    </span>
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'BLOCKED'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                        >BLOCKED
+                                    </span>
+
+                                    <span
+                                        *ngIf="room.roomStatus == 'VACANT_READY'"
+                                        style="
+                                            min-height: 20px;
+                                            font-size: 12px;
+                                        "
+                                        class="size-change"
+                                    >
+                                        VACANT READY
+                                    </span>
+                                </div>
+
+                                <span
+                                    *ngIf="isCheckoutBooking(room.roomOb) === true"
+                                    style="min-height: 20px; font-size: 12px"
+                                    class="size-change"
+                                >
+                                    CHECKING OUT
+                                </span>
+
+                                <span
+                                    class="guest-name size-change"
+                                    *ngIf="
+                            (room.roomOb.checkOutGuest === null &&
+                                room.roomOb.guestName != null &&
+                                room.roomOb.guestName != undefined &&
+                                room.roomOb.guestName != '') ||
+                            (room.roomOb.checkOutGuest === '' &&
+                                room.roomOb.guestName != null &&
+                                room.roomOb.guestName != undefined &&
+                                room.roomOb.guestName != '')
+                            "
+                                    style="min-height: 20px; font-size: 12px"
+                                >
+                                    {{ room.roomOb.guestName.split(" ")[0] }}
+                                </span>
+
+                                <span
+                                    class="guest-name size-change"
+                                    *ngIf="
+                            room.roomOb.checkOutGuest != null &&
+                            room.roomOb.checkOutGuest != ''
+                            "
+                                    style="min-height: 20px; font-size: 12px"
+                                >
+                                    {{ room.roomOb.checkOutGuest.split(" ")[0]
+                                    }}
+                                </span>
+                            </ion-row>
+
+                            <div
+                                fxLayoutAlign="start start"
+                                *ngIf="
+                            (room.roomOb.checkOutGuest === null &&
+                            room.roomOb.guestName != null &&
+                            room.roomOb.guestName != undefined &&
+                            room.roomOb.guestName != '') ||
+                            (room.roomOb.checkOutGuest === '' &&
+                            room.roomOb.guestName != null &&
+                            room.roomOb.guestName != undefined &&
+                            room.roomOb.guestName != '') ||
+                            (room.roomOb.checkOutGuest != null &&
+                            room.roomOb.checkOutGuest != '')
+                        "
+                            >
+                                <span
+                                    class="guest-name size-change ml-1"
+                                    *ngIf="
+                            (room.roomOb.checkOutGuest === null &&
+                                room.roomOb.guestName != null &&
+                                room.roomOb.guestName != undefined &&
+                                room.roomOb.guestName != '') ||
+                            (room.roomOb.checkOutGuest === '' &&
+                                room.roomOb.guestName != null &&
+                                room.roomOb.guestName != undefined &&
+                                room.roomOb.guestName != '')
+                            "
+                                    style="min-height: 20px; font-size: 9px"
+                                >
+                                    Rev Id: {{
+                                    room.roomOb.currentBookingReservationNumber
+                                    }}
+                                </span>
+
+                                <span
+                                    class="guest-name size-change ml-1"
+                                    *ngIf="
+                            room.roomOb.checkOutGuest != null &&
+                            room.roomOb.checkOutGuest != ''
+                            "
+                                    style="min-height: 20px; font-size: 9px"
+                                >
+                                    Rev Id: {{
+                                    room.roomOb.checkoutBookingReservationNumber
+                                    }}
+                                </span>
+                            </div>
+
+                            <div
+                                *ngIf="
+                            room.roomOb.checkOutGuest != null &&
+                            room.roomOb.checkOutGuest != '' &&
+                            room.roomOb.guestName != null &&
+                            room.roomOb.guestName != ''
+                        "
+                                fxLayoutAlign="start start"
+                            >
+                                <span class="dot booked-dot size-change"></span>
+                                <span
+                                    style="min-height: 20px; font-size: 12px"
+                                    class="size-change"
+                                >
+                                    ARRIVING {{ room.roomOb.guestName.split("
+                                    ")[0] }}
+                                </span>
+                            </div>
+
+                            <div
+                                *ngIf="
+                            room.roomOb.checkOutGuest != null &&
+                            room.roomOb.checkOutGuest != '' &&
+                            room.roomOb.guestName != null &&
+                            room.roomOb.guestName != ''
+                        "
+                                fxLayoutAlign="start start"
+                            >
+                                <span
+                                    style="min-height: 20px; font-size: 9px"
+                                    class="size-change ml-1"
+                                >
+                                    Rev Id: {{
+                                    room.roomOb.currentBookingReservationNumber
+                                    }}
+                                </span>
+                            </div>
+
+                            <ion-row
+                                [ngClass]="
+                              room.roomOb.checkOutGuest != null &&
+                              room.roomOb.checkOutGuest != ''
+                                ? 'section-card-3Or'
+                                : 'section-card-3'
+                            "
+                                fxLayoutAlign.gt-xs="space-between start"
+                                fxLayout.xs="column"
+                            >
+                                <ion-col
+                                    size="6"
+                                    *ngIf="
+                              isBookEnable() &&
+                                room.available &&
+                                isCheckoutBooking(room.roomOb) === false &&
+                                (room.roomStatus === 'VACANT_READY' ||
+                                  room.roomStatus === 'CLEANING_IN_PROGRESS' ||
+                                  room.roomStatus === 'CHECKING_OUT' ||
+                                  room.roomStatus === 'NOT_READY')
+                              "
+                                    fxFlex="100"
+                                    fxFlex.gt-xs="27"
+                                    (click)="onBook(room)"
+                                    class="book-room"
+                                >
+                                    Book
+                                </ion-col>
+
+                                <ion-col
+                                    size="6"
+                                    *ngIf="
+                                (!room.available &&
+                                  room.roomOb.bookingOutstandingAmount != null &&
+                                  room.roomOb.bookingOutstandingAmount != undefined &&
+                                  room.roomOb.bookingOutstandingAmount < 0) ||
+                                (!room.available &&
+                                  room.roomOb.bookingOutstandingAmount == null)
+                              "
+                                    fxFlex="100"
+                                    fxFlex.gt-xs="27"
+                                    class="due-room"
+                                    (click)="PaymentDetails(room.roomOb.bookingId)"
+                                >
+                                    Due
+                                </ion-col>
+
+                                <ion-col
+                                    size="6"
+                                    *ngIf="
+                                !room.available &&
+                                room.roomOb.bookingOutstandingAmount != null &&
+                                room.roomOb.bookingOutstandingAmount != undefined &&
+                                room.roomOb.bookingOutstandingAmount >= 0
+                              "
+                                    fxFlex="100"
+                                    fxFlex.gt-xs="27"
+                                    (click)="PaymentDetails(room.roomOb.bookingId)"
+                                    class="paid-room"
+                                >
+                                    Paid
+                                </ion-col>
+
+                                <ion-col size="6" fxLayoutAlign="end end">
+                                    <div
+                                        *ngIf="
+                                  room.roomOb.dateRollOver != null &&
+                                  room.roomOb.dateRollOver === true
+                                "
+                                        class="mat-small m-0 size-change DateRolloverDot"
+                                        style="font-size: 10px"
+                                    >
+                                        Rollover
+                                    </div>
+
+                                    <div
+                                        class="mat-small m-0 mr-1 ml-1 size-change sqNo"
+                                        style="font-size: 10px"
+                                        *ngIf="
+                                  room.roomOb.roomSequenceNumber != null &&
+                                  room.roomOb.roomSequenceNumber != undefined
+                                "
+                                    >
+                                        Sq No : {{
+                                        room.roomOb.roomSequenceNumber }}
+                                    </div>
+                                </ion-col>
+                            </ion-row>
+                        </div>
+                    </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-card>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button  class="fabButton" (click)="onNewBooking()">
+            <ion-img style="height: 20px; width: 20px;"
+                src="/assets/img/icons/add-booking-dashboad.svg"
+            ></ion-img>
+        </ion-fab-button>
+    </ion-fab>
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+
+</ion-content>

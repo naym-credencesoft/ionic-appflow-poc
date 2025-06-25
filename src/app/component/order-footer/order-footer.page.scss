@@ -1,0 +1,21 @@
+.selectItem{
+    display: flex;
+    justify-content: center;
+}
+
+.footer{
+    background: linear-gradient(
+        -180deg,
+        var(--ion-color-tm3-terciary1),
+        var(--ion-color-tm3-terciary1)
+    );
+}
+
+.footer-button{
+    color: white;
+    --background: linear-gradient(
+        -270deg,
+        #5095B6,
+        #8CBBD0
+    );
+}

@@ -1,0 +1,123 @@
+<ion-header> 
+    <ion-toolbar class="animated fadeIn shadeCol">
+    
+    <ion-buttons slot="start">
+        <ion-back-button mode ="md" icon="arrow-back" style="color: #fff;"></ion-back-button>
+    </ion-buttons>
+      <ion-text color="light" class="HeaderTitle" >Update Inventory</ion-text>
+    </ion-toolbar>
+
+  </ion-header>
+
+<ion-content>
+
+    <ion-card>
+        <ion-grid no-padding>
+            <form [formGroup]="onUpdateInventoryForm">
+
+                <ion-row style="height: 100%; display: flex; align-items: center; justify-content: center;" *ngIf="!isInventoryCreated">
+                    <h4 style="color: red;">Inventory not created yet</h4>
+                </ion-row>
+
+
+                <ion-row>
+                    <ion-col size="6" >
+
+                        <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">From Date*
+                        </ion-text>
+
+                        <ion-datetime [(ngModel)]="rateBundle.fromDate" (ionChange)="fromDateChange()"
+                        min="{{this.fromDateMin}}" max ="{{fromDateMax}}"
+                        formControlName="rateAndAvailFromDate" no-padding class="datepicker"
+                        color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="From Date"></ion-datetime>
+
+                    </ion-col>
+
+                    <ion-col size="6">
+
+                        <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">To Date*
+                        </ion-text>
+
+                        <ion-datetime [(ngModel)]="rateBundle.toDate" min="{{this.toMinDate}}"
+                        max ="{{toMaxDate}}"
+                        formControlName="rateAndAvailToDate" no-padding class="datepicker"
+                        color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="To Date"></ion-datetime>
+
+
+                    </ion-col>
+
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">No Of Rooms*</ion-text>
+                        <ion-input formControlName="noOfRooms" [(ngModel)]="rateBundle.totalNoRooms"
+                        placeholder="0" inputmode="number" type ="number" min="0" class="input-background"></ion-input>
+                        
+                    </ion-col>
+
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Price*</ion-text>
+                        <ion-input formControlName="price" [(ngModel)]="rateBundle.price"
+                        placeholder="0" inputmode="number" type="number" class="input-background"></ion-input>
+                    
+                        
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="4">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Booked*</ion-text>
+
+                        <ion-input formControlName="Booked" [(ngModel)]="rateBundle.noOfBooked"
+                        placeholder="0" inputmode="number" type ="number" min="0"  class="input-background"></ion-input>
+                        
+                    </ion-col>
+
+                    <ion-col size="4">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Available*</ion-text>
+
+                        <ion-input formControlName="Available" [(ngModel)]="rateBundle.noOfAvailable"
+                        placeholder="0" inputmode="number" type="number"  class="input-background"></ion-input>
+                        
+                        
+                    </ion-col>
+
+                    <ion-col size="4">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Hold</ion-text>
+
+                        <ion-input formControlName="Hold" [(ngModel)]="rateBundle.noOfOnHold"
+                        placeholder="0" inputmode="number" type="number" class="input-background"></ion-input>
+                        
+                        
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+
+                    <ion-col size="6" >
+                        <ion-button expand="block" color="primary" (click)="submit()" [disabled]="!onUpdateInventoryForm.valid|| loader || !isInventoryCreated">
+                            Create</ion-button>
+                    </ion-col>
+                
+
+                    <ion-col size="6" >
+                        <ion-button expand="block"  class="btn-cancel" (click)="cancel()">Cancel</ion-button>
+                    </ion-col>
+
+                    
+
+            </ion-row>
+
+            </form>
+        </ion-grid>
+    </ion-card>
+
+</ion-content>

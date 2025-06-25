@@ -1,0 +1,68 @@
+@import "../../../theme/variables.scss";
+
+:host {
+
+    .app-name{
+        font-family: 'SofiaProRegular';
+    }
+}
+
+.form-holder {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+  
+    .form-textbox {
+      border-radius: 8px 8px 8px 8px;
+      background: #1D174D;
+      // margin-top: 50px;
+      backdrop-filter: blur(30px) brightness(15px) opacity(0);
+      box-shadow: 0px 3px 6px var (--ion-form-box-shadow);
+      --padding-start: 12px;
+      // z-index: 100;
+      // border-bottom: 1px solid var(--ion-color-border-bottom);
+      color: #fff;
+      font-size: 14px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+    .last-tb {
+      border: none;
+    }
+  }
+
+.video-bg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 0;
+    opacity: .12;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -o-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-secondary));
+    background-size: cover;
+    object-fit: cover;
+}
+
+.remember-me{
+    margin-left: 5px;
+}
+
+.paz {
+    position: relative;
+    z-index: 10;
+}
+// .auth-content{
+ 
+//     margin-left: auto;
+//     margin-right: auto;
+//     display: block;
+// }

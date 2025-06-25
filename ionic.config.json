@@ -1,7 +1,8 @@
 {
-  "name": "ionic-app-base",
+  "name": "bookone-business",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
-  "type": "react-vite"
+  "type": "angular"
 }

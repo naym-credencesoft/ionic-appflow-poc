@@ -1,0 +1,1452 @@
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Daily Report  </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()"  style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <!-- <ion-progress-bar type="indeterminate" *ngIf="isProgressing" reversed="true"></ion-progress-bar> -->
+    <ion-item class="sectionDaily">
+        <ion-text style="color: black;">Start Date : </ion-text>
+        <ion-datetime
+        style="color: black;"
+            #startDatetime
+            (ionChange)="dateValue = formatDate(startDatetime.value);startdateChange()"
+            presentation="date"
+            showDefaultButtons="true"
+            [(ngModel)]="startDate"
+            min= "2000-12-31"
+            max="2100-12-31"
+        ></ion-datetime>
+    </ion-item>
+    <ion-item>
+        <ion-text style="color: black;">End Date : </ion-text>
+        <ion-datetime
+        style="color: black;"
+            #endDatetime
+            (ionChange)="enddateValue = formatDate(endDatetime.value)"
+            presentation="date"
+            showDefaultButtons="true"
+            [(ngModel)]="endDate"
+            min= "{{startDate}}"
+            max="2100-12-31"
+        ></ion-datetime>
+    </ion-item>
+    <!-- <ion-button expand="full" class="submit-button" (click)="submitData()"
+        >Confirm</ion-button
+    > -->
+
+    <ion-row>
+        <ion-col size="6">
+            <ion-button
+                expand="block"
+                color="primary"
+                [disabled]="startDate === null || startDate === undefined"
+                (click)="submitData()"
+            >
+                Find Report</ion-button
+            >
+        </ion-col>
+
+        <ion-col size="6">
+            <ion-button expand="block" color="primary" (click)="Reset()"
+                >Reset
+            </ion-button>
+        </ion-col>
+    </ion-row>
+
+    <ion-grid
+        no-padding
+        *ngIf="isRequested && this.inc_data  === null ||isRequested && this.inc_data  === undefined"
+    >
+        <p ion-text color="danger" class="titleMessage">
+            <ion-text color="danger" style="font-size: 14px">
+                No data found
+            </ion-text>
+        </p>
+    </ion-grid>
+
+    <ion-segment
+        value="{{selectedSegment}}"
+        *ngIf="this.inc_data  != null && this.inc_data  != undefined"
+    >
+        <ion-segment-button (click)="triggerInc()" value="income">
+            <ion-label style="color: black;">Income</ion-label>
+        </ion-segment-button>
+        <ion-segment-button (click)="triggerExp()" value="expense">
+            <ion-label style="color: black;">Expense</ion-label>
+        </ion-segment-button>
+        <ion-segment-button (click)="triggerBooking()" value="booking">
+            <ion-label style="color: black;">Booking</ion-label>
+        </ion-segment-button>
+        <ion-segment-button (click)="triggerRestaurant()" value="restaurant">
+            <ion-label style="color: black;">Restaurant</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+
+    <div *ngIf="this.inc_data  != null && this.inc_data  != undefined">
+        <ion-item *ngIf="selectedSegment == 'income'">
+            <ion-card class="card-main">
+                <ion-card-header>
+                    <ion-list>
+                        <ion-list-header>
+                            <ion-label style="color: black;"> Filter by Business Service </ion-label
+                            ><ion-icon color="white"
+                                size="large"
+                                name="filter-circle"
+                            ></ion-icon>
+                        </ion-list-header>
+                        <ion-item>
+                            <ion-select
+                            style="color: black;"
+                                value="{{incomefiltervalue}}"
+                                #incomeselect
+                                (ionChange)="incomefiltervalue = incomeselect.value"
+                                (ionChange)="incomefilter()"
+                                okText="Okay"
+                                cancelText="Dismiss"
+                            >
+                                <ion-select-option style="color: black;" value="All"
+                                    >All</ion-select-option
+                                >
+                                <ion-select-option style="color: black;"
+                                    *ngFor="let businessservice of inc_businessservicesfiltered; index as i"
+                                    value="{{businessservice}}"
+                                    >{{businessservice}}</ion-select-option
+                                >
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item
+                        ><h1  style="color: black;">Total</h1>
+                        <h1 slot="end"  style="color: black;">
+                            {{totaloverall| currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1></ion-item
+                    >
+                </ion-card-content>
+                <ion-card-content>
+                    <ion-item *ngIf="show_inc_UPI == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="upiTitle"
+                            [subtitle]="'UPI'"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'10'"
+                            [subtitleFontSize]="'5'"
+                            [showUnits]="false"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/upi.svg'"
+                            [imageHeight]="12"
+                            [imageWidth]="36"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        ></circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{inc_percentUPI}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{upiTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_credit == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/credit.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{inc_percentCredit}}"
+                        ></ion-progress-bar>
+                        <h1  style="color: black;">
+                            {{creditTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_cash == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cashTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/cash.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{inc_percentCash}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{cashTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_bank == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/bank.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{inc_percentBank}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{bankTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_card == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cardTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/card.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{inc_percentCard}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{cardTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_prepaid == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/pre-paid.svg'"
+                            [imageHeight]="40"
+                            [imageWidth]="45"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{inc_percentPrepaid}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{prepaidTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_wallet == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cashTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/wallet.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{inc_percentWallet}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{walletTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_cheque == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/cheque.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{inc_percentCheque}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{chequeTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_dd == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cardTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/DD.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{inc_percentDD}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{ddTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_payment_terminal == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/payment-terminal.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{inc_percentPayment}}"
+                        ></ion-progress-bar>
+                        <h1  style="color: black;">
+                            {{paymentTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_billtoroom == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cardTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/bill.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="20"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{inc_percentBill}}"
+                        ></ion-progress-bar>
+                        <h1  style="color: black;">
+                            {{billTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_inc_multi_payment == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/multimode.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="20"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{inc_percentMultimode}}"
+                        ></ion-progress-bar>
+                        <h1  style="color: black;">
+                            {{multiModeTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="check_any_inc == false">
+                        <h2  style="color: black;"   style="color: black;">No Income Data Available</h2>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-item>
+        <ion-item *ngIf="selectedSegment == 'expense'">
+            <ion-card class="card-main">
+                <ion-card-header>
+                    <ion-list>
+                        <ion-list-header>
+                            <ion-label  style="color: black;"> Filter by Expense Type </ion-label
+                            ><ion-icon
+                                size="large"
+                                name="filter-circle"
+                            ></ion-icon>
+                        </ion-list-header>
+                        <ion-item>
+                            <ion-select style="color: black;"
+                                value="{{expensefiltervalue}}"
+                                #expenseselect
+                                (ionChange)="expensefiltervalue = expenseselect.value"
+                                (ionChange)="expensefilter()"
+                                okText="Okay"
+                                cancelText="Dismiss"
+                            >
+                                <ion-select-option value="All" style="color: black;"
+                                    >All</ion-select-option
+                                >
+                                <ion-select-option style="color: black;"
+                                    *ngFor="let expensename of exp_expenseNamefiltered; index as i"
+                                    value="{{expensename}}"
+                                    >{{expensename}}</ion-select-option
+                                >
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item
+                        ><h1 style="color: black;">Total</h1>
+                        <h1 slot="end" style="color: black;">
+                            {{totaloverall | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1></ion-item
+                    >
+                </ion-card-content>
+                <ion-card-content>
+                    <ion-item *ngIf="show_exp_UPI == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="upiTitle"
+                            [subtitle]="'UPI'"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'10'"
+                            [subtitleFontSize]="'5'"
+                            [showUnits]="false"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/upi.svg'"
+                            [imageHeight]="12"
+                            [imageWidth]="36"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        ></circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{exp_percentUPI}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{upiTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_credit == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/credit.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{exp_percentCredit}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{creditTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_cash == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cashTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/cash.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{exp_percentCash}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{cashTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_bank == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/bank.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{exp_percentBank}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{bankTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_card == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cardTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/card.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{exp_percentCard}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{cardTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_prepaid == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/pre-paid.svg'"
+                            [imageHeight]="40"
+                            [imageWidth]="45"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{exp_percentPrepaid}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{prepaidTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_wallet == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cashTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/wallet.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{exp_percentWallet}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{walletTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_cheque == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/cheque.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{exp_percentCheque}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{chequeTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_dd == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cardTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/DD.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{exp_percentDD}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{ddTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_payment_terminal == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/payment-terminal.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="30"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{exp_percentPayment}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{paymentTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_billtoroom == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="cardTitle"
+                            [subtitle]="'Cash'"
+                            [titleColor]="'#2F9FC2'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/bill.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="20"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#5260ff'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#eb445a'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="danger"
+                            class="progress-barr"
+                            value="{{exp_percentBill}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{billTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="show_exp_multi_payment == true">
+                        <circle-progress
+                            class="chart"
+                            [percent]="100"
+                            [title]="creditTitle"
+                            [subtitle]="'CREDIT'"
+                            [showImage]="true"
+                            [imageSrc]="'../../../assets/multimode.svg'"
+                            [imageHeight]="30"
+                            [imageWidth]="20"
+                            [titleColor]="'#2F9FC2'"
+                            [titleFontSize]="'5'"
+                            [subtitleFontSize]="'2'"
+                            [showUnits]="false"
+                            [outerStrokeColor]="'#eb445a'"
+                            [showInnerStroke]="false"
+                            [outerStrokeGradient]="true"
+                            [outerStrokeGradientStopColor]="'#5260ff'"
+                            [showZeroOuterStroke]="false"
+                            [backgroundStroke]="'#33003F'"
+                            [backgroundStrokeWidth]="0"
+                            [animation]="true"
+                            [animationDuration]="300"
+                        >
+                        </circle-progress>
+                        <ion-progress-bar
+                            color="tertiary"
+                            class="progress-barr"
+                            value="{{exp_percentMultimode}}"
+                        ></ion-progress-bar>
+                        <h1 style="color: black;">
+                            {{multiModeTitle | currency : currency : "symbol" :
+                            "1.2-2"}}
+                        </h1>
+                    </ion-item>
+                    <ion-item *ngIf="check_any_exp == false">
+                        <h2  style="color: black;"  style="color: black;">No Expense Data Available</h2>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-item>
+        <ion-item *ngIf="selectedSegment == 'booking'">
+            <div class="flex">
+                <ion-list-header>
+                    <ion-segment value="{{bookingSegment}}">
+                        <ion-segment-button
+                            (click)="triggerCurrentBooking()"
+                            value="current-booking"
+                        >
+                            <ion-label style="color: black;">Current</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button
+                            (click)="triggerAdvanceBooking()"
+                            value="advance-booking"
+                        >
+                            <ion-label style="color: black;">Advance</ion-label>
+                        </ion-segment-button>
+                        <ion-segment-button
+                            (click)="triggerStayOverBooking()"
+                            value="stayover-booking"
+                        >
+                            <ion-label style="color: black;">Stay Over</ion-label>
+                        </ion-segment-button>
+                    </ion-segment>
+                </ion-list-header>
+                <ion-item *ngIf="bookingSegment == 'current-booking'">
+                    <ion-card class="card-main">
+                        <ion-card-header>
+                            <ion-list>
+                                <ion-list-header>
+                                    <ion-label style="color: black;">
+                                        Filter by Booking Source </ion-label
+                                    ><ion-icon
+                                        size="large"
+                                        name="filter-circle"
+                                    ></ion-icon>
+                                </ion-list-header>
+                                <ion-item>
+                                    <ion-select style="color: black;"
+                                        value="{{curr_bookFiltervalue}}"
+                                        #curr_bookingselect
+                                        (ionChange)="curr_bookFiltervalue = curr_bookingselect.value"
+                                        (ionChange)="triggerCurrBookingFilter()"
+                                        okText="Okay"
+                                        cancelText="Dismiss"
+                                    >
+                                        <ion-select-option value="All" style="color: black;"
+                                            >All</ion-select-option
+                                        >
+                                        <ion-select-option style="color: black;"
+                                            *ngFor="let bookingSource of curr_book_filtered; index as i"
+                                            value="{{bookingSource}}"
+                                            >{{bookingSource}}</ion-select-option
+                                        >
+                                    </ion-select>
+                                </ion-item>
+                            </ion-list>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <ion-item
+                                ><h1 style="color: black;">Total Amount</h1>
+                                <h1 slot="end" style="color: black;">
+                                    {{currBook_totaloverall | currency :
+                                    currency : "symbol" : "1.2-2"}}
+                                </h1></ion-item
+                            >
+                        </ion-card-content>
+                        <ion-card-content>
+                            <ion-item *ngIf="showCurr_room == true">
+                                <div class="chart3">
+                                    <circle-progress
+                                        [radius]="80"
+                                        [outerStrokeWidth]="20"
+                                        [percent]="100"
+                                        [title]="curr_roomTitle"
+                                        [subtitle]="'ROOMS BOOKED'"
+                                        [titleColor]="'#2F9FC2'"
+                                        [titleFontSize]="'40'"
+                                        [subtitleFontSize]="'15'"
+                                        [showUnits]="false"
+                                        [showImage]="false"
+                                        [showUnits]="false"
+                                        [outerStrokeColor]="'#5260ff'"
+                                        [showInnerStroke]="false"
+                                        [outerStrokeGradient]="true"
+                                        [outerStrokeGradientStopColor]="'#eb445a'"
+                                        [showZeroOuterStroke]="false"
+                                        [backgroundStroke]="'#33003F'"
+                                        [backgroundStrokeWidth]="0"
+                                        [animation]="true"
+                                        [animationDuration]="300"
+                                    ></circle-progress>
+                                    <circle-progress
+                                        [radius]="80"
+                                        [outerStrokeWidth]="20"
+                                        [percent]="100"
+                                        [title]="curr_guestTitle"
+                                        [subtitle]="'NO. OF GUEST'"
+                                        [titleColor]="'#2F9FC2'"
+                                        [titleFontSize]="'40'"
+                                        [subtitleFontSize]="'15'"
+                                        [showUnits]="false"
+                                        [showImage]="false"
+                                        [showUnits]="false"
+                                        [outerStrokeColor]="'#5260ff'"
+                                        [showInnerStroke]="false"
+                                        [outerStrokeGradient]="true"
+                                        [outerStrokeGradientStopColor]="'#eb445a'"
+                                        [showZeroOuterStroke]="false"
+                                        [backgroundStroke]="'#33003F'"
+                                        [backgroundStrokeWidth]="0"
+                                        [animation]="true"
+                                        [animationDuration]="300"
+                                    ></circle-progress>
+                                </div>
+                            </ion-item>
+                            <ion-item *ngIf="showCurr_any == false">
+                                <h2  style="color: black;"  style="color: black;">No Data Available</h2>
+                            </ion-item>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-item>
+                <ion-item *ngIf="bookingSegment == 'advance-booking'">
+                    <ion-card class="card-main">
+                        <ion-card-header>
+                            <ion-list>
+                                <ion-list-header>
+                                    <ion-label style="color: black;">
+                                        Filter by Booking Source </ion-label
+                                    ><ion-icon
+                                        size="large"
+                                        name="filter-circle"
+                                    ></ion-icon>
+                                </ion-list-header>
+                                <ion-item>
+                                    <ion-select
+                                        value="{{adv_bookFiltervalue}}"
+                                        #adv_bookingselect
+                                        (ionChange)="adv_bookFiltervalue = adv_bookingselect.value"
+                                        (ionChange)="triggerAdvBookingFilter()"
+                                        okText="Okay"
+                                        cancelText="Dismiss"
+                                    >
+                                        <ion-select-option value="All" style="color: black;"
+                                            >All</ion-select-option
+                                        >
+                                        <ion-select-option
+                                            *ngFor="let advbookingSource of adv_book_filtered; index as i"
+                                            value="{{advbookingSource}}"
+                                            >{{advbookingSource}}</ion-select-option
+                                        >
+                                    </ion-select>
+                                </ion-item>
+                            </ion-list>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <ion-item
+                                ><h1 style="color: black;">Total Amount</h1>
+                                <h1 style="color: black;" slot="end">
+                                    {{advBook_totaloverall | currency : currency
+                                    : "symbol" : "1.2-2"}}
+                                </h1></ion-item
+                            >
+                        </ion-card-content>
+                        <ion-card-content>
+                            <ion-item *ngIf="showAdv_room == true">
+                                <div class="chart3">
+                                    <circle-progress
+                                        [radius]="80"
+                                        [outerStrokeWidth]="20"
+                                        [percent]="100"
+                                        [title]="adv_roomTitle"
+                                        [subtitle]="'ROOMS BOOKED'"
+                                        [titleColor]="'#2F9FC2'"
+                                        [titleFontSize]="'40'"
+                                        [subtitleFontSize]="'15'"
+                                        [showUnits]="false"
+                                        [showImage]="false"
+                                        [showUnits]="false"
+                                        [outerStrokeColor]="'#5260ff'"
+                                        [showInnerStroke]="false"
+                                        [outerStrokeGradient]="true"
+                                        [outerStrokeGradientStopColor]="'#eb445a'"
+                                        [showZeroOuterStroke]="false"
+                                        [backgroundStroke]="'#33003F'"
+                                        [backgroundStrokeWidth]="0"
+                                        [animation]="true"
+                                        [animationDuration]="300"
+                                    ></circle-progress>
+                                    <circle-progress
+                                        [radius]="80"
+                                        [outerStrokeWidth]="20"
+                                        [percent]="100"
+                                        [title]="adv_guestTitle"
+                                        [subtitle]="'NO. OF GUEST'"
+                                        [titleColor]="'#2F9FC2'"
+                                        [titleFontSize]="'40'"
+                                        [subtitleFontSize]="'15'"
+                                        [showUnits]="false"
+                                        [showImage]="false"
+                                        [showUnits]="false"
+                                        [outerStrokeColor]="'#5260ff'"
+                                        [showInnerStroke]="false"
+                                        [outerStrokeGradient]="true"
+                                        [outerStrokeGradientStopColor]="'#eb445a'"
+                                        [showZeroOuterStroke]="false"
+                                        [backgroundStroke]="'#33003F'"
+                                        [backgroundStrokeWidth]="0"
+                                        [animation]="true"
+                                        [animationDuration]="300"
+                                    ></circle-progress>
+                                </div>
+                            </ion-item>
+                            <ion-item *ngIf="showAdv_any == false">
+                                <h2  style="color: black;"  style="color: black;">No Data Available</h2>
+                            </ion-item>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-item>
+                <ion-item *ngIf="bookingSegment == 'stayover-booking'">
+                    <ion-card class="card-main">
+                        <ion-card-header>
+                            <ion-list>
+                                <ion-list-header>
+                                    <ion-label style="color: black;">
+                                        Filter by Booking Source </ion-label
+                                    ><ion-icon
+                                        size="large"
+                                        name="filter-circle"
+                                    ></ion-icon>
+                                </ion-list-header>
+                                <ion-item>
+                                    <ion-select
+                                        value="{{stay_bookFiltervalue}}"
+                                        #stay_bookingselect
+                                        (ionChange)="stay_bookFiltervalue = stay_bookingselect.value"
+                                        (ionChange)="triggerStayBookingFilter()"
+                                        okText="Okay"
+                                        cancelText="Dismiss"
+                                    >
+                                        <ion-select-option value="All" style="color: black;"
+                                            >All</ion-select-option
+                                        >
+                                        <ion-select-option
+                                            *ngFor="let staybookingSource of stay_book_filtered; index as i"
+                                            value="{{staybookingSource}}"
+                                            >{{staybookingSource}}</ion-select-option
+                                        >
+                                    </ion-select>
+                                </ion-item>
+                            </ion-list>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <ion-item
+                                ><h1 style="color: black;">Total Amount</h1>
+                                <h1 style="color: black;" slot="end">
+                                    {{stayBook_totaloverall | currency :
+                                    currency : "symbol" : "1.2-2"}}
+                                </h1></ion-item
+                            >
+                        </ion-card-content>
+                        <ion-card-content>
+                            <ion-item *ngIf="showStay_room == true">
+                                <div class="chart3">
+                                    <circle-progress
+                                        [radius]="80"
+                                        [outerStrokeWidth]="20"
+                                        [percent]="100"
+                                        [title]="stay_roomTitle"
+                                        [subtitle]="'ROOMS BOOKED'"
+                                        [titleColor]="'#2F9FC2'"
+                                        [titleFontSize]="'40'"
+                                        [subtitleFontSize]="'15'"
+                                        [showUnits]="false"
+                                        [showImage]="false"
+                                        [showUnits]="false"
+                                        [outerStrokeColor]="'#5260ff'"
+                                        [showInnerStroke]="false"
+                                        [outerStrokeGradient]="true"
+                                        [outerStrokeGradientStopColor]="'#eb445a'"
+                                        [showZeroOuterStroke]="false"
+                                        [backgroundStroke]="'#33003F'"
+                                        [backgroundStrokeWidth]="0"
+                                        [animation]="true"
+                                        [animationDuration]="300"
+                                    ></circle-progress>
+                                    <circle-progress
+                                        [radius]="80"
+                                        [outerStrokeWidth]="20"
+                                        [percent]="100"
+                                        [title]="stay_guestTitle"
+                                        [subtitle]="'NO. OF GUEST'"
+                                        [titleColor]="'#2F9FC2'"
+                                        [titleFontSize]="'40'"
+                                        [subtitleFontSize]="'15'"
+                                        [showUnits]="false"
+                                        [showImage]="false"
+                                        [showUnits]="false"
+                                        [outerStrokeColor]="'#5260ff'"
+                                        [showInnerStroke]="false"
+                                        [outerStrokeGradient]="true"
+                                        [outerStrokeGradientStopColor]="'#eb445a'"
+                                        [showZeroOuterStroke]="false"
+                                        [backgroundStroke]="'#33003F'"
+                                        [backgroundStrokeWidth]="0"
+                                        [animation]="true"
+                                        [animationDuration]="300"
+                                    ></circle-progress>
+                                </div>
+                            </ion-item>
+                            <ion-item *ngIf="showStay_any == false">
+                                <h2  style="color: black;"  style="color: black;">No Data Available</h2>
+                            </ion-item>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-item>
+            </div>
+        </ion-item>
+        <ion-item *ngIf="selectedSegment == 'restaurant'">
+            <ion-card class="card-main">
+                <ion-card-header>
+                    <ion-list>
+                        <ion-list-header>
+                            <ion-label style="color: black;"> Filter by Order Type </ion-label
+                            ><ion-icon
+                                size="large"
+                                name="filter-circle"
+                            ></ion-icon>
+                        </ion-list-header>
+                        <ion-item>
+                            <ion-select  style="color: black;"
+                                value="{{orderfiltervalue}}"
+                                #orderselect
+                                (ionChange)="orderfiltervalue = orderselect.value"
+                                (ionChange)="triggerOrderFilter()"
+                                okText="Okay"
+                                cancelText="Dismiss"
+                            >
+                                <ion-select-option value="All" style="color: black;"
+                                    >All</ion-select-option
+                                >
+                                <ion-select-option style="color: black;"
+                                    *ngFor="let ordername of rest_orderfiltered; index as i"
+                                    value="{{ordername}}"
+                                    >{{ordername}}</ion-select-option
+                                >
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-item
+                        ><h1 style="color: black;">Total Amount</h1>
+                        <h1 slot="end" style="color: black;">
+                            {{rest_totaloverall | currency : currency : "symbol"
+                            : "1.2-2"}}
+                        </h1></ion-item
+                    >
+                </ion-card-content>
+                <ion-card-content>
+                    <ion-item *ngIf="show_rest_order == true">
+                        <div class="chart2">
+                            <circle-progress
+                                [radius]="80"
+                                [outerStrokeWidth]="20"
+                                [percent]="100"
+                                [title]="orderTitle"
+                                [subtitle]="'ORDERS'"
+                                [titleColor]="'#2F9FC2'"
+                                [titleFontSize]="'40'"
+                                [subtitleFontSize]="'25'"
+                                [showUnits]="false"
+                                [showImage]="false"
+                                [showUnits]="false"
+                                [outerStrokeColor]="'#5260ff'"
+                                [showInnerStroke]="false"
+                                [outerStrokeGradient]="true"
+                                [outerStrokeGradientStopColor]="'#eb445a'"
+                                [showZeroOuterStroke]="false"
+                                [backgroundStroke]="'#33003F'"
+                                [backgroundStrokeWidth]="0"
+                                [animation]="true"
+                                [animationDuration]="300"
+                            ></circle-progress>
+                        </div>
+                    </ion-item>
+                    <ion-item *ngIf="check_any_order == false">
+                        <h2  style="color: black;" >No Data Available</h2>
+                    </ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-item>
+    </div>
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text" >Please wait...</div>
+        </div>
+      </div>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style="height: 50px">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

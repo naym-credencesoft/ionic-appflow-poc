@@ -1,0 +1,210 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Invoice </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Service Dashboard</ion-text
+            >
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+    <ion-grid>
+        <form [formGroup]="onSeachForm">
+            <ion-searchbar
+            placeholder="Search"
+            class="list-search"
+            mode="md"
+            (ionClear)="clear($event)"
+            (ionChange)="getItems($event)"
+            padding-left
+            padding-right
+        >
+        </ion-searchbar>
+            <ion-row>
+                <ion-col size="5.6" style="margin: 5px;">
+
+                    <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">From
+                    </ion-text>
+                    <ion-row>
+                        <ion-col no-padding size="12">
+                            <div class="datetime-container">
+                              
+                              <ion-datetime 
+                                style="border: 1px solid gray;color: #333; font-size: 14px;" 
+                                (ionChange)="fromDateChange()"
+                                formControlName="rateAndAvailFromDate"
+                                [(ngModel)]="fromDate"
+                                no-padding
+                                color="primary"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                placeholder="DD/MM/YYYY"
+                                min= "2000-12-31"
+                                max="2100-12-31"
+                                >
+                              </ion-datetime>
+                              <ion-icon name="calendar-outline" class="datetime-icon" style="color: #F89A34"></ion-icon>
+                            </div>
+                          </ion-col>
+                    </ion-row>
+                </ion-col>
+
+                <ion-col size="5.6" style="margin: 5px;">
+                    <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">To
+                    </ion-text>
+                
+                    <ion-row>
+                        <ion-col no-padding size="12">
+                            <div class="datetime-container">
+                              <ion-datetime 
+                              style="border: 1px solid gray; color: #333; font-size: 14px;" 
+                              formControlName="rateAndAvailToDate"
+                              [(ngModel)]="toDate"
+                              min= "2000-12-31"
+                                max="2100-12-31"
+                              no-padding
+                              class="check-in-out-date"
+                              color="primary"
+                              displayFormat="DD/MM/YYYY"
+                              pickerFormat="DD/MM/YYYY"
+                              placeholder="Select Date">
+                              </ion-datetime>
+
+                       
+                              <ion-icon name="calendar-outline" style="color: #F89A34" class="datetime-icon"></ion-icon>
+                            </div>
+                          </ion-col>
+                    </ion-row>
+
+                </ion-col>
+
+            </ion-row>
+            
+
+            <ion-row>
+                <ion-col size="6">
+                    <ion-button
+                        expand="block"
+                        class="reset-btn"
+                        (click)="onReset()"
+                    >
+                        Reset</ion-button
+                    >
+                </ion-col>
+                <ion-col size="6">
+                    <ion-button
+                        expand="block"
+                        color="primary"
+                        [disabled]="!onSeachForm.valid"
+                        (click)="onSearch()"
+                    >
+                        Search</ion-button
+                    >
+                </ion-col>
+            </ion-row>
+        </form>
+    </ion-grid>
+
+   
+    <ion-list style="background: none;">
+        <ion-card
+            *ngFor="let invoice of invoices| paginate: { itemsPerPage: 5, currentPage: p }; let i = index"
+            
+        >
+            <ion-card-header  (click)="toggleCardBody(i)" [ngStyle]="{'background-color': i % 2 === 0 ? '#D3EBF2' : '#FEEBD6'}" style="color: #333">
+                <ion-icon
+                    name="ellipsis-vertical-outline"
+                    size="small"
+                    style="float: right"
+                    (click)="onMenu(invoice)"
+                ></ion-icon>
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-text>{{invoice.invoiceNo}}</ion-text>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-row float-right>
+                            <ion-text>
+                                <span *ngIf="invoice.invoiceDate !=null">
+                                    {{
+                                    dateService.convertMillisecondsToDateFormat(invoice.invoiceDate)
+                                    }}</span
+                                >
+                            </ion-text>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </ion-card-header>
+            <ion-card-content *ngIf="openedCardIndex === i" style="    border: 1px solid gray; padding: 12px; color: #333">
+                <!-- <ion-icon name="ellipsis-vertical-outline"></ion-icon> -->
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-text>Property Ref Id :</ion-text>
+                            <ion-text class="name-title-text"
+                                >#{{invoice.propertyReservationId}}</ion-text
+                            >
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text>Customer Name :</ion-text>
+                            <ion-text
+                                *ngIf="invoice.customerDto != null && invoice.customerDto != undefined"
+                                class="name-title-text"
+                                >{{invoice.customerDto.firstName}}
+                                {{invoice.customerDto.lastName}}</ion-text
+                            >
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text>Amount :</ion-text>
+                            <ion-text class="name-title-text">
+                                {{invoice.totalAmount| currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text>Status :</ion-text>
+                            <ion-text class="name-title-text"
+                                >{{invoice.invoiceStatus}}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-card-content>
+        </ion-card>
+    </ion-list>
+    <pagination-controls *ngIf="invoices.length > 0" (pageChange)="p = $event"></pagination-controls>
+</ion-content>
+
+<div class="loader-everyOne" *ngIf="loader">
+    <ion-spinner name="crescent" class="spinner"></ion-spinner>
+    <div class="loader-content">
+      <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+      <div class="loader-text">Please wait...</div>
+    </div>
+  </div>
+<ion-footer>
+    <ion-toolbar style="height: 50px">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

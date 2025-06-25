@@ -1,0 +1,684 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons
+            slot="end"
+            class="close-button"
+            (click)="successDialogClose()"
+        >
+            <ion-icon name="close-outline" style="color: white;"></ion-icon>
+        </ion-buttons>
+        <ion-title color="light">Choose an action</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="ion-no-margin">
+    <!-- <ion-progress-bar
+        type="indeterminate"
+        *ngIf="isProgressing"
+        reversed="true"
+    ></ion-progress-bar> -->
+
+    <ion-list class="item-list" no-margin no-padding *ngIf="!isMultiBooking" style="cursor: pointer;">
+
+        <ion-item
+            no-margin
+            no-padding
+            (click)="onView(booking)" >
+            <ion-icon
+                name="eye-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">View</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="booking.bookingStatus === 'ENQUIRY'"
+            (click)="confirmBooking(booking)"
+        >
+            <ion-icon
+                name="checkmark-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Confirm Booking</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.groupBookingId != null &&
+                booking.groupBookingId != undefined
+            "
+            (click)="groupBookingList(booking.groupBookingId)"
+        >
+            <ion-icon
+                name="copy-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Multi Booking List</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                (booking.groupBooking ||
+                    (!booking.groupBooking &&
+                        booking.bookingStatus !== 'CANCELLED' &&
+                        !booking.groupBooking &&
+                        booking.bookingStatus != 'CHECKEDOUT'))
+            "
+            (click)="addRemoveGuest()"
+        >
+            <ion-icon
+                name="person-add"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Add/Remove Guest</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'CANCELLED' &&
+                booking.bookingStatus != 'ENQUIRY' &&
+                booking.bookingStatus != 'CHECKEDOUT'
+            "
+            (click)="addOnService()"
+        >
+            <ion-icon
+                name="add-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Add On Service</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus === 'ENQUIRY' ||
+                (booking.bookingStatus != 'ENQUIRY' &&
+                    ((!booking.groupBooking &&
+                        booking.bookingStatus == 'CONFIRMED') ||
+                        (!booking.groupBooking &&
+                            booking.bookingStatus == 'NEW') ||
+                        (booking.groupBooking &&
+                            booking.bookingStatus == 'CONFIRMED')))
+            "
+            (click)="cancelRequest(booking)"
+        >
+            <ion-icon
+                name="close-circle"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Cancel</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.bookingStatus == 'CONFIRMED' &&
+                booking.roomDetails &&
+                booking.roomDetails.length > 0 &&
+                isRoomAllocatedInGroupBooking(booking) === true
+            "
+            (click)="onCheckin()"
+        >
+            <ion-icon
+                name="log-in"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">CheckIn</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.groupBookingId == null &&
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.bookingStatus == 'CHECKEDIN'
+            "
+            (click)="checkOutCheck()"
+        >
+            <ion-icon
+                name="log-out"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">CheckOut</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.groupBookingId == null &&
+                !booking.groupBooking &&
+                booking.bookingStatus == 'CHECKEDOUT' &&
+                isUndoCheckoutAvailable(booking) === true
+            "
+            (click)="undoCheckout(booking)"
+        >
+            <ion-icon
+                color="primary"
+                style="font-size: 20px"
+                name="arrow-undo-circle-outline"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Undo Checkout</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <!-- <ion-item no-margin no-padding *ngIf="booking.bookingStatus != 'ENQUIRY'" (click)="copyBooking()">
+            <ion-icon name="copy"  color="primary" style="font-size: 20px;" ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary"  >Copy</ion-text> 
+            </ion-label>
+        </ion-item> -->
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                (booking.groupBooking ||
+                    (!booking.groupBooking &&
+                        booking.bookingStatus != 'CANCELLED' &&
+                        !booking.groupBooking &&
+                        booking.bookingStatus != 'CHECKEDOUT'))
+            "
+            (click)="onDateChange()"
+        >
+            <ion-icon
+                name="calendar"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Date Change</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding *ngIf="booking.id" (click)="onDetails()">
+            <ion-icon
+                name="create"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Details</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.bookingStatus != 'CANCELLED' &&
+                booking.bookingStatus != 'CHECKEDOUT'
+            "
+            (click)="onRoomChange()"
+        >
+            <ion-icon
+                name="repeat-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Room Catagory Change</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.bookingStatus != 'CANCELLED' &&
+                booking.bookingStatus != 'CHECKEDOUT'
+            "
+            (click)="onPlanChange()"
+        >
+            <ion-icon
+                name="repeat-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Plan Change</ion-text>
+            </ion-label>
+        </ion-item>
+        
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking 
+            "
+            (click)="onAuditReportClick()"
+        >
+            <ion-icon
+                name="repeat-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Audit Report</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'CANCELLED' &&
+                booking.bookingStatus != 'CHECKEDOUT' &&
+                booking.bookingStatus != 'NO_SHOW' &&
+                booking.bookingStatus != 'VOID' &&
+                booking.bookingStatus != 'ENQUIRY' &&
+                ((!booking.groupBooking && booking.roomDetails === null) ||
+                    (!booking.groupBooking &&
+                        booking.roomDetails != null &&
+                        booking.roomDetails.length === 0) ||
+                    (!booking.groupBooking &&
+                        booking.roomDetails != null &&
+                        booking.roomDetails != undefined &&
+                        isRoomAllocatedInGroupBooking(booking) === false))
+            "
+            (click)="roomallocate()"
+        >
+            <ion-icon
+                name="enter-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Room Allocation</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                !booking.groupBooking &&
+                booking.bookingStatus != 'CANCELLED' &&
+                booking.bookingStatus != 'CHECKEDOUT' &&
+                booking.bookingStatus != 'NO_SHOW' &&
+                booking.bookingStatus != 'VOID' &&
+                booking.bookingStatus != 'ENQUIRY' &&
+                booking.roomDetails != null &&
+                booking.roomDetails != undefined &&
+                booking.roomDetails.length > 0
+            "
+            (click)="roomallocate()"
+        >
+            <ion-icon
+                name="enter-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Room Shift</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.roomDetails &&
+                booking.roomDetails.length > 0 &&
+                isRoomAllocatedInGroupBooking(booking) === true
+            "
+            (click)="roomRealese(booking)"
+        >
+            <ion-icon
+                name="exit-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Room Release</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                (booking.bookingStatus == 'CONFIRMED' ||
+                    booking.bookingStatus == 'NEW' ||
+                    booking.bookingStatus == 'CHECKEDIN')
+            "
+            (click)="sendPaymentLink()"
+        >
+            <ion-icon
+                name="link"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Send Payment Link</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus == 'CONFIRMED' ||
+                booking.bookingStatus == 'NEW' ||
+                booking.bookingStatus == 'ENQUIRY'
+            "
+            (click)="sendConfirmationEmail()"
+        >
+            <ion-icon
+                name="link"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Send Confirmation Email</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                ((booking.bookingStatus == 'NEW' &&
+                    booking.roomDetails === null) ||
+                    (booking.bookingStatus == 'NEW' &&
+                        booking.roomDetails === undefined) ||
+                    (booking.bookingStatus == 'NEW' &&
+                        booking.roomDetails.length === 0) ||
+                    (booking.bookingStatus == 'CONFIRMED' &&
+                        booking.roomDetails === null) ||
+                    (booking.bookingStatus == 'CONFIRMED' &&
+                        booking.roomDetails === undefined) ||
+                    (booking.bookingStatus == 'CONFIRMED' &&
+                        booking.roomDetails.length === 0))
+            "
+            (click)="voidBooking()"
+        >
+            <ion-icon
+                name="trash-bin-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Void Booking</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                ((booking.bookingStatus != 'CANCELLED' &&
+                    booking.bookingStatus != 'CHECKEDOUT' &&
+                    booking.bookingStatus != 'NO_SHOW' &&
+                    booking.bookingStatus != 'VOID' &&
+                    booking.roomDetails === undefined) ||
+                    (booking.bookingStatus != 'CANCELLED' &&
+                        booking.bookingStatus != 'CHECKEDOUT' &&
+                        booking.bookingStatus != 'NO_SHOW' &&
+                        booking.bookingStatus != 'VOID' &&
+                        booking.roomDetails === null) ||
+                    (booking.bookingStatus != 'CANCELLED' &&
+                        booking.bookingStatus != 'CHECKEDOUT' &&
+                        booking.bookingStatus != 'NO_SHOW' &&
+                        booking.bookingStatus != 'VOID' &&
+                        booking.roomDetails.length === 0))
+            "
+            (click)="noShow()"
+        >
+            <ion-icon
+                name="eye-off-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">No Show</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.invoiceUrl != null && booking.invoiceUrl != undefined
+            "
+            (click)="onInvoice()"
+        >
+            <ion-icon
+                name="copy"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Invoice</ion-text>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+    <ion-list class="item-list" no-margin no-padding *ngIf="isMultiBooking">
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                (booking.groupBooking ||
+                    (!booking.groupBooking &&
+                        booking.bookingStatus !== 'CANCELLED' &&
+                        !booking.groupBooking &&
+                        booking.bookingStatus != 'CHECKEDOUT'))
+            "
+            (click)="addRemoveGuest()"
+        >
+            <ion-icon
+                name="person-add"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Add/Remove Guest</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'CANCELLED' &&
+                booking.bookingStatus != 'ENQUIRY' &&
+                booking.bookingStatus != 'CHECKEDOUT'
+            "
+            (click)="addOnService()"
+        >
+            <ion-icon
+                name="add-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Add On Service</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.bookingStatus == 'CONFIRMED' &&
+                booking.roomDetails &&
+                booking.roomDetails.length > 0 &&
+                isRoomAllocatedInGroupBooking(booking) === true
+            "
+            (click)="onCheckin()"
+        >
+            <ion-icon
+                name="log-in"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">CheckIn</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item no-margin no-padding *ngIf="booking.id" (click)="onDetails()">
+            <ion-icon
+                name="create"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Details</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'CANCELLED' &&
+                booking.bookingStatus != 'ENQUIRY' &&
+                ((!booking.groupBooking &&
+                    booking.bookingStatus === 'CONFIRMED' &&
+                    booking.roomDetails === null) ||
+                    (!booking.groupBooking &&
+                        booking.roomDetails != null &&
+                        booking.roomDetails.length === 0) ||
+                    (!booking.groupBooking &&
+                        booking.roomDetails != null &&
+                        booking.roomDetails != undefined &&
+                        isRoomAllocatedInGroupBooking(booking) === false))
+            "
+            (click)="roomallocate()"
+        >
+            <ion-icon
+                name="enter-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Room Allocation</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.roomDetails &&
+                booking.roomDetails.length > 0 &&
+                isRoomAllocatedInGroupBooking(booking) === true
+            "
+            (click)="roomRealese(booking)"
+        >
+            <ion-icon
+                name="exit-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Room Release</ion-text>
+            </ion-label>
+        </ion-item>
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.bookingStatus == 'CHECKEDIN'
+            "
+            (click)="markAsPaid(booking)"
+        >
+            <ion-icon
+                name="checkmark-outline"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">Mark As Paid</ion-text>
+            </ion-label>
+        </ion-item>
+
+        <ion-item
+            no-margin
+            no-padding
+            *ngIf="
+                booking.bookingStatus != 'CHECKEDOUT' &&
+                booking.bookingStatus != 'ENQUIRY' &&
+                !booking.groupBooking &&
+                booking.bookingStatus == 'CHECKEDIN'
+            "
+            (click)="singleBookingcheckOutCheck()"
+        >
+            <ion-icon
+                name="log-out"
+                color="primary"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-label class="text-area">
+                <ion-text color="primary">CheckOut</ion-text>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+</ion-content>

@@ -1,0 +1,206 @@
+<ion-app>
+    <ion-menu class="side-nav">
+        <ion-content class="side-nav bg-profile font-14">
+            <ion-header>
+                <!-- class="user-profile" -->
+                <!-- <ion-toolbar> -->
+                <div class="image-holder" style="display: flex; justify-content: center;">
+                    <!-- <img *ngIf="this.customer.imageUrl === null" src="../assets/icon/user_profile.svg" width="68" height="68" /> -->
+                    <ion-avatar>
+                        <img
+                            style="
+                                   height: 100px;
+                                    width: 100px !important;
+                                    max-width: 100px !important;
+                                    object-fit: fill;
+                            "
+                            src="{{ this.property.logoUrl }}"
+                            onerror="this.src='/assets/img/app-logo.png'"
+                        />
+                    </ion-avatar>
+                </div>
+               
+
+                <div class="" style="text-align: center; margin-top: 60px;">
+                    <ion-text  class="heading-semibold font-18" style="margin-bottom: 10px; color: #1D174D;"
+                        >{{ property.name }} </ion-text
+                    >
+                    <div class="heading-semibold font-18" style="color: #1D174D; font-size: 17px;"
+                    *ngIf="
+                      this.applicationUser != null && this.applicationUser != undefined
+                    "
+                  >
+                    {{ this.applicationUser?.firstName }} &nbsp;
+                    {{ this.applicationUser?.lastName }}
+                  </div>
+                    <br />
+                    <!-- <ion-text color="light" class="heading-regular font-14">{{
+                        property.email
+                    }}</ion-text> -->
+                    <br />
+                    <!-- <ion-text color="light" class="heading-regular font-14">
+                        <ion-icon
+                            name="star"
+                            style="font-size: 13px"
+                            class="rating-star"
+                        ></ion-icon>
+                        <span
+                            *ngIf="
+                                property.bookOneRating != undefined &&
+                                property.bookOneRating != null
+                            "
+                            >{{ this.property.bookOneRating.toFixed(2) }}</span
+                        >
+                        <span
+                            *ngIf="
+                                property.bookOneRating == undefined ||
+                                property.bookOneRating == null
+                            "
+                            >0</span
+                        >
+                    </ion-text> -->
+                </div>
+
+                <div style="margin-left: -5px">.</div>
+                <!-- <div class="mto text-holder" auto-hide="false"> -->
+                <!-- <a
+                        class="text08 ion-padding-bottom"
+                        tappable
+                        (click)="goToEditProgile()"
+                        (click)="menuClosed()"
+                    >
+                        <ion-text color="light">
+                            <ion-icon name="settings"></ion-icon>
+                            <strong style="font-size: 12px">Setting</strong>
+                        </ion-text>
+                    </a> -->
+                <!-- <ion-text color="secondary"> | </ion-text>
+                    <a class="text08" tappable >
+                        <ion-text color="light">
+                            <ion-icon
+                                style="font-size: 12px"
+                                name="log-out"
+                            ></ion-icon>
+                            <strong style="font-size: 12px">{{
+                                "app.pages.menu.logout" | translate
+                            }}</strong>
+                        </ion-text>
+                    </a> -->
+                <!-- </div> -->
+            </ion-header>
+
+            <div *ngFor="let p of menuItems">
+                <!-- Standard Menu Item -->
+                <div *ngIf="p.url">
+                    <ion-item
+                        [routerLink]="p.url"
+                        routerDirection="root"
+                        routerLinkActive="active"
+                        lines="none"
+                        (click)="menuClosed()"
+                    >
+                        <ion-icon
+                            [name]="p.icon"
+                            slot="start"
+                            style="color: #1D174D;"
+                        ></ion-icon>
+                        <ion-label style="color: #1D174D;">
+                            {{ p.title }}
+                        </ion-label>
+                    </ion-item>
+                </div>
+                <!-- Item with Children -->
+
+                <ion-item
+                    button
+                    *ngIf="p.children?.length > 0"
+                    (click)="p.open = !p.open"
+                    [class.parent-active]="p.open"
+                    detail="false"
+                    lines="none"
+                >
+                    <ion-icon
+                    style="color: #1D174D;"
+                        slot="start"
+                        name="arrow-forward"
+                        *ngIf="!p.open"
+                    ></ion-icon>
+                    <ion-icon
+                    style="color: #1D174D;"
+                        slot="start"
+                        name="arrow-down"
+                        *ngIf="p.open"
+                    ></ion-icon>
+                    <ion-label style="color: #1D174D;">{{ p.title }}</ion-label>
+                </ion-item>
+
+                <!-- Children List for clicked Item -->
+                <ion-list *ngIf="p.open">
+                    <div>
+                        <ion-item
+                            *ngFor="let sub of p.children"
+                            class="sub-item"
+                            [routerLink]="sub.url"
+                            routerDirection="root"
+                            lines="none"
+                            routerLinkActive="active"
+                            (click)="menuClosed()"
+                        >
+                            <ion-icon
+                                [name]="sub.icon"
+                                slot="start"
+                                style="color: #1D174D;"
+                            ></ion-icon>
+                            <ion-label style="color: #1D174D;">
+                                {{ sub.title }}
+                            </ion-label>
+                        </ion-item>
+                    </div>
+                </ion-list>
+            </div>
+            <div style="border: none">
+                <ion-item (click)="logout()">
+                    <ion-icon
+                        style="font-size: 40px; color: #1D174D;"
+                        name="log-out"
+                    ></ion-icon>
+                    <ion-label
+                    
+                        style="font-size: 20px; margin-left: 10px; color: #1D174D;"
+                    >
+                        {{ "app.pages.menu.logout" | translate }}
+                    </ion-label>
+                </ion-item>
+            </div>
+        </ion-content>
+        <ion-footer class="ion-margin-bottom font-14">
+            <ion-row>
+                <ion-col size="12" class="ion-margin-start">
+                    <p class=" text-left" style="color: #1D174D;">
+                        <ion-icon name="phone-portrait-outline"></ion-icon> v{{
+                            appVersion
+                        }}
+                    </p>
+                    <p class="text-left" style="color: #1D174D;">
+                        <ion-icon name="bulb-outline"></ion-icon>Powered by
+                        BookOne
+                    </p>
+                    <p class="text-whitek text-left " style="color: #1D174D;">
+                        Made with
+                        <img
+                            draggable="false"
+                            style="height: 10px"
+                            role="img"
+                            class="emoji"
+                            alt="❤"
+                            src="https://s.w.org/images/core/emoji/12.0.0-1/svg/2764.svg"
+                        />
+                        by CredenceSoft
+                    </p>
+                </ion-col>
+            </ion-row>
+        </ion-footer>
+    </ion-menu>
+    <ion-router-outlet main></ion-router-outlet>
+    <!-- </ion-split-pane> -->
+</ion-app>

@@ -1,0 +1,606 @@
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> OTA Plan Update </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="onCancel()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+<ion-content no-padding class="animated fadeIn fast" #content>
+
+
+    <ion-card class="card-layout text-white" >
+        <ion-grid no-padding>
+            <form [formGroup]="masterPlanUpdateForm">
+                
+                <div >
+                    <ion-label class="labels">Select Room Type:<b style="color: red;">*</b></ion-label>
+                    <ion-select
+                            [value]="RoomName"
+                            class="advSelect"
+                            placeholder="Select Room Type"
+                            name="Room"
+                            okText="Done"
+                            [formControl]="RoomName"
+                            [(ngModel)]="plan.roomTypeId"
+                            (ionChange)="setRoomId(plan.roomTypeId)"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style=" text-align: left; margin-top: 5px;color:#333"
+                        >
+                        <ion-row>
+                            <ion-select-option
+                                [value]="item.id"
+                                *ngFor="let item of  this.roomnamesone"
+                            >
+                            {{item.name}}
+                            </ion-select-option>
+                        </ion-row>
+                        </ion-select>
+                        <ion-icon name="caret-down-outline" class="arrowUpp"></ion-icon>
+                </div>
+
+                <ion-row *ngIf="plan.roomTypeId">
+                    <ion-col size="12" style="padding: 2px 0px; margin-top: 3px;" class="ion-padding" >
+                        <ion-label class="labels" style="margin-left: 10px;">Select Preferences:</ion-label>
+                        <ion-radio-group 
+                          [formControl]="DayChangeType"
+                          [(ngModel)]="dayChange"
+                          (ionChange)="dayTypeChange($event)"
+                          style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                          <ion-row>
+                            <ion-col 
+                            class="radio-option">
+                            <ion-item lines="none" class="radio-item">
+                              <ion-label class="radio-label">Today</ion-label>
+                              <ion-radio slot="start" value="toDay" class="radio-button"></ion-radio>
+                            </ion-item>
+                          </ion-col>
+                      
+                          <ion-col 
+                  
+                            class="radio-option">
+                            <ion-item lines="none" class="radio-item">
+                              <ion-label class="radio-label">Week Days</ion-label>
+                              <ion-radio slot="start" value="weekDays" class="radio-button"></ion-radio>
+                            </ion-item>
+                          </ion-col>
+                      
+                          <ion-col 
+                            class="radio-option">
+                            <ion-item lines="none" class="radio-item">
+                              <ion-label class="radio-label">Weekend</ion-label>
+                              <ion-radio slot="start" value="weekend" class="radio-button"></ion-radio>
+                            </ion-item>
+                          </ion-col>
+                      
+                          <ion-col 
+                  
+                            class="radio-option">
+                            <ion-item lines="none" class="radio-item">
+                              <ion-label class="radio-label">Custom</ion-label>
+                              <ion-radio slot="start" value="custom" class="radio-button"></ion-radio>
+                            </ion-item>
+                          </ion-col>
+                          </ion-row>
+                      
+                          
+                      
+                        </ion-radio-group>
+                      </ion-col>
+                      <ion-col size="12" >
+                        <section class="example-section"  >
+                            <ion-row>
+                                <ion-col size="4" *ngFor="let day of daysList"  style="padding: 0px; margin: 0px;">
+                                    <ion-button
+                                    style="color:#333"
+                                      class="customixedO"
+                                      [disabled]="isView == true"
+                                      (click)="daySelection(day)"
+                                      fill="clear"
+                                    >
+                                      <ion-icon
+                                        *ngIf="checkWeekDays(day)"
+                                        name="checkbox"
+                                        color="primary"
+                                        slot="start"
+                                      ></ion-icon>
+                                      <ion-icon
+                                        *ngIf="!checkWeekDays(day)"
+                                        name="square-outline"
+                                        color="primary"
+                                        slot="start"
+                                      ></ion-icon>
+                                      {{ day }}
+                                    </ion-button>
+                                  </ion-col>
+                            </ion-row>
+                         
+                        </section>
+                      </ion-col>
+                </ion-row>
+        
+                <ion-row style="margin-top: 5px;" *ngIf="plan.roomTypeId">
+                    <ion-col>
+                        <ion-label class="labels">From Date:<b style="color: red;">*</b></ion-label>
+                        <ion-datetime
+                        class="advSelect"
+                        style="margin-top: 5px;color:#333"
+                        [formControl]="rateAndAvailFromDate"
+                        (ionChange)="calculateDaysDifference()"
+                        displayFormat="DD/MM/YYYY"
+                            [(ngModel)]="fromDateToString"
+                            placeholder="DD/MM/YYYY"
+                            min= "2000-12-31"
+                              max="2200-12-31"
+                            >
+                        </ion-datetime>
+                    </ion-col>
+                    <ion-col>
+                        <ion-label class="labels">To Date:<b style="color: red;">*</b></ion-label>
+                        <ion-datetime
+                        class="advSelect"
+                        style="margin-top: 5px; color:#333"
+                        [formControl]="rateAndAvailToDate"
+                            displayFormat="DD/MM/YYYY"
+                            [(ngModel)]="toDateToString"
+                            (ionChange)="calculateDaysDifference()"
+                            placeholder="DD/MM/YYYY"
+                            min= {{fromDateToString}}
+                            max={{maxToDate}}
+                            >
+                        </ion-datetime>
+                    </ion-col>
+                </ion-row>
+
+
+                <ion-row class="advone">
+                    <!-- <ion-text style="font-size: 20px;color:white;margin: 0 0 8px 10px;">Choose Room</ion-text> -->
+                      
+                      <ion-col style="width: 100%;"  *ngIf="showdiv === false && plan.roomTypeId && toDateToString">
+                          <ion-label position="stacked" class="labels">Select Plan: <b style="color: red;">*</b></ion-label>
+                          <div class="advSelect" style="margin-top: 5px;">
+                        <ion-select
+                          placeholder="Select Plan"
+                          [formControl]="PlanName"
+                          [(ngModel)]="planNames"
+                          multiple="true"
+                          (ionChange)="onPlanChange()"
+                          style="color:#333"
+                        >
+                          <ion-select-option *ngFor="let plan of planList" [value]="plan.name">
+                            <b>{{ plan.name }}</b>
+                          </ion-select-option>
+                        </ion-select>
+                        </div>                
+                    
+                    </ion-col>
+                           
+                        <ion-col size="12" *ngIf="plan.roomTypeId && toDateToString && planNames">
+                            
+                            <ion-list class="card-item-list" *ngFor="let plan of otaPlanDetails;let i = index;"  [ngStyle]="getStyle(i)" style="background-color: #ffffff;">
+                             <ion-item  style="height:55px;color:black; width:100%" (click)="toggleDetails(plan)" lines="none">
+                                <img *ngIf="getOtaImageUrl(plan.otaName)" src="{{getOtaImageUrl(plan.otaName)}}" alt="Loader Image" style="width:39px">
+                                <div *ngIf="!getOtaImageUrl(plan.otaName)" class="otaimages" style="color:#000 !important; font-size: 10px;">{{plan.otaName}}</div>
+                               <p style="font-size: 14px;padding-left: 10px;">  {{plan.planName}}</p>
+                              
+
+                             </ion-item>
+                             
+                             <div  style="padding: 3px;background-color: #f0f9f6;" >
+                                <table style="width:99%; color: #fff !important">
+        
+                                    <tr>
+                                        <td style="color: black !important">OTA Plan Id</td>
+                                        <td style="color: black !important; width:46%">{{ plan.otaPlanId }}</td>
+                                      </tr>
+                                    <tr>
+                                        <td style="color: black !important">Plan Name</td>
+                                        <td style="color: black !important; width:46%">{{ plan.planName }}</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="color: black !important">Bookone Plan Code</td>
+                                        <td style="color: black !important; width:46%">{{ plan.bookonePlanCode }}</td>
+                                      </tr>
+                                  
+                                    <tr *ngIf="!(updateType === 'customerRateUpdate' || updateType === 'decreaseRate' || updateType === 'increaseRate')">
+                                        <td style="color: black !important">Plan Amount</td>
+                                        <td *ngIf="(this.editMode == false || !(selectedRow == i))" style="color: black !important">{{plan.price}}
+                                            <ion-icon name="pencil-outline" style="position: absolute;  font-size: 20px;right: 10px; transform: translateY(-50%);" 
+                                            (click)="editPlan(plan,i)" 
+                                            *ngIf="(editMode == false || selectedRow !== i) && !(updateType === 'customerRateUpdate' || updateType === 'decreaseRate' || updateType === 'increaseRate')"></ion-icon>
+                                        </td>
+                                        <td *ngIf="(this.editMode == true && selectedRow == i)" style="color: black !important; " >
+                                            <ion-input style="border: 1px solid black; width:74%"
+                                            [formControl]="PlanAmount"
+                                            placeholder="{{ plan.price }}"
+                                            [(ngModel)]="amount2"
+                                        ></ion-input>
+                                        <ion-icon name="checkmark-circle-outline" style="position: absolute;top:82%;  font-size: 25px;right: 10px; transform: translateY(-50%);" (click)="updatePlan(plan,i)" *ngIf="this.editMode == true && selectedRow == i"></ion-icon>
+                                    </td>
+                                    </tr>
+                                  
+                                  </table>
+                            
+                             </div>
+                           </ion-list>
+                         
+                           <ion-item lines="none" *ngIf="this.showdiv === true" >
+                           <ion-checkbox 
+                              slot="start" 
+                              [checked]="true" disabled>
+                            </ion-checkbox>
+                            <ion-label style="color: #333">{{otaName}}</ion-label>
+                            </ion-item>
+                    </ion-col>
+                       
+                        <ion-col *ngIf="selectedOption != 'updateAllOTAs' && selectedOption != 'selectOTA' && this.plans?.length > 0 && this.showdiv === false && plan.roomTypeId && toDateToString" (click)="toggleCheckboxes()"
+                            size="12" >
+                           
+                                <ion-item lines="none" class="advSelect"  >
+                                    <ion-label  style="color: #333 !important;font-size: 15px; "> Select Update Preference <b style="color: red;">*</b></ion-label>
+                                    <ion-label *ngIf="selectedOption === 'updateAllOTAs' " style="color: #333 !important;font-size: 15px; ">Update All OTAs</ion-label>
+                                    <ion-label *ngIf="selectedOption === 'selectOTA'" style="color: #333 !important;font-size: 15px; ">Select OTA</ion-label>
+                                    <ion-icon *ngIf="selectedOption != 'updateAllOTAs' && selectedOption != 'selectOTA'"
+                                    name="caret-down-outline" style="position: absolute; top: 50%; font-size: 15px; right: 20px; transform: translateY(-50%); color: black;"></ion-icon>
+                                    <ion-icon *ngIf="selectedOption === 'updateAllOTAs' || selectedOption === 'selectOTA'" 
+                                     style="position: absolute; font-size: 15px; right: 20px; transform: translateY(-50%); color: #F89A34;     top: 33px;"
+                                    name="close-circle-outline" (click)="resetSelection()" ></ion-icon>
+                                </ion-item>
+                                
+                       
+                           
+                          </ion-col>
+                       
+                    
+                      
+                      <ion-row *ngIf="showCheckboxes && (selectedOption != 'updateAllOTAs' && selectedOption != 'selectOTA'&& plan.roomTypeId && toDateToString) " class="checkbox-container">
+                        <ion-col size="12">
+                          <ion-item lines="none">
+                            <ion-checkbox 
+                              slot="start" 
+                              (ionChange)="onCheckboxChange('updateAllOTAs')" 
+                              [checked]="selectedOption === 'updateAllOTAs'">
+                            </ion-checkbox>
+                            <ion-label style="color: #333; font-size: 15px;">Update All OTAs</ion-label>
+                          </ion-item>
+                          <ion-item lines="none">
+                            <ion-checkbox 
+                              slot="start" 
+                              (ionChange)="onCheckboxChange('selectOTA')" 
+                              [checked]="selectedOption === 'selectOTA'">
+                            </ion-checkbox>
+                            <ion-label style="color: #333; font-size: 15px;">Select OTA</ion-label>
+                          </ion-item>
+                        </ion-col>
+                      </ion-row>
+
+                      <ion-col *ngIf="selectedOption === 'updateAllOTAs' || selectedOption === 'selectOTA' && plan.roomTypeId && toDateToString && !this.roomDetails"  size="12" class="advSelect" style="margin-top: 10px;padding: 10px;" >
+                        <ion-label *ngIf="selectedOption === 'updateAllOTAs' " style="color: #333 !important;font-size: 15px; ">Update All OTAs</ion-label>
+                
+                        <ion-label *ngIf="selectedOption === 'selectOTA'" style="color: #333 !important;font-size: 15px; ">Select OTA</ion-label>
+                        <ion-icon *ngIf="selectedOption === 'updateAllOTAs' || selectedOption === 'selectOTA'" 
+                         style="    position: absolute;
+                         font-size: 22px;
+                         right: 15px;
+                         transform: translateY(-50%);
+                         color: #F89A34;
+                         top: 20px;"
+                        name="close-circle" (click)="resetSelection()" ></ion-icon>
+                        <div *ngIf="selectedOption === 'updateAllOTAs'" class="option-content" >
+                            <ion-col size="12" >
+                                <ion-list class="card-item-list" *ngFor="let plan of this.otaPlans;let i = index;"  [ngStyle]="getStyle(i)" style="background-color: #ffffff;">
+                                 <ion-item  style="height:55px;color:black; width:100%" (click)="toggleDetails(plan)" lines="none">
+                                    <div *ngIf="!getOtaImageUrl(plan.otaName)" class="otaimages" style="color:#000 !important; font-size: 10px;">{{plan.otaName}}</div>
+                                    <img *ngIf="getOtaImageUrl(plan.otaName)" src="{{getOtaImageUrl(plan.otaName)}}" alt="Loader Image" style="width:39px">
+                                   <p style="font-size: 11px; padding-left: 10px;">  {{plan.planName}}</p>
+                                   <ion-icon name="caret-down-outline" *ngIf="!plan.showDetails"
+                                    style="position: absolute; top: 50%; font-size: 12px;right: 20px;color:black; transform: translateY(-50%);"></ion-icon>
+                                    <ion-icon name="caret-up-outline" *ngIf="plan.showDetails" style="position: absolute; top: 50%; font-size: 12px;right: 20px;color:black; transform: translateY(-50%);"></ion-icon>
+                                 </ion-item>
+                                 
+                                 <div *ngIf="plan.showDetails" style="padding: 3px;background-color: #f0f9f6;" >
+                                    <table style="width:99%; color: #fff !important">
+        
+                                        <tr>
+                                            <td style="color: black !important">OTA Plan Id</td>
+                                            <td style="color: black !important; width:46%">{{ plan.otaPlanId }}</td>
+                                          </tr>
+                                        <tr>
+                                            <td style="color: black !important">Plan Name</td>
+                                            <td style="color: black !important; width:46%">{{ plan.planName }}</td>
+                                          </tr>
+                                          <tr>
+                                            <td style="color: black !important">Bookone Plan Code</td>
+                                            <td style="color: black !important; width:46%">{{ plan.bookonePlanCode }}</td>
+                                          </tr>                                        
+                                      
+                                        <tr *ngIf="!(updateType === 'customerRateUpdate' || updateType === 'decreaseRate' || updateType === 'increaseRate')">
+                                            <td style="color: black !important">Plan Amount</td>
+                                            <td *ngIf="(this.editMode == false || !(selectedRow == i))" style="color: black !important">{{plan.price}}
+                                                <ion-icon name="pencil-outline" style="position: absolute;  font-size: 20px;right: 10px; transform: translateY(-50%);"
+                                                 (click)="editPlan(plan,i)" 
+                                                 *ngIf="(editMode == false || selectedRow !== i) && !(updateType === 'customerRateUpdate' || updateType === 'decreaseRate' || updateType === 'increaseRate')"></ion-icon>
+                                            </td>
+                                            <td *ngIf="(this.editMode == true && selectedRow == i)" style="color: black !important; " >
+                                                <ion-input style="border: 1px solid black; width:74%"
+                                                [formControl]="PlanAmount"
+                                                placeholder="{{ plan.price }}"
+                                                [(ngModel)]="amount2"
+                                            ></ion-input>
+                                            <ion-icon name="checkmark-circle-outline" style="position: absolute;top:82%;  font-size: 25px;right: 10px; transform: translateY(-50%);" (click)="updatePlan(plan,i)" *ngIf="this.editMode == true && selectedRow == i"></ion-icon>
+                                        </td>
+                                        </tr>
+                                      
+                                      </table>
+                                
+                                 </div>
+                               </ion-list>
+                             
+                        </ion-col>
+
+                          </div>
+                          
+                          <!-- Div for Select OTA -->
+                          <div *ngIf="selectedOption === 'selectOTA'" class="option-content" >
+                             <div style="display: flex;
+                                 margin-top: 10px;
+                                 flex-wrap: wrap;
+                                 background-color: #fff;
+                                 border-radius: 10px;
+                                 gap: 10px;">
+                                
+                                <div *ngFor="let externalSite of propertyOTA;let i = index;" >
+                                    <div style="display: flex; gap: 5px; margin-top: 5px; align-items: center;">
+                                        <ion-checkbox
+                                        [formControl]="OtaControll"
+                                        (ionChange)="otaselected($event.detail.checked, externalSite?.onlineTravelAgencyName)"
+                                    ></ion-checkbox>
+                                       
+                                        <span
+                                            *ngIf="externalSite?.onlineTravelAgencyLogoUrl == null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'">{{
+                                            externalSite?.onlineTravelAgencyName }}</span>
+                                        <span
+                                            *ngIf="externalSite?.onlineTravelAgencyLogoUrl != null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"><img
+                                                src="{{ externalSite?.onlineTravelAgencyLogoUrl }}" class="otaimages"></span>
+                                        <span
+                                            *ngIf="externalSite?.onlineTravelAgencyName != null && (externalSite?.onlineTravelAgencyName == 'BookingJini' || externalSite?.onlineTravelAgencyName == 'Channex')">
+                                            <img  *ngIf="getExternalOtaUrl()"
+                                                src="{{getExternalOtaUrl()}}" class="otaimages">
+                                            <div *ngIf="!getExternalOtaUrl()" class="otaimages" style="color:#000 !important">{{externalSite?.onlineTravelAgencyName}}</div>
+                                            </span>
+                                        </div>
+                                </div>
+                              </div>
+                              <ion-col size="12" >
+                                <ion-list class="card-item-list" *ngFor="let plan of this.otaPlans;let i = index;"  [ngStyle]="getStyle(i)" style="background-color: #ffffff;">
+                                 <ion-item  style="height:55px;color:black; width:100%" (click)="toggleDetails(plan)" lines="none">
+                                    <ion-col size="2">
+                                        <img *ngIf="getOtaImageUrl(plan.otaName)" src="{{getOtaImageUrl(plan.otaName)}}" alt="Loader Image" style="width:39px">
+                                        <div *ngIf="!getOtaImageUrl(plan.otaName)" class="otaimages" style="color:#000 !important; font-size: 10px;">{{plan.otaName}}</div>
+                                    </ion-col>
+                                    <ion-col size="9">
+                                        <p style="font-size: 11px;padding-left: 10px;">  {{plan.planName}}</p>
+                                    </ion-col>
+                                    <ion-col size="1">
+                                        <ion-icon name="caret-down-outline" *ngIf="!plan.showDetails"
+                                        style="position: absolute; top: 50%; font-size: 12px;right: 20px;color:black; transform: translateY(-50%);"></ion-icon>
+                                        <ion-icon name="caret-up-outline" *ngIf="plan.showDetails" style="position: absolute; top: 50%; font-size: 12px;right: 20px;color:black; transform: translateY(-50%);"></ion-icon>
+    
+                                    </ion-col>
+                                   
+                                 </ion-item>
+                                 
+                                 <div *ngIf="plan.showDetails" style="padding: 3px;background-color: #f0f9f6;" >
+                                    <table style="width:99%; color: #fff !important">
+        
+                                        <tr>
+                                            <td style="color: black !important">OTA Plan Id</td>
+                                            <td style="color: black !important; width:46%">{{ plan.otaPlanId }}</td>
+                                          </tr>
+                                        <tr>
+                                            <td style="color: black !important">Plan Name</td>
+                                            <td style="color: black !important; width:46%">{{ plan.planName }}</td>
+                                          </tr>
+                                          <tr>
+                                            <td style="color: black !important">Bookone Plan Code</td>
+                                            <td style="color: black !important; width:46%">{{ plan.bookonePlanCode }}</td>
+                                          </tr>
+                                      
+                                        <tr *ngIf="!(updateType === 'customerRateUpdate' || updateType === 'decreaseRate' || updateType === 'increaseRate')" >
+                                            <td style="color: black !important">Plan Amount</td>
+                                            <td *ngIf="(this.editMode == false || !(selectedRow == i))" style="color: black !important">{{plan.price}}
+                                                <ion-icon name="pencil-outline" style="position: absolute;  font-size: 20px;right: 10px; transform: translateY(-50%);" 
+                                                (click)="editPlan(plan,i)"  *ngIf="(editMode == false || selectedRow !== i) && !(updateType === 'customerRateUpdate' || updateType === 'decreaseRate' || updateType === 'increaseRate')"></ion-icon>
+                                            </td>
+                                            <td *ngIf="(this.editMode == true && selectedRow == i)" style="color: black !important; " >
+                                                <ion-input style="border: 1px solid black; width:74%"
+                                                [formControl]="PlanAmount"
+                                                placeholder="{{ plan.price }}"
+                                                [(ngModel)]="amount2"
+                                            ></ion-input>
+                                            <ion-icon name="checkmark-circle-outline" style="position: absolute;top:82%;  font-size: 25px;right: 10px; transform: translateY(-50%);" (click)="updatePlan(plan,i)" *ngIf="this.editMode == true && selectedRow == i"></ion-icon>
+                                        </td>
+                                        </tr>
+                                      
+                                      </table>
+                                
+                                 </div>
+                               </ion-list>
+                             
+                        </ion-col>
+                          </div>
+                          
+                      </ion-col>
+
+                     
+                    
+                      
+                </ion-row>
+
+                <div style="padding: 20px 0px; display: flex; flex-wrap: wrap; " *ngIf="plan.roomTypeId && toDateToString">
+                    <ion-radio-group  [formControl]="PlanUpdateType" [(ngModel)]="updateType" (ionChange)="radioChange($event)"  style="display: flex; align-items: center; gap: 15px;flex-wrap: wrap;">
+                      <ion-item style="font-size: 14px; color:#333">
+                        <ion-label>Channel(OTA) wise update</ion-label>
+                        <ion-radio slot="start" value="customRate"></ion-radio>
+                      </ion-item>
+                      <ion-item style="font-size: 14px; color:#333">
+                        <ion-label>Increase Rate By Percentage</ion-label>
+                        <ion-radio slot="start" value="increaseRate"></ion-radio>
+                      </ion-item>
+                      <ion-item style="font-size: 14px; color:#333">
+                        <ion-label>Decrease Rate Percentage</ion-label>
+                        <ion-radio slot="start" value="decreaseRate"></ion-radio>
+                      </ion-item>
+
+                      <ion-item style="font-size: 14px; color:#333">
+                        <ion-label>Custom Rate Update</ion-label>
+                        <ion-radio slot="start" value="customerRateUpdate"></ion-radio>
+                      </ion-item>
+                      
+                    </ion-radio-group>
+                  </div>
+                  
+                  <div>
+                    <div *ngIf="updateType == 'increaseRate'" style=" width: 98%; margin-left: 5px;">
+                      <ion-label class="labels">Increase Rate By (%)</ion-label>
+                    
+                        <ion-input
+                        
+                        style="color:#333; text-align: left; border:1px solid #259BBF; border-radius: 10px; margin-top: 5px;--padding-start: 10px;"
+                          type="number"
+                          max="100"
+                          [(ngModel)]="increaseRate"
+                          placeholder="Increase Rate (%)"
+                          [formControl]="IncreaseRate"
+                        ></ion-input>
+                    
+                    </div>
+                  
+                    <div *ngIf="updateType == 'decreaseRate'" style=" width: 98%; margin-left: 5px;">
+                      <ion-label class="labels">Decrease Rate By (%)</ion-label>
+                     
+                        <ion-input
+                        style="color:#333; text-align: left; border:1px solid #259BBF; border-radius: 10px; margin-top: 5px;--padding-start: 10px;"
+                        class="card-item"
+                          type="number"
+                          max="100"
+                          [(ngModel)]="decreaseRate"
+                          placeholder="Decrease Rate (%)"
+                          [formControl]="DecreaseRate"
+                        ></ion-input>
+                     
+                    </div>
+                    
+                    <div *ngIf="updateType == 'customerRateUpdate'" style=" width: 98%; margin-left: 5px;">
+                        <ion-label class="labels">Custom Rate Update</ion-label>
+                       
+                          <ion-input
+                          style="color:#333; text-align: left; border:1px solid #259BBF; border-radius: 10px; margin-top: 5px;--padding-start: 10px;"
+                          class="card-item"
+                            type="number"
+                            max="100"
+                            [(ngModel)]="customAmount"
+                            placeholder="Decrease Rate (%)"
+                            [formControl]="CustomAmount"
+                          ></ion-input>
+                       
+                      </div>
+                  </div>
+                  
+                
+
+                <ion-row  style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 20px;
+            ">
+                    <ion-col
+                    style="margin-bottom: 10px"
+                    size="6"
+                    size-xl="6"
+                    size-sm="6"
+                    size-md="6"
+                    size-lg="6"
+                >
+                
+                    <ion-button
+                        style="font-size: 16px;--background: #1D174D;color: white;border: 1px solid white;"
+                        size="small"
+                        expand="block"
+                        (click)="onCancel()"
+                        >Cancel</ion-button
+                    >
+                </ion-col>
+
+                    <ion-col *ngIf="this.showdiv === false"
+                        style="margin-bottom: 10px"
+                        size="6"
+                    size-xl="6"
+                    size-sm="6"
+                    size-md="6"
+                    size-lg="6"
+                    >
+                    
+                        <ion-button
+                            style="font-size: 16px;"
+                            size="small"
+                            expand="block"
+                            class="button-submit"
+                            [disabled]="isDisabled() == true"
+                            (click)="onSubmit()"
+                            >Update</ion-button
+                        >
+                    </ion-col>
+
+                    <ion-col *ngIf="this.showdiv === true"
+                    style="margin-bottom: 10px"
+                    size="6"
+                size-xl="6"
+                size-sm="6"
+                size-md="6"
+                size-lg="6"
+                >
+                
+                    <ion-button
+                        style="font-size: 16px;"
+                        size="small"
+                        expand="block"
+                        class="button-submit"
+                        (click)="onSubmit()"
+                        [disabled]="!otaInventoryCount"
+                        >Update</ion-button
+                    >
+                </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+    </ion-card>
+    
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+</ion-content>
+

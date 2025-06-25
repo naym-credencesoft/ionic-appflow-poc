@@ -1,0 +1,11 @@
+.close-button{
+    margin-right: 10px;
+}
+.text-area{
+    margin-left: 10px;
+}
+
+ion-toolbar {
+    --background: #1D174D;
+    border: none;
+}

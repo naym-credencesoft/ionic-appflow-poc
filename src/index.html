@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Bookone Business App</title>
+
+  <base href="/" />
+
+  <meta name="color-scheme" content="light dark" />
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+
+  <link rel="icon" type="image/png" href="assets/icon/favicon.png" />
+
+  <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+  <script type="text/javascript">
+     Stripe.setPublishableKey('pk_live_51HFxgeAug5reBvw81YAtV4l70DMDGoWPOA7nIMUKQHyD4uuhtdw0I2lO1TLgW2lPBCwlWDFVMVLbDQh87i5nGxB7001Vqmhrav');
+     //Stripe.setPublishableKey("pk_live_rK4QGt6FW0gcZRNKbHadq0vS");
+  </script>
+
+ 
+  <!-- add to homescreen for ios -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+</head>
+
+
+<style>
+    /* .text-wrap .alert-radio-label.sc-ion-alert-ios {
+     text-overflow: inherit !important;
+     white-space: wrap !important; 
+     padding: 5px !important;
+    } */
+    .alert-tappable.alert-radio {
+  height: auto;
+  contain: content;
+}
+
+.alert-radio-label.sc-ion-alert-md,
+.alert-radio-label.sc-ion-alert-ios {
+  white-space: normal;
+}
+</style>
+
+<body>
+  <app-root></app-root>
+</body>
+
+</html>

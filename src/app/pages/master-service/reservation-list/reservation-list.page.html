@@ -1,0 +1,167 @@
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Reservation List </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Service Dashboard</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+
+    <ion-searchbar placeholder="Search" class="list-search" mode="md" (ionClear)="clear($event)"
+        (ionChange)="getItems($event)" padding-left padding-right no-padding>
+    </ion-searchbar>
+
+    <!-- <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar> -->
+    <div class="loader-everyOne" *ngIf="loader">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+    <!--  -->
+    <ion-list>
+
+        <ion-card *ngFor="let slot of slotReservations | paginate: { itemsPerPage: 5, currentPage: p }; let i = index" class="bg-white">
+            <ion-card-header (click)="toggleCardBody(i)"  [ngStyle]="{'background-color': i % 2 === 0 ? '#D3EBF2' : '#FEEBD6'}">
+                <ion-icon class="viewdetail" style="float: right; color: #333" (click)="onMenu(slot)" size="small"
+                    name="ellipsis-vertical-outline"></ion-icon>
+                <ion-row no-padding>
+                    <ion-col no-padding size="6" style="color: #333">
+                        <ion-text>#{{slot.businessReservationNumber}}</ion-text>
+                    </ion-col>
+                    <ion-col no-padding size="6" style="color: #333">
+
+                        <ion-text>
+                            <span *ngIf="slot.date !=null">
+                                {{ dateService.convertMillisecondsToDateFormat(slot.date) }}</span>
+                        </ion-text>
+
+                    </ion-col>
+                </ion-row>
+            </ion-card-header>
+            <ion-card-content  *ngIf="openedCardIndex === i">
+
+                <!-- <ion-icon name="md-more"></ion-icon> -->
+
+                <ion-grid no-padding>
+
+                    <!-- <ion-row no-padding>
+                        <ion-col no-padding size="12"  >
+                            <ion-row>
+                                <ion-text class="name-title-text" style="font-size: 15px;">
+                                    <b>{{slot.businessTypeName}}</b></ion-text>
+                            </ion-row>
+                        </ion-col>
+
+                    </ion-row> -->
+
+                    <ion-row no-padding>
+                        <ion-col no-padding size="12">
+
+
+                            <ion-text color="primary"  >Name : </ion-text>
+                            <ion-text color="primary"   class="value-text">
+                                {{ slot.firstName }} {{ slot.lastName }}</ion-text>
+
+                        </ion-col>
+                        <ion-col no-padding size="12">
+
+
+                            <ion-text color="primary"  >Phone : </ion-text>
+                            <ion-text color="primary"   class="value-text">
+                                {{ slot.mobile }}</ion-text>
+
+                        </ion-col>
+                        <ion-col no-padding size="12">
+
+
+                            <ion-text color="primary"  >Email : </ion-text>
+                            <ion-text color="primary"   class="value-text">
+                                {{ slot.email }}</ion-text>
+
+
+                        </ion-col>
+                        <ion-col no-padding size="12">
+
+                            <ion-text color="primary"  >Mode of Payment : </ion-text>
+                            <ion-text color="primary"   class="value-text">
+                                {{slot.modeOfPayment}}</ion-text>
+
+
+                        </ion-col>
+
+                        <ion-col no-padding size="12">
+
+
+                            <ion-text color="primary"  >Amount : </ion-text>
+                            <ion-text color="primary"   class="value-text">
+                                {{slot.afterTaxAmount| currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                            </ion-text>
+
+
+                        </ion-col>
+
+
+
+
+                    </ion-row>
+
+                    <ion-row no-padding>
+                        <ion-col no-padding size="12">
+
+
+                            <ion-text color="primary"  >Status : </ion-text>
+                            <ion-text color="primary"   class="value-text">
+                                {{slot.bookingStatus}}</ion-text>
+
+
+                        </ion-col>
+
+                    </ion-row>
+
+                </ion-grid>
+
+            </ion-card-content>
+
+
+        </ion-card>
+
+    </ion-list>
+
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="plan != 'Business Starter'">
+        <ion-fab-button (click)="createReservation()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
+</ion-content>
+<ion-footer>
+    <ion-toolbar style=" height: 50px;">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

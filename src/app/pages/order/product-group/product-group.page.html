@@ -1,0 +1,244 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <!-- <ion-buttons slot="start" *ngIf="isMenuButton">
+        <ion-menu-button color="secondary"></ion-menu-button>
+      </ion-buttons> -->
+        <!-- <ion-title> -->
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Order</ion-text>
+        <ion-buttons slot="end">
+            <!-- <ion-button icon-left size="small" shape="round" color="tertiary" >
+                  <ion-icon name="mail"></ion-icon>
+            </ion-button> -->
+            <!-- <ion-button icon-left size="small" shape="round" color="tertiary">
+              <ion-icon name="contact"></ion-icon>
+              <ion-badge color="tertiary">33</ion-badge>
+            </ion-button> -->
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin no-padding>
+
+    <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar>
+    <form [formGroup]="onProductForm">
+
+        <ion-row>
+            <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                <ion-card no-margin no-padding>
+                    <ion-select placeholder="Select Business Service" value="{{businessServiceId}}"
+                        (ionChange)="setService(businessServiceId)" [(ngModel)]="businessServiceId" okText="Done"
+                        cancelText="Dismiss" formControlName="BusinessService">
+
+                        <ion-row *ngFor="let service of this.propertiesDto.businessServiceDtoList">
+                            <ion-select-option value={{service.id}}>
+                                {{service.name}}
+                            </ion-select-option>
+
+                        </ion-row>
+                    </ion-select>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </form>
+
+
+
+
+    <ion-list class="listcard bg-white" no-margin no-padding *ngFor="let bpglist of productGroupsList; let i = index">
+
+        <div class="message-error"
+            *ngIf="i ===0 && bpglist.productGroup === undefined || i ===0 && bpglist.productGroup === null || i ===0 && bpglist.productGroup.length === 0">
+            <h6 style="color: #FF0000;"> No product found</h6>
+        </div>
+
+        <div *ngFor="let productGroup of bpglist.productGroup; let pg = index">
+
+            <ion-item no-margin no-padding (click)="productGroupIndex(pg ,bpglist.productGroup)">
+                <ion-avatar slot="start">
+                    <!-- <img src="../../../../assets/icon/correct_violet.svg"> -->
+                    <ion-icon name="layers-outline" size="large" color="primary"></ion-icon>
+                </ion-avatar>
+                <ion-label>
+                    <h2 class="heading-semibold font-14 text-primary">{{productGroup.name}}</h2>
+                    <h3 class="heading-medium font-12  text-primary">ProductGroupCode: #{{productGroup.productCode}}
+                    </h3>
+                    <!-- <p>Listen, I've had a pretty messed up day...</p> -->
+                </ion-label>
+                <ion-icon *ngIf="pGroupINumber != pg || pGroupINumber === pg && !this.isclickG"
+                    name="chevron-forward-outline"></ion-icon>
+                <ion-icon *ngIf="pGroupINumber === pg && this.isclickG" name="chevron-down-outline"></ion-icon>
+
+
+            </ion-item>
+
+
+            <div *ngIf="pGroupINumber === pg && this.isclickG" class="bg-white">
+
+                <div class="message-error"
+                    *ngIf=" productGroup.productDtoList === undefined || productGroup.productDtoList === null || productGroup.productDtoList.length === 0">
+                    <h6 style="color: #FF0000;"> No product found</h6>
+                </div>
+                <div *ngFor="let product of productGroup.productDtoList; let p = index">
+
+                    <div *ngIf="product.productVariationDtoList !=null && product.productVariationDtoList.length >0">
+                        <ion-item>
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col size="3">
+
+                                        <!-- <ion-avatar slot="start"> -->
+                                            <!-- <img  *ngIf="product.imageList == null || product.imageList.length ===0" src="../../../../assets/icon/correct_violet.svg"> -->
+                                            <ion-icon *ngIf="product.imageList == null || product.imageList.length ===0"
+                                                name="layers-outline" size="large" color="tertiary"></ion-icon>
+                                            <img *ngIf="product.imageList != null && product.imageList.length >0"
+                                                src="{{product.imageList[0].url}}">
+
+                                        <!-- </ion-avatar> -->
+
+                                    </ion-col>
+
+                                    <ion-col size="9" class="ion-align-self-start">
+                                        <h2 class="heading-semibold font-14 text-violet" style="font-size : 14px">
+                                            {{product.name}}</h2>
+                                        <h3 *ngIf="product.shortDescription"
+                                            class="heading-medium font-12 text-order-grey" style="font-size : 12px">
+                                            {{product.shortDescription}} </h3>
+                                        <h3 *ngIf="product.description" class="heading-medium font-12 text-order-grey"
+                                            style="font-size : 12px">
+                                            {{product.description}}
+                                        </h3>
+                                        <!-- <p>Listen, I've had a pretty messed up day...</p> -->
+                                        <ion-item
+                                            *ngFor="let variation of product.productVariationDtoList; let v = index"
+                                            class="ion-no-margin ion-no-padding ">
+                                            <ion-grid>
+                                                <ion-row class="ion-align-items-center">
+                                                    <ion-col size="8">
+                                                        <p size="small"><b>{{variation.name}}</b></p>
+                                                        <p size="small" style="font-size : 12px">{{variation.code}}
+                                                        </p>
+                                                        <p class="sellunitPriceVariation price">
+                                                            {{variation.sellUnitPrice | currency:
+                                                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}
+                                                        </p>
+
+                                                    </ion-col>
+                                                    <!-- (click)="onProductVariationMinus(product,p,productGroup,pg,bpglist.businessServiceId,i ,variation ,v)" -->
+                                                    <ion-col size="4">
+                                                        <div class="quantity">
+                                                            <button
+                                                                *ngIf="variation.unitsInOrder!=undefined && variation.unitsInOrder > 0"
+                                                                (click)="onProductVariationMinus(product,p,productGroup,bpglist.businessServiceId,i,variation ,v)"
+                                                                class="qs plus-btn" type="button" name="button">
+                                                                <!-- <img src="../../../../assets/icon/minus.svg" alt="" /> -->
+                                                                <ion-icon name="remove"></ion-icon>
+                                                            </button>
+                                                            <ion-text
+                                                                *ngIf="variation.unitsInOrder!=undefined || variation.unitsInOrder !=null"
+                                                                class="heading-semibold font-14 text-violet-light">
+                                                                {{variation.unitsInOrder}}</ion-text>
+                                                            <ion-text
+                                                                *ngIf="variation.unitsInOrder ==undefined || variation.unitsInOrder ==null"
+                                                                class="heading-semibold font-14 text-violet-light">
+                                                                0</ion-text>
+                                                            <button
+                                                                (click)="onProductVariationAdd(product,p,productGroup,bpglist.businessServiceId,i,variation ,v)"
+                                                                class="qs minus-btn" type="button" name="button">
+                                                                <!-- <img src="../../../../assets/icon/plus.svg" alt="" /> -->
+                                                                <ion-icon name="add" class="add-button"></ion-icon>
+                                                            </button>
+                                                        </div>
+                                                    </ion-col>
+                                                </ion-row>
+                                            </ion-grid>
+                                        </ion-item>
+
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </ion-item>
+                    </div>
+
+                    <div *ngIf="product.productVariationDtoList ==null || product.productVariationDtoList.length === 0">
+                        <ion-item>
+                            <ion-grid>
+                                <ion-row class="ion-align-items-center">
+                                    <ion-col size="3">
+                                            <ion-img *ngIf="product.imageList.length >0" src="{{product.imageList[0].url}}"></ion-img> 
+                                            <ion-icon *ngIf="product.imageList == null || product.imageList.length ===0"
+                                                name="cube-outline" size="large" color="tertiary"></ion-icon>
+                                        
+                                    </ion-col>
+                                    <ion-col size="9">
+                                        <ion-row class="ion-justify-content-start">
+                                            <ion-col size="8">
+                                                <h2 class="heading-semibold font-14 text-violet"
+                                                    style="font-size : 14px">{{product.name}}</h2>
+                                                <p>{{product.shortDescription}}</p>
+                                                <p class="heading-medium font-12  text-order-grey"
+                                                    style="font-size : 12px">
+                                                    {{product.description}}</p>
+                                                <p class="heading-medium font-12  text-order-grey"
+                                                    style="font-size : 12px">
+                                                    Code: {{product.productCode}}</p>
+                                                <p class="price">
+                                                    {{product.sellUnitPrice | currency:
+                                                    token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}
+                                                </p>
+                                            </ion-col>
+                                            <ion-col size="4" class="ion-align-self-center">
+                                                <div class="quantity">
+                                                    <button
+                                                        *ngIf="product.unitsInOrder !=null || product.unitsInOrder!=undefined"
+                                                        (click)="onProductMinus(product,p,productGroup,bpglist.businessServiceId,i)"
+                                                        class="qs plus-btn" type="button" name="button">
+                                                        <!-- <img src="../../../../assets/icon/minus.svg" alt="" /> -->
+                                                        <ion-icon name="remove"></ion-icon>
+                                                    </button>
+                                                    <ion-text
+                                                        *ngIf="product.unitsInOrder!=undefined || product.unitsInOrder !=null"
+                                                        class="heading-semibold font-14 text-violet-light">
+                                                        {{product.unitsInOrder}}</ion-text>
+                                                    <ion-text
+                                                        *ngIf="product.unitsInOrder ==undefined || product.unitsInOrder ==null"
+                                                        class="heading-semibold font-14 text-violet-light">
+                                                        0</ion-text>
+                                                    <button
+                                                        (click)="onProductAdd(product,p,productGroup,bpglist.businessServiceId,i)"
+                                                        class="qs" type="button" name="button">
+                                                        <!-- <img src="../../../../assets/icon/plus.svg" alt="" /> -->
+                                                        <ion-icon name="add" class="add-button"></ion-icon>
+                                                    </button>
+                                                </div>
+                                            </ion-col>
+                                        </ion-row>
+                                        <!-- <ion-icon *ngIf="!this.isclickG"  name="chevron-forward-outline"></ion-icon>
+                            <ion-icon *ngIf="this.isclickG"  name="chevron-down-outline"></ion-icon> -->
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </ion-item>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <!--  -->
+        </div>
+    </ion-list>
+</ion-content>
+
+<ion-footer>
+    <div *ngIf="calculateQuantity()>0 " (click)="onAddToCart()" class="cart">
+        <ion-text class="heading-medium font-14 text-primary">
+            Go to Cart
+            <div class="count">
+                <ion-text class="heading-medium font-12">{{calculateQuantity()}}</ion-text>
+            </div>
+        </ion-text>
+    </div>
+</ion-footer>

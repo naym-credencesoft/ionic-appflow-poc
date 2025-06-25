@@ -1,0 +1,129 @@
+<ion-card *ngIf="isCheckInPreviousDate" class="card">
+
+    <div class="header-top" fxLayout="row wrap mt-2" fxLayoutAlign="center center">
+      <h1 style="font-size: 20px;"  class="text-white">Warning</h1>
+    </div>
+  
+    <div class="header-top" fxLayout="row wrap mt-2" fxLayoutAlign="center center">
+      <div><h2 style="font-size: 15px;" class="text-white">Actual Check in date <b>{{this.booking.fromDate | date:'MMM d, y' }}</b> .Do you want to change stay dates?</h2></div>
+    </div>
+  
+    <ion-row no-padding id="first-content" class="action-button">
+        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+            <ion-button  shape="round" expand="full" class="button-submit" (click)="onDateChange()">
+                <ion-text class="text-white">Yes</ion-text></ion-button>
+        </ion-col>
+
+        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                <ion-button  shape="round"  expand="full" class="button-submit" (click)="cancel()">
+                    <ion-text class="text-white">No</ion-text>
+                    </ion-button>
+        </ion-col>
+    </ion-row>
+</ion-card>
+<ion-card class="roomcard card" *ngIf="!isCheckInPreviousDate" style=" overflow-y: auto;">
+    <ion-card-title style="font-size: 20px;" class="text-white">Checkin Form</ion-card-title>
+    <ion-grid>
+
+        <div fxLayoutAlign.gt-xs="space-between start" fxLayout.xs="column">
+            <ion-card class="card" fxFlex="100" fxFlex.gt-xs="100" >
+              <ion-card-title style="font-size: 16px;" class="text-white">Booking Room With Status</ion-card-title>
+
+              <ion-list class="mt-1">
+                <!-- <ion-list-header style="font-size: 17px;">
+                    Selected room not available for this date
+                </ion-list-header> -->
+        
+                <ion-item *ngFor="let roomOption of booking.roomDetails; let i =index">
+                  <ion-label class="status-level" style="font-size: 14px;"  [ngClass]="{'room_grid_ok': getRoomStatus(roomOption.roomNumber) === 'VACANT_READY', 'room_grid_notok' : getRoomStatus(roomOption.roomNumber) != 'VACANT_READY' }">  
+                    <span>
+                        <b  style="font-size: 14px;" [ngClass]="{'room_text_ok': getRoomStatus(roomOption.roomNumber) === 'VACANT_READY', 'room_text_notok' : getRoomStatus(roomOption.roomNumber) != 'VACANT_READY' }">
+                            Room No :{{roomOption.roomNumber }}
+                            &nbsp;
+                            {{getRoomStatus(roomOption.roomNumber)}}
+                        </b><br></span> <ion-badge style="font-size: 14px;" *ngIf="getRoomStatus(roomOption.roomNumber) != 'VACANT_READY'"  class="change" color="primary" (click)="onChangeRoomStatus(roomOption)">Change Status</ion-badge>
+                  </ion-label>
+                </ion-item>
+            </ion-list>    
+                <p class="mt-1">For Check-In all room must be VACANT_READY</p>
+        
+            </ion-card>
+          </div>
+
+        <form [formGroup]="onCheckedInForm">
+            <ion-row>
+                <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                    <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar>
+                    
+                    <ion-item>
+                        <ion-label class="text-white" style="font-size: 14px;">Arriving Date</ion-label>
+                        <ion-datetime formControlName="checkedinTime" class="card-item" style="font-size: 14px;"  [(ngModel)]="booking.checkinTime" 
+                        (ngModelChange)="dateCheck()"
+                        min= "2000-12-31"
+                        max="2100-12-31"
+                        displayFormat="D MMM YYYY H:mm"></ion-datetime>
+                    </ion-item>
+                      
+                </ion-col>
+            </ion-row>
+
+            <ion-row >
+                <ion-col size="12">
+
+                    <ion-text  style="font-size: 12px; color: #333;">Purpose of Visit
+                    </ion-text>
+                    <ion-select placeholder="Purpose of Visit" value="{{booking.roomRatePlanName}}" class="card-item"
+                         [(ngModel)]="booking.purposeOfVisit"
+                        okText="Done" cancelText="Dismiss" formControlName="PurposeOfVisit">
+
+                        <ion-row *ngFor="let data of purposeData">
+                            <ion-select-option value="{{data.value}}">
+                                <p><b> {{data.data }} </b></p>
+                            </ion-select-option>
+
+                        </ion-row>
+                    </ion-select>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+
+                    <ion-text  style="font-size: 12px; color: #333;">Arriving From</ion-text>
+                    <ion-input class="card-item"  formControlName="ArrivingFrom"
+                        [(ngModel)]="booking.arrivingFrom" placeholder="Arriving From" inputmode="text">
+                    </ion-input>
+                </ion-col>
+
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+
+                    <ion-text style="font-size: 12px; color: #333;">Departing To</ion-text>
+                    <ion-input class="card-item"  formControlName="DepartingTo"
+                        [(ngModel)]="booking.departingTo" placeholder="Departing To" inputmode="text">
+                    </ion-input>
+                </ion-col>
+
+            </ion-row>
+
+         
+              
+            <ion-row no-padding id="first-content" class="action-button">
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                        <ion-button  shape="round" expand="full" class="button-submit"
+                        [disabled]="loader || !onCheckedInForm.valid || !isAllRoomStatusVacntReady"
+                         (click)="onCheckIn()"><ion-text >Checkin</ion-text></ion-button>
+                    </ion-col>
+
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                            <ion-button  shape="round"  expand="full" class="button-cancel" (click)="cancel()">
+                               <ion-text >Cancel</ion-text> </ion-button>
+                    </ion-col>
+            </ion-row>
+
+        </form>
+    </ion-grid>
+</ion-card>

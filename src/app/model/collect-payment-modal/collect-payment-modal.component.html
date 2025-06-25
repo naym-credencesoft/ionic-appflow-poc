@@ -1,0 +1,118 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Collect Payment</ion-title>
+    <ion-buttons slot="end">
+        <ion-icon 
+        *ngIf="!isButtonClicked" 
+        name="close-circle-outline" 
+        style="font-size: 20px; color: #fff; margin-left: 10px;" 
+        (click)="dismiss()">
+      </ion-icon>
+
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h3 style="text-align: center; color: black;" *ngIf="outStandingAmount > 0 ">Pay due payment amount : {{
+    outStandingAmount | currency : localCurrency : "symbol" : "1.2-2"
+    }} </h3>
+
+  <h3 style="text-align: center; color: black;" *ngIf="outStandingAmount <= 0 ">Balance amount :{{
+    outStandingAmount | currency : localCurrency : "symbol" : "1.2-2"
+    }} </h3>
+    <form [formGroup]="paymentForm2">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-list no-margin>
+          <ion-item class="card" lines="none">
+            <ion-label position="stacked" color="primary" class="rpc-text" style="font-size: 10px">
+              Amount*</ion-label>
+            <div type="number" min="0" inputmode="number" no-padding size="12" style="width:100%">
+              <ion-input placeholder="Partial Amount" no-padding [(ngModel)]="paymentAmount" 
+                formControlName="PaymentAmountController" class="paymentamount" type="number" min="0" inputmode="number"
+                ></ion-input>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-list>
+          <ion-item class="card" lines="none">
+            <ion-label position="stacked" color="primary" style="font-size: 10px">Mode of Payment*
+            </ion-label>
+
+            <ion-select   [(ngModel)]="PaymentMode"
+              formControlName="paymentMode" (ionChange)="paymentModeChange()" placeholder="Select Mode of Payment">
+              <!-- <ion-select-option
+                                value="Card"
+                                *ngIf="businessPlan === 'Business Premium'"
+                                >Card
+                            </ion-select-option> -->
+              <ion-select-option value="Cash">Cash</ion-select-option>
+              <ion-select-option value="BankTransfer" *ngIf="isBankAvailable">BankTransfer
+              </ion-select-option>
+
+              <ion-select-option *ngFor="let paymentMode of propertyPaymentList"
+                [disabled]="!IsActive(paymentMode.paymentMode)"
+                value="{{paymentMode.paymentMode}}">{{paymentMode.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+        <!-- <p ion-text no-margin no-padding class="text08"
+                            *ngIf="onPaymentUserForm.get('paymentMode').touched && onPaymentUserForm.get('paymentMode').hasError('required')">
+                            <ion-text no-margin no-padding color="danger" style="font-size: 11px">
+                                Input field required
+                            </ion-text>
+                        </p> -->
+      </ion-col>
+
+      <ion-col size="12" *ngIf="data.paymentMode==='Card'">
+        <ion-list no-margin>
+          <ion-item class="card" lines="none">
+            <ion-label position="stacked" color="primary" class="rpc-text" style="font-size: 10px">
+              Card Last Four Digit*</ion-label>
+            <div type="number" min="0" inputmode="number" no-padding size="12" style="width:100%">
+              <ion-input placeholder="Card Last Four Digit" no-padding [(ngModel)]="lastFourDigitCardNumber" 
+                formControlName="TransactionReferenceNumber" class="paymentamount" type="number" min="0" inputmode="number"></ion-input>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+
+      <ion-col size="12">
+        <ion-list no-margin>
+          <ion-item class="card" lines="none">
+            <ion-label position="stacked" color="primary" class="rpc-text" style="font-size: 10px">
+              Note</ion-label>
+            <div no-padding size="12" style="width:100%">
+              <ion-input placeholder="Note" no-padding [(ngModel)]="paymentDescription" formControlName="Description"
+                class="paymentamount"></ion-input>
+            </div>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+
+      <ion-col size="12" style="display: flex; justify-content: center; margin-top: 20px;">
+        <button 
+        [disabled]="!paymentForm2.valid || isButtonClicked"
+        (click)="confirmPayment()"
+        [ngStyle]="{
+          'background-color': isButtonClicked ? 'gray' : (!paymentForm2.valid ? 'gray' : '#1d174d'),
+          'color': isButtonClicked ? 'black' : (!paymentForm2.valid ? 'black' : '#fff')
+        }"
+        style="text-align: center; padding: 10px; border-radius: 5px; display: flex; align-items: center; justify-content: center; width:150px">
+        <span >Pay Now</span>
+        <span *ngIf="isButtonClicked">
+          <div class="spinner"></div>
+        </span>
+      </button>
+      
+      </ion-col>
+      
+    </ion-row>
+  </ion-grid>
+</form>
+</ion-content>

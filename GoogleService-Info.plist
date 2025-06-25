@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>353589001734-cniv8ac0b230gerghcnl914hhdc9sr08.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.353589001734-cniv8ac0b230gerghcnl914hhdc9sr08</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC_gbL8XhbcrVRcS3Whm4CzXkdCI1svgF8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>353589001734</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>nz.co.credencesoft.bookone</string>
+	<key>PROJECT_ID</key>
+	<string>bookone-mobile-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bookone-mobile-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:353589001734:ios:044b2bf5baad0d2dc50d87</string>
+	<key>DATABASE_URL</key>
+	<string>https://bookone-mobile-app.firebaseio.com</string>
+</dict>
+</plist>

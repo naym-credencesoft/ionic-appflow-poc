@@ -1,0 +1,434 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> New Booking  </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="back()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation </ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid class="grid sectioned">
+
+        <div class="customer-card">
+            <div class="card-header">
+              <ion-text class="card-title">Customer Details</ion-text>
+            </div>
+          
+            <div class="card-content">
+              <div class="profile-section">
+                <div class="image-holder">
+                  <ion-avatar class="avatar">
+                    <img src="assets/img/user_profile.svg" alt="Customer Profile" />
+                  </ion-avatar>
+                </div>
+                <div class="text-holder">
+                  <ion-text class="name-text">{{booking.firstName}} {{booking.lastName}}</ion-text>
+                </div>
+              </div>
+
+          
+              <table class="details-table">
+               
+                <tr *ngIf="booking.email != null">
+                  <td class="label">Email:</td>
+                  <td class="value">{{booking.email}}</td>
+                </tr>
+                <tr *ngIf="booking.mobile != null">
+                    <td class="label">Mobile:</td>
+                    <td class="value">{{booking.mobile}}</td>
+                </tr>
+                <tr *ngIf="
+                customer != null &&
+                customer != undefined &&
+                customer.taxIdNumber != null &&
+                customer.taxIdNumber != undefined
+            ">
+                    <td class="label"> Customer Gst No:</td>
+                    <td class="value">{{ customer.taxIdNumber }}</td>
+                </tr>
+               
+
+
+               
+              </table>
+            </div>
+          </div>
+
+          <div class="customer-card" style="margin-top: 10px">
+            <div class="card-header">
+              <ion-text class="card-title">Booking Details</ion-text>
+            </div>
+          
+            <div class="card-content">
+
+          
+              <table class="details-table">
+                <tr>
+                  <td class="label">Booking Status:</td>
+                  <td class=" text-color-complete"  *ngIf="booking.bookingStatus === 'CHECKEDOUT'">{{booking.bookingStatus}}</td>
+                  <td class="text-color-checkedin " *ngIf="booking.bookingStatus === 'CHECKEDIN'">{{booking.bookingStatus}}</td>
+                  <td class="text-color " *ngIf="booking.bookingStatus != 'CHECKEDIN' && booking.bookingStatus != 'CHECKEDOUT'">{{booking.bookingStatus}}</td>
+                </tr>
+                <tr>
+                    <td class="label">Source of Booking:</td>
+                    <td class="value">{{booking.externalSite}}</td>
+                </tr>
+                <tr>
+                  <td class="label">Reservation Id:</td>
+                  <td class="value">#{{booking.propertyReservationNumber}}</td>
+                </tr>
+                <tr >
+                    <td class="label">Booking Type</td>
+                    <td class="value" *ngIf="!booking.groupBooking">Individual Booking</td>
+                    <td class="value" *ngIf="booking.groupBooking">Group Booking</td>
+                </tr>
+
+                <tr *ngIf="booking.id != null || booking.externalBookingId != null ">
+                    <td class="label">OTA Booking No:</td>
+                    <td class="value" *ngIf="
+                    booking.externalSite == 'The Hotel Mate' ||
+                    booking.externalSite == 'Bookone Local'
+                  ">{{ booking.id }}
+                    </td>
+                    <td class="value" *ngIf="
+                    booking.externalSite != 'The Hotel Mate' &&
+                    booking.externalSite != 'Bookone Local'
+                  ">{{ booking.externalBookingId }}</td>
+                </tr>
+
+                <tr >
+                    <td class="label">Booking Date:</td>
+                    <td class="value">{{ this.booking.fromDate | date }} to <br /> {{
+                            this.booking.toDate | date }}</td>
+                </tr>
+
+                <tr >
+                    <td class="label">Arrival Date:</td>
+                    <td class="value" *ngIf="
+                    booking.bookingStatus === 'CHECKEDOUT' ||
+                    booking.bookingStatus === 'CHECKEDIN'
+                  ">{{ booking.checkinTime | date : "EEE, MMM d" }} <br /> {{ booking.checkinTime | date : "hh:mm aa"
+                }}</td>
+                <td class="value"  *ngIf="
+                booking.bookingStatus != 'CHECKEDOUT' &&
+                booking.bookingStatus != 'CHECKEDIN' &&
+                booking.fromTime !== 'NaN'">{{ booking.fromTime | date : "EEE, MMM d" }} <br /> {{ booking.fromTime | date : "hh:mm aa" }} </td>
+                </tr>
+
+                <tr >
+                    <td class="label">Departure Date:</td>
+                    <td class="value"  *ngIf="booking.bookingStatus === 'CHECKEDOUT'">{{ booking.checkoutTime | date : "EEE, MMM d"}}
+                        <br />
+                        {{ booking.checkoutTime | date : "hh:mm aa"
+                        }}</td>
+                <td class="value"  *ngIf="
+                booking.bookingStatus != 'CHECKEDOUT' &&
+                booking.toTime !== 'NaN'">{{ booking.toTime | date : "EEE, MMM d" }}
+                                <br />
+                                {{ booking.toTime | date : "hh:mm aa" }} </td>
+                </tr>
+
+                <tr>
+                    <td class="label">Room Name:</td>
+                    <td class="value">{{booking.roomName}}</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Plan Name:</td>
+                    <td class="value">{{booking.roomRatePlanName}}</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Rooms</td>
+                    <td class="value">{{booking.noOfRooms}}</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Guest</td>
+                    <td class="value">{{booking.noOfChildren + booking.noOfPersons}}</td>
+                </tr>
+
+            
+              
+              </table>
+            
+            </div>
+          </div>
+
+          <div class="customer-card" style="margin-top: 10px">
+            <div class="card-header">
+              <ion-text class="card-title">Payment Details</ion-text>
+            </div>
+          
+            <div class="card-content">
+
+          
+              <table class="details-table">
+                <tr *ngIf="
+                this.booking.totalRoomTariffBeforeDiscount != null &&
+                this.booking.totalRoomTariffBeforeDiscount != undefined &&
+                this.booking.totalRoomTariffBeforeDiscount ">
+                    <td class="label" >Room Price <br/>
+                        <span style="font-size: 10px"
+                        >( {{ getNoOfNight(booking) }} Night<span
+                            *ngIf="getNoOfNight(booking) > 1"
+                            >s</span
+                        >
+                        X {{ booking.noOfRooms }} Room<span
+                            *ngIf="booking.noOfRooms > 1"
+                            >s</span
+                        >
+                        X {{ booking.roomTariffBeforeDiscount |
+                        currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }})
+                    </span>
+                    </td>
+                    <td class="value"> {{ booking.totalRoomTariffBeforeDiscount|
+                        currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr *ngIf="
+                this.booking.extraPersonCharge != null &&
+                this.booking.extraPersonCharge != undefined &&
+                this.booking.extraPersonCharge > 0">
+                    <td class="label"> Extra Pax Charge ({{ this.booking.noOfExtraPerson
+                    }})</td>
+                    <td class="value">{{ this.booking.extraPersonCharge| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr   *ngIf="
+                this.booking.extraChildCharge != null &&
+                this.booking.extraChildCharge != undefined &&
+                this.booking.extraChildCharge > 0
+              ">
+                    <td class="label">Extra Child(ren) Charge ({{
+                        this.booking.noOfExtraChild }})</td>
+                    <td class="value">{{ this.booking.extraChildCharge| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</td>
+                </tr>
+
+                <tr *ngIf="
+                this.booking.discountAmount != null &&
+                this.booking.discountAmount != undefined &&
+                this.booking.discountAmount > 0">
+                    <td class="label">Discount ({{ booking.discountPercentage | number :
+                        "1.0-2" }}%)</td>
+                    <td class="value"> {{ this.booking.discountAmount| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Tax Amount:</td>
+                    <td class="value">{{ this.booking.taxAmount| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</td>
+                </tr>
+
+                <tr>
+                    <td class="label">Total Amount:</td>
+                    <td class="value">{{ this.booking.totalAmount| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr *ngIf="this.booking.includeService">
+                    <td class="label">Payable Amount</td>
+                    <td class="value"> {{ getPayableAmountIncludeService()| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr *ngIf="!this.booking.includeService">
+                    <td class="label">Payable Amount:</td>
+                    <td class="value">{{ booking.payableAmount| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr *ngIf="this.booking.includeService">
+                    <td class="label">Received Amount:</td>
+                    <td class="value"> {{ getReceivedAmountIncudeService()| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr *ngIf="!this.booking.includeService">
+                    <td class="label">Received Amount:</td>
+                    <td class="value"> {{ getReceivedAmountExcludeService()| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr *ngIf="getTotalRoomBill() > 0 && this.booking.includeService">
+                    <td class="label">Room Bill Amount:</td>
+                    <td class="value"> {{ getTotalRoomBill()| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr  *ngIf="getTotalCreditBill() > 0 && this.booking.includeService">
+                    <td class="label"> Bill To Company Amount: </td>
+                    <td class="value">{{ getTotalCreditBill()| currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+                <tr  *ngIf="getTotalCreditSettleForExcluseService() > 0 && !this.booking.includeService">
+                    <td class="label"> Bill To Company Amount </td>
+                    <td class="value">{{ getTotalCreditSettleForExcluseService()|
+                        currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr  *ngIf="this.booking.includeService">
+                    <td class="label"> Due Amount: </td>
+                    <td class="value"> {{ getDueAmountIncludeSevice() -
+                        getCommitionAmount() | currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr  *ngIf="!this.booking.includeService">
+                    <td class="label"> Due Amount: </td>
+                    <td class="value">  {{ getDueAmountIncludeSevice() -
+                        getCommitionAmount() | currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+
+                <tr  *ngIf="getPaidRefundAmount() > 0">
+                    <td class="label">Refund to Customer: </td>
+                    <td class="value">  {{ getPaidRefundAmount() | currency:
+                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                        }}</td>
+                </tr>
+              
+              </table>
+              <div *ngIf="this.booking.includeService">
+                <div
+                    *ngIf="servicesOther != null && servicesOther != undefined && servicesOther.length >0 "
+                >
+                    <strong class="label">Services Booking:</strong>
+                    <ion-row *ngFor="let service of servicesOther">
+                        <ion-col size="6" class="label">
+                            <span >
+                                <span
+                                    *ngIf="service.roomNumber != null && service.roomNumber != undefined && service.roomNumber != ''"
+                                    >[{{ service.roomNumber }}]-</span
+                                >
+                                {{ service.name }}: {{ service.count }} X {{
+                                service.beforeTaxAmount | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }} + {{ service.taxAmount | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }} (Tax {{ service.taxPercentage }}%) = {{
+                                service.afterTaxAmount | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}
+                            </span>
+                        </ion-col>
+                        <ion-col size="6">
+                            <ion-text class="value">
+                                {{ service.afterTaxAmount| currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    <p class="line"></p>
+                </div>
+            </div>
+
+            <div *ngIf="this.booking.includeService">
+                <div
+                    *ngIf="servicesMeal != null && servicesMeal != undefined && servicesMeal.length >0 "
+                >
+                    <strong class="label">Add On Services:</strong>
+                    <ion-row *ngFor="let service of servicesMeal">
+                        <ion-col size="6" class="label">
+                            <span >
+                                <span
+                                    *ngIf="service.roomNumber != null && service.roomNumber != undefined && service.roomNumber != ''"
+                                    >[{{ service.roomNumber }}]-</span
+                                >
+                                {{ service.name }}: {{ service.count }} X {{
+                                service.beforeTaxAmount | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }} + {{ service.taxAmount | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }} (Tax {{ service.taxPercentage }}%) = {{
+                                service.afterTaxAmount | currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}
+                            </span>
+                        </ion-col>
+                        <ion-col size="6">
+                            <ion-text class="value">
+                                {{ service.afterTaxAmount| currency:
+                                token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                }}</ion-text
+                            >
+                        </ion-col>
+                    </ion-row>
+                    <p class="line"></p>
+                </div>
+            </div>
+
+            <div
+                *ngIf="expenses != null && expenses != undefined && expenses.length >0 && this.booking.includeService"
+            >
+                <strong class="label">Expenses:</strong>
+                <ion-row *ngFor="let expense of expenses">
+                    <ion-col size="6" class="label">
+                        <span >
+                            <span
+                                *ngIf="expense.roomNumber != null && expense.roomNumber != undefined && expense.roomNumber != ''"
+                                >[{{ expense.roomNumber }}]-</span
+                            >
+                            {{ expense.name }}:
+                        </span>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-text class="value">
+                            {{ expense.amount | currency:
+                            token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                            }}</ion-text
+                        >
+                    </ion-col>
+                </ion-row>
+                <p class="line"></p>
+            </div>
+            </div>
+          </div>
+          
+
+
+
+    </ion-grid>
+</ion-content>

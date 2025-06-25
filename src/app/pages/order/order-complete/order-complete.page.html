@@ -1,0 +1,128 @@
+<ion-header class="headerColor">
+    <ion-img
+    class="header-image headerColor"
+    src="/assets/img/icons/booking_round_header.svg"
+></ion-img>
+
+<ion-avatar class="profile">
+    <img
+    style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+</ion-avatar>
+
+<ion-img
+    class="left-image-header"
+    src="/assets/img/icons/booking-header-left.svg"
+></ion-img>
+ <ion-text color="light" class="HeaderTitle">Order details</ion-text>
+        <ion-text color="light" class="HeaderTitle"
+            >Prop Ref ID #<b>{{ order.bookOneOrderId }}</b></ion-text
+        >
+
+        <!-- <div class="bg-white ion-no-padding"> -->
+            <ion-progress-bar
+                type="indeterminate"
+                *ngIf="loader"
+            ></ion-progress-bar>
+            <div
+                fxLayoutAlign.gt-xs="space-between start"
+                fxLayout.xs="column"
+                class="mt-1 ml-1"
+            >
+                <ion-chip color="primary" *ngIf="order.totalOrderAmount > 0" style="color: #fff">
+                    Total :{{ order.totalOrderAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip style="color: yellowgreen" selected
+                    >Paid: {{ getPaidAmount() | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip
+                    color="primary"
+                    selected
+                    *ngIf="outStandingAmount() > 0"
+                    selected
+                    >Balance: {{outStandingAmount() | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-chip
+                >
+                <ion-chip
+                    style="color: red"
+                    selected
+                    *ngIf="outStandingAmount() < 0"
+                    selected
+                    >Total Due: {{ outStandingAmount() | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-chip
+                >
+    
+                <ion-chip
+                    style="color: red"
+                    selected
+                    *ngIf="getBillToCompanyAmount() > 0"
+                    selected
+                    >Bill To Company: {{ getBillToCompanyAmount() | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-chip
+                >
+    
+                <ion-chip
+                    style="color: red"
+                    selected
+                    *ngIf="getBillToRoomAmount() > 0"
+                    selected
+                    >Bill To Room: {{ getBillToRoomAmount() | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-chip
+                >
+            </div>
+        <!-- </div> -->
+<!-- <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+    </ion-buttons>
+    <ion-text color="light" class="HeaderTitle">Accommodation</ion-text>
+</ion-toolbar> -->
+
+
+</ion-header>
+
+<!-- <ion-header class="header ion-no-margin">
+   
+</ion-header> -->
+<!-- <ion-header style="height: 200px;">
+    
+</ion-header> -->
+
+<ion-content>
+    <ion-grid>
+        <ion-row class="text-message" *ngIf="outStandingAmount()<0">
+            <ion-text text-center style="font-size: 17px"
+                ><b>Please pay due amount first</b></ion-text
+            >
+        </ion-row>
+
+        <ion-row>
+            <ion-col size="6">
+                <ion-button
+                    size="small"
+                    round
+                    expand="block"
+                    color="primary"
+                    (click)="cancel()"
+                    >Cancel
+                </ion-button>
+            </ion-col>
+
+            <ion-col size="6">
+                <ion-button
+                    size="small"
+                    round
+                    expand="block"
+                    color="primary"
+                    [disabled]="this.order.deliveryMethod != 'Room Order' && outStandingAmountWithCredit()<0"
+                    (click)="onComplete()"
+                    >Complete</ion-button
+                >
+            </ion-col>
+
+            <!-- <ion-col  size="4"  float-right>
+                <ion-button size="small" round expand="block" color="primary"
+                [disabled]="outStandingAmount()>=0"
+                    (click)="paymentDetail()"> Pay Now</ion-button>
+            </ion-col> -->
+        </ion-row>
+    </ion-grid>
+</ion-content>

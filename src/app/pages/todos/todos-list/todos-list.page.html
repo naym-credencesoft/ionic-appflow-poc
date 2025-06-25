@@ -1,0 +1,145 @@
+  <ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Manage Todos </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+<ion-content  no-margin no-padding>
+
+    <ion-grid  no-margin no-padding>
+       
+                <ion-list class="item-list margination" >
+                <ion-card  *ngFor="let row of todos| paginate: { itemsPerPage: 5, currentPage: p }; let i = index" >
+           
+
+                <ion-row style="display: flex; padding: 10px;"  (click)="toggleCardBody(i)" [ngStyle]="{'background-color': i % 2 === 0 ? '#D3EBF2' : '#FEEBD6'}" >
+
+                            <ion-col style="    text-align: center;" size="3">
+                                <ion-text style="font-size: 13px;" color="primary" >ID: </ion-text>
+                                <ion-text  class="TextValue" style="font-size: 13px; "  color="primary" >{{ row.id }}</ion-text> 
+                            </ion-col>
+
+                            <ion-col size="7" style="    text-align: center;" >
+                                <ion-text style="font-size: 13px;" color="primary" >Task Type:</ion-text>
+                                <ion-text  class="TextValue" style="font-size: 13px;" color="primary"  >{{row.taskType}}</ion-text> 
+                            </ion-col>
+
+                            <ion-col size="2" style="text-align: end;">
+                                <ion-icon name="caret-down" style="color:#333"></ion-icon>
+                            </ion-col>
+                            <!-- <ion-col no-padding size="1">
+                                <ion-row >
+                                    <ion-icon name="md-more"></ion-icon>
+                                </ion-row>
+                            </ion-col> -->
+                        
+                        
+                </ion-row>
+                <div style="    margin-top: 10px; margin-bottom: 10px;" *ngIf="openedCardIndex === i">      
+                    <div style="margin-left: 20px; margin-bottom: 5px;">
+                            <ion-text style="font-size: 13px;" color="primary" > Assigned To :</ion-text>
+                            <ion-text  class="TextValue" style="font-size: 13px;" > {{ row.assignedTo }}</ion-text> 
+                    </div>
+
+                    <div style="margin-left: 20px; margin-bottom: 5px;">
+                            <ion-text style="font-size: 13px;" color="primary" >Guest Name:</ion-text>
+                            <ion-text  class="TextValue" style="font-size: 13px;" > {{ row.firstName }} {{ row.lastName }}</ion-text> 
+                    </div>
+
+                    <div style="margin-left: 20px; margin-bottom: 5px;">
+                            <ion-text style="font-size: 13px;" color="primary" > Room No:</ion-text>
+                            <ion-text  class="TextValue" style="font-size: 13px;" >{{ row.roomNo }}</ion-text> 
+                    </div>
+
+                    <div style="margin-left: 20px; margin-bottom: 5px;">
+                            <ion-text style="font-size: 13px;" color="primary" >Status:</ion-text>
+                            <ion-text  class="TextValue" style="font-size: 13px;" >
+                                <span *ngIf="row.done">Done</span>
+                                <span *ngIf="!row.done">Not Done</span>
+                            </ion-text> 
+                    </div>
+
+                    <div class="divsec">
+                        <ion-button color="light" (click)="onSeenUpdate(row)">
+                            <ion-icon class="fill-color-yellow" *ngIf="!row.seen" name="mail"></ion-icon>
+                            <ion-icon class="fill-color-yellow" *ngIf="row.seen" name="mail-open"></ion-icon>
+                        </ion-button>
+                        
+                        <ion-button color="light" (click)="onSelectUpdate(row)">
+                            <ion-icon *ngIf="row.selected" class="fill-color-select-yes" name="arrow-up"></ion-icon>
+                            <ion-icon *ngIf="!row.selected" class="fill-color-select-yes" name="arrow-down"></ion-icon>
+                        </ion-button>
+                        
+                        <ion-button color="light" (click)="onImportant(row)">
+                            <ion-icon *ngIf="row.important" class="fill-color-yellow" name="star"></ion-icon>
+                            <ion-icon *ngIf="!row.important" class="fill-color-yellow" name="star-outline"></ion-icon>
+                        </ion-button>
+                   
+                        <ion-button color="light"  (click)="onMarkStatus(row)">
+                            <ion-icon *ngIf="row.done" class="green" name="checkmark-circle-outline"></ion-icon>
+                            <ion-icon *ngIf="!row.done" class="red" name="close-circle-outline"></ion-icon>
+                        </ion-button>
+
+                        <ion-button color="light" (click)="deleteTodosDialog(row)">
+                            <ion-icon style="color: red;" name="trash"></ion-icon>
+                        </ion-button>
+
+                        <ion-button (click)="todoAction(row)">
+                            <ion-icon name="menu"></ion-icon>
+                        </ion-button>
+                    </div>
+
+
+                </div>
+
+               
+                   
+                </ion-card>
+            </ion-list>
+
+            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    
+
+</ion-grid>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="createOrUpdateTodos(null,0)">
+        <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+</ion-fab>
+<div class="loader-everyOne" *ngIf="loader">
+    <ion-spinner name="crescent" class="spinner"></ion-spinner>
+    <div class="loader-content">
+      <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+      <div class="loader-text">Please wait...</div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style=" height: 50px;">
+            <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>
+

@@ -1,0 +1,119 @@
+<ion-header class="ion-no-border">
+    <ion-img
+        class="header-image"
+        src="/assets/img/icons/booking_round_header.svg"
+    ></ion-img>
+  
+    <ion-avatar class="profile">
+    
+        <img
+        style="object-fit: fill;"
+            src="assets/img/user_profile.svg"
+        />
+    </ion-avatar>
+  
+    <ion-img
+        class="left-image-header"
+        src="/assets/img/icons/booking-header-left.svg"
+    ></ion-img>
+   
+    <ion-toolbar>
+        <ion-buttons slot="start" style="margin-left: 10px;color:white;" (click)="goback()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">
+         OTA Rates Update</ion-text>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content no-padding class="animated fadeIn fast">
+    <ion-card class="card-layout text-white">
+        <ion-grid no-padding>
+            <ion-grid>
+                <ion-row>
+               
+                    <ion-col size="12" class="tableheadOne table-responsive">
+                        <table cellspacing="0" cellpadding="0">
+                            <thead >
+                                <tr>
+                                    <th class="th"
+                                        
+                                    >
+                                    OTA<br/>Plan Id
+        
+                                    </th>
+        
+                                    <th class="th"
+                                        
+                                    >
+                                  
+                                  
+                                OTA<br/> Name
+                                    </th>
+        
+                                    <th class="th"
+                                        
+                                    >
+                                    Plan<br/> Name
+        
+                                    </th>
+        
+                                   
+        
+                                    <th class="th"
+                                        
+                                    >
+                                   
+Plan<br/> Code
+        
+                                    </th>
+                                    <th class="th"
+                                        
+                                    >
+                                    Price
+
+                                    </th>
+        
+                                    <th class="th"
+                                        
+                                    >
+                                    Action
+        
+                                    </th>
+                                </tr>
+                            </thead>
+        
+                            <tbody class="tableBody" *ngFor="let item of otaPlans;let i= index">
+                            
+                              <tr>
+                                  <td class="td tableSpacing">{{item.otaPlanId}}</td>
+                                  <td class="td tableSpacing">{{ item.otaName }}</td>
+                                  <td class="td tableSpacing">{{ item.planName }}</td>
+                                  <td class="td tableSpacing">{{ item.bookonePlanCode }}</td>
+                                  <td class="td tableSpacing">{{
+                                    item.price | currency : currency : "symbol" : "1.2-2"
+                                  }}</td>
+
+                                  <td class="td tableSpacing">
+                                    <ion-buttons class="back" (click)="navigateToPage(item,i)">
+                                        Current Day Update
+                                    </ion-buttons>
+                                  </td>
+                               
+                              </tr>
+                          </tbody>
+                           
+                        </table>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        
+  
+           
+          
+  
+        </ion-grid>
+  
+    </ion-card>
+  
+  </ion-content>

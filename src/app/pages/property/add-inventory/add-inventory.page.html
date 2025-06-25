@@ -1,0 +1,85 @@
+<ion-header> 
+    <ion-toolbar class="animated fadeIn shadeCol">
+    
+    <ion-buttons slot="start">
+        <ion-back-button mode ="md" icon="arrow-back" style="color: #fff;"></ion-back-button>
+    </ion-buttons>
+      <ion-text color="light" class="HeaderTitle" >Create Rate</ion-text>
+    </ion-toolbar>
+
+  </ion-header>
+
+<ion-content>
+
+    <ion-card>
+        <ion-grid no-padding>
+            <form [formGroup]="onAddInventoryForm">
+
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">From Date*
+                        </ion-text>
+                        <ion-datetime [(ngModel)]="availability.fromDate" (ionChange)="fromDateChange($event)"
+                        min="{{this.fromDateMin}}" max ="{{fromDateMax}}"
+                        formControlName="rateAndAvailFromDate" no-padding class="dropdown"
+                        color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="From Date"></ion-datetime>
+
+                       
+                    </ion-col>
+
+                    <ion-col size="6">
+                        <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">To Date*
+                        </ion-text>
+
+                        <ion-datetime [(ngModel)]="availability.toDate" min="{{this.toMinDate}}"
+                        max ="{{toMaxDate}}"
+                        formControlName="rateAndAvailToDate" no-padding class="dropdown"
+                        color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="To Date"></ion-datetime>
+
+                    </ion-col>
+
+                </ion-row>
+
+
+                <ion-row>
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">No Of Rooms*</ion-text>
+                        <ion-input formControlName="noOfRooms" [(ngModel)]="availability.noOfRooms"
+                        placeholder="0" inputmode="number" type ="number" min="0" class="input-background"></ion-input>
+                    
+                    </ion-col>
+
+                    <ion-col size="6">
+
+                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Price*</ion-text>
+                        <ion-input formControlName="price" [(ngModel)]="availability.price"
+                        placeholder="0" inputmode="number" type="number"  class="input-background"></ion-input>
+                    
+                        
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+
+                    <ion-col size="6" >
+                        <ion-button expand="block" color="primary" (click)="submit()" [disabled]="!onAddInventoryForm.valid|| loader">
+                            Create</ion-button>
+                    </ion-col>
+    
+                
+
+                    <ion-col size="6" >
+                        <ion-button expand="block"  class="btn-cancel" (click)="cancel()">Cancel</ion-button>
+                    </ion-col>
+
+                    
+            </ion-row>
+
+            </form>
+        </ion-grid>
+    </ion-card>
+
+</ion-content>

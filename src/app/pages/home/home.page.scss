@@ -1,0 +1,474 @@
+:host {
+    @media (min-width: 576px) {
+        .header-image {
+             background: var(--ion-color-tm2-terciary2);
+            height: 330px;
+        }
+        .profile {
+            z-index: 12;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 71px;
+            width: 71px;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 11;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 114px;
+        }
+
+        // canvas {
+        //     width: 30px !important;
+        //     height: 30px !important;
+        //     // padding: 100px;
+        //   }
+    
+
+        .card-container {
+            padding: 6px;
+            z-index: 12;
+            position: absolute;
+            top: 50px;
+            width: 95vw;
+            /* height: 200px; */
+            margin-right: 10px;
+            margin-left: 10px;
+            padding-bottom: 27px;
+            border-radius: 16px;
+            background-color: #259BBF;
+            
+        }
+
+        .content-main {
+            margin-top: 256px !important;
+        }
+
+        .bookingPage {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 16px;
+            color: #1D174D;
+            border: 1px solid gray;
+          
+        }
+    
+        .card-container2 {
+            --background: white;
+            border-radius: 15px;
+            z-index: 14;
+            position: absolute;
+            top: 225px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: 90vw;
+            padding: 3px;
+            margin-top: 0px;
+          
+        }
+
+        .bookingImage {
+            width: 79px;  
+        }
+
+        .ratesImages {
+            height: 53px;
+        }
+        .financeImage {
+            height: 100px;
+        }
+
+        .rateAvailable {
+            display: flex;
+                    gap: 20px;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    justify-content: center;
+        }
+
+        .secB {
+            margin-top: 40px;
+        }
+
+    }
+    @media (max-width: 576px) {
+        .financeImage {
+            height: 68px;
+        }
+
+        .twoItemRowtext {
+            font-size: 15px !important;
+       }
+
+        .left-image-header {
+            z-index: 11;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 26.5vw;
+        }
+
+        .profile {
+            z-index: 12;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 15vw;
+            width: 15vw;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+
+        .bookingPage {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 16px;
+            color: #1D174D;
+            border: 1px solid gray;
+        }
+
+        .header-image {
+            background-color: #fff;
+           min-height: 280px;
+       }
+
+        .card-container {
+            padding: 10px;
+            z-index: 12;
+            position: absolute;
+            top: 51px;
+            width: 95vw;
+            height: 200px;
+            margin-right: 10px;
+            margin-left: 10px;
+            padding-bottom: 70px;
+            background-color: #259BBF;
+            border-radius: 16px;
+        }
+    
+        .card-container2 {
+        --background: white;
+        border-radius: 15px;
+        z-index: 13;
+        position: absolute;
+        top: 238px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 90vw;
+        padding: 4px;
+        }
+
+        .HeaderSec-propertyName {
+            font-size: clamp(16px, 5vw, 15px) !important;
+            color: white;
+            font-family: "SofiaPro-Medium" !important;
+        }
+
+        .HeaderSec-title2 {
+            font-size: clamp(18px, 6.5vw, 23px) !important;
+            color: white;
+            font-weight: bold;
+            // font-family: 'SofiaProRegular' !important;
+        }
+        .roomOrder_title {
+            font-size: clamp(14px, 5vw, 16px) !important;
+            color: #1D174D;
+        }
+
+        .bookingImage {
+            width: 110px;  
+            height: 74px;
+        }
+        .ratesImages {
+            height: 45px;
+        }
+        .rateAvailable {
+            display: flex;
+                    gap: 20px;
+                    padding-left: 10px;
+                    padding-right: 10px;
+        }
+    }
+
+    .toolbar{
+        position: absolute;
+        top: 0px;
+        background-color: #fff;
+        border: none;
+        --border-style: none;
+        padding-bottom: 20px;
+    }
+
+  
+
+    .HeaderTitle {
+        color: #1D174D;
+        margin-left: 10px;
+        margin-right: 10px;
+        font-family: 'SofiaPro-Light' !important;
+    }
+
+   
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+    ion-content {
+      background-color: #fff;
+    }
+    .toolbar2{
+        //--background:#65B8D2;
+        color: white;
+        background-color: #259BBF;
+
+        border-radius: 16px 16px 0px 0px;
+    }
+  
+
+
+    .tab-button{
+        color: white;
+    }
+
+    .footer-text{
+        font-size: 15px;
+        font-family: 'SofiaPro-SemiBold' !important;
+    }
+    
+
+
+    .card-continner2-text{
+        color: #484848;
+        font-family: 'SofiaPro-Medium' !important;
+        // font-size: 15.5px;
+        font-size: clamp(12px, 3.5vw, 22px);
+    }
+
+    .HeaderSec-title2 {
+        font-size: clamp(18px, 6.5vw, 26px);
+        //font-size: 30px;
+        color: white;
+        font-weight: bold;
+        // font-family: 'SofiaProRegular' !important;
+    }
+
+    .HeaderSec-propertyName {
+        font-size: clamp(16px, 5vw, 22px);
+        color: white;
+        font-family: 'SofiaPro-Medium' !important;
+    }
+
+    .center-col {
+        display: flex;
+        justify-content: center;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        color: #484848;
+        margin: 5px;
+    }
+
+    td,
+    th {
+        text-align: center;
+    }
+
+    .booking-bol-1 {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        height: clamp(100px, 35vw, 400px);
+        z-index: 1;
+    }
+
+    .booking-bol-2 {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        height: clamp(100px, 15vw, 300px);
+        z-index: 1;
+    }
+    .booking-bol-3 {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: clamp(150px, 20vw, 350px);
+        z-index: 1;
+    }
+
+    .content-main {
+        z-index: 2;
+        padding: 15px;
+        position: relative;
+        margin-top: 288px;
+    }
+
+    .roomOrder_title {
+        font-size: clamp(14px, 5vw, 19px);
+        color: #1D174D;
+    }
+    .mt-1 {
+        margin-top: 4px;
+        color: #1D174D;
+    }
+    .ml-1 {
+        margin-left: 10px;
+    }
+    .mr-1 {
+        margin-right: 10px;
+    }
+    .orderPage {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        background: linear-gradient(
+            152.97deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+
+        border-radius: 16px;
+        color: white;
+        min-height: 146px;
+    }
+
+    .twoItemRow {
+        padding-top: 10px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        display: flex;
+        justify-content: center;
+        background: linear-gradient(
+            152.97deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+
+
+        border-radius: 16px;
+        color: white;
+        min-height: 146px;
+    }
+    .twoItemRowtext {
+         font-size: clamp(14px, 4.5vw, 19px);
+       // font-size: 18px;
+       font-family: 'SofiaPro-Medium' !important;
+        text-align: center;
+        color: #1D174D;
+    }
+
+    .financeText {
+        font-size: clamp(12px, 3.3vw, 15px);
+        text-align: center;
+    }
+
+    .threeItemRow1 {
+
+        display: flex;
+        border: 1px solid gray;
+        align-items: center;
+        border-radius: 16px;
+        color: white;
+        /* Rectangle 54 */
+    }
+
+    .singleItemRow1 {
+        padding-top: 10px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        display: flex;
+        justify-content: center;
+        background: linear-gradient(-152.97deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+
+        border-radius: 16px;
+        color: white;
+        min-height: 200px;
+    }
+
+    .threeItemRow2 {
+            /* padding-top: 5px; */
+    display: flex;
+    border-radius: 16px;
+    color: white;
+    /* min-height: 41px; */
+    color: #1D174D;
+    border: 1px solid gray;
+    align-items: center;
+    }
+
+    .threeItemThree {
+        padding-top: 5px;
+        display: flex;
+        justify-content: center;
+        border: 1px solid gray;
+        align-items: center;
+        border-radius: 16px;
+        color: white;
+        min-height: 100px;
+    }
+
+    .fourItemRow3 {
+        padding-top: 3px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        background: linear-gradient(
+            -152.97deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+
+        border-radius: 16px;
+        color: white;
+        min-height: 45px;
+    }
+
+    .centerCol {
+        display: flex;
+    }
+    .centerCol2a {
+        display: flex;
+        justify-content: center;
+    }
+    .mr-05{
+        margin-right: 5px;
+    }
+    .ml-05{
+        margin-left: 5px;
+    }
+
+    .button-add{
+        background-color: #1D174D;
+        padding: 13px;
+        border-radius: 50px;
+    }
+
+    @media (min-width: 760px) {
+        .content-main {
+            margin-left: 80px !important;
+            margin-right: 60px !important;
+        }
+    }
+
+}

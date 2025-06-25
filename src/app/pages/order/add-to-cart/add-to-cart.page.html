@@ -1,0 +1,278 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <ion-buttons slot="start" *ngIf="isCartFromMenu">
+            <ion-icon name="menu-outline" class="menu-img"  size="large" color="light" (click)="menu()"></ion-icon>
+        </ion-buttons>
+        <ion-buttons slot="start" class="header-back" *ngIf="!isCartFromMenu">
+          <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+            <ion-text color="light" class="HeaderTitle">Order</ion-text>
+      </ion-toolbar>
+
+</ion-header>
+
+<ion-content no-margin>
+
+    <ion-list class="bg-white" no-margin no-padding *ngFor="let bpglist of productGroupsList; let i = index">
+
+        <div *ngFor="let productGroup of bpglist.productGroup; let pg = index">
+
+
+            <div class="bg-white">
+                <div *ngFor="let product of productGroup.productDtoList; let p = index">
+
+                    <div *ngIf="product.productVariationDtoList !=null && product.productVariationDtoList.length >0">
+                        <div *ngFor="let variation of product.productVariationDtoList; let v = index">
+                            <ion-item *ngIf="variation.unitsInOrder!=undefined && variation.unitsInOrder != 0" >
+                                <ion-avatar slot="start"  >
+                                    <!-- <img  *ngIf="product.imageList == null || product.imageList.length ===0" src="../../../../assets/icon/correct_violet.svg"> -->
+                                    <ion-icon *ngIf="product.imageList == null || product.imageList.length ===0"
+                                        name="cube-outline" size="large" color="tertiary"></ion-icon>
+                                    <img *ngIf="product.imageList != null && product.imageList.length >0"
+                                        src="{{product.imageList[0].url}}">
+    
+                                </ion-avatar>
+                                <ion-label >
+                                    <!-- <h2 class="heading-semibold font-14 text-violet">{{product.name}}</h2>
+                                    <h3 class="heading-medium font-12  text-order-grey">{{product.description}}</h3> -->
+                                    <!-- *ngIf="variation.unitsInOrder !=undefined && variation.unitsInOrder !=null && variation.unitsInOrder !=0" -->
+    
+                                    <ion-row> 
+                                        <ion-col size="11">
+                                            <h2 class="heading-semibold font-14 text-violet">{{product.name}}</h2>
+                                            <h3 class="heading-medium font-12  text-order-grey">{{product.description}}</h3>
+                                        </ion-col>
+                                        <ion-col no-margin no-padding size="1">
+                                            <a float-right>
+                                                <ion-icon name="close-circle-outline" (click)="onRemoveVariation(variation ,i, pg, p, v)"></ion-icon>
+                                            </a>
+                                        </ion-col>
+                                    </ion-row>
+                                    <ion-row>
+    
+                                            <ion-col size="8">
+                                                <p size="small"><b>{{variation.name}}</b></p>
+                                                <p size="small" style="font-size : 12px">{{variation.code}}</p>
+                                                <ion-icon name="reader-outline" 
+                                                *ngIf="
+                                                 variation.notes === null ||
+                                                 variation.notes === undefined
+                                                " (click)="variation.notes = '';"></ion-icon>
+                                                <input  matInput class="text-note w-100 mt-1" type="text"
+                                                placeholder="Note"
+                                                *ngIf=" variation.notes != null && variation.notes != undefined "
+                                                [(ngModel)]="variation.notes"/>
+
+                                                <p class="sellunitPriceVariation" style="color :#7168a1;">
+                                                     {{variation.sellUnitPrice  | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</p>
+        
+                                            </ion-col>
+                                            <!-- (click)="onProductVariationMinus(produ ct,p,productGroup,pg,bpglist.businessServiceId,i ,variation ,v)" -->
+                                            <ion-col size="4">
+                                                <div class="quantity">
+                                                    <button
+                                                        *ngIf="variation.unitsInOrder!=undefined && variation.unitsInOrder > 0"
+                                                        (click)="onProductVariationMinus(product,p,productGroup,bpglist.businessServiceId,i,variation ,v)"
+                                                        class="qs plus-btn" type="button" name="button">
+                                                        <!-- <img src="../../../../assets/icon/minus.svg" alt="" /> -->
+                                                        <ion-icon name="remove"></ion-icon>
+                                                    </button>
+                                                    <ion-text
+                                                        *ngIf="variation.unitsInOrder!=undefined || variation.unitsInOrder !=null"
+                                                        class="heading-semibold font-14 text-violet-light">
+                                                        {{variation.unitsInOrder}}</ion-text>
+                                                    <ion-text
+                                                        *ngIf="variation.unitsInOrder ==undefined || variation.unitsInOrder ==null"
+                                                        class="heading-semibold font-14 text-violet-light">
+                                                        0</ion-text>
+                                                    <button
+                                                        (click)="onProductVariationAdd(product,p,productGroup,bpglist.businessServiceId,i,variation ,v)"
+                                                        class="qs minus-btn" type="button" name="button">
+                                                        <!-- <img src="../../../../assets/icon/plus.svg" alt="" /> -->
+                                                        <ion-icon name="add" class="add-button"></ion-icon>
+                                                    </button>
+                                                </div>
+                                            </ion-col>
+                                        <!-- </div> -->
+                                       
+                                    </ion-row>
+                                </ion-label>
+                            </ion-item>
+                        </div>
+                    </div>
+
+                    <div *ngIf="product.productVariationDtoList ==null || product.productVariationDtoList.length === 0">
+                        <ion-item   *ngIf="product.unitsInOrder !=undefined && product.unitsInOrder !=null && product.unitsInOrder != 0">
+                            <ion-avatar slot="start">
+                                <!-- <img  *ngIf="product.imageList == null || product.imageList.length ===0" src="../../../../assets/icon/correct_violet.svg"> -->
+                                <ion-icon *ngIf="product.imageList == null || product.imageList.length ===0"
+                                    name="cube-outline" size="large" color="tertiary"></ion-icon>
+                                <img *ngIf="product.imageList != null && product.imageList.length >0"
+                                    src="{{product.imageList[0].url}}">
+                            </ion-avatar>
+                            
+                            <ion-label>
+
+                            <ion-row> 
+                                <ion-col size="11">
+                                    <h2 class="heading-semibold font-14 text-violet">{{product.name}}</h2>
+                                    <h3 class="heading-medium font-12  text-order-grey">{{product.description}}</h3>
+                                    <ion-icon name="reader-outline" 
+                                    *ngIf="
+                                        product.notes === null ||
+                                        product.notes === undefined
+                                      " (click)="product.notes = ''"></ion-icon>
+                                   
+                                    <input mat-input class="text-note mt-1 w-100" type="text"
+                                    placeholder="Note" *ngIf="
+                                     (product.notes != null &&
+                                       product.notes != undefined) ||
+                                     product.isNotesChecked
+                                   " [(ngModel)]="product.notes" />
+
+                                </ion-col>
+                                <ion-col no-margin no-padding size="1">
+                                    <a float-right>
+                                        <ion-icon name="close-circle-outline" (click)="onRemoveProduct(product)"></ion-icon>
+                                    </a>
+                                </ion-col>
+                            </ion-row>
+
+                            
+                                <!-- <h2 class="heading-semibold font-14 text-violet">{{product.name}}</h2>
+                                <h3 class="heading-medium font-12  text-order-grey">{{product.description}}</h3> -->
+                                <!-- <p>Listen, I've had a pretty messed up day...</p> -->
+
+                                <ion-row>
+                                    <ion-col size="8">
+                                        <p class="price">
+                                             {{product.sellUnitPrice  | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</p>
+                                    </ion-col>
+                                    <ion-col size="4">
+                                        <div class="quantity">
+                                            <button
+                                                *ngIf="product.unitsInOrder !=null || product.unitsInOrder!=undefined"
+                                                (click)="onProductMinus(product,p,productGroup,bpglist.businessServiceId,i)"
+                                                class="qs plus-btn" type="button" name="button">
+                                                <!-- <img src="../../../../assets/icon/minus.svg" alt="" /> -->
+                                                <ion-icon name="remove"></ion-icon>
+                                            </button>
+                                            <ion-text
+                                                *ngIf="product.unitsInOrder!=undefined || product.unitsInOrder !=null"
+                                                class="heading-semibold font-14 text-violet-light">
+                                                {{product.unitsInOrder}}</ion-text>
+                                            <ion-text
+                                                *ngIf="product.unitsInOrder ==undefined || product.unitsInOrder ==null"
+                                                class="heading-semibold font-14 text-violet-light">
+                                                0</ion-text>
+                                            <button
+                                                (click)="onProductAdd(product,p,productGroup,bpglist.businessServiceId,i)"
+                                                class="qs" type="button" name="button">
+                                                <!-- <img src="../../../../assets/icon/plus.svg" alt="" /> -->
+                                                <ion-icon name="add" class="add-button"></ion-icon>
+                                            </button>
+                                        </div>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-label>
+                            <!-- <ion-icon *ngIf="!this.isclickG"  name="chevron-forward-outline"></ion-icon>
+                            <ion-icon *ngIf="this.isclickG"  name="chevron-down-outline"></ion-icon> -->
+                        </ion-item>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <!--  -->
+        </div>
+    </ion-list>
+
+    <ion-list class="listcard">
+        <ion-grid no-margin no-padding class="item2-checkout">
+            <div class="bg-white">
+                <!-- <ion-row no-margin no-padding>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-text style="font-size: 12px;">Sub Total</ion-text>
+                    </ion-col>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-row no-margin no-padding float-right>
+                            <ion-text style="font-size: 12px;"> </ion-text>
+                            <ion-text style="font-size: 12px;" class="value-text">
+                                {{calculatePrice() | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</ion-text>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row no-margin no-padding>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-text style="font-size: 12px;">Discount Amount</ion-text>
+                    </ion-col>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-row no-margin no-padding float-right>
+                            <ion-text style="font-size: 12px;"> </ion-text>
+                            <ion-text style="font-size: 12px;" class="value-text">{{0 | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-text>
+                        </ion-row>
+                    </ion-col>
+
+                </ion-row>
+
+                <ion-row no-margin no-padding>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-text style="font-size: 12px;">Tax Amount</ion-text>
+                    </ion-col>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-row no-margin no-padding float-right>
+                            <ion-text style="font-size: 12px;"> </ion-text>
+                            <ion-text style="font-size: 12px;" class="value-text">
+                                {{ this.order.taxAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-text>
+                        </ion-row>
+                    </ion-col>
+
+                </ion-row>
+
+                <ion-row no-margin no-padding>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-text style="font-size: 13px;"><b>Total Amount</b></ion-text>
+                    </ion-col>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-row no-margin no-padding float-right>
+                            <ion-text style="font-size: 13px;"> </ion-text>
+                            <ion-text style="font-size: 13px;" class="value-text">
+                                <b>{{ this.order.totalOrderAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</b></ion-text>
+                        </ion-row>
+                    </ion-col>
+
+                </ion-row> -->
+
+                <ion-row no-margin no-padding float-right>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-text style="font-size: 13px;"><b>Total Amount</b></ion-text>
+                    </ion-col>
+                    <ion-col no-margin no-padding size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-row no-margin no-padding float-right class="order-amount">
+                            <ion-text style="font-size: 13px;"> </ion-text>
+                            <ion-text style="font-size: 13px;" class="value-text">
+                                <b>{{ this.total | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</b></ion-text>
+                                <br>
+                                <span style="font-size: 12px ;">(Inclusive of GST)</span>
+                        </ion-row>
+                    </ion-col>
+
+                </ion-row>
+
+            </div>
+
+        </ion-grid>
+    </ion-list>
+
+</ion-content>
+<ion-footer>
+    <div *ngIf="this.total >0" class="cart" (click)="onCheckout()">
+        <ion-text class="heading-medium font-14 text-primary">
+            <b>Checkout</b>
+        </ion-text>
+    </div>
+    <!-- <ion-toolbar style=" height: 50px;">
+        <app-footer></app-footer>
+      </ion-toolbar> -->
+</ion-footer>

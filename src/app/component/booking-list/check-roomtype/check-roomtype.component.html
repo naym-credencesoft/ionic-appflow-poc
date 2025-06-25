@@ -1,0 +1,157 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="cancelRoomChange()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Room Allocation</ion-text>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="roomcard card">
+    <ion-grid>
+        <div *ngFor="let msg of msgs" class="mb-1">
+            <span *ngIf="msg.summary" class="error" [innerHTML]="msg.summary"></span>
+            <span *ngIf="msg.detail" class="success" [innerHTML]="msg.detail"></span>
+          </div>
+
+          <div *ngIf="!this.isSingleRoomAllocate"
+          fxLayout="grid"
+          fxFlex="1 1 0%"
+          fxLayoutAlign="center center">
+          <p  class="text-white">
+            No of Room to allocate : {{ booking.noOfRooms }}
+          </p>
+        </div>
+        
+        <div
+            fxLayoutAlign.gt-xs="space-between start"
+            fxLayout.xs="column"
+            class="mb-1 mt-1"
+        >
+            <p *ngIf="!this.isSingleRoomAllocate" class="text-white">
+                No of Room selected : {{ this.roomNumbers.length }}
+            </p>
+            <div fxLayout="grid" fxFlex="1 1 0%" fxLayoutAlign="center center">
+                <ion-chip *ngFor="let room of roomNumbers">
+                    <ion-label class="text-white" style="font-size: 16px">
+                        {{ getRoomName(room.roomId) }}
+                        {{ room.roomNumber }}</ion-label
+                    >
+                    <ion-icon
+                        name="close"
+                        (click)="showOptions(room)"
+                    ></ion-icon>
+                </ion-chip>
+            </div>
+        </div>
+
+
+        <div *ngFor="let data of roomAvailableOptions" class="mt-1">
+            <ion-list  class="list-back" *ngIf="data.room.id == this.room.id">
+             
+                <ion-item>
+                    <ion-label class="text-white">{{ data.room.name }} (Booking Room Type)</ion-label>
+                  </ion-item>
+            
+                  <ion-grid>
+                    <ion-row>
+                        <ion-col size="3" *ngFor="let roomOption of data.availableRoomData; let i = index">
+                            <ion-item class="card-item" (click)="showOptions(roomOption)">
+                                <ion-icon class="text-white"
+                                    style="font-size: 16px"
+                                    *ngIf="isDataExist(roomOption.roomNumber)"
+                                    name="checkbox-outline"
+                                ></ion-icon>
+                                <ion-icon class="text-white"
+                                    style="font-size: 16px"
+                                    *ngIf="!isDataExist(roomOption.roomNumber)"
+                                    name="stop-outline"
+                                ></ion-icon
+                                ><span
+                                    style="font-size: 12px"
+                                    class="taxName-selection text-white"
+                                    >{{roomOption.roomNumber}}</span
+                                >
+                            </ion-item>
+                        </ion-col>
+                        
+                   </ion-row>
+                  </ion-grid>
+               
+            </ion-list>
+        </div>
+
+
+        <div *ngFor="let data of roomAvailableOptions" class="mt-1">
+            <ion-list  class="list-back" *ngIf="data.room.id != this.room.id">
+             
+                <ion-item>
+                    <ion-label class="text-white">{{ data.room.name }} (Other Room Type)</ion-label>
+                  </ion-item>
+            
+                  <ion-grid>
+                    <ion-row>
+                        <ion-col size="3" *ngFor="let roomOption of data.availableRoomData; let i = index">
+                            <ion-item class="card-item" (click)="otherRoomSelected(roomOption, data.room)">
+                                <ion-icon class="text-white"
+                                    style="font-size: 16px"
+                                    *ngIf="isDataExist(roomOption.roomNumber)"
+                                    name="checkbox-outline"
+                                ></ion-icon>
+                                <ion-icon class="text-white"
+                                    style="font-size: 16px"
+                                    *ngIf="!isDataExist(roomOption.roomNumber)"
+                                    name="stop-outline"
+                                ></ion-icon
+                                ><span
+                                    style="font-size: 12px"
+                                    class="taxName-selection text-white"
+                                    >{{roomOption.roomNumber}}</span
+                                >
+                            </ion-item>
+                        </ion-col>
+                        
+                   </ion-row>
+                  </ion-grid>
+               
+            </ion-list>
+        </div>
+<!--  ||
+                    this.bookingRoomDetails != null && this.bookingRoomDetails != undefined && this.bookingRoomDetails.length >0 -->
+        <ion-row>
+            <ion-col size="12">
+                <ion-button
+                    *ngIf="!isSingleRoomAllocate"
+                    shape="round"
+                    expand="full"
+                    class="button-submit"
+                    [disabled]="loader || this.roomNumbers.length != booking.noOfRooms"
+                    (click)="roomAllocation()"
+                    >Allocate Room</ion-button
+                >
+            </ion-col>
+
+            <ion-col size="12">
+                <ion-button
+                    *ngIf="isSingleRoomAllocate"
+                    shape="round"
+                    expand="full"
+                    class="button-submit"
+                    [disabled]="loader || this.roomNumbers.length != 1"
+                    (click)="guestRoomAllocation()"
+                    >Guest Room Allocate</ion-button
+                >
+            </ion-col>
+
+            <ion-col size="12">
+                <ion-button
+                    shape="round"
+                    expand="full"
+                    class="button-cancel"
+                    (click)="cancelRoomChange()"
+                    >Cancel</ion-button
+                >
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+  </ion-content>
+

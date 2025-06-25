@@ -1,0 +1,248 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <!-- <ion-text class="HeaderSubTitle"> Customer Details </ion-text> -->
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="back()"  style="font-size: 20px; margin-top: 9px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Customer Details</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content no-margin>
+   
+    <ion-card  margin-top class="listcard card-layout">
+       
+        <ion-card-content style="padding: 0px !important;">
+            <div style="display: flex; align-items: center; gap:10px">
+                <div>
+                    <img src="assets/img/user_profile.svg" style="width:57px">
+                </div>
+                <div>
+                    <h1 style="text-align:center;"  color="primary"> <ion-text class="text-white" style="font-size: 20px;"><b>{{this.customer.firstName  }}</b></ion-text> <ion-text  style="font-size: 20px;" class="text-white"><b> {{this.customer.lastName }}</b></ion-text></h1>
+                    <h2 style="text-align:center;" color="primary"> <ion-text  class="text-white" style="font-size: 15px; margin-left: 25px;">{{this.customer.email  }}</ion-text></h2>
+                </div> 
+       
+            </div>
+
+            
+           
+              <!-- <img src="assets/img/user_profile.svg"
+                #file2
+                (click)="upload2.click()">
+            
+                <input
+                    [hidden]="true"
+                    type="file"
+                    accept="image/*"
+                    #upload2
+                    (change)="uploadFile($event, file2)" /> -->
+                   
+
+                   
+            </ion-card-content>
+       
+        <!-- <ion-grid no-margin no-padding>
+
+                    <ion-row class="checkindate-row">
+                        <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                            <ion-row>
+                                <ion-text  style="font-size: 15px;" >Lifetime Stays :</ion-text>
+                                <ion-text color="primary"  style="font-size: 15px;" class="datavalue" ><b>0 times</b></ion-text> 
+                            </ion-row>
+                            
+                        </ion-col> 
+                    </ion-row>
+    
+                    <ion-row class="checkindate-row">
+                            <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                <ion-row>
+                                    <ion-text  style="font-size: 15px;" >Lifetime Nights :</ion-text>
+                                    <ion-text color="primary"  style="font-size: 15px;" class="datavalue" ><b>0 nights</b></ion-text> 
+                                </ion-row>
+                                
+                            </ion-col> 
+                        </ion-row>
+                    <ion-row class="checkindate-row">
+                        <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                            <ion-row>
+                                <ion-text  style="font-size: 15px;" >Lifetime Spend :</ion-text>
+                                <ion-text color="primary"  style="font-size: 15px;" class="datavalue" ><b>$0 USD</b></ion-text> 
+                            </ion-row>
+                            
+                        </ion-col> 
+                    </ion-row>
+
+                    <ion-row class="checkindate-row">
+                        <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                            <ion-row>
+                                <ion-text  style="font-size: 15px;" >Last Stay :</ion-text>
+                                <ion-text color="primary" style="font-size: 15px;float: right;" class="datavalue" ><b>0 days ago</b></ion-text> 
+                            </ion-row>
+                            
+                        </ion-col> 
+                    </ion-row>
+
+               
+        </ion-grid> -->
+    </ion-card>
+
+
+   
+       
+        <ion-grid no-margin no-padding>
+                <ion-row no-margin no-padding > 
+                        <ion-col  no-margin no-padding size="4" size-xl="4" size-sm="4" size-md="4" size-lg="4"> 
+                                <ion-card style="border-radius: 10px; border:1px solid gray;" class="card-item bottom-item-card" no-margin no-padding (click)="onPersonalInfo()">
+
+                                    <ion-row  justify-content-center style="display: flex; justify-content: center;">
+                                        <ion-img no-margin style="width: 30px; height: 30px;" src="assets/img/dashboard-menu/personalinfo.svg"></ion-img>             
+                                    </ion-row> 
+                                    
+                                    <ion-row   justify-content-center class="item-text" no-margin no-padding  >
+                                            <ion-col  no-margin no-padding  class="text-white" style="    display: flex; justify-content: center; gap: 4px;">
+                                                   <ion-row justify-content-center >
+                                                        <ion-text  style="font-size: 10px;text-align: center" >Personal</ion-text>
+                                                   </ion-row>
+                                                   <ion-row  justify-content-center>
+                                                        <ion-text style="font-size: 10px;text-align: center"   >Details</ion-text>
+                                                   </ion-row>
+                                            </ion-col>           
+                                    </ion-row> 
+                                </ion-card>
+                        </ion-col> 
+                        <ion-col  no-margin no-padding size="4" size-xl="4" size-sm="4" size-md="4" size-lg="4"> 
+                            <ion-card style="border-radius: 10px; border:1px solid gray;" class="card-item bottom-item-card" no-margin no-padding (click)="onAddressDetails()">
+
+                                <ion-row  justify-content-center style="display: flex; justify-content: center;">
+                                    <ion-img no-margin style="width: 30px; height: 30px;" src="assets/img/dashboard-menu/address.svg"></ion-img>             
+                                </ion-row> 
+                                
+                                <ion-row   justify-content-center class="item-text" no-margin no-padding  >
+                                        <ion-col  no-margin no-padding  class="text-white" style="    display: flex; justify-content: center; gap: 4px;">
+                                               <ion-row justify-content-center>
+                                                    <ion-text  style="font-size: 10px;text-align: center" >Address</ion-text>
+                                               </ion-row>
+                                               <ion-row  justify-content-center>
+                                                    <ion-text style="font-size: 10px;text-align: center"   >Details</ion-text>
+                                               </ion-row>
+                                        </ion-col>           
+                                </ion-row> 
+                            </ion-card>
+                    </ion-col> 
+
+                    <ion-col  no-margin no-padding size="4" size-xl="4" size-sm="4" size-md="4" size-lg="4"> 
+                        <ion-card style="border-radius: 10px; border:1px solid gray;" class="card-item bottom-item-card" no-margin no-padding (click)="onKYC()">
+
+                            <ion-row  justify-content-center style="display: flex; justify-content: center;">
+                                <ion-img no-margin style="width: 30px; height: 30px;" src="assets/img/dashboard-menu/kyc.svg"></ion-img>             
+                            </ion-row> 
+                            
+                            <ion-row   justify-content-center class="item-text" no-margin no-padding  >
+                                    <ion-col  no-margin no-padding  class="text-white" style="    display: flex; justify-content: center; gap: 4px;">
+                                           <ion-row justify-content-center>
+                                                <ion-text  style="font-size: 10px;text-align: center" >KYC</ion-text>
+                                           </ion-row>
+                                           <ion-row  justify-content-center>
+                                                <ion-text style="font-size: 10px;text-align: center"   >Details</ion-text>
+                                           </ion-row>
+                                    </ion-col>           
+                            </ion-row> 
+                        </ion-card>
+                </ion-col> 
+                        
+                </ion-row>
+
+                <!-- <ion-row no-margin no-padding > 
+                    <ion-col  no-margin no-padding size="4" size-xl="4" size-sm="4" size-md="4" size-lg="4"> 
+                            <ion-card style="border-radius: 0px;" class="card-item bottom-item-card" no-margin no-padding (click)="onLoyality()">
+
+                                <ion-row  justify-content-center>
+                                    <ion-img no-margin style="width: 30px; height: 30px;" src="assets/img/dashboard-menu/loyalty.svg"></ion-img>             
+                                </ion-row> 
+                                
+                                <ion-row   justify-content-center class="item-text" no-margin no-padding  >
+                                        <ion-col  no-margin no-padding  >
+                                               <ion-row justify-content-center>
+                                                    <ion-text  style="font-size: 10px;text-align: center" color="primary" >Loyality</ion-text>
+                                               </ion-row>
+                                               <ion-row  justify-content-center>
+                                                    <ion-text style="font-size: 10px;text-align: center" color="primary"  >Details</ion-text>
+                                               </ion-row>
+                                        </ion-col>           
+                                </ion-row> 
+                            </ion-card>
+                    </ion-col> 
+                    <ion-col  no-margin no-padding size="4" size-xl="4" size-sm="4" size-md="4" size-lg="4"> 
+                        <ion-card style="border-radius: 0px;" class="card-item bottom-item-card" no-margin no-padding (click)="onNextStay()">
+
+                            <ion-row  justify-content-center>
+                                <ion-img no-margin style="width: 30px; height: 30px;" src="assets/img/dashboard-menu/next.svg"></ion-img>             
+                            </ion-row> 
+                            
+                            <ion-row   justify-content-center class="item-text" no-margin no-padding  >
+                                    <ion-col  no-margin no-padding  >
+                                           <ion-row justify-content-center>
+                                                <ion-text  style="font-size: 10px;text-align: center" color="primary" >Next Stay</ion-text>
+                                           </ion-row>
+                                           <ion-row  justify-content-center>
+                                                <ion-text style="font-size: 10px;text-align: center" color="primary"  >Details</ion-text>
+                                           </ion-row>
+                                    </ion-col>           
+                            </ion-row> 
+                        </ion-card>
+                </ion-col> 
+
+                <ion-col  no-margin no-padding size="4" size-xl="4" size-sm="4" size-md="4" size-lg="4"> 
+                    <ion-card style="border-radius: 0px;" class="card-item bottom-item-card" no-margin no-padding (click)="onLastStay()">
+
+                        <ion-row  justify-content-center>
+                            <ion-img no-margin style="width: 30px; height: 30px;" src="assets/img/dashboard-menu/last.svg"></ion-img>             
+                        </ion-row> 
+                        
+                        <ion-row   justify-content-center class="item-text" no-margin no-padding  >
+                                <ion-col  no-margin no-padding  >
+                                       <ion-row justify-content-center>
+                                            <ion-text  style="font-size: 10px;text-align: center" color="primary" >Last Stay</ion-text>
+                                       </ion-row>
+                                       <ion-row  justify-content-center>
+                                            <ion-text style="font-size: 10px;text-align: center" color="primary"  >Details</ion-text>
+                                       </ion-row>
+                                </ion-col>           
+                        </ion-row> 
+                    </ion-card>
+            </ion-col> 
+                    
+                   
+
+            </ion-row> -->
+               
+            </ion-grid>
+
+
+
+   
+
+
+</ion-content>

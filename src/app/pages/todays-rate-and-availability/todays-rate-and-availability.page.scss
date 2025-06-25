@@ -1,0 +1,28 @@
+:host {
+    ion-content {
+        --background: linear-gradient(-135deg, var(--ion-color-booking_back), var(--ion-color-booking_back))
+    }
+
+    .check-in-out-date{
+        padding-left: 5px;
+        padding-right:5px;
+        padding-bottom: 5px;   
+    }
+    .row-item{
+        margin-left: 10px;
+    }
+    .rate-list{
+       margin-left: 15px;
+       padding: 5px; 
+       background: linear-gradient(-135deg, var(--ion-color-rate-list-child), var(--ion-color-rate-list-child))
+    }
+
+    .check-in-out-text{
+        padding: 5px;
+    }
+    .card-date{
+        margin: 5px;
+    }
+
+   
+}

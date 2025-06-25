@@ -1,0 +1,364 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <!-- <ion-text class="HeaderSubTitle"> Manage Customer </ion-text> -->
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="navigateToPage()"  style="font-size: 20px; margin-top: 20px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Manage Customer</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+    <!-- <ion-row>
+        <ion-segment
+            [disabled]="loader"
+            (ionChange)="customerChanged()"
+            [(ngModel)]="customerSearchSelection"
+        >
+            <ion-segment-button value="find">
+                <ion-label>Find </ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="all">
+                <ion-label>All </ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </ion-row> -->
+
+   <div class="loader-everyOne" *ngIf="loader">
+        <ion-spinner name="crescent" class="spinner-service"></ion-spinner>
+        <div class="loader-content-service">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+
+    <ion-grid no-margin no-padding>
+        <ion-row class="content-2-row continuous"  style="color: black;">
+            
+        </ion-row>
+        <div style="border:1px solid gray; padding: 10px;">
+            <ion-text color="primary" style="margin: left 3px; margin-bottom: 7px;color: black;">Search customer by</ion-text>
+            <ion-icon class="desiginIcon" name="caret-down-outline"></ion-icon>
+            <!-- <ion-icon class="desiginIcon" name="caret-up-outline"></ion-icon> -->
+        </div>
+
+        <div
+            *ngIf="customerSearchSelection === 'find'"
+            class="findBookingSection"
+            
+        >
+            <ion-segment
+                mode="md"
+                scrollable
+                (ionChange)="selection($event)"
+                [(ngModel)]="selecion"
+                value="fn"
+            >
+                <ion-segment-button value="fn" style="color: black;">
+                    <ion-label>First Name</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="ln" style="color: black;">
+                    <ion-label>Last Name</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="Phone" style="color: black;">
+                    <ion-label>Phone</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="Email" style="color: black;">
+                    <ion-label>Email</ion-label>
+                </ion-segment-button>
+            </ion-segment>
+
+            <ion-grid>
+                <div>
+                    <ion-searchbar
+                        *ngIf="selecion === 'fn' || selecion === 'ln'"
+                        class="list-search"
+                        mode="md"
+                        [(ngModel)]="searchResult"
+                        (ionClear)="clear($event)"
+                        (ionInput)="applyFilterName($event)"
+                        no-margin
+                        no-padding
+                    >
+                    </ion-searchbar>
+                </div>
+                <form
+                    [formGroup]="onEmailCheckForm"
+                    *ngIf="selecion ==='Email'">
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-list>
+                                <ion-item lines="none">
+                                    <ion-label
+                                        position="stacked"
+                                        color="primary"
+                                        >Email*</ion-label
+                                    >
+                                    <ion-input
+                                        class="inputField"
+                                        style="margin-top: 5px; color: black;"
+                                        formControlName="EmailCheck"
+                                        [(ngModel)]="customer.email"
+                                        placeholder="Email"
+                                        
+                                        inputmode="text"
+                                    ></ion-input>
+                                </ion-item>
+                            </ion-list>
+
+                            <ion-row
+                                *ngIf="onEmailCheckForm.get('EmailCheck').dirty && !onEmailCheckForm.valid"
+                            >
+                                <ion-text color="danger"
+                                    >Please type vaild email address</ion-text
+                                >
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row
+                        center
+                        *ngIf="customer.email !=undefined && customer.email != ''"
+                    >
+                        <ion-col width-50 style="text-align: center">
+                            <ion-button
+                                [disabled]="!onEmailCheckForm.valid || loader"
+                                size="small"
+                                shape="round"
+                                color="primary"
+                                (click)="checkUser()"
+                            >
+                                Check
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
+                </form>
+                <form
+                    [formGroup]="onPhoneCheckForm"
+                    *ngIf="selecion ==='Phone'"
+                >
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-list style="padding: 0px !important;">
+                                <ion-item no-padding size="12" lines="none" style="padding: 0px !important;">
+                                    <ion-label
+                                        style="color: black;"
+                                        position="stacked"
+                                        color="primary"
+                                        class="rpc-text"
+                                        >Phone Number*</ion-label
+                                    >
+
+                                    <ion-select
+                                        [(ngModel)]="CodeNumber"
+                                        placeholder="Select Country Code"
+                                        formControlName="countryCodeC"
+                                        (ionChange)="countryCodePicker($event)"
+                                        style="color: black;"
+                                    >
+                                        <ion-select-option
+                                            *ngFor="let country of countryCode.countries"
+                                            [value]="country.code"
+                                            style="color: black;"
+                                        >
+                                            {{country.name}} ({{country.code}})
+                                        </ion-select-option>
+                                    </ion-select>
+                                </ion-item>
+                            </ion-list>
+                            <ion-row>
+                                <ion-col size="3">
+                                    <ion-text
+                                        color="primary"
+                                        style="font-size: 12px"
+                                    ></ion-text>
+                                    <ion-input
+                                        class="inputField"
+                                        formControlName="CodeNumberControll"
+                                        readonly
+                                        [(ngModel)]="CodeNumber"
+                                        placeholder="Code"
+                                        inputmode="text"
+                                        style="color: black;"
+                                    >
+                                    </ion-input>
+                                </ion-col>
+                                <ion-col size="9">
+                                    <ion-text
+                                        color="primary"
+                                        style="font-size: 12px"
+                                    ></ion-text>
+                                    <ion-input
+                                        class="inputField"
+                                        formControlName="PhoneC"
+                                        [disabled]="CodeNumber=== undefined "
+                                        [(ngModel)]="CustomerMobileNumber"
+                                        placeholder="Phone Number"
+                                        inputmode="text"
+                                        style="color: black;"
+                                    >
+                                    </ion-input>
+                                </ion-col>
+                            </ion-row>
+
+                            <p
+                                ion-text
+                                class="heading-medium font-11"
+                                *ngIf="
+                         onPhoneCheckForm.get('PhoneC').touched &&
+                         onPhoneCheckForm.get('PhoneC').hasError('required')
+                        "
+                            >
+                                <ion-text color="danger">
+                                    Phone is required
+                                </ion-text>
+                            </p>
+
+                            <ion-row
+                                *ngIf="onPhoneCheckForm.get('PhoneC').dirty && onPhoneCheckForm.get('PhoneC').invalid"
+                            >
+                                <ion-text
+                                    class="heading-medium font-12"
+                                    color="danger"
+                                    >Please type valid phone number
+                                </ion-text>
+                            </ion-row>
+
+                            <ion-row
+                                center
+                                *ngIf="CustomerMobileNumber !=undefined && CustomerMobileNumber != ''"
+                            >
+                                <ion-col width-50 style="text-align: center">
+                                    <ion-button
+                                        [disabled]="!onPhoneCheckForm.valid || this.CodeNumber.length > this.CustomerMobileNumber.length ||loader"
+                                        size="small"
+                                        shape="round"
+                                        color="primary"
+                                        (click)="checkUser()"
+                                    >
+                                        Check
+                                    </ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+                </form>
+            </ion-grid>
+
+            <ion-row *ngIf="isCustomercheck && customer.id === undefined">
+                <ion-col width-50 style="text-align: center">
+                    <ion-text
+                        color="danger"
+                        class="check-in-out-text"
+                        style="font-size: 12px"
+                        >Customer Not Found
+                    </ion-text>
+                </ion-col>
+            </ion-row>
+        </div>
+
+        <ion-row>
+            <ion-col
+                no-margin
+                no-padding
+                size="12"
+                size-xl="12"
+                size-sm="12"
+                size-md="12"
+                size-lg="12"
+            >
+                <!-- <ion-searchbar
+                    *ngIf="customerSearchSelection === 'all'"
+                    class="list-search"
+                    mode="md"
+                    (ionClear)="clear($event)"
+                    (ionInput)="getItems($event)"
+                    no-margin
+                    no-padding
+                >
+                </ion-searchbar> -->
+
+                <ion-list
+                    class="item-list"
+                    *ngFor="let customer of customers| paginate: { itemsPerPage: 10, currentPage: p };"
+                    no-margin
+                    no-padding
+                >
+                    <ion-item
+                        no-margin
+                        no-padding
+                        class="item"
+                        (click)="onCustomerDetails(customer)"
+                        lines="none"
+                    >
+                        <ion-avatar
+                            slot="start"
+                            no-margin
+                            no-padding
+                            class="image"
+                        >
+                            <img src="assets/img/user_profile.svg" />
+                        </ion-avatar>
+
+                        <ion-label>
+                            <ion-text color="primary" style="font-size: 14px"
+                                ><b>{{ customer.firstName}}</b
+                                ><b> {{ customer.lastName}}</b></ion-text
+                            >
+                            <!-- <ion-icon name="md-more" style="float: right;"(click)="onMenu(customer)" ></ion-icon> -->
+                            <ion-row>
+                                <ion-text
+                                    color="primary"
+                                    style="font-size: 12px"
+                                    >{{customer.email}}</ion-text
+                                >
+                            </ion-row>
+                            <ion-row>
+                                <ion-text
+                                    color="primary"
+                                    style="font-size: 12px"
+                                    >{{customer.mobile}}</ion-text
+                                >
+                            </ion-row>
+                        </ion-label>
+                    </ion-item>
+                </ion-list>
+                <pagination-controls
+                    *ngIf="customers != null && customers != undefined && customers.length >0"
+                    (pageChange)="p = $event"
+                ></pagination-controls>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="createCustomer()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style="height: 50px">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

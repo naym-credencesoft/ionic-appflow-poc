@@ -1,0 +1,407 @@
+
+
+  
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <!-- <ion-text class="HeaderSubTitle"> {{headerTitle}} </ion-text> -->
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="navigateToPage()"  style="font-size: 20px; margin-top: 20px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >{{headerTitle}}</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+
+    <!-- <ion-segment [(ngModel)]="componentModel" color="secondary">
+        <ion-segment-button value="customer" [disabled] ="isCustomerDisable" color="secondary">
+          Customer
+        </ion-segment-button>
+        <ion-segment-button value="address" [disabled] ="isAddressDisable"  color="secondary">
+            Address
+        </ion-segment-button>
+      </ion-segment> -->
+
+      <!-- <app-add-customer-component (customerDetail)="customerDetail($event)" *ngIf = "this.componentModel == 'customer'"></app-add-customer-component>
+      <app-customer-address-component *ngIf = "this.componentModel == 'address'" ></app-customer-address-component> -->
+
+      <div class="bg-white customer-above">
+        <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar>
+        <ion-grid no-padding>
+                <form *ngIf="!Isphone" [formGroup]="onCustomerForm">
+    
+                        <ion-row>
+                                <ion-col size="6">
+                                    <ion-text color="primary" style="font-size: 10px;" >First Name*</ion-text>
+                                    <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="customer.firstName" formControlName ="firstName" placeholder="First Name" inputmode="text"></ion-input>
+
+                                    <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerForm.get('firstName').touched && onCustomerForm.get('firstName').hasError('required')">
+                                        <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                            {{ 'app.label.errors.field' | translate }}
+                                        </ion-text>
+                                        </p>
+                                        
+                                </ion-col>
+    
+                                <ion-col size="6">
+                                    <ion-text color="primary" style="font-size: 10px;" >Last Name*</ion-text>
+                                    <ion-row>  <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.lastName" formControlName ="lastName" placeholder="Last Name" inputmode="text"></ion-input></ion-row>
+
+                                    <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerForm.get('lastName').touched && onCustomerForm.get('lastName').hasError('required')">
+                                        <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                            {{ 'app.label.errors.field' | translate }}
+                                        </ion-text>
+                                        </p>
+                                        
+                                </ion-col>
+                                
+                
+                        </ion-row>
+    
+    
+                        <ion-row>
+                                <ion-col size="12">
+                                    <ion-text color="primary" style="font-size: 10px;" >Email</ion-text>
+                                    <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="customer.email" formControlName ="email" name="email" placeholder="Email Address" inputmode="email"></ion-input>
+
+
+                                    <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerForm.get('email').touched && onCustomerForm.get('email').hasError('required')">
+                                        <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                            {{ 'app.label.errors.field' | translate }}
+                                        </ion-text>
+                                        </p>
+                                        <p ion-text no-margin no-padding class="text08" *ngIf=" onCustomerForm.get('email').hasError('email') && onCustomerForm.controls.email.dirty">
+                                            <ion-text color="danger" no-margin no-padding style="font-size: 11px;">
+                                                {{ 'app.pages.reg.text.emailvalidation' | translate }}
+                                            </ion-text>
+                                            </p>
+
+                                    
+                                        
+                                </ion-col>
+                
+                        </ion-row>
+    
+                        <ion-row *ngIf="!Isphone">
+                            <ion-text color="primary" class="rpc-text" style="font-size: 10px;" >Phone*</ion-text>
+                             <ion-col size="12" style="display: flex;">
+                                
+                               
+                                    
+                                   
+                                    <ion-select
+                                        [(ngModel)]="CodeNumber"
+                                        placeholder="Select Country Code"
+                                        formControlName="countryCodeC"
+                                        (ionChange)="countryCodePicker($event)"
+                                        no-padding class="dropdown"
+                                        style="color: black"
+                                    >
+                                        <ion-select-option
+                                            *ngFor="let country of countryCode.countries"
+                                            [value]="country.code"
+                                            style="color: #259bbf;"
+                                        >
+                                            {{country.name}} ({{country.code}})
+                                        </ion-select-option>
+                                    </ion-select>
+                               
+
+                                <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]=" customer.mobile" formControlName ="Phone" placeholder="Phone" inputmode="text"></ion-input>
+
+                               
+                                
+                            </ion-col>
+                            <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerForm.get('Phone').touched && onCustomerForm.get('Phone').hasError('required')">
+                                <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                    {{ 'app.label.errors.field' | translate }}
+                                </ion-text>
+                                </p>
+        
+                        </ion-row>
+
+                        <ion-row>
+                                
+                            <ion-col size="6">
+                        
+                                <ion-text color="primary" class="rpc-text" style="font-size: 10px;" >Gender</ion-text>
+                                <ion-select [disabled]="isDetails" [(ngModel)]="customer.gender" formControlName ="gender" no-padding class="dropdown" placeholder="Gender"  style="color: black">
+                                        <ion-select-option value="male">Male</ion-select-option>
+                                        <ion-select-option value="female">Female</ion-select-option>
+                                        <ion-select-option value="other">Other</ion-select-option>
+                                </ion-select>  
+                             </ion-col>
+    
+                            <ion-col size="6">
+                                <ion-text color="primary" style="font-size: 10px;" >Language</ion-text>
+                                <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="customer.language" formControlName ="language" placeholder="Language" inputmode="text"></ion-input>
+                                    
+                            </ion-col>
+                
+                        </ion-row>
+    
+                        <ion-row>
+                            <ion-col size="6" >
+            
+                                <ion-text color="primary" style="font-size: 10px;" >No of Kids</ion-text>
+                                <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.noOfKids" formControlName ="noOfKids" placeholder="No of Kids" type="number" min="0" inputmode="number"></ion-input>
+                               
+                                    
+                            </ion-col>
+    
+                            <ion-col size="6">
+            
+                                <ion-text color="primary" style="font-size: 10px;" >No of Pets</ion-text>
+                                <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.noOfPets" formControlName ="noOfPets" placeholder="No of Pets" type="number" min="0" inputmode="number"></ion-input>
+                        
+                                    
+                            </ion-col>
+                            
+            
+                    </ion-row>
+    
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-text color="primary" style="font-size: 10px;" >Company Name</ion-text>
+                            <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.company" formControlName ="company" placeholder="Company Name" inputmode="text"></ion-input>                       
+                       </ion-col>
+    
+                   </ion-row>
+    
+                   <ion-row>
+                        <ion-col size="6" >
+    
+                            <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Birthday</ion-text>
+                            <ion-datetime style="color:black" [disabled]="isDetails" [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                                placeholder="Select Date"></ion-datetime>
+                                
+                        </ion-col>
+    
+                        <ion-col size="6">
+                            <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Anniversary Date</ion-text>
+                            <ion-datetime style="color:black" [disabled]="isDetails" [(ngModel)]="customer.anniversaryDate"  formControlName="anniversaryDate" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                            placeholder="Select Date"></ion-datetime>
+                        
+                        </ion-col>
+               
+                     </ion-row>
+
+                     <ion-row>
+                        <ion-col size="12">
+                            <ion-text color="primary" style="font-size: 10px;" >Gst Number</ion-text>
+                            <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.taxIdNumber" formControlName ="TaxIdNumber" placeholder="Gst Number" inputmode="text"></ion-input>                       
+                       </ion-col>
+    
+                   </ion-row>
+    
+    
+                    <ion-row  >
+                            <ion-col *ngIf="!isDetails" size="6">
+            
+                                <ion-button size="small" round expand="block" color="primary" [disabled]="!onCustomerForm.valid || loader" (click)="onSubmit()">{{submitTitle}}</ion-button>
+                            </ion-col>
+
+                            <ion-col *ngIf="isDetails" size="6" >
+            
+                                <ion-button size="small" round expand="block" color="primary" (click)="onEdit()">Edit</ion-button>
+                            </ion-col>
+                         
+                            
+                            <ion-col size="6" >
+                                    <ion-button size="small" round expand="block"  class="btn-cancel" (click)="cancel()" >Cancel</ion-button>
+                            </ion-col>
+                    </ion-row>
+                </form>
+                
+                <form *ngIf="Isphone" [formGroup]="onCustomerFormOne">
+    
+                    <ion-row>
+                            <ion-col size="6">
+                                <ion-text color="primary" style="font-size: 10px;" >First Name*</ion-text>
+                                <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="customer.firstName" formControlName ="firstName" placeholder="First Name" inputmode="text"></ion-input>
+
+                                <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerFormOne.get('firstName').touched && onCustomerForm.get('firstName').hasError('required')">
+                                    <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                        {{ 'app.label.errors.field' | translate }}
+                                    </ion-text>
+                                    </p>
+                                    
+                            </ion-col>
+
+                            <ion-col size="6">
+                                <ion-text color="primary" style="font-size: 10px;" >Last Name*</ion-text>
+                                <ion-row>  <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.lastName" formControlName ="lastName" placeholder="Last Name" inputmode="text"></ion-input></ion-row>
+
+                                <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerFormOne.get('lastName').touched && onCustomerForm.get('lastName').hasError('required')">
+                                    <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                        {{ 'app.label.errors.field' | translate }}
+                                    </ion-text>
+                                    </p>
+                                    
+                            </ion-col>
+                            
+            
+                    </ion-row>
+
+
+                    <ion-row>
+                            <ion-col size="12">
+                                <ion-text color="primary" style="font-size: 10px;" >Email*</ion-text>
+                                <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="customer.email" formControlName ="email" name="email" placeholder="Email Address" inputmode="email"></ion-input>
+
+
+                                <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerFormOne.get('email').touched && onCustomerForm.get('email').hasError('required')">
+                                    <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                        {{ 'app.label.errors.field' | translate }}
+                                    </ion-text>
+                                    </p>
+                                    <p ion-text no-margin no-padding class="text08" *ngIf=" onCustomerFormOne.get('email').hasError('email') && onCustomerForm.controls.email.dirty">
+                                        <ion-text color="danger" no-margin no-padding style="font-size: 11px;">
+                                            {{ 'app.pages.reg.text.emailvalidation' | translate }}
+                                        </ion-text>
+                                        </p>
+
+                                
+                                    
+                            </ion-col>
+            
+                    </ion-row>
+
+                   
+
+                     <ion-row *ngIf="Isphone">
+                        <ion-text color="primary" class="rpc-text" style="font-size: 10px;" >Phone*</ion-text>
+                         <ion-col size="12" style="display: flex;">
+                            <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]=" customer.mobile" formControlName ="Phone" placeholder="Phone" inputmode="text"></ion-input>
+
+                           
+                            
+                        </ion-col>
+                        <p ion-text no-margin no-padding class="text08" *ngIf="onCustomerFormOne.get('Phone').touched && onCustomerForm.get('Phone').hasError('required')">
+                            <ion-text no-margin no-padding color="danger" style="font-size: 11px;">
+                                {{ 'app.label.errors.field' | translate }}
+                            </ion-text>
+                            </p>
+    
+                    </ion-row>
+
+                    
+
+                 
+                    <!-- row 3 -->
+                    <ion-row>
+                            
+                        <ion-col size="6">
+                    
+                            <ion-text color="primary" class="rpc-text" style="font-size: 10px;" >Gender</ion-text>
+                            <ion-select style="color: black;" [disabled]="isDetails" [(ngModel)]="customer.gender" formControlName ="gender" no-padding class="dropdown" placeholder="Gender">
+                                    <ion-select-option value="male">Male</ion-select-option>
+                                    <ion-select-option value="female">Female</ion-select-option>
+                                    <ion-select-option value="other">Other</ion-select-option>
+                            </ion-select>  
+                         </ion-col>
+
+                        <ion-col size="6">
+                            <ion-text color="primary" style="font-size: 10px;" >Language</ion-text>
+                            <ion-input readonly="{{isDetails}}" class="input-background"  [(ngModel)]="customer.language" formControlName ="language" placeholder="Language" inputmode="text"></ion-input>
+                                
+                        </ion-col>
+            
+                    </ion-row>
+
+                    <ion-row>
+                        <ion-col size="6" >
+        
+                            <ion-text color="primary" style="font-size: 10px;" >No of Kids</ion-text>
+                            <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.noOfKids" formControlName ="noOfKids" placeholder="No of Kids" type="number" min="0" inputmode="number"></ion-input>
+                           
+                                
+                        </ion-col>
+
+                        <ion-col size="6">
+        
+                            <ion-text color="primary" style="font-size: 10px;" >No of Pets</ion-text>
+                            <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.noOfPets" formControlName ="noOfPets" placeholder="No of Pets" type="number" min="0" inputmode="number"></ion-input>
+                    
+                                
+                        </ion-col>
+                        
+        
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text color="primary" style="font-size: 10px;" >Company Name</ion-text>
+                        <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.company" formControlName ="company" placeholder="Company Name" inputmode="text"></ion-input>                       
+                   </ion-col>
+
+               </ion-row>
+
+               <ion-row>
+                    <ion-col size="6" >
+
+                        <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Birthday</ion-text>
+                        <ion-datetime [disabled]="isDetails" [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                            placeholder="Select Date"></ion-datetime>
+                            
+                    </ion-col>
+
+                    <ion-col size="6">
+                        <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Anniversary Date</ion-text>
+                        <ion-datetime [disabled]="isDetails" [(ngModel)]="customer.anniversaryDate"  formControlName="anniversaryDate" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="Select Date"></ion-datetime>
+                    
+                    </ion-col>
+           
+                 </ion-row>
+
+                 <ion-row>
+                    <ion-col size="12">
+                        <ion-text color="primary" style="font-size: 10px;" >Gst Number</ion-text>
+                        <ion-input readonly="{{isDetails}}" class="input-background" [(ngModel)]="customer.taxIdNumber" formControlName ="TaxIdNumber" placeholder="Gst Number" inputmode="text"></ion-input>                       
+                   </ion-col>
+
+               </ion-row>
+
+
+                <ion-row *ngIf="Isphone" >
+                        <ion-col *ngIf="!isDetails" size="6">
+        
+                            <ion-button size="small" round expand="block" color="primary" [disabled]="!onCustomerFormOne.valid || loader" (click)="onSubmit()">{{submitTitle}}</ion-button>
+                        </ion-col>
+
+                        <ion-col *ngIf="isDetails" size="6" >
+        
+                            <ion-button size="small" round expand="block" color="primary" (click)="onEdit()">Edit</ion-button>
+                        </ion-col>
+                     
+                        
+                        <ion-col size="6" >
+                                <ion-button size="small" round expand="block" color="primary" (click)="cancel()" >Cancel</ion-button>
+                        </ion-col>
+                </ion-row>
+            </form>
+                
+    
+        </ion-grid>
+    </div>
+    
+</ion-content>

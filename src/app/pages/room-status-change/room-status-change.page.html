@@ -1,0 +1,67 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+      <!-- <ion-buttons slot="start">
+        <ion-menu-button color="secondary"></ion-menu-button>
+      </ion-buttons> -->
+      <!-- <ion-title> -->
+        <ion-buttons slot="start">
+            <ion-back-button mode ="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Change Room Status</ion-text>
+
+    
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content>
+
+    <form [formGroup]="onRoomChangeForm">
+        <ion-row>
+           
+            <ion-col size="12">
+
+                <ion-row>
+                    <ion-text color="primary" class="rpc-text" style="font-size: 15px;">Room Status
+                    </ion-text>
+                </ion-row>
+
+                <ion-card no-margin no-padding>
+                    <ion-select placeholder="Select Room Status" value="{{roomStatus}}"
+                    (ionChange)="setStatus(roomStatus)" [(ngModel)]="roomStatus" name="Room"
+                        okText="Done" cancelText="Dismiss" formControlName="status">
+
+                        <ion-row *ngFor="let status of roomstatusList">
+                            <ion-select-option value={{status.value}}>
+                                {{status.name}}
+                            </ion-select-option>
+
+                        </ion-row>
+                    </ion-select>
+
+                </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="12">
+            <ion-list>
+                <ion-item >
+                  <ion-checkbox formControlName="isAvailable" [(ngModel)]="roomDetailStatus.available" ></ion-checkbox>
+                  <ion-label>Is Available</ion-label>
+                </ion-item>
+              </ion-list>
+              </ion-col>
+        </ion-row>
+
+        <ion-row no-padding id="first-content">
+            <ion-col size="12">
+
+                <ion-button shape="round" expand="full" color="primary" (click)="change()"
+                    [disabled]="!onRoomChangeForm.valid || this.loader">
+                    Change</ion-button>
+            </ion-col>
+
+            
+        </ion-row>
+    </form>
+
+</ion-content>

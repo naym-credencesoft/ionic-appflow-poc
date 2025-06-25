@@ -1,0 +1,65 @@
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Rates & Availability </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="back()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-row class="main-card">
+        <ion-col size="12" class="card" >
+            <div size="12" class="mt-1" (click)="PMSRateAndAvailability()">
+                <ion-row class="threeItemRow2">
+                    <ion-col size="12" class="centerCol">
+                        <ion-text class="twoItemRowtext">Property Management System (PMS)</ion-text>
+                    </ion-col>
+                    <ion-col size="12" class="centerCol">
+                        <ion-img
+                            style="height: 83px"
+                            src="/assets/img/icons/PMS.png"
+                        ></ion-img>
+                    </ion-col>
+                </ion-row>
+            </div>
+        </ion-col>
+
+        <ion-col size="12" class="card">
+            <div size="12" class="mt-1" (click)="CMRateAndAvailability()">
+                <ion-row class="threeItemRow2">
+                    <ion-col size="12" class="centerCol">
+                        <ion-text class="twoItemRowtext"
+                            >Channel Manager (CM)
+                        </ion-text>
+                    </ion-col>
+                    <ion-col size="12" class="centerCol">
+                        <ion-img
+                            style="height: 60px"
+                            src="/assets/img/icons/CM.png"
+                        ></ion-img>
+                    </ion-col>
+                </ion-row>
+            </div>
+        </ion-col>
+    </ion-row>
+</ion-content>

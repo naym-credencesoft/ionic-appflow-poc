@@ -1,0 +1,219 @@
+:host {
+    .detail-sec{
+        margin: 15px;
+    }
+    .button-submit{
+        
+        /* Note: backdrop-filter has minimal browser support */
+        --border-radius: 7px;
+        color: #fff;
+    }
+
+    .line {
+        border: 1px dashed white;
+    }
+
+
+    .content-header-title {
+        display: block;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 5px;
+        font-size: 18px;
+        color: white;
+    }
+    .content-header-titleone {
+        display: block;
+        margin-top: 5px;
+        font-size: 18px;
+        color: white;
+    }
+
+    .centerCol {
+        display: flex;
+        justify-content: center;
+    }
+    .mt-05 {
+        margin-top: 5px;
+    }
+    .mt-1 {
+        margin-top: 10px;
+    }
+    .text-white {
+        color: #333;
+    }
+    .card-layout {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 16px;
+        margin: 20px;
+        border: 1px solid #7b6e72 !important;
+    }
+    .card-item {
+        background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        /* Note: backdrop-filter has minimal browser support */
+        border-radius: 5px;
+        color: white;
+        text-align: center;
+    }
+
+    ion-searchbar {
+        --icon-color: white; 
+        --background: linear-gradient(
+            -0deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        backdrop-filter: blur(34px);
+        color: white;
+    }
+
+    @media (min-width: 576px) {
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+    }
+    @media (max-width: 576px) {
+        ion-toolbar {
+            position: absolute;
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+        .sectiondiv {
+            margin-top: 90px;
+        }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    .HeaderTitle {
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: -17px;
+
+    }
+
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 37px;
+        left: 41px;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+
+    .titleMessage {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
+
+.todoNotes {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background: white;
+    border-radius: 16px;
+}
+
+.error {
+    color: #d8000c;
+}
+
+.right-header-title{
+    color: #fff;
+    display: block;
+    margin-top: 8px;
+    font-size: 15px;
+    color: white;
+}
+.content-header-style{
+    display: flex;
+    justify-content: space-between;
+}
+.content-2-row{
+    margin-left: 5px;
+}
+.info-content{
+    margin-top: 15px;
+}
+.content-2{
+    margin-top: 15px;
+}
+
+.content-button{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.back-button
+{
+    margin-left: 10px;
+}
+
+.list-back{
+    border:1px solid gray;
+}

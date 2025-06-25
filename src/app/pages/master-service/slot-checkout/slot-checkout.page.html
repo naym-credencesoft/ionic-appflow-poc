@@ -1,0 +1,1017 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Reservation</ion-text>
+
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-progress-bar type="indeterminate" *ngIf="loader && !isCustomercheck" reversed="true"></ion-progress-bar>
+
+
+    <ion-card>
+
+        <ion-segment mode="md" *ngIf="!isCustomercheck" (ionChange)="selection($event)" [(ngModel)]="selecion"
+            value="Phone">
+            <ion-segment-button value="Phone">
+                <ion-label>Phone</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="Email">
+                <ion-label>Email</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+
+
+        <ion-grid *ngIf="!isCustomercheck">
+            <form [formGroup]="onPhoneCheckForm" *ngIf="selecion ==='Phone'">
+                <ion-row>
+                    <ion-col size="12">
+
+                        <ion-list>
+                            <ion-item no-padding size="12">
+                                <ion-label position="stacked" color="primary" class="rpc-text">Country Code*</ion-label>
+
+                                <ion-select [(ngModel)]="CodeNumber" placeholder="Select Country Code"
+                                    formControlName="countryCodeC" (ionChange)="countryCodePicker($event)">
+                                    <ion-select-option *ngFor="let country of countryCode.countries"
+                                        [value]="country.code">
+                                        {{country.name}}
+                                        ({{country.code}})
+                                    </ion-select-option>
+
+                                </ion-select>
+                            </ion-item>
+                        </ion-list>
+
+
+                        <ion-list>
+                            <ion-item lines="none">
+                                <ion-label position="stacked" color="primary">Phone*</ion-label>
+                                <ion-input formControlName="PhoneC" [disabled]="CodeNumber=== undefined "
+                                    [(ngModel)]="slotReservation.mobile" placeholder="Phone" inputmode="text">
+                                </ion-input>
+                            </ion-item>
+                        </ion-list>
+                        <p ion-text class="heading-medium font-11" *ngIf="
+                         onPhoneCheckForm.get('PhoneC').touched &&
+                         onPhoneCheckForm.get('PhoneC').hasError('required')
+                        ">
+                            <ion-text color="danger">
+                                Phone is required
+                            </ion-text>
+                        </p>
+
+
+                        <ion-row *ngIf="slotReservation.mobile === ''" class="ml-1" (click)="onSetMobile()">
+                            <ion-icon name="add-outline" color="light"></ion-icon>
+                            <ion-text class="heading-medium font-12" color="primary">Add Phone Number</ion-text>
+
+                        </ion-row>
+
+                        <ion-row *ngIf="onPhoneCheckForm.get('PhoneC').dirty && onPhoneCheckForm.get('PhoneC').invalid">
+                            <ion-text class="heading-medium font-12" color="danger">Please type valid phone number
+                            </ion-text>
+                        </ion-row>
+
+
+                        <ion-row center *ngIf="slotReservation.mobile !=undefined && slotReservation.mobile != ''">
+                            <ion-col width-50 style="text-align: center">
+                                <ion-button
+                                    [disabled]="!onPhoneCheckForm.valid ||  this.slotReservation.mobile === this.CodeNumber|| this.CodeNumber.length > this.slotReservation.mobile.length ||loader"
+                                    size="small" shape="round" color="primary" (click)="checkUser()">
+                                    Check
+                                </ion-button>
+                            </ion-col>
+
+                        </ion-row>
+                    </ion-col>
+
+                </ion-row>
+            </form>
+            <form [formGroup]="onEmailCheckForm" *ngIf="selecion ==='Email'">
+                <ion-row>
+
+                    <ion-col size="12">
+
+                        <ion-list>
+
+                            <ion-item lines="none">
+                                <ion-label position="stacked" color="primary">Email*</ion-label>
+                                <ion-input formControlName="EmailCheck" [(ngModel)]="slotReservation.email"
+                                    placeholder="Email" inputmode="text"></ion-input>
+                            </ion-item>
+                        </ion-list>
+
+                        <ion-row *ngIf="onEmailCheckForm.get('EmailCheck').dirty && !onEmailCheckForm.valid">
+                            <ion-text color="danger">Please type vaild email address</ion-text>
+                        </ion-row>
+
+
+                    </ion-col>
+
+                </ion-row>
+                <ion-row center *ngIf="slotReservation.email !=undefined && slotReservation.email != ''">
+                    <ion-col width-50 style="text-align: center">
+                        <ion-button [disabled]="!onEmailCheckForm.valid || loader" size="small" shape="round"
+                            color="primary" (click)="checkUser()">
+                            Check
+                        </ion-button>
+                    </ion-col>
+
+                </ion-row>
+            </form>
+
+            <!-- <ion-row center *ngIf="selecion ==='Phone' && order.mobile !=undefined && order.mobile != '' || selecion ==='Email' && order.email !=undefined && order.email != ''">  
+                <ion-col width-50 style="text-align: center" >
+                      <ion-button 
+                      [disabled]="!onEmailCheckForm.valid || loader" 
+                      size="small" shape="round" color="primary" (click)="checkUser()">
+                            Check
+                      </ion-button>
+                </ion-col>                   
+                 
+          </ion-row> -->
+
+
+        </ion-grid>
+
+        <ion-grid *ngIf="isCustomercheck">
+            <ion-card-title style="font-size: 15px;">Customer Information</ion-card-title>
+            <form [formGroup]="onSubmitForm">
+                <ion-row>
+                    <ion-col size="6">
+
+
+
+                        <ion-list>
+                            <ion-item lines="none">
+                                <ion-label position="stacked" color="primary">First Name*</ion-label>
+                                <ion-input formControlName="firstName" readonly="{{isCustomerInfoViewOnly}}"
+                                    [(ngModel)]="slotReservation.firstName" placeholder="First Name" inputmode="text">
+                                </ion-input>
+                            </ion-item>
+                        </ion-list>
+
+                        <p ion-text color="danger" class="text08"
+                            *ngIf="onSubmitForm.get('firstName').touched && onSubmitForm.get('firstName').hasError('required')">
+                            <ion-text color="danger">
+                                Input Field Empty
+                            </ion-text>
+                        </p>
+
+
+                    </ion-col>
+                    <ion-col size="6">
+
+
+
+                        <ion-list>
+                            <ion-item lines="none">
+                                <ion-label position="stacked" color="primary">Last Name*</ion-label>
+                                <ion-input formControlName="lastName" readonly="{{isCustomerInfoViewOnly}}"
+                                    [(ngModel)]="slotReservation.lastName" placeholder="Last Name" inputmode="text">
+                                </ion-input>
+                            </ion-item>
+                        </ion-list>
+
+                        <p ion-text color="danger" class="text08"
+                            *ngIf="onSubmitForm.get('lastName').touched && onSubmitForm.get('lastName').hasError('required')">
+                            <ion-text color="danger">
+                                Input Field Empty
+                            </ion-text>
+                        </p>
+
+                    </ion-col>
+                </ion-row>
+                <!-- email -->
+                <ion-row>
+                    <ion-col size="12">
+
+                        <ion-list>
+                            <ion-item lines="none">
+                                <ion-label position="stacked" color="primary">Email*</ion-label>
+                                <ion-input formControlName="Email"
+                                    readonly="{{isCustomerInfoViewOnly || isEmailReadOnly}}"
+                                    [(ngModel)]="slotReservation.email" placeholder="Email address" inputmode="email">
+                                </ion-input>
+                            </ion-item>
+
+                        </ion-list>
+
+                        <p ion-text color="danger" class="text08"
+                            *ngIf="onSubmitForm.get('Email').touched && onSubmitForm.get('Email').hasError('required')">
+                            <ion-text color="danger">
+                                Input Field Empty
+                            </ion-text>
+                        </p>
+                    </ion-col>
+
+                    <ion-row *ngIf="onSubmitForm.get('Email').hasError('email') && onSubmitForm.controls.Email.dirty">
+                        <ion-text color="danger">Please type vaild email address</ion-text>
+                    </ion-row>
+
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12">
+
+                        <ion-list>
+                            <ion-item lines="none">
+                                <ion-label position="stacked" color="primary">Phone*</ion-label>
+                                <ion-input formControlName="Phone"
+                                    readonly="{{isCustomerInfoViewOnly || isPhoneReadOnly}}"
+                                    [(ngModel)]="slotReservation.mobile" placeholder="Phone Number" inputmode="text">
+                                </ion-input>
+                            </ion-item>
+                        </ion-list>
+                    </ion-col>
+
+                    <p ion-text color="danger" class="text08"
+                        *ngIf="onSubmitForm.get('Phone').touched && onSubmitForm.get('Phone').hasError('required')">
+                        <ion-text color="danger">
+                            Input Field Empty
+                        </ion-text>
+                    </p>
+
+
+                    <ion-row *ngIf="onSubmitForm.get('Phone').dirty && onSubmitForm.get('Phone').invalid">
+                        <ion-text class="heading-medium font-12" color="danger">Please type valid phone number
+                        </ion-text>
+                    </ion-row>
+
+                </ion-row>
+                <!--  -->
+                <ion-card class="bg-white mt-1 mb-1" no-margin no-padding  *ngIf="!provideBusinessAndCustomerAddress">
+                    <ion-row>
+                        <ion-text color="primary" class="input-text" style="font-size: 14px;">
+                            <b>Service Address</b></ion-text>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-card>
+                                <ion-text color="primary" class="input-text" style="font-size: 12px;">Choose Service
+                                    Location*
+                                </ion-text>
+                                <ion-select class="paymentMode" (ionChange)="checkAddressSelection()"
+                                    [(ngModel)]="serviceAddressType" formControlName="AddressSelection" no-margin no-padding
+                                    placeholder="Choose Service Location">
+                                    <ion-select-option value="Business">{{businessAdressName}}</ion-select-option>
+                                    <ion-select-option value="Customer">{{cuustomerAddressName}}</ion-select-option>
+                                </ion-select>
+                            </ion-card>
+                          
+                        </ion-col>
+                    </ion-row>
+                    <!-- <form [formGroup]="onAddressForm" > -->
+                    <ion-grid no-padding *ngIf="this.serviceAddressType != undefined">
+
+                        <ion-row>
+                            <ion-col size="6">
+                                <ion-label class="label" position="stacked">Street Number</ion-label>
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}"
+                                    [(ngModel)]="address.streetNumber" formControlName="StreatNumber">
+                                </ion-input>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label" position="stacked">Street Name</ion-label>
+                                <ion-input readonly inputmode="text" [(ngModel)]="address.streetName"
+                                    formControlName="StreatName" readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}"> </ion-input>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">City*</ion-label>
+
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}" [(ngModel)]="address.city"
+                                    formControlName="City"></ion-input>
+                            </ion-col>
+
+                        </ion-row>
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Suburb*</ion-label>
+
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}"
+                                    [(ngModel)]="address.suburb" formControlName="Suburb"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Locality</ion-label>
+                                <ion-input inputmode="text" [(ngModel)]="address.locality" formControlName="Locality"
+                                    readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}"> </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">State*</ion-label>
+
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}" [(ngModel)]="address.state"
+                                    formControlName="State"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Country*</ion-label>
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}"
+                                    [(ngModel)]="address.country" formControlName="Country"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Postcode</ion-label>
+                                <ion-input inputmode="text" [(ngModel)]="address.postcode" formControlName="Postcode"
+                                    readonly="{{isBusinessAddress && serviceAddressType === 'Business'}}"> </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <!-- <ion-row style="float: right;">
+                                    <ion-col size="12" *ngIf="!isCustomerEditable">
+                                        <ion-button size="small" expand="block" (click)="AddCustomer()"
+                                            [disabled]="!onCustomerForm.valid|| loader">Confirm</ion-button>
+                                    </ion-col>
+            
+                                    <ion-col size="12" *ngIf="isCustomerEditable">
+                                        <ion-button size="small" expand="block" (click)="UpdateCustomer()"
+                                            [disabled]="!onCustomerForm.valid|| loader">Update</ion-button>
+                                    </ion-col>
+                                </ion-row> -->
+                    </ion-grid>
+                    <!-- </form> -->
+
+                </ion-card>
+
+                <ion-card class="bg-white mt-1 mb-1" no-margin no-padding  *ngIf="provideBusinessAndCustomerAddress">
+                    <ion-row>
+                        <ion-text color="primary" class="input-text" style="font-size: 14px;">
+                            <b>{{businessAdressName}}</b></ion-text>
+                    </ion-row>
+                    <!-- <form [formGroup]="onAddressForm" > -->
+                    <ion-grid no-padding>
+
+                        <ion-row>
+                            <ion-col size="6">
+                                <ion-label class="label" position="stacked">Street Number</ion-label>
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress}}"
+                                    [(ngModel)]="address.streetNumber" formControlName="StreatNumber">
+                                </ion-input>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label" position="stacked">Street Name</ion-label>
+                                <ion-input readonly inputmode="text" [(ngModel)]="address.streetName"
+                                    formControlName="StreatName" readonly="{{isBusinessAddress }}"> </ion-input>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">City*</ion-label>
+
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress }}" [(ngModel)]="address.city"
+                                    formControlName="City"></ion-input>
+                            </ion-col>
+
+                        </ion-row>
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Suburb*</ion-label>
+
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress }}"
+                                    [(ngModel)]="address.suburb" formControlName="Suburb"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Locality</ion-label>
+                                <ion-input inputmode="text" [(ngModel)]="address.locality" formControlName="Locality"
+                                    readonly="{{isBusinessAddress }}"> </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">State*</ion-label>
+
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress }}" [(ngModel)]="address.state"
+                                    formControlName="State"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Country*</ion-label>
+                                <ion-input inputmode="text" readonly="{{isBusinessAddress  }}"
+                                    [(ngModel)]="address.country" formControlName="Country"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Postcode</ion-label>
+                                <ion-input inputmode="text" [(ngModel)]="address.postcode" formControlName="Postcode"
+                                    readonly="{{isBusinessAddress}}"> </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                    </ion-grid>
+                    <!-- </form> -->
+
+                    <ion-row>
+                        <ion-text color="primary" class="input-text" style="font-size: 14px;">
+                            <b>{{cuustomerAddressName}}</b></ion-text>
+                    </ion-row>
+                    <form [formGroup]="onClientAddressForm" >
+                    <ion-grid no-padding>
+
+                        <ion-row>
+                            <ion-col size="6">
+                                <ion-label class="label" position="stacked">Street Number</ion-label>
+                                <ion-input inputmode="text"
+                                    [(ngModel)]="clientAddress.streetNumber" formControlName="cStreatNumber">
+                                </ion-input>
+                            </ion-col>
+                            <ion-col size="6">
+                                <ion-label class="label" position="stacked">Street Name</ion-label>
+                                <ion-input inputmode="text" [(ngModel)]="clientAddress.streetName"
+                                    formControlName="cStreatName" > </ion-input>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">City*</ion-label>
+
+                                <ion-input inputmode="text" [(ngModel)]="clientAddress.city"
+                                    formControlName="cCity"></ion-input>
+                            </ion-col>
+
+                        </ion-row>
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Suburb*</ion-label>
+
+                                <ion-input inputmode="text" 
+                                    [(ngModel)]="clientAddress.suburb" formControlName="cSuburb"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Locality</ion-label>
+                                <ion-input inputmode="text" [(ngModel)]="clientAddress.locality" formControlName="cLocality"
+                                   > </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">State*</ion-label>
+
+                                <ion-input inputmode="text" [(ngModel)]="clientAddress.state"
+                                    formControlName="cState"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Country*</ion-label>
+                                <ion-input inputmode="text" 
+                                    [(ngModel)]="clientAddress.country" formControlName="cCountry"></ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12">
+                                <ion-label class="label" position="stacked">Postcode</ion-label>
+                                <ion-input inputmode="text" [(ngModel)]="clientAddress.postcode" formControlName="cPostcode"
+                                   > </ion-input>
+                            </ion-col>
+                        </ion-row>
+
+                    </ion-grid>
+                    </form>
+
+                </ion-card>
+
+                <ion-card class="white mb-1" no-padding no-margin>
+                    <ion-grid no-padding>
+                        <ion-row>
+                            <ion-col size="12" class="product-about">
+                                <div class="">
+
+                                    <div class="sub-item">
+                                        <ion-text class="heading-bold font-15 text-dark-black">Reservation Summary:
+                                        </ion-text>
+                                        <!-- <ion-text class="heading-regular font-14 text-dark-black">Date: 
+                                                    {{slotReservation.date | date}}
+                                                </ion-text> -->
+                                    </div>
+                                    <div *ngFor="let item of slotReservation.businessServiceTypes; let i = index;">
+                                        <h6 class="">{{ item.name }} </h6>
+                                        <ion-text class="heading-bold font-14 text-dark-black">Date:
+                                            {{item.slots[0].date | date }}</ion-text>
+                                        <ion-card class="secondary-gradient ion-padding " no-margin
+                                            *ngFor="let reservationSlot of item.slots[0].resourceList; let r = index ;">
+                                            <ion-card-content>
+                                                <ion-card-title class="text-white">{{reservationSlot.name }}
+                                                </ion-card-title>
+                                                <ion-card-subtitle class="text-white">{{ reservationSlot.desc }}
+                                                </ion-card-subtitle>
+
+                                                <!-- <ion-text class="heading-bold font-14 text-dark-black">{{reservationSlot.name }} - {{ reservationSlot.desc }}</ion-text> -->
+                                                <ion-text
+                                                    *ngFor="let bookedTimings of reservationSlot.bookedTimings; let i = index">
+                                                    <div class="btn btn-outline-primary btn-rounded btn-sm  text-dark-black m-1"
+                                                        *ngIf="bookedTimings.duration!=null">
+                                                        {{'01/01/1900 ' + bookedTimings.startTime  | date: 'hh:mm aa' }}
+                                                        -
+                                                        {{'01/01/1900 ' + bookedTimings.finishTime  | date: 'hh:mm aa'}}
+                                                    </div>
+
+                                                </ion-text>
+                                            </ion-card-content>
+                                        </ion-card>
+                                    </div>
+
+                                </div>
+                            </ion-col>
+                        </ion-row>
+
+
+
+                    </ion-grid>
+
+                </ion-card>
+
+                <ion-row no-margin no-padding>
+                  
+                    <ion-col no-margin no-padding size="12">
+                        <!-- <ion-text ><b></b></ion-text> -->
+                        <ion-card-title class="title mt-1" style="font-size: 15px;">Notes</ion-card-title>
+                        <ion-textarea rows="3" cols="12"
+                        [(ngModel)]="slotReservation.notes"
+                        formControlName="SpecialNotes"
+                         placeholder="Special Notes" style="background: #F0F0F0; "></ion-textarea>
+                       
+                    </ion-col>
+                </ion-row>
+
+                <ion-card-title class="title mt-1" style="font-size: 15px;">Payment*</ion-card-title>
+
+                <ion-list class="listcard">
+                    <ion-grid no-margin no-padding class="item2-checkout">
+                        <div class="bg-white">
+                            <ion-row no-margin no-padding>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-text>Sub Total</ion-text>
+                                </ion-col>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-row no-margin no-padding float-right>
+                                        <!-- <ion-text> </ion-text> -->
+                                        
+                                        <ion-text>{{slotReservation.beforeTaxAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</ion-text>
+                                    </ion-row>
+                                </ion-col>
+                            </ion-row>
+
+                            <!-- <ion-row no-margin no-padding>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-text>Discount Amount</ion-text>
+                                </ion-col>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-row no-margin no-padding float-right>
+                                        <ion-text>{{0 | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-text>
+                                    </ion-row>
+                                </ion-col>
+
+                            </ion-row> -->
+
+                            <ion-row no-margin no-padding>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-text>Tax Amount</ion-text>
+                                </ion-col>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-row no-margin no-padding float-right>
+                                        <!-- <ion-text> </ion-text> -->
+                                        <ion-text class="value-text">{{ this.slotReservation.taxAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</ion-text>
+                                    </ion-row>
+                                </ion-col>
+
+                            </ion-row>
+
+                            <ion-row no-margin no-padding>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-text><b>Total Amount</b></ion-text>
+                                </ion-col>
+                                <ion-col no-margin no-padding size="6">
+                                    <ion-row no-margin no-padding float-right>
+                                        <ion-text> {{ this.slotReservation.afterTaxAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }} </ion-text>
+                                    </ion-row>
+                                </ion-col>
+
+                            </ion-row>
+
+                            <!-- <ion-row >
+                                        <ion-col  no-margin no-padding size="6" >
+                                            <ion-text   >Delivery Date</ion-text> 
+                                        </ion-col>
+                                        <ion-col no-margin no-padding  size="6" >
+                                            <ion-row no-margin no-padding float-right > 
+                                                <ion-text   > </ion-text> 
+                                                <ion-text    class="value-text">{{ this.order.requiredDate  }}</ion-text> 
+                                            </ion-row>
+                                        </ion-col> 
+                        
+                                    </ion-row> -->
+                        </div>
+
+                    </ion-grid>
+                </ion-list>
+
+                <ion-list>
+
+                    <ion-item lines="none">
+                        <ion-label position="stacked" color="primary" class="rpc-text">Payment Method*
+                        </ion-label>
+                        <ion-select [(ngModel)]="slotReservation.modeOfPayment" class="modeOfPaymentLayout" (ionChange)="onSegmentChange()" formControlName="PaymentMethod"
+                            class="rpc-number" no-margin no-padding placeholder="Month">
+                            <ion-select-option value="Cash">Cash</ion-select-option>
+                            <ion-select-option value="Card"  *ngIf="this.property.plan ==='Business Premium'">Card</ion-select-option>
+                            <ion-select-option value="BankTransfer"  *ngIf="property.bankAccount != undefined && property.bankAccount != null">Bank Transfer</ion-select-option>
+                            <ion-select-option value="Wallet"  *ngIf="isWalletAvailable">Wallet</ion-select-option>
+                           
+                        </ion-select>
+                        <!-- [(ngModel)]="search.to" -->
+                    </ion-item>
+                </ion-list>
+
+                <!-- <ion-segment mode="md" class="modeOfPaymentLayout" (ionChange)="onSegmentChange()" formControlName="PaymentMethod"
+                  
+                    [(ngModel)]="slotReservation.modeOfPayment" value="Cash">
+                    <ion-segment-button value="Cash">
+                        <ion-label>Cash</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="Card" *ngIf="this.property.plan ==='Business Premium'">
+                        <ion-label>Card</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="BankTransfer"
+                        *ngIf="property.bankAccount != undefined && property.bankAccount != null">
+                        <ion-label>Bank Transfer</ion-label>
+                    </ion-segment-button>
+
+                    <ion-segment-button value="Wallet" *ngIf="isWalletAvailable">
+                        <ion-label>Wallet</ion-label>
+                    </ion-segment-button>
+                </ion-segment> -->
+                <ion-progress-bar type="indeterminate" *ngIf="loader && isCustomercheck" reversed="true">
+                </ion-progress-bar>
+
+                <ion-card no-margin no-padding *ngIf="slotReservation.modeOfPayment==='Wallet'">
+                    <form [formGroup]="onWalletForm">
+
+                        <ion-row>
+                            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                                <ion-text color="primary" style="font-size: 12px;">First Name</ion-text>
+                                <ion-input class="input-background" readonly formControlName="WalletClientFN"
+                                    [(ngModel)]="mobileWallet.firstName" placeholder="First Name" inputmode="text">
+                                </ion-input>
+                            </ion-col>
+
+                            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                                <ion-text color="primary" style="font-size: 12px;">Last Name</ion-text>
+                                <ion-input class="input-background" readonly formControlName="WalletClientLN"
+                                    [(ngModel)]="mobileWallet.lastName" placeholder="Last Name" inputmode="text">
+                                </ion-input>
+                            </ion-col>
+
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                                <ion-text color="primary" style="font-size: 12px;">Phone Number</ion-text>
+                                <ion-input class="input-background" readonly formControlName="WalletClientPhone"
+                                    [(ngModel)]="mobileWallet.phoneNumber" placeholder="Phone Number" inputmode="text">
+                                </ion-input>
+                            </ion-col>
+
+                            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                                <ion-text color="primary" style="font-size: 12px;">Wallet Provider</ion-text>
+                                <ion-input class="input-background" readonly formControlName="WalletClientWP"
+                                    [(ngModel)]="mobileWallet.walletProvider" placeholder="Wallet Provider" inputmode="text">
+                                </ion-input>
+                            </ion-col>
+
+                        </ion-row>
+
+                        <ion-row>
+                            <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                                <ion-text color="primary" style="font-size: 12px;">Wallet Url</ion-text>
+                                <ion-input class="input-background" readonly formControlName="WalletURL"
+                                    [(ngModel)]="mobileWallet.walletUrl" placeholder="Wallet Url" inputmode="text">
+                                </ion-input>
+                            </ion-col>
+
+                           
+                        </ion-row>
+
+                        <ion-row>
+                            <p class="mb-5">Please pay
+                                {{ payment.transactionAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }} using following wallet details and
+                                share transaction details in the given below.</p>
+
+                        </ion-row>
+                        <ion-row>
+                            <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                                <ion-text color="primary" style="font-size: 12px;">Transaction Reference Number
+                                </ion-text>
+                                <ion-input class="input-background" formControlName="TransactionReferenceNumber"
+                                    [(ngModel)]="payment.receiptNumber" placeholder="Transaction Reference Number"
+                                    inputmode="text"></ion-input>
+                            </ion-col>
+
+                        </ion-row>
+
+                        <ion-row center>
+                            <ion-col width-50 style="text-align: center">
+                                <ion-button [disabled]="!onSubmitForm.valid || loader || provideBusinessAndCustomerAddress && !onClientAddressForm.valid
+                               
+                                || slotReservation.modeOfPayment==='Wallet' && !onWalletForm.valid" size="small" shape="round"
+                                    color="primary" (click)="bankPayment()">
+                                    Book
+                                </ion-button>
+                            </ion-col>
+    
+                        </ion-row>
+
+                    </form>
+                </ion-card>
+
+
+                <ion-card no-margin no-padding *ngIf="slotReservation.modeOfPayment==='Cash'">
+                    <ion-row>
+                        <ion-col size="12">
+
+                            <ion-list>
+                                <ion-item lines="none">
+
+                                    <ion-label position="stacked" color="primary" class="rpc-text">Payment Status*
+                                    </ion-label>
+                                    <ion-select [(ngModel)]="payment.status " formControlName="StatusPayment"
+                                        class="rpc-number" no-margin no-padding placeholder="Payment Status">
+                                        <ion-select-option value="Paid">Paid</ion-select-option>
+                                        <ion-select-option value="NotPaid">NotPaid</ion-select-option>
+                                    </ion-select>
+                                    <!-- [(ngModel)]="search.to" -->
+                                </ion-item>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row center>
+                        <ion-col width-50 style="text-align: center">
+                            <ion-button [disabled]="!onSubmitForm.valid || loader || provideBusinessAndCustomerAddress && !onClientAddressForm.valid" size="small" shape="round"
+                                color="primary" (click)="cashPayment()">
+                                Book
+                            </ion-button>
+                        </ion-col>
+
+                    </ion-row>
+
+                </ion-card>
+                <ion-card no-margin no-padding *ngIf="slotReservation.modeOfPayment==='BankTransfer'">
+                    <ion-row>
+                        <ion-col size="12">
+
+                            <div>
+                                <ion-row>
+                                    <ion-col size="12">
+                                        <ion-text color="primary" class="rpc-text" style="font-size: 12px;"><span>Bank
+                                                Name : </span>{{property.bankAccount.bankName}}</ion-text>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col size="12">
+                                        <ion-text color="primary" class="rpc-text" style="font-size: 12px;"><span>Branch
+                                                Name : </span>{{property.bankAccount.branchName}}</ion-text>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col size="12">
+                                        <ion-text color="primary" class="rpc-text" style="font-size: 12px;">
+                                            <span>Account Name : </span>{{property.bankAccount.accountName}}</ion-text>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col size="12">
+                                        <ion-text color="primary" class="rpc-text" style="font-size: 12px;">
+                                            <span>Account Number : </span>{{property.bankAccount.accountNumber}}
+                                        </ion-text>
+                                    </ion-col>
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col size="12">
+                                        <ion-text color="primary" class="rpc-text" style="font-size: 12px;"><span>Swift
+                                                Code : </span>{{property.bankAccount.swiftCode}}</ion-text>
+                                    </ion-col>
+
+                                </ion-row>
+
+                                <ion-row>
+                                    <p class="mb-5">Please pay
+                                        {{ this.slotReservation.afterTaxAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }} using following bank details and
+                                        share transaction details in the given below.</p>
+        
+                                </ion-row>
+                                <ion-row>
+                                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+        
+                                        <ion-text color="primary" style="font-size: 12px;">Transaction Reference Number
+                                        </ion-text>
+                                        <ion-input class="input-background" formControlName="TransactionReferenceNumber"
+                                            [(ngModel)]="payment.receiptNumber" placeholder="Transaction Reference Number"
+                                            inputmode="text"></ion-input>
+                                    </ion-col>
+        
+                                </ion-row>
+                            </div>
+
+                            <ion-list>
+                                <ion-item lines="none">
+
+                                    <ion-label position="stacked" color="primary" class="rpc-text">Payment Status*
+                                    </ion-label>
+                                    <ion-select [(ngModel)]="payment.status" [disabled]="isPaymentMethodDisabled" formControlName="StatusPayment"
+                                        class="rpc-number" no-margin no-padding placeholder="Payment Status">
+                                        <ion-select-option value="Paid">Paid</ion-select-option>
+                                        <ion-select-option value="NotPaid">NotPaid</ion-select-option>
+                                    </ion-select>
+                                    <!-- [(ngModel)]="search.to" -->
+                                </ion-item>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+
+                    <ion-row center>
+                        <ion-col width-50 style="text-align: center">
+                            <ion-button [disabled]="!onSubmitForm.valid || loader || provideBusinessAndCustomerAddress && !onClientAddressForm.valid
+                            || payment.receiptNumber == null && slotReservation.modeOfPayment==='BankTransfer' || payment.receiptNumber ==undefined && slotReservation.modeOfPayment==='BankTransfer' 
+                            || payment.receiptNumber == '' && slotReservation.modeOfPayment==='BankTransfer'" size="small" shape="round"
+                                color="primary" (click)="bankPayment()">
+                                Book
+                            </ion-button>
+                        </ion-col>
+
+                    </ion-row>
+
+                </ion-card>
+
+                <ion-card no-margin no-padding *ngIf="slotReservation.modeOfPayment==='Card'">
+
+                    <form [formGroup]="onCardBookForm">
+
+                        <ion-row>
+                            <ion-col size="12">
+
+                                <ion-list>
+
+                                    <ion-item lines="none">
+                                        <ion-label position="stacked" color="primary">Card Number*</ion-label>
+                                        <ion-input [(ngModel)]="payment.cardNumber" maxlength="16"
+                                            formControlName="cardNumber" placeholder="#" type="text" min="0"
+                                            inputmode="number"></ion-input>
+                                    </ion-item>
+
+                                    <ion-row
+                                        *ngIf="onCardBookForm.get('cardNumber').dirty && onCardBookForm.get('cardNumber').invalid">
+                                        <ion-text class="heading-medium font-12" color="danger">Please type valid card
+                                            number</ion-text>
+                                    </ion-row>
+                                </ion-list>
+
+                            </ion-col>
+
+                        </ion-row>
+                        <!-- row 8 -->
+                        <ion-row>
+                            <ion-col size="12">
+
+                                <ion-list>
+
+                                    <ion-item lines="none">
+                                        <ion-label position="stacked" color="primary">Name on Card*</ion-label>
+                                        <ion-input [(ngModel)]="payment.name" formControlName="name" placeholder="Name"
+                                            inputmode="text"></ion-input>
+                                    </ion-item>
+                                </ion-list>
+
+                            </ion-col>
+
+                        </ion-row>
+                        <!-- row 9 -->
+                        <ion-row>
+                            <ion-col size="4">
+
+                                <ion-list>
+                                    <ion-item lines="none">
+
+                                        <ion-label position="stacked" color="primary" class="rpc-text">Expire*
+                                        </ion-label>
+                                        <ion-select [(ngModel)]="payment.expYear" formControlName="expYear"
+                                            class="rpc-number" no-margin no-padding placeholder="Year">
+                                            <ion-select-option value="2021">2021</ion-select-option>
+                                                <ion-select-option value="2022">2022</ion-select-option>
+                                                <ion-select-option value="2023">2023</ion-select-option>
+                                                <ion-select-option value="2024">2024</ion-select-option>
+                                                <ion-select-option value="2025">2025</ion-select-option>
+                                                <ion-select-option value="2026">2026</ion-select-option>
+                                                <ion-select-option value="2027">2027</ion-select-option>
+                                                <ion-select-option value="2028">2028</ion-select-option>
+                                                <ion-select-option value="2029">2029</ion-select-option>
+                                                <ion-select-option value="2030">2030</ion-select-option>
+                                        </ion-select>
+                                    </ion-item>
+                                    <!-- [(ngModel)]="search.to" -->
+                                </ion-list>
+
+                            </ion-col>
+                            <ion-col size="4">
+
+
+                                <ion-list>
+
+                                    <ion-item lines="none">
+                                        <ion-label position="stacked" color="primary" class="rpc-text">Expire*
+                                        </ion-label>
+                                        <ion-select [(ngModel)]="payment.expMonth" formControlName="expMonth"
+                                            class="rpc-number" no-margin no-padding placeholder="Month">
+                                            <ion-select-option value="01">January</ion-select-option>
+                                            <ion-select-option value="02">February</ion-select-option>
+                                            <ion-select-option value="03">March</ion-select-option>
+                                            <ion-select-option value="04">April</ion-select-option>
+                                            <ion-select-option value="05">May</ion-select-option>
+                                            <ion-select-option value="06">June</ion-select-option>
+                                            <ion-select-option value="07">July</ion-select-option>
+                                            <ion-select-option value="08">August</ion-select-option>
+                                            <ion-select-option value="09">September</ion-select-option>
+                                            <ion-select-option value="10">October</ion-select-option>
+                                            <ion-select-option value="11">November</ion-select-option>
+                                            <ion-select-option value="12">December</ion-select-option>
+                                        </ion-select>
+                                        <!-- [(ngModel)]="search.to" -->
+                                    </ion-item>
+                                </ion-list>
+
+                            </ion-col>
+
+                            <ion-col size="4">
+
+                                <ion-list>
+                                    <ion-item lines="none">
+                                        <ion-label position="stacked" color="primary" class="rpc-text">CVC*</ion-label>
+
+                                        <ion-input no-padding [(ngModel)]="payment.cvv" formControlName="cvv"
+                                            class="cvv" type="text" maxlength="4" inputmode="number"></ion-input>
+                                    </ion-item>
+                                    <ion-row
+                                        *ngIf="onCardBookForm.get('cvv').dirty && onCardBookForm.get('cvv').invalid">
+                                        <ion-text class="heading-medium font-12" color="danger">Please type valid CVC
+                                        </ion-text>
+                                    </ion-row>
+                                </ion-list>
+
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row center>
+                            <ion-col width-50 style="text-align: center">
+                                <ion-button [disabled]="!onCardBookForm.valid || loader || provideBusinessAndCustomerAddress && !onClientAddressForm.valid" size="small" shape="round"
+                                    color="primary" (click)="cardPayment()">
+                                    Book
+                                </ion-button>
+                            </ion-col>
+
+                        </ion-row>
+
+                    </form>
+                </ion-card>
+            </form>
+
+
+        </ion-grid>
+
+    </ion-card>
+</ion-content>

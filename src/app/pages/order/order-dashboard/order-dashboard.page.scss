@@ -1,0 +1,330 @@
+
+// ion-segment-button {
+//     --indicator-box-shadow: #d9d9d9;
+//     border-radius: 4.23077px;
+//     padding: 0.1rem;
+//     margin: 0;
+//     --background: linear-gradient(
+//         -0deg,
+//         rgba(255, 255, 255, 0.4) 0%,
+//         rgba(255, 255, 255, 0) 100%
+//     );
+//     --color: #d9d9d9;
+//     --background-checked: linear-gradient(
+//         -0deg,
+//         rgba(255, 255, 255, 0.4) 0%,
+//         rgba(255, 255, 255, 0) 100%
+//     );
+//     --color-checked: #d9d9d9;
+//     --indicator-color: linear-gradient(
+//         -0deg,
+//         rgba(255, 255, 255, 0.4) 0%,
+//         rgba(255, 255, 255, 0) 100%
+//     );
+//     backdrop-filter: blur(17.7692px);
+// }
+// ::part(indicator-background) {
+//     background-color: #d9d9d9;
+// }
+
+
+.service-name{
+    margin-left: 12px;
+}
+.amount{
+    margin-bottom: 5px;
+}
+
+.textcolor-white
+{
+  color: white;
+}
+
+.cancel{
+    background-color: #EE8787 !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+
+.totalorder-card{
+  background-color: #e57373 !important;
+  color: white;
+}
+.totalrevenue-card{
+  background-color: #f06292 !important;
+  color: white;
+}
+.totalrevenue-card{
+  background-color: #f06292 !important;
+  color: white;
+}
+
+.totalTableOrder-card{
+  background-color: #ba68c8 !important;
+  color: white;
+}
+.TableRev-card{
+  background-color: #9575cd !important;
+  color: white;
+}
+
+.totalRoomOrder-card{
+  background-color: #7986cb !important;
+  color: white;
+}
+.RoomRev-card{
+  background-color: #2196f3 !important;
+  color: white;
+}
+
+.totalTAOrder-card{
+  background-color: #00bcd4 !important;
+  color: white;
+}
+.TARev-card{
+  background-color: #009688 !important;
+  color: white;
+}
+.totalHDOrder-card{
+  background-color: #43a047 !important;
+  color: white;
+}
+.HDev-card{
+  background-color: #7cb342 !important;
+  color: white;
+}
+
+.quick-order{
+    margin-right: 10px;
+}
+
+
+.available-clip{
+    background-color: #fafafa !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .confirmed-clip{
+    background-color: #B5D7F6 !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .cooking-clip{
+    background-color: #E1B5F5 !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .ReadyToServe{
+    background-color: #E4D4B9 !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .Served{
+    background-color: #6DBC95 !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .OutForDelivery{
+    background-color: #BEB29D !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .Shipped{
+    background-color: #B29DBE !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .completed{
+    background-color: #9EBE9D !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .cancel{
+    background-color: #EE8787 !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+  
+  .Submitted{
+    background-color: #EDCD87 !important;
+    color: black;
+    border-bottom: 1px solid #adadad;
+  }
+
+  .footer{
+    background: linear-gradient(
+        -180deg,
+        var(--ion-color-tm3-terciary1),
+        var(--ion-color-tm3-terciary1)
+    );
+}
+
+.list-back{
+    background: #FFFFFF00;
+}
+.text-white{
+    color: #333;
+}
+
+:host {
+    @media (min-width: 576px) {
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+    
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+   
+
+    }
+    @media (max-width: 576px) 
+    {
+        ion-toolbar {
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+    
+    .HeaderTitle {
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: -17px;
+    
+    }
+    
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+    
+    .HeaderSubTitle {
+        position: absolute;
+        top: 37px;
+        left: 41px;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    .card-itemOne {
+        background-color: #259BBF !important;
+     
+    }
+    .button-active-change{
+        --background: #fff;
+        color: #333;
+        border: 2px solid gray;
+    }
+    
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+    .order-bol-1{
+        position: absolute;
+        top: 35%;
+        left: 0px;
+        height: 30vw;
+        z-index: 1;
+    }
+
+    .order-bol-2{
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        height: 30vw;
+        z-index: 1;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+
+    .selectItem{
+        display: flex;
+        justify-content: center;
+        gap: 10px
+    }
+    .mt-1{
+        margin-top: 10px;
+    }
+
+    .button-active{
+        // font-size: 10px;
+         color: white;
+         --background: linear-gradient(
+             -215deg,
+             var(--ion-color-button1),
+             var(--ion-color-button2),
+             var(--ion-color-button2),
+             var(--ion-color-button2)
+         );
+     }
+
+     .header-button{
+        font-size: clamp(10px, 3.5vw, 14px);
+        // font-family: 'lato-Regular' !important;
+     }
+
+     .section-1{
+        position: relative;
+        z-index: 2;
+        border-radius: 15px;
+        margin-top: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        // background-color: rgba(255, 255, 255,0.20);
+        // border: 1px solid #5C82B5 !important;
+        background: linear-gradient(-360deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+        backdrop-filter: blur(74.5294px);
+     }
+
+}
+

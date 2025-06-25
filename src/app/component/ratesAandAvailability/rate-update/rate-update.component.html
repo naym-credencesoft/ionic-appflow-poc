@@ -1,0 +1,1033 @@
+<div style="overflow-x: auto" *ngIf="room != null && room != undefined">
+    <!-- <ion-grid>
+        <ion-row>
+            <ion-col size="3">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Date</ion-col
+                                    >
+                                </ion-row>
+                            </th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+                        <tr style="height: 10px"></tr>
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Room Price</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+                        
+                        <tr
+                            *ngFor="
+                                let data of getPlanList(
+                                    room.rateAndAvailabilityList
+                                )
+                            "
+                        >
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >{{ data.name }} ({{
+                                            data.code
+                                        }})</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Rooms to Sell</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Sold</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >On Hold</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Available</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="isBookingEngine">
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Stop Sell OBE</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="isChannelManager">
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem">
+                                        Stop Sell OTA</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+                        <tr *ngIf="this.isBookoneChannelManager == true">
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem">
+                                        OTA Availability</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+                        <tr *ngIf="this.isBookoneChannelManager == true">
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem">
+                                        OTA Rates</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ion-col>
+            <ion-col size="7">
+                <table cellspacing="0" cellpadding="0">
+                    <thead class="tablehead">
+                        <tr>
+                            <th class="th"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList;
+                                    let first = first;
+                                    let last = last
+                                "
+                                [ngClass]="{
+                                    roundLeft: first,
+                                    roundRight: last
+                                }"
+                            >
+                                {{ roomRate.date | date : "MMM" }}
+                                <br />
+                                {{ roomRate.date | date : "d" }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="tableBody">
+                        <tr style="height: 10px"></tr>
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList;
+                                    let i = index;
+                                    let first = first;
+                                    let last = last
+                                "
+                                [ngClass]="{
+                                    roundTopLeft: first,
+                                    roundTopRight: last
+                                }"
+                                (click)="onInputClickMethodRoomPrice(i)"
+                            >
+                                <span
+                                    *ngIf="selectedInputIndexRoomPrice != i"
+                                    >{{ roomRate.price }}</span
+                                >
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodRoomPrice(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.price"
+                                    *ngIf="selectedInputIndexRoomPrice == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr
+                            *ngFor="
+                                let data of getPlanList(
+                                    room.rateAndAvailabilityList
+                                )
+                            "
+                        >
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList
+                                "
+                                (click)="onEditRoomPlan(roomRate, data)"
+                            >
+                                <span>{{ getPlanPrice(roomRate, data) }}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList;
+                                    let i = index
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                                (click)="onInputClickMethodTotalRoom(i)"
+                            >
+                                <span
+                                    *ngIf="selectedInputIndexTotalRoom != i"
+                                    >{{ roomRate.totalNoRooms }}</span
+                                >
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodTotalRoom(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.totalNoRooms"
+                                    *ngIf="selectedInputIndexTotalRoom == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList;
+                                    let i = index
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                                (click)="onInputClickMethodSold(i)"
+                            >
+                                <span *ngIf="selectedInputIndexSold != i">{{
+                                    roomRate.noOfBooked
+                                }}</span>
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodSold(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.noOfBooked"
+                                    *ngIf="selectedInputIndexSold == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList;
+                                    let i = index
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                                (click)="onInputClickMethodHold(i)"
+                            >
+                                <span *ngIf="selectedInputIndexHold != i">{{
+                                    roomRate.noOfOnHold
+                                }}</span>
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodHold(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.noOfOnHold"
+                                    *ngIf="selectedInputIndexHold == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList;
+                                    let i = index
+                                "
+                                (click)="onInputClickMethod(i)"
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                            >
+                                <span *ngIf="selectedInputIndex != i">{{
+                                    roomRate.noOfAvailable
+                                }}</span>
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethod(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.noOfAvailable"
+                                    *ngIf="selectedInputIndex == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="isBookingEngine">
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                            >
+                                <ion-checkbox
+                                    [(ngModel)]="roomRate.stopSellOBE"
+                                    (ngModelChange)="onBlockRoomEdit(roomRate)"
+                                ></ion-checkbox>
+                            </td>
+                        </tr>
+
+                        <tr *ngIf="isChannelManager">
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of room.rateAndAvailabilityList
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                            >
+                                <ion-checkbox
+                                    [(ngModel)]="roomRate.stopSellOTA"
+                                    (ngModelChange)="onBlockRoomEdit(roomRate)"
+                                ></ion-checkbox>
+                            </td>
+                        </tr>
+                        <tr *ngIf="isChannelManager">
+                            <td  class="td"   *ngFor="
+                            let roomRate of room.rateAndAvailabilityList
+                        "
+                        [ngClass]="{
+                            weekdayheader:
+                                getDayNumber(roomRate.date) === 0 ||
+                                getDayNumber(roomRate.date) === 6
+                        }">
+                       
+                        <ion-icon name="ban" style="font-size: 20px;"  *ngIf="roomRate?.otaAvailabilityList == null || roomRate?.otaAvailabilityList?.length === 0"></ion-icon>
+                        <ion-icon name="menu" style="font-size: 20px;"  *ngIf="roomRate?.otaAvailabilityList != null && roomRate?.otaAvailabilityList?.length >0" (click)="OTAAvailabilityOfRateAndAvailability(roomRate)"></ion-icon>
+    
+                    </td>
+                            
+                        </tr>
+                        <tr *ngIf="isChannelManager">
+                            <td  class="td"   *ngFor="
+                            let roomRate of room.rateAndAvailabilityList
+                        "
+                        [ngClass]="{
+                            weekdayheader:
+                                getDayNumber(roomRate.date) === 0 ||
+                                getDayNumber(roomRate.date) === 6
+                        }">
+                        <ion-icon name="menu" style="font-size: 20px;"  *ngIf="getOTAPlanCount(roomRate) != null && getOTAPlanCount(roomRate) >0" (click)="OTARateUpdate(roomRate)"></ion-icon>
+                        <ion-icon name="ban" style="font-size: 20px;"  *ngIf="getOTAPlanCount(roomRate) == null || getOTAPlanCount(roomRate) === 0"></ion-icon>
+                    </td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </ion-col>
+        </ion-row>
+    </ion-grid> -->
+
+    <table class="responsive-table table-rate-style"  cellspacing="0" cellpadding="8" style="width: 100%; text-align: center;">
+        <thead>
+          <tr >
+            <th>Date</th>
+            <th>Room Price</th>
+            <th>Room to Sell</th>
+            <th>Sold</th>
+            <th>Unhold</th>
+            <th>Available</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 1st Sep -->
+          <ng-container *ngFor="let rate of  room.rateAndAvailabilityList;let i =index,
+          let first = first,
+          let last = last"   >
+          <tr >
+            <td style="font-weight: bold; text-align: left;">{{ rate.date | date : "MMM" }}
+                               
+                {{ rate.date | date : "d" }}
+
+
+             
+                    <b class="leftassign" *ngIf="getOtaNames(room.rateAndAvailabilityList)?.length > 0"   (click)="toggleSection(i)" style=" cursor: pointer; "><img src="/assets/img/icons/Vectorss.png" style="vertical-align: middle;"/></b>
+                    <!-- <ion-icon slot="icon-only" name="arrow-up"></ion-icon> -->
+                  
+                 </td>
+            <td (click)="onInputClickMethodRoomPrice(i)">
+                <span
+                *ngIf="selectedInputIndexRoomPrice != i"
+                >{{ rate.price }}</span
+            >
+            <input
+                #input
+                class="card-item"
+                (blur)="onBlurMethodRoomPrice(rate)"
+                type="number"
+                min="0"
+                max="{{ rate.totalNoRooms }}"
+                matInput
+                [(ngModel)]="rate.price"
+                *ngIf="selectedInputIndexRoomPrice == i"
+            />
+        </td>
+            <td  (click)="onInputClickMethodTotalRoom(i)">
+                <span
+                                    *ngIf="selectedInputIndexTotalRoom != i"
+                                    >{{ rate.totalNoRooms }}</span
+                                >
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodTotalRoom(rate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ rate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="rate.totalNoRooms"
+                                    *ngIf="selectedInputIndexTotalRoom == i"
+                                />
+            </td>
+            <td (click)="onInputClickMethodSold(i)">
+                <span *ngIf="selectedInputIndexSold != i">{{
+                    rate.noOfBooked
+                }}</span>
+                <input
+                    #input
+                    class="card-item"
+                    (blur)="onBlurMethodSold(rate)"
+                    type="number"
+                    min="0"
+                    max="{{ rate.totalNoRooms }}"
+                    matInput
+                    [(ngModel)]="rate.noOfBooked"
+                    *ngIf="selectedInputIndexSold == i"
+                />
+            </td>
+            <td (click)="onInputClickMethodHold(i)"> 
+                
+                <span *ngIf="selectedInputIndexHold != i">{{
+                    rate.noOfOnHold
+                }}</span>
+                <input
+                    #input
+                    class="card-item"
+                    (blur)="onBlurMethodHold(rate)"
+                    type="number"
+                    min="0"
+                    max="{{ rate.totalNoRooms }}"
+                    matInput
+                    [(ngModel)]="rate.noOfOnHold"
+                    *ngIf="selectedInputIndexHold == i"
+                />
+            </td>
+            <td   (click)="onInputClickMethod(i)"> 
+                <span *ngIf="selectedInputIndex != i">{{
+                    rate.noOfAvailable
+                }}</span>
+                <input
+                    #input
+                    class="card-item"
+                    (blur)="onBlurMethod(rate)"
+                    type="number"
+                    min="0"
+                    max="{{ rate.totalNoRooms }}"
+                    matInput
+                    [(ngModel)]="rate.noOfAvailable"
+                    *ngIf="selectedInputIndex == i"
+                />
+            </td>
+          </tr>
+        <ng-container  *ngIf="isSectionVisible[i]">
+            <tr>
+                <td>Stop Sell OBE</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td >  <ion-checkbox [disabled]="true" [(ngModel)]="rate.stopSellOBE" 
+                                   ></ion-checkbox>
+            </td>
+              </tr>
+              <!-- <tr>
+                <td>Stop Sell OTA</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td >  <ion-checkbox  [(ngModel)]="rate.stopSellOTA" 
+                                    (ngModelChange)="onBlockRoomEdit(rate)"></ion-checkbox>
+            </td>
+              </tr> -->
+              <!-- OTA Section Header -->
+
+              <tr class="ota-style"  *ngIf="getOtaNames(room.rateAndAvailabilityList)?.length > 0">
+                <th >OTA Name</th>
+             
+                <!-- <th>Plan ID</th> -->
+                <th>Plan Name</th>
+                <th>Price</th>
+                <th>Availability</th>
+                <th>Stop Sell</th>
+                <th>Action 
+                     <!-- <ion-checkbox style="margin-left: 10px;vertical-align: middle;"  [(ngModel)]="rate.stopSellOTA"
+                    (ngModelChange)="onBlockRoomEdit(rate)"></ion-checkbox> -->
+                </th>
+              </tr>
+              <!-- OTA Entries for 1st Sep -->
+              <ng-container *ngFor="let data of getOtaNames(room.rateAndAvailabilityList); let i = index">
+                <!-- First Row: OTA Name -->
+                <tr *ngIf="this.isBookoneChannelManager">
+                  <td [attr.rowspan]="getOtaPlanList(room.rateAndAvailabilityList, data.otaName).length">
+                    <span *ngIf="getOtaImageUrl(data.otaName) && data.otaName != 'BookingJini' && data.otaName != 'Channex'">
+                      <img src="{{ getOtaImageUrl(data.otaName) }}" height="70px" width="70px" />
+                    </span>
+                    <span *ngIf="!getOtaImageUrl(data.otaName) && data.otaName != 'BookingJini' && data.otaName != 'Channex'">
+                      {{ data.otaName }}
+                    </span>
+                    <span *ngIf="data.otaName == 'BookingJini' || data.otaName == 'Channex'">
+                      <img src="{{ getExternalOtaUrl() }}" height="70px" width="70px" />
+                    </span>
+                  </td>
+                  <!-- First Plan -->
+                  <!-- <td>{{ getOtaPlanList(room.rateAndAvailabilityList, data.otaName)[0]?.otaPlanId }}</td> -->
+                  <td>{{ getOtaPlanList(room.rateAndAvailabilityList, data.otaName)[0]?.planName }}</td>
+                  <td>
+                    <span>{{ getOtaPlanAmount(rate, getOtaPlanList(room.rateAndAvailabilityList, data.otaName)[0]) }}
+                    </span>
+                </td>
+                  <td [attr.rowspan]="getOtaPlanList(room.rateAndAvailabilityList, data.otaName).length" *ngIf="getOtaInventoryCount(rate, data.otaName) != null">{{ getOtaInventoryCount(rate, data.otaName) }}</td>
+                  <td [attr.rowspan]="getOtaPlanList(room.rateAndAvailabilityList, data.otaName).length" *ngIf="getOtaInventoryCount(rate, data.otaName) == null">
+                    <img style="max-width:50px"  src="assets/img/icons/banned.svg" />
+                  </td>
+                  <td [attr.rowspan]="getOtaPlanList(room.rateAndAvailabilityList, data.otaName).length">
+                    <ion-checkbox style="margin-top: 10px;"   [(ngModel)]="getOtaAvailability(rate,data.otaName).stopSell"
+                    (ngModelChange)="onSingleRoomBlock(rate,getOtaAvailability(rate,data.otaName),getOtaAvailability(rate,data.otaName).stopSell)"></ion-checkbox>
+                  </td>
+                  <td>
+                    <div style="display: flex;">
+                      <div class="dropdown">
+                        <ion-button
+                          class="edit-icon"
+                          fill="clear"
+                          color="primary"
+                          size="small"
+                          (click)="toggleDropdown(i, 0)"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path
+                              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                          </svg>
+                        </ion-button>
+                        <div
+                          class="dropdown-menu"
+                          *ngIf="isDropdownOpen[i] && isDropdownOpen[i][0]"
+                          style="position: static; top: 40px; left: 0; background: white; border: 1px solid #ccc; border-radius: 5px; z-index: 1000; padding: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);"
+                        >
+                          <ion-item class="rates-drop-down" style="color: #3D737B !important; font-size: 13px;"  (click)="goToMasterRatePage(rate.date, getOtaPlanList(room.rateAndAvailabilityList, data.otaName)[0], data.otaName, getOtaInventoryCount(rate, data.otaName))">Master Rates</ion-item>
+                          <ion-item style="color: #3D737B !important;font-size: 13px;" (click) ="goToMasterAvailabilityPage(rate,data.otaName,false)">Master Availability</ion-item>
+                        </div>
+                       
+                      </div>
+                   
+                    </div>
+                  </td>
+                </tr>
+                <!-- Additional Plans for the Same OTA -->
+                <tr *ngFor="let otPlan of getOtaPlanList(room.rateAndAvailabilityList, data.otaName).slice(1); let innerIndex = index">
+                  <!-- <td>{{ otPlan.otaPlanId }}</td> -->
+                  <td>{{ otPlan.planName }}</td>
+                  <td><span>{{ getOtaPlanAmount(rate, otPlan) }}</span></td>
+                 
+                  <td>
+                    <div style="display: flex; position: relative;">
+                      <div class="dropdown">
+                        <ion-button
+                          class="edit-icon"
+                          fill="clear"
+                          color="primary"
+                          size="small"
+                          (click)="toggleDropdown(i, innerIndex + 1)"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path
+                              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                            />
+                          </svg>
+                        </ion-button>
+                        <div
+                          class="dropdown-menu"
+                          *ngIf="isDropdownOpen[i] && isDropdownOpen[i][innerIndex + 1]"
+                          style="position: static; top: 40px; left: 0; background: white; border: 1px solid #ccc; border-radius: 5px; z-index: 1000; padding: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);"
+                        >
+                          <ion-item class="rates-drop-down" style="color: #3D737B !important;" (click) ="goToMasterRatePage(rate.date,otPlan,data.otaName, getOtaInventoryCount(rate, data.otaName))">Master Rates</ion-item>
+                          <ion-item style="color: #3D737B !important;"(click) ="goToMasterAvailabilityPage(rate,data.otaName,false)">Master Availability</ion-item>
+                        </div>
+                      </div>
+                      <!-- <ion-checkbox style="margin-top: 10px;"  [checked]="selectedIndex === i"  [(ngModel)]="rate.stopSellOTA"
+                      (ngModelChange)="onBlockRoomEdit(rate,data.otaName,i)"></ion-checkbox> -->
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+              
+              
+             
+        </ng-container>
+    </ng-container>
+          <!-- 2nd Sep -->
+         
+      
+        </tbody>
+      </table>
+</div>
+
+<div
+    style="overflow-x: auto"
+    *ngIf="
+        propertyRateData != null &&
+        propertyRateData != undefined &&
+        propertyRateData.length > 0
+    "
+>
+    <!-- <ion-grid>
+        <ion-row>
+            <ion-col size="3">
+                <table cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Date</ion-col
+                                    >
+                                </ion-row>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr style="height: 10px"></tr>
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Room Price</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Rooms to Sell</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Sold</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >On Hold</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <ion-row>
+                                    <ion-col size="12" class="singleItem"
+                                        >Available</ion-col
+                                    >
+                                </ion-row>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ion-col>
+            <ion-col size="7">
+                <table cellspacing="0" cellpadding="0">
+                    <thead class="tablehead">
+                        <tr>
+                            <th class="th"
+                                *ngFor="
+                                    let roomRate of propertyRateData;
+                                    let first = first;
+                                    let last = last
+                                "
+                                [ngClass]="{
+                                    roundLeft: first,
+                                    roundRight: last
+                                }"
+                            >
+                                {{ roomRate.date | date : "MMM" }}
+                                <br />
+                                {{ roomRate.date | date : "d" }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="tableBody">
+                        <tr style="height: 10px"></tr>
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of propertyRateData;
+                                    let i = index;
+                                    let first = first;
+                                    let last = last
+                                "
+                                [ngClass]="{
+                                    roundTopLeft: first,
+                                    roundTopRight: last
+                                }"
+                                (click)="onInputClickMethodRoomPrice(i)"
+                            >
+                                <span
+                                    *ngIf="selectedInputIndexRoomPrice != i"
+                                    >{{ roomRate.price }}</span
+                                >
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodRoomPrice(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.price"
+                                    *ngIf="selectedInputIndexRoomPrice == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of propertyRateData;
+                                    let i = index
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                                (click)="onInputClickMethodTotalRoom(i)"
+                            >
+                                <span
+                                    *ngIf="selectedInputIndexTotalRoom != i"
+                                    >{{ roomRate.totalNoRooms }}</span
+                                >
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodTotalRoom(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.totalNoRooms"
+                                    *ngIf="selectedInputIndexTotalRoom == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of propertyRateData;
+                                    let i = index
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                                (click)="onInputClickMethodSold(i)"
+                            >
+                                <span *ngIf="selectedInputIndexSold != i">{{
+                                    roomRate.noOfBooked
+                                }}</span>
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodSold(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.noOfBooked"
+                                    *ngIf="selectedInputIndexSold == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of propertyRateData;
+                                    let i = index
+                                "
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                                (click)="onInputClickMethodHold(i)"
+                            >
+                                <span *ngIf="selectedInputIndexHold != i">{{
+                                    roomRate.noOfOnHold
+                                }}</span>
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodHold(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.noOfOnHold"
+                                    *ngIf="selectedInputIndexHold == i"
+                                />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td
+                                class="td"
+                                *ngFor="
+                                    let roomRate of propertyRateData;
+                                    let i = index
+                                "
+                                (click)="onInputClickMethod(i)"
+                                [ngClass]="{
+                                    weekdayheader:
+                                        getDayNumber(roomRate.date) === 0 ||
+                                        getDayNumber(roomRate.date) === 6
+                                }"
+                            >
+                                <span *ngIf="selectedInputIndex != i">{{
+                                    roomRate.noOfAvailable
+                                }}</span>
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethod(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.noOfAvailable"
+                                    *ngIf="selectedInputIndex == i"
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ion-col>
+        </ion-row>
+    </ion-grid> -->
+
+    <div class="table-container ">
+        <div class="spacing"> 
+            <table class="responsive-table table-rate-style">
+                <thead>
+                    <tr>
+                        <th class="sectionD sectionE" >Date</th>
+                        <th class="sectionE">Room Price</th>
+                        <th class="sectionE">Room to Sell</th>
+                        <th class="sectionE">Sold</th>
+                        <th class="sectionE">Unhold</th>
+                        <th class="sectionE sectionD ">Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="
+                        let roomRate of propertyRateData;let i = index">
+                        <td  >  {{ roomRate.date | date : "MMM" }}
+                                {{ roomRate.date | date : "d" }} </td>
+                        
+                        <td (click)="onInputClickMethodRoomPrice(i)">
+                            <span
+                            *ngIf="selectedInputIndexRoomPrice != i"
+                            >{{ roomRate.price }}</span
+                        >
+                        <input
+                            #input
+                            class="card-item"
+                            (blur)="onBlurMethodRoomPrice(roomRate)"
+                            type="number"
+                            min="0"
+                            max="{{ roomRate.totalNoRooms }}"
+                            matInput
+                            [(ngModel)]="roomRate.price"
+                            *ngIf="selectedInputIndexRoomPrice == i"
+                        />
+                        </td>
+                        <td (click)="onInputClickMethodTotalRoom(i)">
+                            <span
+                                    *ngIf="selectedInputIndexTotalRoom != i"
+                                    >{{ roomRate.totalNoRooms }}</span
+                                >
+                                <input
+                                    #input
+                                    class="card-item"
+                                    (blur)="onBlurMethodTotalRoom(roomRate)"
+                                    type="number"
+                                    min="0"
+                                    max="{{ roomRate.totalNoRooms }}"
+                                    matInput
+                                    [(ngModel)]="roomRate.totalNoRooms"
+                                    *ngIf="selectedInputIndexTotalRoom == i"
+                                />
+                        </td>
+                        <td (click)="onInputClickMethodSold(i)">
+                            <span *ngIf="selectedInputIndexSold != i">{{
+                                roomRate.noOfBooked
+                            }}</span>
+                            <input
+                                #input
+                                class="card-item"
+                                (blur)="onBlurMethodSold(roomRate)"
+                                type="number"
+                                min="0"
+                                max="{{ roomRate.totalNoRooms }}"
+                                matInput
+                                [(ngModel)]="roomRate.noOfBooked"
+                                *ngIf="selectedInputIndexSold == i"
+                            />
+                        </td>
+
+                        <td   (click)="onInputClickMethodHold(i)">
+                            <span *ngIf="selectedInputIndexHold != i">{{
+                                roomRate.noOfOnHold
+                            }}</span>
+                            <input
+                                #input
+                                class="card-item"
+                                (blur)="onBlurMethodHold(roomRate)"
+                                type="number"
+                                min="0"
+                                max="{{ roomRate.totalNoRooms }}"
+                                matInput
+                                [(ngModel)]="roomRate.noOfOnHold"
+                                *ngIf="selectedInputIndexHold == i"
+                            />
+                        </td>
+
+                        <td (click)="onInputClickMethod(i)">
+                            <span *ngIf="selectedInputIndex != i">{{
+                                roomRate.noOfAvailable
+                            }}</span>
+                            <input
+                                #input
+                                class="card-item"
+                                (blur)="onBlurMethod(roomRate)"
+                                type="number"
+                                min="0"
+                                max="{{ roomRate.totalNoRooms }}"
+                                matInput
+                                [(ngModel)]="roomRate.noOfAvailable"
+                                *ngIf="selectedInputIndex == i"
+                            />
+                        </td>
+                        
+                    </tr>
+                   
+             
+                </tbody>
+            </table>
+        </div>
+</div>
+</div>
+
+

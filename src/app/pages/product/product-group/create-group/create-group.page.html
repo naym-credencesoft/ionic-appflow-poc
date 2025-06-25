@@ -1,0 +1,143 @@
+
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Product Group </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Service Dashboard</ion-text
+            >
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-card class="bg-white" style="    border: 1px solid gray;">
+        <ion-grid no-padding>
+
+
+            <form [formGroup]="onProductGroupForm">
+
+                <ion-row>
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                        <ion-text color="primary" style="font-size: 12px;" class="title">Business Service*</ion-text>
+                        <ion-card no-margin no-padding> 
+                            <ion-select placeholder="Select Business Service" value="{{businessServiceId}}" style="color: #333"
+                                (ionChange)="setService(businessServiceId)" [(ngModel)]="businessServiceId" okText="Done"
+                                cancelText="Dismiss" formControlName="BusinessService">
+        
+                                <ion-row *ngFor="let service of businessServices">
+                                    <ion-select-option value={{service.id}}>
+                                        <p *ngIf="service.name == 'Restaurants' && service.brandName != null && service.brandName !=''">{{ service.name
+                                        }}-{{service.brandName}}</p>
+                                      <p *ngIf="service.name == 'Restaurants' && (service.brandName == null || service.brandName =='')">{{ service.name }}</p>
+                                      <p *ngIf="service.name != 'Restaurants'">{{ service.name }}</p>
+                                    </ion-select-option>
+        
+                                </ion-row>
+                            </ion-select>
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                        <ion-text color="primary" style="font-size: 12px;" class="title">Name*</ion-text>
+                        <ion-card no-margin>
+
+                            <ion-row>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                    <ion-input formControlName="Name" [(ngModel)]="productGroup.name" style="color: #333"
+                                        placeholder="Name" inputmode="text"></ion-input>
+                                </ion-col>
+                            </ion-row>
+
+                        </ion-card>
+                    </ion-col>
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+
+                        <ion-text color="primary" style="font-size: 12px;" class="title">Code*</ion-text>
+                        <ion-card no-margin>
+
+                            <ion-row>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                    <ion-input formControlName="productCode" [(ngModel)]="productGroup.productCode" style="color: #333"
+                                        placeholder="Code" inputmode="text"></ion-input>
+                                </ion-col>
+                            </ion-row>
+
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                        <ion-text color="primary" style="font-size: 12px;" class="title">Short Description</ion-text>
+                        <ion-card no-margin>
+
+                            <ion-row>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                    <ion-input formControlName="ShortDescription" [(ngModel)]="productGroup.shortDescription" style="color: #333"
+                                        placeholder="Short Description" inputmode="text"></ion-input>
+                                </ion-col>
+                            </ion-row>
+
+                        </ion-card>
+                    </ion-col>
+                   
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+
+                        <ion-text color="primary" style="font-size: 12px;" class="title">Description</ion-text>
+                        <ion-card no-margin>
+
+                            <ion-row>
+                                <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
+                                    <ion-input formControlName="Description" [(ngModel)]="productGroup.description" style="color: #333"
+                                        placeholder="Description" inputmode="text"></ion-input>
+                                </ion-col>
+                            </ion-row>
+
+                        </ion-card>
+                    </ion-col>
+                   
+                </ion-row>
+
+                <ion-row>
+
+                    <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                        <ion-button expand="block" class="cancel-btn" (click)="cancel()">Cancel</ion-button>
+                    </ion-col>
+
+                    <ion-col size="6" size-xl="6" size-sm="4" size-md="6" size-lg="6">
+
+                        <ion-button expand="block" color="primary" (click)="onSubmit()" [disabled]="!onProductGroupForm.valid|| loader">
+                            {{ ButtonLabel }}</ion-button>
+                    </ion-col>
+                </ion-row>
+
+            </form>
+
+        </ion-grid>
+    </ion-card>
+
+</ion-content>

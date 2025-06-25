@@ -1,0 +1,130 @@
+<ion-header class="headerColor">
+
+<ion-avatar class="profile">
+    <img
+    style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+</ion-avatar>
+
+
+<ion-toolbar>
+    <ion-buttons slot="start" class="back" (click)="navigateToPage()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-text color="light" class="HeaderTitle">Setting</ion-text>
+    
+</ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <!-- <ion-card no-margin> -->
+    <ion-grid no-padding>
+        <ion-row>
+            <ion-col size="12" class="nav-link">
+                <!--first item-->
+                <ion-item routerLink="/business-profile">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="business"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium" style="color: #333;">
+                        Business Information
+                    </p>
+                </ion-item>
+
+                <ion-item routerLink="/business-logo">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="cloud-upload"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium"  style="color: #333;">Business Logo</p>
+                </ion-item>
+
+                <ion-item routerLink="/edit-profile">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="person"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium"  style="color: #333;">Owner Profile</p>
+                </ion-item>
+
+                <!-- <ion-item routerLink="/owner-image">
+                <ion-icon size="large" color="light" name="create-outline" class="ion-padding"></ion-icon>
+                <p class="text text-align heading-medium">Owner Image</p>
+              </ion-item> -->
+
+                <ion-item routerLink="/business-manager">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="briefcase"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium"  style="color: #333;">
+                        Business Manager
+                    </p>
+                </ion-item>
+
+                <!--third item-->
+                <ion-item routerLink="/change-password">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="keypad"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium"  style="color: #333;">
+                        Change Password
+                    </p>
+                </ion-item>
+
+                <ion-item routerLink="/business-address/1">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="locate"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium"  style="color: #333;">
+                        Business Address
+                    </p>
+                </ion-item>
+
+                <ion-item routerLink="/bank-details">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="analytics-outline"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium"  style="color: #333;">Bank Details</p>
+                </ion-item>
+
+                <ion-item routerLink="/wallet-details">
+                    <ion-icon
+                        size="large"
+                        style="color: #333;"
+                        name="cash-outline"
+                        class="ion-padding"
+                    ></ion-icon>
+                    <p class="text text-align heading-medium"  style="color: #333;">Wallet Details</p>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <!-- </ion-card> -->
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar>
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

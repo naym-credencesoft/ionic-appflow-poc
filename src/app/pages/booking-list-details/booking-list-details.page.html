@@ -1,0 +1,70 @@
+<!-- <ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+
+        <ion-text color="light" class="headertext">
+            Booking Details
+            <ion-text color="secondary" class="fw700"></ion-text>
+        </ion-text>
+    </ion-toolbar>
+</ion-header> -->
+
+<ion-header class="ion-no-border">
+    <ion-img
+        class="header-image"
+        src="/assets/img/icons/booking_round_header.svg"
+    ></ion-img>
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.userData.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-img
+        class="left-image-header"
+        src="/assets/img/icons/booking-header-left.svg"
+    ></ion-img>
+    <ion-text class="HeaderSubTitle"> Booking Details </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="back()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Booking</ion-text>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-tabs>
+        <ion-tab-bar class="footer" slot="bottom">
+            <ion-tab-button class="text-white sctionedDev" tab="bookingTab">
+                <ion-icon name="calendar"></ion-icon>
+                <ion-label>Booking</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-white sctionedDev" tab="paymentsTab" (click)="setLocation('payment')">
+                <ion-icon name="card"></ion-icon>
+                <ion-label>Payments</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-white sctionedDev" tab="servicesTab">
+                <ion-icon name="happy"></ion-icon>
+                <ion-label>Services</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-white sctionedDev" tab="expenseTab">
+                <ion-icon name="cash"></ion-icon>
+                <ion-label>Expense</ion-label>
+            </ion-tab-button>
+
+            <ion-tab-button class="text-white sctionedDev" tab="customerTab">
+                <ion-icon name="cash"></ion-icon>
+                <ion-label>Customer Info</ion-label>
+            </ion-tab-button>
+        </ion-tab-bar>
+    </ion-tabs>
+</ion-content>

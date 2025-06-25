@@ -1,0 +1,17 @@
+.selected-card {
+    background-color: #1d174d;
+    color: white;
+}
+
+.selected-card .item-text {
+    color: white;  // Change text color to white when card is selected
+}
+ion-toolbar {
+    --background: #1D174D;
+    border: none;
+}
+
+ion-title {
+    color: #fff;
+}
+

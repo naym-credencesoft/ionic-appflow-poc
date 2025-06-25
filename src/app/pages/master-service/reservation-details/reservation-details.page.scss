@@ -1,0 +1,64 @@
+.backgroundHead {
+    --background: #1D174D;
+    color: #fff
+}
+
+ion-content {
+    .reservation-card,
+    .customer-details-card,
+    .address-card,
+    .notes-card,
+    .slot-details-card,
+    .payment-card {
+        margin: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .business-name,
+    .booking-status,
+    .reservation-number,
+    .reservation-date,
+    .business-type,
+    .customer-name,
+    .customer-email,
+    .customer-phone,
+    .address-line,
+    .note-text,
+    .slot-name,
+    .slot-timing,
+    .slot-date,
+    .slot-resource,
+    .slot-location,
+    .slot-notes,
+    .slot-amount,
+    .payment-mode,
+    .total-amount {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    @media screen and (min-width: 768px) {
+        .reservation-card,
+        .customer-details-card,
+        .address-card,
+        .notes-card,
+        .slot-details-card,
+        .payment-card {
+            padding: 20px;
+        }
+
+        .business-name,
+        .booking-status,
+        .reservation-number,
+        .reservation-date,
+        .business-type,
+        .customer-name {
+            font-size: 16px;
+        }
+    }
+}

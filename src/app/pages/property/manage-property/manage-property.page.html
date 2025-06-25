@@ -1,0 +1,180 @@
+
+
+  <ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Rates & Availability </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+      <!-- <ion-toolbar color="primary"> -->
+        
+
+    <!-- </ion-toolbar> -->
+  <ion-content >
+
+    <ion-card no-margin class="cardStyle customized" >
+        <div style="    display: flex;
+            gap: 10px;
+            justify-content: center;">
+        <div  style=" display: flex; align-items: center; justify-content: center;">
+          <ion-avatar  style="width:110px; height:110px">
+            <img
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
+         </ion-avatar>
+          <!-- <img  src="../../../../assets/icon/user_profile.svg" /> -->
+          
+        </div>
+    
+        <div>
+        <div class="sub-text" style="font-size: 17px;  text-align: center; color: white;" ><b>{{this.property.name}}</b></div>
+    
+        <!-- <span class="mat-h5" style="font-size: 14px;  text-align: center;">{{ property.slogan }}</span> -->
+        <span class="mat-h5" style="font-size: 14px;  text-align: center; color: white; ">
+          <p style="margin-top: -10px;">
+            {{ property.slogan }} <br/>
+            {{ addressProperty.streetNumber }} &nbsp;
+            {{ addressProperty.streetName }} , {{ addressProperty.suburb }},
+            &nbsp;<br />
+            {{ addressProperty.city }}, {{ addressProperty.country }},&nbsp;
+            {{ addressProperty.postcode }}
+          </p>
+        </span>
+    </div>
+    </div>
+          
+    </ion-card>
+
+    <ion-segment [(ngModel)]="managePropertySelection">
+        <ion-segment-button value="property" checked>
+            <ion-icon name="browsers"></ion-icon>
+          <ion-label>Property Details</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="room">
+            <ion-icon name="grid"></ion-icon>
+          <ion-label>Room Details</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <ion-grid no-padding *ngIf="managePropertySelection === 'property'">
+        <ion-row >
+          <ion-col size="12" class="nav-link">
+           
+            <ion-item lines="none" class="sectionedd">
+              <ion-icon size="large" class="ion-padding text-white" name="mail"></ion-icon>
+              <ion-label class="text-white">
+                <p class="text text-align heading-medium"  style="font-size: 16px;color: black;">{{ property.email }}</p>
+                <p style="color:black">Email</p>
+              </ion-label>
+            </ion-item>
+
+            <ion-item lines="none" class="sectionedd">
+                <ion-icon size="large" class="ion-padding text-white" name="call"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 16px;color: black;">{{ property.mobile }}</p>
+                  <p style="color: black;">Mobile</p>
+                </ion-label>
+              </ion-item>
+
+              <ion-item lines="none" class="sectionedd">
+                <ion-icon size="large" class="ion-padding text-white" name="phone-portrait"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 16px;color:black">{{ property.landphone }}</p>
+                  <p style="color:black">Phone</p>
+                </ion-label>
+              </ion-item> 
+
+              <ion-item lines="none" class="sectionedd">
+                <ion-icon  size="large" class="ion-padding text-white" name="people-circle"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 16px;color: black;">
+                    <span
+                    >{{ property.managerFirstName }} &nbsp;
+                    {{ property.managerLastName }}</span
+                  >
+                </p>
+                  <p style="color: black;">Manager's Name</p>
+                </ion-label>
+              </ion-item> 
+
+              <ion-item lines="none" class="sectionedd">
+                <ion-icon size="large" class="ion-padding text-white" name="mail"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 16px;color: black;">
+                    <span
+                    >{{ property.managerEmailAddress }}</span
+                  >
+                </p>
+                  <p style="color: black;">Manager's Email</p>
+                </ion-label>
+              </ion-item> 
+
+              
+              <ion-item lines="none" class="sectionedd">
+                <ion-icon size="large" class="ion-padding text-white" name="call"></ion-icon>
+                <ion-label>
+                  <p class="text text-align heading-medium"  style="font-size: 16px;color: black;">
+                    <span
+                    >{{ property.managerContactNo }}</span
+                  >
+                </p>
+                  <p style="color: black;">Manager's Phone</p>
+                </ion-label>
+              </ion-item> 
+
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+        <ion-list *ngIf="managePropertySelection === 'room'" style="background: none !important;">
+
+            <div *ngFor ="let room of rooms; let i = index;">
+                <ion-item (click)="roomOption(room)" lines="none" class="sectionedd">
+                    <ion-avatar slot="start" *ngIf="room.imageList == null ||(room.imageList != null && room.imageList.length==0)">
+                      <img src="assets/img/room/roomimage.png">
+                    </ion-avatar>
+
+                    <ion-avatar slot="start" *ngIf="room.imageList != null && room.imageList.length > 0">
+                        <img src="{{ room.imageList[0].url}}">
+                      </ion-avatar>
+                    <ion-label>
+                      <h2 style="color: black;"> {{room.name}}</h2>
+                      <h3 style="color: black;">No of Rooms :{{ room.noOfRooms}}</h3>
+                      <p style="color: black;">Room only Price :{{ room.roomOnlyPrice | currency: currency:'symbol':'1.2-2' }}</p>
+                    </ion-label>
+                  </ion-item>
+            </div>
+
+       </ion-list>
+   
+  </ion-content>
+  
+  <ion-footer>
+          <ion-toolbar style=" height: 50px;">
+                  <app-footer></app-footer>
+          </ion-toolbar>
+  </ion-footer>
+      

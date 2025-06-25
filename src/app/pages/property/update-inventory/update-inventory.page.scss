@@ -1,0 +1,33 @@
+.title-text{
+    margin-left: 10px;
+}
+
+.dropdown{
+
+    border-radius: 5px;
+    border: 1px solid gray;
+    margin-top: 7px;
+}
+
+
+.datepicker{
+   
+    border-radius: 5px;
+    border: 1px solid gray;
+    margin-top: 7px;
+}
+
+.input-background{
+    border: 1px solid gray;
+    margin-top: 7px;
+    --padding-start: 10px;
+    --border-radius: 5px;
+}
+
+.shadeCol {
+    --background: #1D174D;
+  }
+  .btn-cancel {
+    --background: #E84424;
+    color: #fff
+  }

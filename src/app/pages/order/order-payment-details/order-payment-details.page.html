@@ -1,0 +1,139 @@
+<!-- <ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Payment</ion-text>
+        <ion-text color="light" class="HeaderTitle"
+            >Prop Ref ID #<b>{{ order.bookOneOrderId }}</b></ion-text
+        >
+    </ion-toolbar>
+</ion-header> -->
+
+<ion-header>
+    <ion-img class="header-image" src="/assets/img/icons/order-header.svg"></ion-img>
+
+    <ion-avatar class="profile">
+        <img 
+        style="object-fit: fill;"
+        src="{{this.userData.logoUrl}}" onerror="this.src='/assets/img/app-logo.png'" />
+    </ion-avatar>
+
+    <ion-img class="left-image-header" src="/assets/img/icons/order-header-left.svg"></ion-img>
+    <ion-text class="HeaderSubTitle"> Prop Ref ID #<b>{{ order.bookOneOrderId }}</b> </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="onBack()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Order</ion-text>
+    </ion-toolbar>
+</ion-header>
+
+<ion-header class=" ion-no-margin">
+    <div class="header ion-no-padding">
+        <ion-progress-bar type="indeterminate" *ngIf="loader"></ion-progress-bar>
+        <div style="display: flex; justify-content: space-between;">
+            <div fxLayoutAlign.gt-xs="space-between start" fxLayout.xs="column" class="mt-1 ml-1">
+                <ion-chip class="text-white" *ngIf="order.totalOrderAmount > 0">
+                    Total :{{ order.totalOrderAmount | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip>
+                <ion-chip style="color: yellowgreen" selected>Paid: {{ getPaidAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip>
+                <ion-chip class="text-white" selected *ngIf="outStandingAmount() > 0" selected>Balance:
+                    {{outStandingAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip>
+                <ion-chip style="color: red" selected *ngIf="outStandingAmount() < 0" selected>Total Due: {{
+                    outStandingAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip>
+
+                <ion-chip style="color: red" selected *ngIf="getBillToCompanyAmount() > 0" selected>Bill To Company: {{
+                    getBillToCompanyAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip>
+
+                <ion-chip style="color: red" selected *ngIf="getBillToRoomAmount() > 0" selected>Bill To Room: {{
+                    getBillToRoomAmount() | currency:
+                    localCurrency:'symbol':'1.2-2' }}</ion-chip>
+            </div>
+            <div fxLayoutAlign.gt-xs="space-between end" fxLayout.xs="column" class="mt-1 ml-1" *ngIf="order.orderStatus != 'Completed'">
+                <button class="text-white" style="background-color: #1d174d;
+                text-align: center;
+                float: right;
+                padding: 10px;
+                margin-top: 3px;
+                margin-right: 5px;
+                border-radius: 20px;" (click)="orderCompleteDialog()" >
+                                Completed</button>
+
+                <button class="text-white" style="background-color: #1d174d;
+    text-align: center;
+    float: right;
+    padding: 10px;
+    margin-top: 3px;
+    margin-right: 5px;
+    border-radius: 20px;" (click)="openCollectPaymentModal()">
+                    Collect Payment</button>
+            </div>
+        </div>
+    </div>
+</ion-header>
+
+<ion-content no-padding class="animated fadeIn fast">
+    <ion-list>
+        <div *ngFor="let payment of payments; let i = index">
+            <ion-card (click)="onPaymentOption(payment)">
+                <!-- <ion-card > -->
+                <ion-card-header color="primary">
+                    <ion-row>
+                        <ion-col size="11">
+                            <!-- <ion-text>Payment Id:</ion-text>
+                            <ion-text class="TextValue">{{payment.id}}</ion-text> -->
+                        </ion-col>
+                        <!-- <ion-col size="1">
+                            <ion-row>
+                                <ion-icon (click)="onPaymentOption(payment);" name="ellipsis-vertical-outline"></ion-icon>
+                                
+                            </ion-row>
+                        </ion-col> -->
+                    </ion-row>
+                </ion-card-header>
+                <ion-card-content>
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-text color="primary">Payment Reference No:</ion-text>
+                            <ion-text class="TextValue">{{payment.billNo}}</ion-text>
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text color="primary">Date:</ion-text>
+                            <ion-text class="TextValue">{{payment.date | date:'MMM d, y'}}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text color="primary">Description:</ion-text>
+                            <ion-text class="TextValue">{{payment.description}}</ion-text>
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text color="primary">Amount:</ion-text>
+                            <ion-text class="TextValue">
+                                {{payment.transactionAmount| currency:
+                                localCurrency:'symbol':'1.2-2' }}
+                            </ion-text>
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text color="primary">Status:</ion-text>
+                            <ion-text class="TextValue">{{payment.status}}</ion-text>
+                        </ion-col>
+
+                        <ion-col size="12">
+                            <ion-text color="primary">Mode:</ion-text>
+                            <ion-text class="TextValue">{{ ceckModeOfpayment(payment.paymentMode) }}</ion-text>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+            </ion-card>
+        </div>
+    </ion-list>
+</ion-content>

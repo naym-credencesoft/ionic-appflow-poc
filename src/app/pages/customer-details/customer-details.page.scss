@@ -1,0 +1,160 @@
+:host {
+    ion-content {
+        --background: linear-gradient(
+            -135deg,
+            var(--ion-color-booking_back),
+            var(--ion-color-booking_back)
+        );
+    }
+    .bottom-item-card {
+        padding: 10px;
+    }
+    .item-text {
+        margin-top: 5px;
+    }
+    .listcard {
+        padding: 10px;
+    }
+    .checkindate-row {
+        margin-top: 5px;
+    }
+    .datavalue {
+        margin-left: 5px;
+    }
+
+    .status {
+        margin-left: 5px;
+    }
+
+    ion-toolbar {
+        --background: var(--ion-color-tm2-terciary2);
+        min-height: 80px;
+        border: none;
+    }
+
+    ion-content {
+        --background: #fff
+    }
+
+    .card-layout {
+
+        border-radius: 16px;
+        margin: 20px;
+        border: 1px solid #7b6e72 !important;
+        color: black;
+    }
+    .card-item {
+
+        border-radius: 5px;
+        color: black;
+        text-align: center;
+    }
+    .text-white{
+        color: black;
+    }
+}
+
+:host {
+    @media (min-width: 576px) {
+       
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+    }
+    @media (max-width: 576px) {
+        ion-toolbar {
+            position: absolute;
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+
+        .listcard {
+            margin-top: 100px;
+        }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    .HeaderTitle {
+        color: white;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 6px;
+
+    }
+
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 37px;
+        left: 41px;
+        font-size: 12px;
+        z-index: 100;
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+
+    .list-back{
+        background: #FFFFFF00;
+        z-index: 2;
+        position: relative;
+    }
+    .text-white{
+        color: black;
+    }
+
+    .footer {
+        --background: var(--ion-color-tm2-terciary1);
+        color: white;
+    }
+}

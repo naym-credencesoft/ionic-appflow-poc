@@ -1,0 +1,212 @@
+<ion-header>
+    <ion-toolbar  class="animated fadeIn customizedheader">
+        <ion-buttons slot="start">
+            <ion-back-button mode="md" icon="arrow-back" style="color: #fff;"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light">
+            <ion-text  class="HeaderTitle"
+                >Customer KYC</ion-text
+            >
+        </ion-text>
+
+        <ion-buttons slot="end" *ngIf="this.isDetails">
+            <ion-button
+                icon-left
+                size="small"
+                shape="round"
+                color="tertiary"
+                (click)="onEdit()"
+            >
+                <img
+                    src="assets/img/customer/edit.svg"
+                    width="23"
+                    height="23"
+                />
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-margin>
+    <ion-progress-bar
+        type="indeterminate"
+        *ngIf="loader"
+        reversed="true"
+    ></ion-progress-bar>
+    <ion-card class="bg-white">
+        <ion-grid no-padding>
+            <form [formGroup]="onKYCForm">
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text
+                            color="primary"
+                            class="rpc-text"
+                            style="font-size: 10px"
+                            >Identity Document Type*</ion-text
+                        >
+                        <ion-select
+                            class="dropdown"
+                            [disabled]="isDetails"
+                            [(ngModel)]="kyc.identityDocumentType"
+                            value="{{kyc.identityDocumentType}}"
+                            formControlName="documentType"
+                            placeholder="Select Identity Document Type"
+                            style="color:black"
+                        >
+                            <ion-row
+                                *ngFor="let data of kyc_IdentityDocumentType.kycList"
+                            >
+                                <ion-select-option value="{{data.value}}"
+                                    >{{ data.viewValue }}</ion-select-option
+                                >
+                            </ion-row>
+                        </ion-select>
+                        <p
+                            ion-text
+                            no-margin
+                            no-padding
+                            class="text08"
+                            *ngIf="onKYCForm.get('documentType').touched && onKYCForm.get('documentType').hasError('required')"
+                        >
+                            <ion-text
+                                no-margin
+                                no-padding
+                                color="danger"
+                                style="font-size: 11px"
+                            >
+                                Input field required
+                            </ion-text>
+                        </p>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text color="primary" style="font-size: 10px"
+                            >Identity Document Number*</ion-text
+                        >
+                        <ion-input
+                            class="input-background"
+                            readonly="{{isDetails}}"
+                            [(ngModel)]="kyc.identityDocumentNumber"
+                            formControlName="documentNumber"
+                            placeholder="Identity Document Number"
+                            inputmode="text"
+                            style="color:black"
+                        ></ion-input>
+
+                        <p
+                            ion-text
+                            no-margin
+                            no-padding
+                            class="text08"
+                            *ngIf="onKYCForm.get('documentNumber').touched && onKYCForm.get('documentNumber').hasError('required')"
+                        >
+                            <ion-text
+                                no-margin
+                                no-padding
+                                color="danger"
+                                style="font-size: 11px"
+                            >
+                                Input field required
+                            </ion-text>
+                        </p>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text color="primary" style="font-size: 10px">Front Side of the KYC</ion-text>
+                    </ion-col>
+                
+                    <ion-col size="12">
+                        <input matInput #file2 placeholder="Choose file" readonly class="pointercursor" (click)="upload2.click()" />
+                        <input [hidden]="true" type="file" #upload2 (change)="uploadFile($event, file2, 1)" />
+                
+                        <button class="mt-1" type="button" mat-button color="accent" mat-mini-fab (click)="upload2.click()">
+                            <ion-icon name="attach-outline"></ion-icon>
+                        </button>
+                    </ion-col>
+                </ion-row>
+                
+                <ion-row *ngIf="kyc.kycDocUrl != undefined && kyc.kycDocUrl != null">
+                    <ion-col size="12">
+                        <img [src]="kyc.kycDocUrl" width="200" height="auto" /> <!-- Display uploaded image -->
+                        <button style="background: red; color: white" class="cancel" mat-icon-button focusable="false" color="warn" (click)="onDeleteFile()">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </button>
+                    </ion-col>
+                </ion-row>
+                
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-text color="primary" style="font-size: 10px">Back Side of the KYC</ion-text>
+                    </ion-col>
+                
+                    <ion-col size="12">
+                        <input matInput #file3 placeholder="Choose file" readonly class="pointercursor" (click)="upload3.click()" />
+                        <input [hidden]="true" type="file" #upload3 (change)="uploadFile($event, file3, 2)" />
+                
+                        <button class="mt-1" type="button" mat-button color="accent" mat-mini-fab (click)="upload3.click()">
+                            <ion-icon name="attach-outline"></ion-icon>
+                        </button>
+                    </ion-col>
+                </ion-row>
+                
+                <ion-row *ngIf="kyc.kycDocBackPageUrl != undefined && kyc.kycDocBackPageUrl != null">
+                    <ion-col size="12">
+                        <img [src]="kyc.kycDocBackPageUrl" width="200" height="auto" /> <!-- Display uploaded image -->
+                        <button style="background: red; color: white" class="cancel" mat-icon-button focusable="false" color="warn" (click)="onDeleteBackFile()">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </button>
+                    </ion-col>
+                </ion-row>
+                
+
+                <ion-row>
+                    <ion-col size="6" *ngIf="!this.isDetails">
+                        <ion-button
+                            size="small"
+                            round
+                            expand="block"
+                            color="primary"
+                            [disabled]="!onKYCForm.valid || loader"
+                            (click)="onSubmit()"
+                        >
+                            Submit
+                        </ion-button>
+                    </ion-col>
+
+                    <ion-col size="6" *ngIf="this.isDetails">
+                        <ion-button
+                        
+                            size="small"
+                            round
+                            expand="block"
+                            color="primary"
+                            (click)="onEdit()"
+                            >Edit</ion-button
+                        >
+                    </ion-col>
+
+                    <ion-col
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            size="small"
+                            round
+                            expand="block"
+                            class="cancel-btn"
+                            (click)="cancel()"
+                            >Cancel</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+    </ion-card>
+</ion-content>

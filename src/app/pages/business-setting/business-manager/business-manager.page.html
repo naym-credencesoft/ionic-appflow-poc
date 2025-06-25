@@ -1,0 +1,123 @@
+
+
+<ion-header class="headerColor">
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
+    </ion-avatar>
+    
+    
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="navigateToPage()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Business Manager</ion-text>
+        
+    </ion-toolbar>
+    </ion-header>
+
+<ion-content>
+    <ion-grid fixed no-padding>
+
+        <form  [formGroup]="ManagerForm" > 
+
+                <ion-row>
+                    <ion-col size="12" padding>
+                
+                        <ion-list margin-bottom>
+                            <!-- <ion-list-header color="light">
+                              <ion-label class="fw700">Business Infor</ion-label>
+                            </ion-list-header> -->
+                    
+                        <ion-row>
+                            <ion-col size ="12" >
+                                <ion-list>    
+                                    <ion-item>
+                                        <ion-label color="dark" position="stacked">Manager First Name*</ion-label>
+                                        <ion-input inputmode="text"  formControlName="fname"  [(ngModel)]="property.managerFirstName" style="color:#333" ></ion-input>
+                                    </ion-item>
+                                </ion-list>
+                                <p ion-text color="danger" class="text08" *ngIf="ManagerForm.get('fname').dirty && ManagerForm.get('fname').hasError('required')">
+                                    <ion-text color="danger">
+                                           Input Field Empty
+                                    </ion-text>
+                                    </p>  
+                            </ion-col>
+                                
+                        </ion-row>     
+                            
+                        <ion-row>
+                            <ion-col size ="12" >
+                                <ion-list>    
+                                    <ion-item>
+                                        <ion-label color="dark" position="stacked">Manager Last Name*</ion-label>
+                                        <ion-input inputmode="text"  formControlName="lname"  [(ngModel)]="property.managerLastName" style="color:#333"></ion-input>
+                                    </ion-item>
+                                    <p ion-text color="danger" class="text08" *ngIf="ManagerForm.get('lname').dirty && ManagerForm.get('lname').hasError('required')">
+                                        <ion-text color="danger">
+                                               Input Field Empty
+                                        </ion-text>
+                                        </p>  
+                                </ion-list>
+                            </ion-col>
+                               
+                        </ion-row> 
+                        
+                        <ion-row>
+                            <ion-col size ="12" >
+                                <ion-list>    
+                                    <ion-item>
+                                        <ion-label color="dark" position="stacked">Email</ion-label>
+                                        <ion-input inputmode="text"  formControlName="email"  [(ngModel)]="property.managerEmailAddress" style="color:#333" ></ion-input>
+                                    </ion-item>
+                                </ion-list>
+                            </ion-col>
+                               
+                        </ion-row>  
+
+                        <ion-row>
+                            <ion-col size ="12" >
+                                <ion-list>    
+                                    <ion-item>
+                                        <ion-label color="dark" position="stacked">Phone</ion-label>
+                                        <ion-input inputmode="text"  formControlName="phone"  [(ngModel)]="property.managerContactNo" style="color:#333"></ion-input>
+                                    </ion-item>
+                                </ion-list>
+                            </ion-col>
+                               
+                        </ion-row>  
+
+                      
+                          
+                    
+                          </ion-list>
+                
+                  
+                        </ion-col>
+                      </ion-row>
+
+                      <div class="ion-margin-vertical">
+                        <ion-button icon-left size="medium" class="update-button" expand="full" shape="round" (click)="onSubmit()"
+                        [disabled]="!ManagerForm.valid || loader" tappable style="color: white;">
+                      
+                        Save
+                        </ion-button>
+                
+                
+                    </div>
+
+                
+            
+
+
+        </form>
+
+
+      
+    </ion-grid>
+
+</ion-content>

@@ -1,0 +1,121 @@
+<ion-header class="ion-no-border">
+  <ion-img class="header-image" src="/assets/img/icons/order-header.svg"></ion-img>
+
+  <ion-avatar class="profile">
+    <img src="{{this.userData.logoUrl}}" style="    object-fit: fill;" onerror="this.src='/assets/img/app-logo.png'" />
+  </ion-avatar>
+
+  <ion-img class="left-image-header" src="/assets/img/icons/order-header-left.svg"></ion-img>
+  <!-- <ion-text class="HeaderSubTitle"> Booking Management</ion-text> -->
+  <ion-toolbar>
+    <ion-buttons slot="start" style="color: #fff;" (click)="back()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-buttons>
+    <ion-text color="light" class="HeaderTitle">Audit Report</ion-text>
+  </ion-toolbar>
+</ion-header>
+
+
+
+
+<ion-content no-padding class="animated fadeIn fast">
+  <ion-card class="card-layout text-white">
+    <ion-grid no-padding>
+      <ion-grid>
+        <ion-row>
+
+          <ion-col size="12" class="tableheadOne table-responsive">
+            <table cellspacing="0" cellpadding="0" style="border: 2px solid black;">
+              <thead style="border: 2px solid black;">
+                <tr style="background-color: #1d174d; color:#fff">
+                  <th class="th" style="border: 2px solid black;">
+                    Audit Type
+
+                  </th>
+
+                  <th style="border: 2px solid black;" class="th">
+
+
+                    New Value
+                  </th>
+
+                  <th style="border: 2px solid black;" class="th">
+                    Previous Value
+
+                  </th>
+
+
+
+                  <th style="border: 2px solid black;" class="th">
+
+                    Operator Notes
+
+                  </th>
+                  <th style="border: 2px solid black;" class="th">
+                    Update Type
+
+                  </th>
+
+                  <th style="border: 2px solid black;" class="th">
+                    Updated By
+
+                  </th>
+                  <th style="border: 2px solid black;" class="th">
+                    Role
+
+                  </th>
+                  <th style="border: 2px solid black;" class="th">
+                    Updated Date
+
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody class="tableBody" *ngFor="let item of audits;let i= index">
+
+                <tr>
+
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.auditType}}
+                  </td>
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.newValue}}
+                  </td>
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.previousValue}}
+                  </td>
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.operatorNotes}}
+                  </td>
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.updateType}}
+                  </td>
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.updatedBy}}
+                  </td>
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.role}}
+                  </td>
+                  <td class="td tableSpacing" style="border: 2px solid black;">
+                    {{item.updatedAt | date:'yyyy-MM-dd HH:mm:ss' }}
+                  </td>
+
+
+
+                </tr>
+              </tbody>
+
+            </table>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+
+
+
+
+    </ion-grid>
+
+  </ion-card>
+
+</ion-content>

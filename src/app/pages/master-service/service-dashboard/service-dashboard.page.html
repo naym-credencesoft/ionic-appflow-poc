@@ -1,0 +1,518 @@
+<ion-header class="ion-no-border">
+    <ion-card class="card-container2">
+        <table>
+            <tr>
+                <td><ion-text class="card-continner2-text">Orders</ion-text></td>
+                <td><ion-text class="card-continner2-text">Dine In</ion-text></td>
+                <td><ion-text class="card-continner2-text">Take Away</ion-text></td>
+                <td><ion-text class="card-continner2-text">Room Order</ion-text></td>
+                <!-- <td><ion-text class="card-continner2-text">Delivery</ion-text></td> -->
+                <!-- <td><ion-text class="card-continner2-text">Home Delivery</ion-text></td> -->
+            </tr>
+            <tr>
+                <td><ion-text style="color: #FF17BE;" class="card-continner2-text">{{ totalOrder()}}</ion-text> </td>
+                <td><ion-text style="color: #DD2F2F;" class="card-continner2-text">{{ totalTableOrder()}}</ion-text>
+                </td>
+                <td><ion-text style="color: #0029FF;" class="card-continner2-text">{{totalTAOrder()}}</ion-text> </td>
+                <td> <ion-text style="color: #0029FF;" class="card-continner2-text">{{ totalRoomOrder() }}</ion-text>
+                </td>
+                
+                <!-- <td><ion-text style="color: #0029FF;" class="card-continner2-text">{{totalHDOrder() }}</ion-text> </td> -->
+        </table>
+    </ion-card>
+    <ion-card class="card-container">
+        <ion-row>
+            <ion-col size="12">
+
+                <ion-select class="card-item" [formControl]="BusinesService" [(ngModel)]="bserviceid"
+                    (ionChange)="setService(bserviceid)" name="Room" okText="Done" cancelText="Dismiss"
+                    style=" font-size: 18px; text-align: left; color: white;">
+                    <ion-select-option value="0">
+                        All
+                      </ion-select-option>
+                    <ng-container *ngFor="let Service of businessServiceList">
+                        <ion-select-option *ngIf="Service.active" [value]="Service.id" class="text-wrap">
+                            <p *ngIf="Service.name == 'Restaurants' && Service.brandName != null && Service.brandName !=''">{{ Service.name
+                            }}-{{Service.brandName}}</p>
+                          <p *ngIf="Service.name == 'Restaurants' && (Service.brandName == null || Service.brandName =='')">{{ Service.name }}</p>
+                          <p *ngIf="Service.name != 'Restaurants'">{{ Service.name }}</p>
+                        </ion-select-option>
+                    </ng-container>
+                </ion-select>
+                <ion-text *ngIf="!serviceSelected"
+                    style="position: absolute; top: 50%; left: 20px; z-index: 4; font-size: 20px; transform: translateY(-50%); color: #fff;">
+                    Select Services
+                </ion-text>
+          
+                <ion-icon name="caret-down-outline"
+                    style="position: absolute;
+                    top: 31px;
+                    right: 5px;
+                    z-index: 4;
+                    font-size: 25px;
+                    transform: translateY(-50%);
+                    color: #fff;"></ion-icon>
+
+            </ion-col>
+            <ion-col size="12">
+                <ion-row>
+                    <ion-text class="HeaderSec-title2">Service Statistics</ion-text>
+                </ion-row>
+                
+            </ion-col>
+            
+        </ion-row>
+        <!-- <ion-text class="HeaderSec-propertyName" style="margin-left: 23px;">{{this.property.name}}</ion-text> -->
+
+    </ion-card>
+
+ 
+
+
+    <ion-avatar class="profile">
+        <img 
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}" onerror="this.src='/assets/img/app-logo.png'" />
+    </ion-avatar>
+
+    <ion-img class="left-image-header" src="/assets/img/icons/Ellipse39.png"></ion-img>
+    <ion-toolbar class="toolbar">
+        <ion-buttons slot="start" class="back">
+            <img
+                (click)="menuAction()"
+                style="height: 25px;"
+                class="backbutton-icon"
+                src="/assets/img/icons/UnionOne.png"
+            />
+            <ion-text color="light" class="HeaderTitle" (click)="onMenu()" 
+                >Restaurant Dashboard</ion-text
+            >
+            <ion-img
+                src="/assets/img/icons/arrow-down.svg"
+                (click)="onMenu()"
+            ></ion-img>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content no-padding no-margin>
+
+
+
+    <ion-grid class="content-main">
+        <ion-row class="orderPageMenuOne" style="text-align: center;
+        font-size: 18px;
+        margin-top: 49px;
+        margin-bottom: 9px;">
+            <ion-col [ngClass]="{'selected': selectedCol === 'totalOrders'}" (click)="selectCol('totalOrders')"
+                style="border-right: 2px solid gray; padding: 10px;">
+                <div style="width: 100%;">Total Orders</div>
+            </ion-col>
+            <ion-col [ngClass]="{'selected': selectedCol === 'totalRevenue'}" (click)="selectCol('totalRevenue')"
+                style="border-left: 2px solid gray; padding: 10px;">
+                <div style="width: 100%;">Total Revenue</div>
+            </ion-col>
+        </ion-row>
+
+        <ion-row class="orderPageMenu" *ngIf="selectedCol !== ''" style="margin-top: -16px; margin-bottom: 10px;">
+            <ion-row class="orderPageSubMenu total-order-Revenue-section">
+                <div *ngIf="selectedCol === 'totalOrders'" style="width: 100%;">
+                    <table style="    border: 3px solid gray;  color: #1D174D;
+                    margin-top: 4px;
+                    margin-bottom: 0px;
+                    border-radius: 15px;
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;">
+                        <tr>
+                            <th class="table-head-design">Order Type</th>
+                            <th class="table-head-design">Qty</th>
+                            <th class="table-head-design">Price</th>
+                        </tr>
+                        <tr *ngIf="checkRestaurantService() === true">
+                            <td class="table-body-design">Dine In</td>
+                            <td class="table-body-design">{{ totalTableOrder() }}</td>
+                            <td class="table-body-design">{{totalTableOrderPrice() | currency : currency : "symbol" :
+                                "1.2-2" }}</td>
+                        </tr>
+                        <tr *ngIf="checkRestaurantService() === false">
+                            <td class="table-body-design">Instore</td>
+                            <td class="table-body-design">{{ totalTableOrder() }}</td>
+                            <td class="table-body-design">{{totalTableOrderPrice() | currency : currency : "symbol" :
+                                "1.2-2" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="table-body-design">Room</td>
+                            <td class="table-body-design">{{ totalRoomOrder() }}</td>
+                            <td class="table-body-design">{{getTotalRoomAmount() | currency : currency : "symbol" :
+                                "1.2-2" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="table-body-design">Takeaway</td>
+                            <td class="table-body-design">{{ totalTAOrder() }}</td>
+                            <td class="table-body-design">{{getTotalTAAmount() | currency : currency : "symbol" :
+                                "1.2-2" }}</td>
+                        </tr>
+                        <!-- <tr>
+                            <td class="table-body-design">Delivery</td>
+                            <td class="table-body-design">{{ totalHDOrder() }}</td>
+                            <td class="table-body-design">{{getTotalHDAmount() | currency : currency : "symbol" :
+                                "1.2-2" }}</td>
+                        </tr> -->
+                        <tr>
+                            <td class="table-body-design" colspan="2">Total Sales</td>
+                            <td class="table-body-design">{{ getTotalSalesAmount() | currency : currency : 'symbol' : '1.2-2' }}</td>
+                            
+                          </tr>
+                    </table>
+                </div>
+                <div style="text-align: center;" *ngIf="selectedCol === 'totalRevenue'" style="width: 100%;">
+                    <table style="    border: 3px solid gray;color: #1D174D;
+                    margin-top: 1px;
+                    margin-bottom: 0px;
+                    border-radius: 15px;
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;">
+                        <tr>
+                            <th class="table-head-design">Mode of Payment</th>
+                            <th class="table-head-design">Price</th>
+                        </tr>
+                        <tr *ngIf="getTotalPaymentAmountByStatus('Paid') > 0">
+                            <td class="table-body-design">Paid:</td>
+                            <td class="table-body-design">{{
+                                getTotalPaymentAmountByStatus("Paid")
+                                  | currency : currency : "symbol" : "1.2-2"
+                              }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'Cash') > 0">
+                            <td class="table-body-design">Cash:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "Cash")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'Card') > 0">
+                            <td class="table-body-design">Card:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "Card")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'Prepaid') > 0">
+                            <td class="table-body-design">Prepaid:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "Prepaid")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'CreditIndividual') > 0">
+                            <td class="table-body-design">Credit Individual:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "CreditIndividual")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'PaymentTerminal') > 0">
+                            <td class="table-body-design">Payment Terminal:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "PaymentTerminal")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'BankTransfer') > 0">
+                            <td class="table-body-design">BankTransfer:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "BankTransfer")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'Wallet') > 0">
+                            <td class="table-body-design">Wallet:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "Wallet")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'Cheque') > 0">
+                            <td class="table-body-design">Cheque:</td>
+                            <td class="table-body-design">{{
+                                getTotalAmountStatusAndMode("Paid", "Cheque")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'DemandDraft') > 0">
+                            <td class="table-body-design">Demand Draft:</td>
+                            <td class="table-body-design"> {{
+                                getTotalAmountStatusAndMode("Paid", "DemandDraft")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'Credit') > 0">
+                            <td class="table-body-design">Credit:</td>
+                            <td class="table-body-design"> {{
+                                getTotalAmountStatusAndMode("Paid", "Credit")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'UPI') > 0">
+                            <td class="table-body-design">UPI:</td>
+                            <td class="table-body-design"> {{
+                                getTotalAmountStatusAndMode("Paid", "UPI")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'BillToRoom') > 0">
+                            <td class="table-body-design">Credit Bill:</td>
+                            <td class="table-body-design"> {{
+                                getTotalAmountStatusAndMode("Paid", "BillToRoom")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr *ngIf="getTotalAmountStatusAndMode('Paid', 'PrePaid') > 0">
+                            <td class="table-body-design">Prepaid:</td>
+                            <td class="table-body-design"> {{
+                                getTotalAmountStatusAndMode("Paid", "PrePaid")
+                                | currency : currency : "symbol" : "1.2-2"
+                                }}</td>
+                        </tr>
+                        <tr  *ngIf="getTotalPaymentAmountByStatus('NotPaid') > 0">
+                            <td class="table-body-design">Not Paid:</td>
+                            <td class="table-body-design"> {{
+                                getTotalPaymentAmountByStatus("NotPaid")
+                                  | currency : currency : "symbol" : "1.2-2"
+                              }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </ion-row>
+        </ion-row>
+
+        <ion-row *ngIf="isNewOrder" class="orderPage" (click)="onOrderList()">
+            <ion-col size="8" style="color: #1D174D;">
+                <ion-row>
+                    <ion-text class="roomOrder_title">Go to the Order Dashboard</ion-text>
+                </ion-row>
+
+
+                <ion-row class="mt-1" style="    display: flex;
+                    align-items: center;">
+                    <ion-img src="/assets/img/icons/checked.svg"></ion-img> &nbsp;
+                    <ion-text class="roomOrder_title-2">Place an Order</ion-text>
+                </ion-row>
+                <ion-row style="    display: flex;
+                    align-items: center;">
+                    <ion-img src="/assets/img/icons/checked.svg"></ion-img> &nbsp;
+                    <ion-text class="roomOrder_title-2">Manage Orders and KOT</ion-text>
+                </ion-row>
+
+            </ion-col>
+            <ion-col size="4">
+                <ion-img style=" height: 70px;" src="/assets/img/icons/Order.svg"></ion-img>
+            </ion-col>
+        </ion-row>
+
+
+    
+
+        <ion-row class="mt-1">
+
+          
+
+            <ion-col size="6">
+                <div class="twoItemRow" (click)="onOrderList()">
+                    <div class="centerCol">
+                        <ion-img style="
+                    height: 32px;" src="/assets/img/icons/salesorder.svg"></ion-img>
+                    </div>
+                    <div class="centerCol">
+                        <ion-text class="twoItemRowtext">Sales Order Management
+                        </ion-text>
+                    </div>
+                    
+
+                </div>
+            </ion-col>
+
+            <ion-col size="6">
+                <div class="threeItemRow2" (click)="onOrderReport()">
+                    <div class="centerCol">
+                        <ion-img style="
+                    height: 32px;" src="/assets/icons/order-report.png"></ion-img>
+                    </div>
+                    <div class="centerCol">
+                        <ion-text class="twoItemRowtext">Order Report Management
+                        </ion-text>
+                    </div>
+                   
+                </div>
+            </ion-col>
+
+        </ion-row>
+
+        <ion-row class="mt-1">
+
+            <ion-col size="6">
+            
+                    <div class="threeItemRow2" (click)="onManageProduct()" *ngIf="isProductManagement">
+                        <div class="centerCol">
+                            <ion-img style="
+                        height: 32px;" src="/assets/img/icons/products.png"></ion-img>
+                        </div>
+                        <div class="centerCol">
+                            <ion-text class="twoItemRowtext">Product Management
+                            </ion-text>
+                        </div>
+                        
+                    </div>
+               
+
+                
+
+            </ion-col>
+            <!-- <ion-col size="6">
+            <ion-row class="threeItemRow1" (click)="onManageProduct()"  *ngIf="isProductManagement">
+                <ion-col size="12" class="centerCol">
+                    <ion-text class="twoItemRowtext">Product<br> Management
+                    </ion-text>
+                </ion-col>
+                <ion-col size="12" class="centerCol">
+                    <ion-img style="width: 50px;
+                        height: 53px;" 
+                    src="/assets/img/icons/product.svg"
+                ></ion-img>
+                </ion-col>
+            </ion-row>
+        </ion-col> -->
+
+            <ion-col size="6">
+        
+                    <div class="threeItemRow2" (click)="onManageProductGroup()" *ngIf="isProductManagement">
+                        <div class="centerCol">
+                            <ion-img style="
+                        height: 32px;" src="/assets/img/icons/salesorder.svg"></ion-img>
+                        </div>
+                        <div class="centerCol">
+                            <ion-text class="twoItemRowtext">Manage Product Group
+                            </ion-text>
+                        </div>
+                       
+                    </div>
+      
+
+                
+
+            </ion-col>
+
+            <ion-col size="6">
+                <div class="threeItemRow2" (click)="onMangeInvoice()" *ngIf="isInvoiceManagement">
+                    <div class="centerCol">
+                        <ion-img style="
+                    height: 32px;" src="/assets/img/icons/invoice.svg"></ion-img>
+                    </div>
+                    <div class="centerCol">
+                        <ion-text class="twoItemRowtext">Manage Invoice
+                        </ion-text>
+                    </div>
+                    
+                </div>
+            </ion-col>
+
+            <ion-col size="6">
+                <div class="twoItemRow" (click)="onMangeGuest()" *ngIf="isCustomerManagement">
+                    <div class="centerCol">
+                        <ion-img style="
+                    height: 32px;" src="/assets/img/icons/customer_management.svg"></ion-img>
+                    </div>
+                    <div class="centerCol">
+                        <ion-text class="twoItemRowtext">Customer Management
+                        </ion-text>
+                    </div>
+                  
+                </div>
+            </ion-col>
+
+        </ion-row>
+
+        <ion-row *ngIf="isNewReservation" class="mt-1">
+
+            <ion-col size="6">
+                <div class="twoItemRow" (click)="onNewReservation()">
+                    <div class="centerCol">
+                        <ion-img style="
+                    height: 32px;" src="/assets/img/icons/service_add.svg"></ion-img>
+                    </div>
+                    <div class="centerCol">
+                        <ion-text class="twoItemRowtext">New Reservation
+                        </ion-text>
+                    </div>
+                    
+                </div>
+            </ion-col>
+
+            <ion-col size="6">
+                <div class="twoItemRow" (click)="onReservationList()">
+                    <div class="centerCol">
+                        <ion-img style="
+                    height: 32px;" src="/assets/img/icons/service_manage.svg"></ion-img>
+                    </div>
+                    <div class="centerCol">
+                        <ion-text class="twoItemRowtext">Manage Reservation
+                        </ion-text>
+                    </div>
+                   
+
+                </div>
+            </ion-col>
+
+        </ion-row>
+
+    </ion-grid>
+    <div class="loader-everyOne" *ngIf="loader">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+
+</ion-content>
+
+<ion-footer text-center no-border >
+    <ion-toolbar  class="toolbar2">
+        <ion-tabs>
+            <ion-tab-bar slot="top" class="toolbar2">
+                <ion-tab-button
+                style="background-color: #259BBF;"
+                    *ngIf="isAccomodationDashboard || isBookingManagement"
+                    tab="1"
+                    class="tab-button"
+                    (click)="acDashboard()"
+                >
+                    <ion-text class="footer-text">Accommodation</ion-text>
+                </ion-tab-button>
+
+                <ion-tab-button
+                    tab="2"
+                    class="tab-button"
+                    style="background-color: #259BBF;"
+                    *ngIf="isAccomodationDashboard || isBookingManagement"
+                    (click)="onNewBooking()"
+                >
+                    <ion-img
+                        class="button-add"
+                        src="/assets/img/icons/+.png"
+                    ></ion-img>
+                </ion-tab-button>
+
+                <ion-tab-button
+                    tab="3"
+                    class="tab-button"
+                    style="background-color: #259BBF;"
+                    (click)="serviceDashboard()"
+                >
+                    <ion-text class="footer-text">Service</ion-text>
+                </ion-tab-button>
+            </ion-tab-bar>
+        </ion-tabs>
+    </ion-toolbar>
+</ion-footer>

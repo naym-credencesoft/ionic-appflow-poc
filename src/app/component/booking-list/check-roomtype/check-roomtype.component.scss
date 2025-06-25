@@ -1,0 +1,115 @@
+.roomcard{
+    margin-top: 50px;
+}
+
+ion-toolbar {
+    --background: #1D174D;
+    border: none;
+    color: white;
+}
+
+.mt-1{
+    margin-top: 10px;
+}
+.roomtype-card{
+    padding: 5px;
+}
+
+.HeaderTitle {
+    color: white;
+}
+
+.list-back{
+    background: #FFFFFF00;
+    z-index: 2;
+    position: relative;
+}
+
+.card-item {
+    border: 1px solid gray;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+}
+
+.taxName-selection{
+    margin-left: 10px;
+}
+
+.text-white {
+    color: #333;
+}
+
+
+
+.card-layout {
+    background: linear-gradient(
+        -0deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    backdrop-filter: blur(34px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 16px;
+    margin: 20px;
+    border: 1px solid #7b6e72 !important;
+    padding: 10px;
+}
+.list-card-item{
+    background: linear-gradient(
+        -0deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    backdrop-filter: blur(34px);
+    /* Note: backdrop-filter has minimal browser support */
+    border-radius: 5px;
+    color: white;
+}
+.card-item {
+    border: 1px solid gray;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+}
+
+.success {
+    border: 2px transparent;
+    color: #4f8a10;
+    background-color: #dff2bf;
+    border-radius: 3px;
+    margin: auto;
+    width: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    /* padding: 5px; */
+    /* background-image: url('https://i.imgur.com/Q9BGTuy.png'); */
+  }
+  
+  .error {
+    border: 2px transparent;
+    color: #d8000c;
+    background-color: #ffbaba;
+    border-radius: 3px;
+    margin: auto;
+    width: 70%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    /* padding: 5px; */
+    /* background-image: url('https://i.imgur.com/GnyDvKN.png'); */
+  }
+  
+
+.button-submit{
+    --background: #1D174D;
+    /* filter: drop-shadow(0px 4px 4px rgba(255, 255, 255, 0.25)); */
+    /* backdrop-filter: blur(17.7692px); */
+    --border-radius: 7px;
+    color: #fff;
+}
+
+.button-cancel{
+    --background: #E84424;
+    /* filter: drop-shadow(0px 4px 4px rgba(255, 255, 255, 0.25)); */
+    /* backdrop-filter: blur(17.7692px); */
+    --border-radius: 7px;
+    color: #fff;
+}

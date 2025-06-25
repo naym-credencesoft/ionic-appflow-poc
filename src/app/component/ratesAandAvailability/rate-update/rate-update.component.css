@@ -1,0 +1,421 @@
+table{
+    /* font-family: arial, sans-serif; */
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+    border: none;
+    margin: 0 auto;
+    border-style: hidden;
+}
+
+.tableBody {
+    margin-top: 10px;
+    box-sizing: border-box;
+    background: linear-gradient(-152.97deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    /* backdrop-filter: blur(34px); */
+    border-radius: 16px;
+    color: black;
+}
+
+
+.tablehead {
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: black;
+    /* font-family: "Inter"; */
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    background: linear-gradient(
+        -152.97deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    backdrop-filter: blur(34px);
+    border-radius: 16px;
+}
+
+
+
+
+
+
+.roundLeft{
+    border-radius: 16px 0px 0px 16px;
+}
+.roundRight{
+    border-radius: 0px 16px 16px 0px;
+}
+
+.roundTopLeft{
+    border-radius: 16px 0px 0px 0px;
+}
+.roundTopRight{
+    border-radius: 0px 16px 0px 0px;
+}
+/* Styles for the table */
+.table-style {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-style th, .table-style td {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .table-style .date-header {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  .table-style .room-detail {
+    font-weight: bold;
+  }
+  
+  .table-style .ota-name {
+    font-weight: bold;
+  }
+  
+  .table-style .logo {
+    height: 20px;
+    margin-right: 5px;
+  }
+  
+  .table-style .action {
+    text-align: center;
+  }
+  .table-rate-style td,th{
+    text-align: center !important;
+  }
+table .ota-style th {
+    padding-top: 1px;
+    font-weight: normal;
+}
+
+  .arrow-button {
+    
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%; /* Make the button round */
+    width: 20px; /* Adjust size */
+    height: 24px; /* Adjust size */
+    background-color: var(--ion-color-light); /* Optional: background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional: add shadow */
+  }
+  
+  .arrow-button:hover {
+    background-color: var(--ion-color-primary); /* Change background on hover */
+    color: var(--ion-color-light); /* Change text/icon color */
+  }
+  
+  .arrow-button ion-icon {
+    transition: transform 0.3s ease; /* Smooth icon transition */
+  }
+  
+  .arrow-button:hover ion-icon {
+    transform: scale(1.2); /* Slightly enlarge the icon on hover */
+  }
+  
+  .arrow-button ion-icon {
+    font-size: 16px; /* Icon size */
+    color: var(--ion-color-primary); /* Icon color */
+  }
+  .rates-drop-down{
+    border-bottom: 1px solid #3D737B;
+    
+  }
+  .dropdown {
+    position: relative;
+    display: inline-block;
+ 
+
+    .dropdown-menu {
+      position: absolute;
+      background: #ffffff;
+      border: 1px solid #3D737B !important;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      padding: 5px 0;
+      
+      z-index: 1000;
+      min-width: 150px;
+      right: 30px;
+      left: -94px !important;
+      ion-item {
+        --background: #fff;
+        --color: #333;
+        --padding-start: 10px;
+        --padding-end: 10px;
+        text-align: center;
+  
+        &:hover {
+          background: #f1f1f1;
+        }
+      }
+    }
+  }
+  
+
+.singleItem {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    color: black;
+    /* font-family: "Inter"; */
+    font-style: normal;
+    font-weight: 500;
+    line-height: 18px;
+    background: linear-gradient(
+        -152.97deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    backdrop-filter: blur(34px);
+    border-radius: 16px;
+}
+
+.card-item {
+    background: linear-gradient(
+        -0deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    backdrop-filter: blur(34px);
+    width: 60px;
+    color: black;
+    text-align: center;
+}
+
+.list-back {
+    background: #ffffff00;
+    z-index: 2;
+    position: relative;
+}
+
+.mt-1{
+    margin-top: 10px;
+}
+/* ................................. */
+@media (min-width: 700px) and (max-width: 1023px){
+    .table-container {
+        margin-top: -16px;
+      margin-left: 20px;
+      margin-right: 20px;
+       
+      }
+}
+@media (min-width: 601px){
+    .table-container {
+        margin-top: -16px;
+      margin-left: 20px;
+      margin-right: 20px;
+       
+      }
+    .backbtn {
+        background-color: #3D737B;
+        width: 50%;
+        border-radius: 20px;
+        padding: 10px;
+        font-size: 18px;
+    }
+    .btnOne {
+        display: flex;
+        justify-content: center;
+    }
+    .desiginIcon{
+        position: absolute; font-size: 20px;
+        right: 50px;
+        transform: translateY(-50%);
+        color: black;
+        margin-top: 16px;
+    }
+
+    .btmRate {
+        background-color: #1D174D;
+        color: #fff;
+        font-weight: 700;
+        padding: 5px;
+        margin-top: 20px;
+        /* padding-left: 8px; */
+        /* padding-right: 8px; */
+        border-radius: 14px;
+        padding-top: 16px;
+        padding-bottom: 18px;
+        width: 139px;
+    }
+    .divided {
+        border: 1px solid #5F5656; 
+        margin-right: 10px;
+        border-radius: 10px;
+    }
+    .headingrate{
+        margin-top: 60px; 
+    }
+    
+    .masterratebtm {
+        background-color: #3D737B;
+        width: 319px;
+        border-radius: 20px;
+        padding: 18px;
+        font-size: 18px;
+    }
+
+    .responsive-table th,
+  .responsive-table td {
+      width: 150px; /* Set the desired width for each cell */
+      height: 60px; /* Set the desired height for each cell */
+      border: 1px solid #ddd;
+      text-align: center;
+      box-sizing: border-box;
+      color: black;
+  }
+  .responsive-table th,
+  .responsive-table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+    color: black;
+  }
+  .leftassign {
+    margin-left: 5px !important;
+}
+}
+
+@media (max-width: 600px) {
+    .leftassign {
+        margin-left: 5px ;
+    }
+    .table-container {
+        margin-top: -16px;
+        display: flex;
+        justify-content: center;
+       
+      }
+    .btnOne {
+        margin-top: 50px;
+    }
+    .responsive-table th,
+    .responsive-table td {
+      padding: 8px;
+      font-size: 14px;
+    }
+    .desiginIcon{
+        position: absolute; font-size: 20px;
+        right: 32px;
+        transform: translateY(-50%);
+        color: black;
+        margin-top: 16px;
+    }
+
+    .responsive-table th {
+        padding: 10px;
+    }
+
+    .responsive-table th,
+    .responsive-table td {
+      text-align: left;
+      border: 1px solid #ddd;
+      color: black;
+    }
+
+    .card-layout {
+        background: linear-gradient(0deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%) !important;
+        -webkit-backdrop-filter: blur(34px);
+        backdrop-filter: blur(34px);
+        border-radius: 16px;
+        margin: 20px;
+        border: 1px solid #7b6e72 !important;
+        margin-top: 140px !important;
+    }
+
+    .btmRate {
+        background-color: #1D174D;
+        color: #fff;
+        font-weight: 700;
+        padding: 10px;
+        margin-top: 20px;
+        /* padding-left: 6px; */
+        /* padding-right: 6px; */
+        border-radius: 11px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        font-size: 16px;
+    }
+    .divided {
+        border: 1px solid #5F5656; 
+        margin-left: 10px; 
+        border-radius: 10px;
+        margin-right: 10px;
+    }
+
+    .headingrate{
+        margin-top: 140px; 
+    }
+   
+    .masterratebtm {
+        background-color: #3D737B;
+        border-radius: 16px;
+        padding: 16px;
+        font-size: 18px;
+    }
+
+    .rateimgOne {
+        height: 32px !important;
+    }
+}
+@media (max-width: 440px) {
+    .leftassign {
+        margin-left: 5px !important;
+    }
+}
+@media (max-width: 480px) {
+    .sectionD {
+        width:80px;
+    }
+    
+
+    .responsive-table th,
+    .responsive-table td {
+      padding: 6px;
+      font-size: 12px;
+    }
+  }
+
+  .responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+  
+  }
+  .spacing {
+    border-left: 1px solid #ddd ;
+    border-right: 1px solid #ddd ;
+    border-bottom: 1px solid #ddd;
+    padding: 7px;
+  }
+
+  
+  
+
+  
+  .responsive-table th {
+    background-color: #F0F0F0 !important;
+    font-weight: bold;
+    padding: 7px;
+    padding-top: 15px;
+  }
+
+  .responsive-table tr {
+    background-color: #fff!important;
+    font-weight: normal;
+    height:30px;
+  }

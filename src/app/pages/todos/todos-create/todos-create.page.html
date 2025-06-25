@@ -1,0 +1,538 @@
+
+
+  <ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle">Todos </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<ion-segment [(ngModel)]="Selection" class="marginationn" style="margin-bottom: 20px;">
+    <ion-segment-button *ngFor="let i of noOfIndex" value="{{i}}" class="s_sb"  disabled>
+        <ion-icon name="square"></ion-icon>
+    </ion-segment-button>
+</ion-segment>
+
+<ion-card *ngIf="Selection ==='1'" style="margin: 0px !important; padding: 10px; border:1px solid gray">
+    <ion-card-title class="title" style="font-size: 15px; color: #333">Task Informaation</ion-card-title>
+    <form [formGroup]="onInfoForm">
+    <ion-row>
+        <ion-col size="12">
+
+            <ion-label position="stacked" color="primary">Task Type*
+            </ion-label>
+
+            <ion-select     
+                [(ngModel)]="todos.taskType"
+                [disabled]="this.isReadOnly"
+                placeholder="Task Type"
+                class="dropdown"
+                (ionChange)="setTaskType(todos.taskType)"
+                formControlName="TaskType">
+
+                <ion-select-option value="Booking"> Booking  </ion-select-option>
+                <ion-select-option value="Checking Daily Arrival"> Checking Daily Arrival</ion-select-option>
+                <ion-select-option value="Checking Daily Departure"> Checking Daily Departure  </ion-select-option>
+                <ion-select-option value="Check Stationary"> Check Stationary  </ion-select-option>
+                <ion-select-option value="Check Today’s Mail or Room"> Check Today’s Mail or Room  </ion-select-option>
+                <ion-select-option value="Check  & Clear concierge"> Check  & Clear concierge  </ion-select-option>
+                <ion-select-option value="Luggage PickUp">Luggage PickUp </ion-select-option>
+                <ion-select-option value="OTA Booking Entry"> OTA Booking Entry  </ion-select-option>
+                <ion-select-option value="Room Cleaning"> Room Cleaning</ion-select-option>
+                <ion-select-option value="Shift Handover"> Shift Handover  </ion-select-option>
+                <ion-select-option value="Training"> Training  </ion-select-option>
+                <ion-select-option value="Transport Arrangement"> Transport Arrangement  </ion-select-option>
+                <ion-select-option value="Others"> Others  </ion-select-option>
+
+            </ion-select>
+        </ion-col>
+
+        <ion-col size="12">
+            <ion-text color="primary" style="font-size: 12px;">Notes</ion-text>
+            <ion-textarea class="input-background" formControlName="Notes" [(ngModel)]="todos.notes" name="Notes"
+                        clearOnEdit="true" placeholder="Notes" rows="3"></ion-textarea>
+        </ion-col>
+
+        <ion-col size="12">
+
+            <ion-label position="stacked" color="primary">Business Service*
+            </ion-label>
+
+            <ion-select  
+                [(ngModel)]="this.businessService.id"
+                [disabled]="this.isReadOnly || isServiceDisabled"
+                placeholder="Business Service"
+                class="dropdown"
+                (ionChange)="setService(todos.businessServiceId)"
+                formControlName="businesService">
+
+                <ion-select-option *ngFor="let Service of businessServices"
+                [value]="Service.id">  <p>{{ Service.name }}</p>  </ion-select-option>
+               
+
+            </ion-select>
+        </ion-col>
+
+
+    </ion-row>
+
+    <ion-row>
+        <ion-col size="12" >
+
+            <ion-button size="small" round expand="block" color="primary"  [disabled]="!onInfoForm.valid|| loader" (click)="onNext()" >Next</ion-button>
+        </ion-col>
+
+        <!-- <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                <ion-button size="small" round expand="block" color="primary" (click)="close()">Cancel</ion-button>
+        </ion-col> -->
+</ion-row>
+
+    </form>
+</ion-card>
+
+
+
+<ion-card *ngIf="Selection ==='2'" style="margin: 0px !important; padding: 10px; border:1px solid gray">
+    <ion-card-title class="title" style="font-size: 15px; color: #333">Booking Information</ion-card-title>
+    <form [formGroup]="bookingForm">
+
+        <ion-row>
+            <ion-col size="12">
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Room Type*
+                </ion-text>
+                <ion-select placeholder="Select Room Type" [value]="todos.roomId" [disabled]="this.isReadOnly"
+                [(ngModel)]="todos.roomId" (ionChange)="setRoom(todos.roomId)" class="dropdown"
+                    name="Room" okText="Done" cancelText="Dismiss"
+                    formControlName="roomTypeBooking">
+
+                    <ion-row >
+                        <ion-select-option *ngFor="let room of rooms" [value]="room.id">
+                            {{room.name}}
+                        </ion-select-option>
+
+                    </ion-row>
+                </ion-select>
+
+            </ion-col>
+
+            <ion-col size="12">
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Room No
+                </ion-text>
+
+                <ion-select  placeholder="Room No"  [disabled]="this.isReadOnly"
+                [(ngModel)]="roomNumbers" class="dropdown"
+                    name="Room" okText="Done" cancelText="Dismiss"
+                    formControlName="bookingRoomNo" multiple="true">
+
+                    <ion-row >
+                        <ion-select-option *ngFor="let room of roomDetails" [value]="room.roomNumber">
+                            {{ room.roomNumber }}
+                        </ion-select-option>
+
+                    </ion-row>
+                </ion-select>
+            </ion-col>
+            <ion-col size="6">
+
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Arrival Date*
+                </ion-text>
+                <ion-row>
+                    <ion-col no-padding size="12" >
+                        <ion-datetime [(ngModel)]="todos.checkInDate" min="{{this.minDate}}"
+                            max="{{ this.maxDate }}" (ionChange)="fromDateChange()"
+                            formControlName="bookingFromDate" no-padding  class="datepicker"
+                            color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                            placeholder="Select Date"></ion-datetime>
+                        <!-- -->
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+
+            <ion-col size="6">
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Departure Date*
+                </ion-text>
+            
+                <ion-row>
+                    <ion-col no-padding size="12">
+                        <ion-datetime [(ngModel)]="todos.checkOutDate" min="{{this.toMinDate}}"
+                        max="{{this.toMaxDate}}" (ionChange)="onCheckOutDateChange()"
+                        formControlName="bookingToDate" no-padding class="datepicker"
+                        color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="Select Date"></ion-datetime>
+                    </ion-col>
+                </ion-row>
+
+            </ion-col>
+
+        </ion-row>
+
+        <div *ngFor="let msg of msgs">
+            <span *ngIf="msg.summary" class="error" [innerHTML]="msg.summary"></span>
+            <span *ngIf="msg.detail" class="success" [innerHTML]="msg.detail"></span>
+          </div>
+
+        <ion-row>
+            
+            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                    <ion-button size="small" round expand="block" color="primary" (click)="onBack()">Back</ion-button>
+            </ion-col>
+            <ion-col size="6" >
+    
+                <ion-button size="small" round expand="block" color="primary"  [disabled]="!this.isReadOnly && (!bookingForm.valid || this.booking.available === undefined || this.booking.available == false || this.booking == undefined || loader)" (click)="onNext()" >Next</ion-button>
+            </ion-col>
+    </ion-row>
+    </form>
+</ion-card>
+
+<ion-card *ngIf="Selection ==='3'" style="margin: 0px !important; padding: 10px; border:1px solid gray">
+    <ion-card-title class="title" style="font-size: 15px; color: #333">Guest Information</ion-card-title>
+
+    
+    <div class="button-action mt-1" fxLayoutAlign.gt-xs="space-between start" fxLayout.xs="column">
+        <div class="search-box mat-elevation-z2" fxFlex="1 1 0%">
+         <ion-searchbar placeholder="Search Customer" class="list-search" mode="md" [(ngModel)]="customerSearchResult" (ionClear)="clear($event)"
+            (ionChange)="getItems($event)" padding-left padding-right class="ion-no-padding">
+        </ion-searchbar>
+          
+        </div>
+      </div>
+      <ion-list *ngIf="isShowCustomerList">
+        <div *ngFor="let data of customers" >
+
+            <ion-item (click)="onCustomerDetailsSelected(data)">
+              {{ data.firstName }}&nbsp;{{ data.lastName }} <b>{{data.email}}</b> &nbsp;<b>{{data.mobile}}</b>
+
+              </ion-item>
+            <!-- <ion-divider></ion-divider> -->
+        </div>
+      </ion-list>
+      <ion-card-content style="height: 100%; display: flex; align-items: center; justify-content: center;">
+        <ion-avatar >
+        
+          <img src="{{logoUrl }}" >
+       </ion-avatar>
+        
+      </ion-card-content>
+      <div class="ion-margin-vertical upload-logo">
+        <ion-button icon-left size="small" 
+        #file2
+        (click)="upload2.click()"
+        class="update-button" expand="full" shape="round" 
+        [disabled]="loader" tappable>
+        <ion-icon name="cloud-upload"></ion-icon>
+        Upload Profile Image
+        </ion-button>
+
+        <input
+        [hidden]="true"
+        type="file"
+        #upload2
+        (change)="onImageSelect($event)"
+        accept="image/*" /> 
+
+
+    </div>
+    <form [formGroup]="guestForm">
+       
+        <ion-row>
+            <ion-col size="6">
+
+                <ion-text color="primary" style="font-size: 12px;">First Name*</ion-text>
+                <ion-input class="input-background"  formControlName="FirstName"
+                    [(ngModel)]="todos.firstName" placeholder="First Name" inputmode="text"  readonly ="{{ this.isReadOnly }}">
+                </ion-input>
+            </ion-col>
+
+            <ion-col size="6">
+
+                <ion-text color="primary" style="font-size: 12px;">Last Name*</ion-text>
+                <ion-input class="input-background"  formControlName="LastName"
+                    [(ngModel)]="todos.lastName" placeholder="Last Name" inputmode="text"  readonly ="{{ this.isReadOnly }}">
+                </ion-input>
+            </ion-col>
+
+            <ion-col size="12">
+            
+                <ion-text color="primary" style="font-size: 12px;">Email</ion-text>
+                <ion-input formControlName="bookingEmail"  class="input-background" [(ngModel)]="todos.email" readonly="{{isReadOnlyCustomerInfo|| this.isReadOnly}}"
+                            placeholder="Email address" inputmode="email"></ion-input>
+     
+
+            </ion-col>
+
+            <ion-col size="12">
+                <ion-text color="primary" style="font-size: 12px;">Country</ion-text>
+                <ion-select [(ngModel)]="countryCode" placeholder="Select Country Code" [disabled]="isReadOnlyCustomerInfo || isReadOnly" class="dropdown"
+                formControlName="country" (ionChange)="setCountry(countryCode)" class="dropdown">
+                   <ion-select-option *ngFor="
+                   let country of this.CountryArray.countries
+                 " [value]="country.countryCode">
+               {{ country.viewValue }}
+                   </ion-select-option>
+
+               </ion-select>
+
+            </ion-col>
+
+            <ion-col size="3">
+                <ion-text color="primary" style="font-size: 12px;"></ion-text>
+                <ion-input formControlName="CountryCodeController" readonly  class="input-background"
+                            [(ngModel)]="countryCode" placeholder="Code" inputmode="text">
+                        </ion-input>
+            </ion-col>
+            <ion-col size="9">
+                <ion-text color="primary" style="font-size: 12px;"></ion-text>
+                <ion-input formControlName="bookingContact"
+                            [(ngModel)]="PhoneNumberWithoutCode" class="input-background" placeholder="Phone Number" inputmode="text"  readonly="{{isReadOnlyCustomerInfo || isReadOnly}}">
+                        </ion-input>
+            </ion-col>
+
+
+
+        </ion-row>
+
+        <div class="button-action mt-1" fxLayoutAlign.gt-xs="space-between start" fxLayout.xs="column" style="text-align: center">
+            <div *ngIf="emailCheck() != null" fxFlex="55">
+              <p style="color: red;">Customer with email already exist </p>
+              <p>Name : <b>{{emailCheck().firstName}} {{emailCheck().lastName}}</b></p>
+              <p *ngIf="emailCheck().email != null && emailCheck().email != undefined">  Email : <b>{{emailCheck().email}}</b></p>
+              <p *ngIf="emailCheck().mobile != null && emailCheck().mobile != undefined">  Mobile : <b>{{emailCheck().mobile}}</b></p>
+              <p>Do you want to add this customer information here </p> <a (click)="AddHere(emailCheck())" class="searchCustomer" target="_blank"><u> <b> Add Here</b></u></a>
+
+            </div>
+
+            <div *ngIf="phoneCheck() != null" fxFlex="55">
+              <p style="color: red;">Customer with mobile Number already exist </p>
+              <p>Name : <b>{{phoneCheck().firstName}} {{phoneCheck().lastName}}</b></p>
+              <p *ngIf="phoneCheck().email != null && phoneCheck().email != undefined">  Email : <b>{{phoneCheck().email}}</b></p>
+              <p *ngIf="phoneCheck().mobile != null && phoneCheck().mobile != undefined">  Mobile : <b>{{phoneCheck().mobile}}</b></p>
+              <p>Do you want to add this customer information here </p> <a (click)="AddHere(phoneCheck())" class="searchCustomer" target="_blank"><u> <b> Add Here</b></u></a>
+
+            </div>
+
+
+
+
+            <div fxLayout="grid" fxFlex="1 1 0%" fxLayoutAlign="end">
+              <p>If you want to search customer again please</p>
+              <a (click)="onCustomerSearchReset()" class="searchCustomer" target="_blank"><u class="ml-1"><b> click
+                    here</b></u></a>
+            </div>
+          </div>
+
+          <ion-row class="button-guest">
+            
+            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                    <ion-button size="small" round expand="block" color="primary" (click)="onBack()">Back</ion-button>
+            </ion-col>
+            <ion-col size="6" >
+    
+                <ion-button size="small" round expand="block" color="primary" [disabled]="!guestForm.valid || loader"  (click)="onNext()" >Next</ion-button>
+            </ion-col>
+        </ion-row>
+
+    </form>
+</ion-card>
+
+<ion-card *ngIf="Selection ==='4'" style="margin: 0px !important; padding: 10px; border:1px solid gray">
+    <ion-card-title class="title" style="font-size: 15px; color: #333">Room Information</ion-card-title>
+    <form [formGroup]="roomInfoForm">
+
+        <ion-row>
+            <ion-col size="12">
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Room Type
+                </ion-text>
+                <ion-select placeholder="Select Room Type" [value]="todos.roomId" [disabled]="this.isReadOnly"
+                [(ngModel)]="todos.roomId" (ionChange)="setRoom(todos.roomId)" class="dropdown"
+                    name="Room" okText="Done" cancelText="Dismiss"
+                    formControlName="roomType">
+
+                    <ion-row >
+                        <ion-select-option *ngFor="let room of rooms" [value]="room.id">
+                            {{room.name}}
+                        </ion-select-option>
+
+                    </ion-row>
+                </ion-select>
+
+            </ion-col>
+
+            <ion-col size="12">
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Room No
+                </ion-text>
+
+                <ion-select  placeholder="Room No"  [disabled]="this.isReadOnly"
+                [(ngModel)]="roomNumbers" class="dropdown"
+                    name="Room" okText="Done" cancelText="Dismiss"
+                    formControlName="roomNo" multiple="true">
+
+                    <ion-row >
+                        <ion-select-option *ngFor="let room of roomDetails" [value]="room.roomNumber">
+                            {{ room.roomNumber }}
+                        </ion-select-option>
+
+                    </ion-row>
+                </ion-select>
+            </ion-col>
+          
+
+        </ion-row>
+
+
+        <ion-row>
+            
+            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                    <ion-button size="small" round expand="block" color="primary" (click)="onBack()">Back</ion-button>
+            </ion-col>
+            <ion-col size="6" >
+    
+                <ion-button size="small" round expand="block" color="primary" [disabled]="!roomInfoForm.valid  || loader"  (click)="onNext()" >Next</ion-button>
+            </ion-col>
+    </ion-row>
+    </form>
+</ion-card>
+
+<ion-card *ngIf="Selection ==='5'" style="margin: 0px !important; padding: 10px; border:1px solid gray">
+    <ion-card-title class="title" style="font-size: 15px; color: #333">Task Assignee</ion-card-title>
+
+    
+    <div class="button-action mt-1" fxLayoutAlign.gt-xs="space-between start" fxLayout.xs="column">
+        <div class="search-box mat-elevation-z2" fxFlex="1 1 0%">
+         <ion-searchbar placeholder="Search Customer" class="list-search" mode="md" [(ngModel)]="customerSearchResult" (ionClear)="clear($event)"
+            (ionChange)="applyFilterEmp($event)" padding-left padding-right class="ion-no-padding">
+        </ion-searchbar>
+          
+        </div>
+      </div>
+      <ion-list *ngIf="isShowCustomerList">
+        <div *ngFor="let data of employees" >
+
+            <ion-item (click)="onEmpDetailsSelected(data)">
+              {{ data.firstName }}&nbsp;{{ data.lastName }} <b>{{data.email}}</b> &nbsp;<b>{{data.phoneNumber}}</b>
+
+              </ion-item>
+            <!-- <ion-divider></ion-divider> -->
+        </div>
+      </ion-list>
+
+    <form [formGroup]="assigneeForm">
+       
+        <ion-row>
+            <ion-col size="6">
+
+                <ion-text color="primary" style="font-size: 12px;">Assignee Name</ion-text>
+                <ion-input class="input-background"  formControlName="Assignee"
+                    [(ngModel)]="todos.assignedTo"   placeholder="Assignee Name" inputmode="text"  readonly ="{{ this.isReadOnly }}">
+                </ion-input>
+            </ion-col>
+
+            <ion-col size="6">
+
+                <ion-text color="primary" style="font-size: 12px;">Assignee Contact*</ion-text>
+                <ion-input class="input-background"  formControlName="AssignedToContact"
+                [(ngModel)]="todos.assignedToContact"   placeholder="Assignee Contact" inputmode="text"  readonly ="{{ this.isReadOnly }}">
+                </ion-input>
+            </ion-col>
+
+            <ion-col size="6">
+
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Start Date
+                </ion-text>
+                <ion-row>
+                    <ion-col no-padding size="12" >
+                        <ion-datetime [(ngModel)]="todos.startDate"
+                            formControlName="StartDate" no-padding  class="datepicker"
+                            color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                            placeholder="Select Date"></ion-datetime>
+                        <!-- -->
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+
+            <ion-col size="6">
+                <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;"> Due Date
+                </ion-text>
+            
+                <ion-row>
+                    <ion-col no-padding size="12">
+                        <ion-datetime [(ngModel)]="todos.dueDate" 
+                        formControlName="DueDate" no-padding class="datepicker"
+                        color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="Select Date"></ion-datetime>
+                    </ion-col>
+                </ion-row>
+
+            </ion-col>
+
+           
+
+
+
+        </ion-row>
+
+       
+
+          <ion-row class="button-guest">
+            
+            <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                    <ion-button size="small" round expand="block" color="primary" (click)="onBack()">Back</ion-button>
+            </ion-col>
+            <ion-col size="6" >
+    
+                <ion-button size="small" round expand="block" color="primary" [disabled]="!assigneeForm.valid || loader"  (click)="onNext()" >Next</ion-button>
+            </ion-col>
+        </ion-row>
+
+    </form>
+</ion-card>
+
+<ion-card *ngIf="Selection ==='f'" style="margin: 0px !important; padding: 10px; border:1px solid gray">
+    <ion-card-title class="title" style="font-size: 15px; color: #333">Finish</ion-card-title>
+
+    <div class="finishMessage" >
+        <h2 *ngIf="todos.id === undefined">Do you want to create this Todos</h2>
+        <h2 *ngIf="todos.id != undefined">Do you want to update this Todos</h2>
+      </div>
+
+      <ion-row class="button-guest">
+            
+        <ion-col size="6" size-xl="6" size-sm="6" size-md="6" size-lg="6">
+                <ion-button size="small" round expand="block" class="btn-back" (click)="onBack()">Back</ion-button>
+        </ion-col>
+        <ion-col size="6" >
+
+            <ion-button size="small" round expand="block" color="primary" [disabled]="loader"  (click)="finish()" >
+                <span *ngIf="todos.id === undefined">Create</span>
+                <span *ngIf="todos.id != undefined">Update and Finish</span>
+            </ion-button>
+        </ion-col>
+    </ion-row>
+
+</ion-card>
+
+
+
+</ion-content>

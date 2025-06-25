@@ -1,0 +1,71 @@
+<ion-header>
+    <ion-toolbar color="light" class="animated fadeIn">
+
+        <ion-buttons slot="start">
+            <ion-back-button mode ="md" icon="arrow-back"></ion-back-button>
+        </ion-buttons>
+        <ion-text color="secondary" class="HeaderTitle">Product Dashboard</ion-text>
+       
+    </ion-toolbar>
+</ion-header>
+
+<ion-content no-padding no-margin>
+    <ion-grid no-margin no-padding>
+        <ion-row no-margin no-padding>
+            <ion-col no-margin no-padding size="6">
+                <ion-card class="bg-white ion-padding" style="border-radius: 8px; height:100%;" (click)="onManageProduct()">
+
+                    <ion-row class="ion-justify-content-center">
+                       
+                        <ion-img no-margin style="height: 70px; " src="assets/icon/reservation.svg"></ion-img>
+
+                    </ion-row>
+
+                    <ion-label class="ion-justify-content-center item-text" no-margin no-padding>
+                        <ion-row class="ion-justify-content-center">
+                            <ion-text style="font-size: 17px; text-align: center" color="primary">Manage <br>Product
+                            </ion-text>
+                        </ion-row>
+
+                    </ion-label>
+                </ion-card>
+            </ion-col>
+            <ion-col no-margin no-padding size="6" >
+
+                <ion-card class="bg-white ion-padding" style="border-radius: 8px;  height:100%;" (click)="onManageProductGroup()">
+                    <ion-row class="ion-justify-content-center">
+                    
+                        <ion-img no-margin style="height: 70px; " src="assets/icon/service.svg"></ion-img>
+
+                 
+                    </ion-row>
+
+                    <ion-row class="ion-justify-content-center item-text" no-margin no-padding>
+                        <ion-col no-margin no-padding>
+                            <ion-row class="ion-justify-content-center">
+                                <ion-text style="font-size: 17px;text-align: center" color="primary">Manage<br>Product Group
+                                </ion-text>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+                </ion-card>
+            </ion-col>
+
+
+           
+
+        </ion-row>
+
+      
+    </ion-grid>
+
+   
+
+  
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar style=" height: 50px;">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

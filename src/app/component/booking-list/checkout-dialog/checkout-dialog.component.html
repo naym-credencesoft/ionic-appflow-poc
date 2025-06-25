@@ -1,0 +1,615 @@
+<ion-card class="roomcard card scrollable-content">
+    <ion-card-title style="font-size: 20px" class="text-white"
+        >Checkout Form</ion-card-title
+    >
+    <ion-grid>
+        <span class="success" style="color:#333"
+            >Booking departure date
+            <b
+                >{{ this.booking.toTime | date : "MMM d, y" }}
+                {{ this.booking.toTime | date : "hh:mm aa" }} </b
+            >.
+            <span *ngIf="!isDepartureTimematch()" class="ml-1"
+                >Set booking checkout date & time as departure date & time
+                <a (click)="setTime(this.booking.toTime)" target="_blank"
+                    ><u class="SET">SET</u>
+                </a>
+            </span>
+            <br />
+        </span>
+
+        <span class="error" *ngIf="!isCheckInDateIntervalMatch" style="color:#333"
+            >Please set checked out date between
+            <b>{{ this.booking.fromDate | date : "MMM d, y" }}</b> to
+            <b>{{ this.booking.toDate | date : "MMM d, y" }}</b> booking date.
+        </span>
+
+        <form [formGroup]="onCheckedOutForm" *ngIf="!CheckoutBooking">
+            <ion-row>
+                <ion-col
+                    size="12"
+                    size-xl="12"
+                    size-sm="12"
+                    size-md="12"
+                    size-lg="12"
+                >
+                    <ion-progress-bar
+                        type="indeterminate"
+                        *ngIf="loader"
+                        reversed="true"
+                    ></ion-progress-bar>
+
+                    <ion-item lines="none" style="
+                    border: 1px solid gray;
+                    margin-bottom: 10px;
+                    margin-top: 10px;"> 
+                        <ion-label class="text-white" style="font-size: 14px;">Departure Date</ion-label>
+                        <ion-datetime
+                        style="font-size: 14px;"
+                            (ionChange)="dateCheck()"
+                            formControlName="checkedOutTime"
+                            class="card-item"
+                            [(ngModel)]="booking.checkoutTime"
+                            displayFormat="D MMM YYYY H:mm"
+                            min= "2000-12-31"
+                             max="2100-12-31"
+                        ></ion-datetime>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-row
+                *ngIf="isBothChargeAvailable() === true && !currentTimeCheckout"
+            >
+                <ion-segment
+                    mode="md"
+                    class="segmentSec"
+                    [(ngModel)]="chargeType"
+                    formControlName="ChargeSelection"
+                >
+                    <ion-segment-button value="EDC">
+                        <ion-label>Extra Day Charge</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="LCC">
+                        <ion-label>Late Checkout Charge</ion-label>
+                    </ion-segment-button>
+                </ion-segment>
+            </ion-row>
+
+            <ion-row>
+                <p
+                    class="error mb-1 p-1" style="color:#333"
+                    *ngIf="
+                        !currentTimeCheckout &&
+                        isLateCheckoutCharge() &&
+                        chargeType === 'LCC' &&
+                        !currentTimeCheckout
+                    "
+                >
+                    Late checkout will add extra charge :
+                    {{
+                        this.service.afterTaxAmount
+                            | currency : currency : "symbol" : "1.2-2"
+                    }}
+                    <br />
+                    Would you like to add this service charge.
+                </p>
+
+                <div
+                    style="width: 100%"
+                    class="success mb-1 p-1"
+                    *ngIf="
+                        !currentTimeCheckout &&
+                        isExtraDayCharge() &&
+                        chargeType === 'EDC'
+                    "
+                >
+                    <p class="extraCharge mb-1" style="color:#333">
+                        <strong
+                            >Extra day charge will be added 1 Night extra charge
+                            for this booking.</strong
+                        >
+                    </p>
+
+                    <table style="width: 100%" class="total-details">
+                        <thead>
+                            <tr class="total-details-tr">
+                                <th fxFlex="20" class="total-details-td-th">
+                                    Room Price
+                                </th>
+
+                                <th fxFlex="15" class="total-details-td-th">
+                                    Night(s)
+                                </th>
+                                <th fxFlex="15" class="total-details-td-th">
+                                    Room Quantity
+                                </th>
+
+                                <th fxFlex="15" class="total-details-td-th">
+                                    Guest(s)
+                                </th>
+                                <th fxFlex="35" class="total-details-td-th">
+                                    Amount
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr class="total-details-tr">
+                                <td fxFlex="20">
+                                    <span
+                                        class="plan-default-price"
+                                        *ngIf="
+                                            this.plan != null &&
+                                            this.plan != undefined &&
+                                            this.plan.amount != null &&
+                                            this.totalPlanAmount != null &&
+                                            this.totalPlanAmount != undefined &&
+                                            this.totalPlanAmount !=
+                                                this.plan.amount
+                                        "
+                                    >
+                                        {{
+                                            plan.amount
+                                                | currency
+                                                    : currency
+                                                    : "symbol"
+                                                    : "1.2-2"
+                                        }}</span
+                                    >
+                                    <span
+                                        class="gap-planamount"
+                                        *ngIf="
+                                            this.totalPlanAmount != null &&
+                                            this.totalPlanAmount != undefined
+                                        "
+                                    >
+                                        {{
+                                            this.totalPlanAmount
+                                                | currency
+                                                    : currency
+                                                    : "symbol"
+                                                    : "1.2-2"
+                                        }}</span
+                                    >
+                                </td>
+
+                                <td fxFlex="15">
+                                    <span class="default-night">{{
+                                        booking.noOfNights
+                                    }}</span>
+                                    <span class="gap-planamount">{{
+                                        differenceDay
+                                    }}</span>
+                                </td>
+                                <td fxFlex="15">
+                                    {{ extraDayChargebooking.noOfRooms }}
+                                </td>
+
+                                <td fxFlex="15">
+                                    {{ extraDayChargebooking.noOfPersons }}
+                                </td>
+                                <td fxFlex="35">
+                                    {{
+                                        this.calculateRoomPrice()
+                                            | currency
+                                                : currency
+                                                : "symbol"
+                                                : "1.2-2"
+                                    }}
+                                </td>
+                            </tr>
+
+                            <tr class="total-details-tr">
+                                <td>
+                                    <h1
+                                        style="
+                                            width: 100%;
+                                            border: 1px solid black;
+                                            border-collapse: collapse;
+                                            margin-top: 10px;
+                                            border-radius: 10px;
+                                        "
+                                    ></h1>
+                                </td>
+                            </tr>
+                            <tr class="total-details-tr">
+                                <td fxFlex="80">
+                                    Extra Pax Charge ({{
+                                        this.extraDayChargebooking
+                                            .noOfExtraPerson
+                                    }})
+                                </td>
+                                <td fxFlex="30">
+                                    {{
+                                        extraDayChargebooking.extraPersonCharge
+                                            | currency
+                                                : currency
+                                                : "symbol"
+                                                : "1.2-2"
+                                    }}
+                                </td>
+                            </tr>
+
+                            <tr class="total-details-tr">
+                                <td fxFlex="80">
+                                    Extra Child(ren) Charge ({{
+                                        this.extraDayChargebooking
+                                            .noOfExtraChild
+                                    }})
+                                </td>
+                                <td fxFlex="30">
+                                    {{
+                                        extraDayChargebooking.extraChildCharge
+                                            | currency
+                                                : currency
+                                                : "symbol"
+                                                : "1.2-2"
+                                    }}
+                                </td>
+                            </tr>
+
+                            <tr class="total-details-tr">
+                                <td fxFlex="80">
+                                    Discount ({{
+                                        extraDayChargebooking.discountPercentage
+                                            | number : "1.0-2"
+                                    }}%)
+                                </td>
+                                <td fxFlex="30">
+                                    {{
+                                        extraDayChargebooking.discountAmount
+                                            | currency
+                                                : currency
+                                                : "symbol"
+                                                : "1.2-2"
+                                    }}
+                                </td>
+                            </tr>
+
+                            <tr class="total-details-tr">
+                                <td fxFlex="80"><strong>Net Amount</strong></td>
+                                <td fxFlex="30">
+                                    <strong>
+                                        {{
+                                            afterDiscountAmount
+                                                | currency
+                                                    : currency
+                                                    : "symbol"
+                                                    : "1.2-2"
+                                        }}</strong
+                                    >
+                                </td>
+                            </tr>
+
+                            <tr class="total-details-tr">
+                                <td fxFlex="80">Tax Amount</td>
+                                <td fxFlex="30">
+                                    {{
+                                        extraDayChargebooking.taxAmount
+                                            | currency
+                                                : currency
+                                                : "symbol"
+                                                : "1.2-2"
+                                    }}
+                                </td>
+                            </tr>
+
+                            <tr class="total-details-tr">
+                                <td fxFlex="80">
+                                    <strong
+                                        >Total Payable Amount for ({{
+                                            differenceDay
+                                        }}
+                                        Night(s))</strong
+                                    >
+                                </td>
+                                <td fxFlex="30">
+                                    <strong
+                                        >{{
+                                            extraDayChargebooking.payableAmount
+                                                | currency
+                                                    : currency
+                                                    : "symbol"
+                                                    : "1.2-2"
+                                        }}
+                                    </strong>
+                                </td>
+                            </tr>
+
+                            <tr class="total-details-tr">
+                                <td fxFlex="80">
+                                    Total Payable Amount for ({{
+                                        booking.noOfNights
+                                    }}
+                                    Night(s))
+                                </td>
+                                <td fxFlex="30">
+                                    {{
+                                        booking.payableAmount
+                                            | currency
+                                                : currency
+                                                : "symbol"
+                                                : "1.2-2"
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="extraCharge mb-1 mt-1">
+                        <strong
+                            >Do you want to add extra day charge in this
+                            booking.</strong
+                        >
+                    </h4>
+                </div>
+
+                <div
+                    style="width: 100%"
+                    class="success mb-1 p-1"
+                    *ngIf="
+                        BookingService != null && BookingService != undefined
+                    "
+                >
+                    <h4 class="extraCharge mb-1">
+                        <strong
+                            >Late checkout charge already added in this
+                            booking.</strong
+                        >
+                    </h4>
+                </div>
+
+                <div
+                    class="error mb-1 p-1"
+                    *ngIf="!isCheckOutDateMatch && isCheckInDateIntervalMatch"
+                >
+                    <p style="color:#333">
+                        Booking departure date & time
+                        <b
+                            >{{ this.booking.toTime | date : "MMM d, y" }}
+                            {{ this.booking.toTime | date : "hh:mm aa" }}
+                        </b>
+                        but you selected checkout date & time
+                        <b
+                            >{{ this.booking.checkoutTime | date : "MMM d, y" }}
+                            {{ this.booking.checkoutTime | date : "hh:mm aa" }}
+                        </b>
+                        that will affect booking extra day charge.
+                    </p>
+
+                    <br />
+                    <p class="mt-1" style="color:#333">
+                        Would you like to change the date and checkout so that
+                        charge will be auto calculate base on date.
+                        <br />
+                        or checkout
+                        <b
+                            >{{ this.booking.checkoutTime | date : "MMM d, y" }}
+                            {{ this.booking.checkoutTime | date : "hh:mm aa" }}
+                        </b>
+                        and add full booking day charge.
+                    </p>
+                </div>
+            </ion-row>
+    
+            <ion-row  *ngIf="
+                (isLateCheckoutCharge() && !currentTimeCheckout) ||
+                (this.isExtraDayCharge() && !currentTimeCheckout)
+                ">
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="currentTCheckout()"
+                        ><ion-text class="text-white"
+                            >CURRENT TIME CHECKOUT</ion-text
+                        >
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="dontPay()"
+                        ><ion-text class="text-white"
+                            >BOOKING DEPARTURE TIME CHECKOUT</ion-text
+                        >
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="payLateCheckOut()"
+                        ><ion-text class="text-white">YES</ion-text>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+           
+
+            <ion-row
+                *ngIf="
+                    currentTimeCheckout ||
+                    (!timeCheck() &&
+                        !isExtraDayCharge() &&
+                        isCheckOutDateMatch) ||
+                    (timeCheck() &&
+                        this.BookingService != null &&
+                        isCheckOutDateMatch)
+                "
+            >
+                <ion-col size="6">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="cancel()"
+                        ><ion-text >Close</ion-text>
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="6">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        [disabled]="
+                            loader ||
+                            !onCheckedOutForm.valid ||
+                            !isCheckInDateIntervalMatch ||
+                            !isCheckOutDateMatch
+                        "
+                        (click)="onCheckOut()"
+                        ><ion-text > Check-Out</ion-text>
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        [disabled]="loader"
+                        (click)="onDateChangeAndCheckout()"
+                        ><ion-text >
+                            Date change & check-out</ion-text
+                        >
+                    </ion-button>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        [disabled]="loader"
+                        (click)="onCheckOut()"
+                        ><ion-text >
+                            Add full charge & check-out</ion-text
+                        >
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="!isCheckOutDateMatch">
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="onDateChangeAndCheckout()"
+                        ><ion-text > DATE CHANGE & CHECKOUT</ion-text>
+                    </ion-button>
+                </ion-col>
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="onCheckOut()"
+                        ><ion-text > ADD FULL CHARGE & CHECKOUT</ion-text>
+                    </ion-button>
+                </ion-col>
+                <ion-col size="12">
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="cancel()"
+                        ><ion-text >CLOSE</ion-text>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+
+            <div *ngIf="CheckoutBooking">
+                <div
+                    fxLayoutAlign.gt-xs="space-between start"
+                    fxLayout.xs="column"
+                    class="success mb-1 p-1"
+                >
+                    <h3>
+                        Booking checkout date & time
+                        <b
+                            >{{
+                                this.booking.checkoutTime | date : "MMM d, y"
+                            }}
+                            {{ this.booking.checkoutTime | date : "hh:mm aa" }}
+                        </b>
+                    </h3>
+                </div>
+
+                <ion-row>
+                    <ion-col
+                        size="12"
+                        
+                    >
+                        <ion-button
+                            shape="round"
+                            expand="full"
+                            class="button-submit"
+                            [disabled]="loader || !onCheckedOutForm.valid"
+                            (click)="onCheckOut()"
+                            ><ion-text class="text-white">CHECKOUT</ion-text>
+                        </ion-button>
+                    </ion-col>
+
+                    <ion-col
+                        size="12"
+                      
+                    >
+                        <ion-button
+                            shape="round"
+                            expand="full"
+                            class="button-submit"
+                            (click)="cancel()"
+                        >
+                            <ion-text class="text-white">CLOSE</ion-text>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </div>
+
+            <!-- <ion-row no-padding id="first-content" class="action-button">
+                <ion-col
+                    size="6"
+                    size-xl="6"
+                    size-sm="6"
+                    size-md="6"
+                    size-lg="6"
+                >
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        [disabled]="loader || !onCheckedOutForm.valid"
+                        (click)="onCheckOut()"
+                        ><ion-text class="text-white">Check-Out</ion-text>
+                    </ion-button>
+                </ion-col>
+
+                <ion-col
+                    size="6"
+                    size-xl="6"
+                    size-sm="6"
+                    size-md="6"
+                    size-lg="6"
+                >
+                    <ion-button
+                        shape="round"
+                        expand="full"
+                        class="button-submit"
+                        (click)="cancel()"
+                    >
+                        <ion-text class="text-white">Cancel</ion-text>
+                    </ion-button>
+                </ion-col>
+            </ion-row> -->
+        </form>
+    </ion-grid>
+</ion-card>

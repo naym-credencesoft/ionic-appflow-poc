@@ -1,0 +1,148 @@
+
+<ion-header class="headerColor">
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
+    </ion-avatar>
+    
+    
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="navigateToPage()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Bank Details</ion-text>
+        
+    </ion-toolbar>
+    </ion-header>
+
+<ion-content>
+    
+
+    <ion-grid fixed no-padding>
+
+
+        <form  [formGroup]="BankDetailsForm" > 
+
+            <ion-row>
+                <ion-col size="12" padding>
+            
+                    <ion-list margin-bottom>
+                        <!-- <ion-list-header color="light">
+                          <ion-label class="fw700">Business Infor</ion-label>
+                        </ion-list-header> -->
+                
+                    <ion-row>
+                        <ion-col size ="12" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Bank Name*</ion-label>
+                                    <ion-input inputmode="text"  formControlName="BankNameFC"  [(ngModel)]="bankAccount.bankName" ></ion-input>
+                                </ion-item>
+                            </ion-list>
+                            <p ion-text color="danger" class="text08" *ngIf="BankDetailsForm.get('BankNameFC').dirty && BankDetailsForm.get('BankNameFC').hasError('required')">
+                                <ion-text color="danger">
+                                       Input Field Empty
+                                </ion-text>
+                                </p>  
+                        </ion-col>
+                            
+                    </ion-row>     
+                        
+                    <ion-row>
+                        <ion-col size ="12" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Branch Name</ion-label>
+                                    <ion-input inputmode="text"  formControlName="BranchNameFC"  [(ngModel)]="bankAccount.branchName" ></ion-input>
+                                </ion-item>
+                                <p ion-text color="danger" class="text08" *ngIf="BankDetailsForm.get('BranchNameFC').dirty && BankDetailsForm.get('BranchNameFC').hasError('required')">
+                                    <ion-text color="danger">
+                                           Input Field Empty
+                                    </ion-text>
+                                    </p>  
+                            </ion-list>
+                        </ion-col>
+                           
+                    </ion-row> 
+                    
+                    <ion-row>
+                        <ion-col size ="12" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Account Name*</ion-label>
+                                    <ion-input inputmode="text"  formControlName="AccountNameFC"  [(ngModel)]="bankAccount.accountName" ></ion-input>
+                                </ion-item>
+                                <p ion-text color="danger" class="text08" *ngIf="BankDetailsForm.get('AccountNameFC').dirty && BankDetailsForm.get('AccountNameFC').hasError('required')">
+                                    <ion-text color="danger">
+                                           Input Field Empty
+                                    </ion-text>
+                                    </p>  
+                            </ion-list>
+                        </ion-col>
+                           
+                    </ion-row>  
+
+                    <ion-row>
+                        <ion-col size ="12" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Account Number*</ion-label>
+                                    <ion-input inputmode="text"  formControlName="AccountNumberFC"  [(ngModel)]="bankAccount.accountNumber" ></ion-input>
+                                </ion-item>
+                                <p ion-text color="danger" class="text08" *ngIf="BankDetailsForm.get('AccountNumberFC').dirty && BankDetailsForm.get('AccountNumberFC').hasError('required')">
+                                    <ion-text color="danger">
+                                           Input Field Empty
+                                    </ion-text>
+                                    </p>  
+                            </ion-list>
+                        </ion-col>
+                           
+                    </ion-row>  
+
+                    <ion-row>
+                        <ion-col size ="12" >
+                            <ion-list>    
+                                <ion-item>
+                                    <ion-label color="dark" position="stacked">Swift Code</ion-label>
+                                    <ion-input inputmode="text"  formControlName="SwiftCodeFC"  [(ngModel)]="bankAccount.swiftCode" ></ion-input>
+                                </ion-item>
+                                <p ion-text color="danger" class="text08" *ngIf="BankDetailsForm.get('SwiftCodeFC').dirty && BankDetailsForm.get('SwiftCodeFC').hasError('required')">
+                                    <ion-text color="danger">
+                                           Input Field Empty
+                                    </ion-text>
+                                    </p>  
+                            </ion-list>
+                        </ion-col>
+                           
+                    </ion-row>  
+
+                  
+                      
+                
+                      </ion-list>
+            
+              
+                    </ion-col>
+                  </ion-row>
+
+                  <div class="ion-margin-vertical">
+                    <ion-button
+                    [disabled]="!BankDetailsForm.valid || loader"
+                    icon-left size="medium" class="update-button" expand="full" shape="round" (click)="onSubmit()"
+                    tappable style="color: white;">
+                  
+                    Save
+                    </ion-button>
+            
+            
+                </div>
+
+    </form>
+
+      
+    </ion-grid>
+</ion-content>

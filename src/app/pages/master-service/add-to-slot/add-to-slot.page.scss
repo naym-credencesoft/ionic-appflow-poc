@@ -1,0 +1,104 @@
+:host {
+    ion-content {
+        --background: linear-gradient(-135deg, var(--ion-color-booking_back), var(--ion-color-booking_back));
+        --padding-start:10px;
+        --padding-end : 10px;
+        --padding-top : 10px;
+        --padding-bottom: 10px;
+    }
+
+    .toolbar{
+        --background: var(--ion-color-secondary-gradient);
+      }
+    .minus-item{
+        height: 17px;
+        margin-right: 5px;
+        border-radius: 50px 50px 50px 50px;
+    }
+    .add-item{
+        height: 17px;
+        margin-left: 5px;
+        border-radius: 50px 50px 50px 50px;
+        margin-top: 1px;
+    }
+    .item{
+        padding-left: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .item2-checkout{
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .sellunitPriceVariation{
+        margin-left: 5px;
+    }
+
+      .value-text{
+          margin-left: 5px;
+      }
+
+    .listcard{
+
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 5px;
+    }
+
+.quantity {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    border-radius: 2px 2px 2px 2px;
+    .qs {
+      background-color: #7168a1;
+      margin-top: 10px;
+      width: 22px;
+      padding-left: 4px;
+      height: 22px;
+      border-radius: 50%;
+      border: none;
+      text-align: center;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+  }
+    // --background: #f8f8f8;
+
+    // .cart {
+    //     --background: #f8f8f8;
+    //     padding-top: 16px;
+    //     padding-bottom: 16x;
+    //     display: flex;
+    //     justify-content: center;
+    //   }
+
+    .cart {
+        display: flex;
+        justify-content: center;
+        padding: 16px 0px;
+        
+        background: #7168a1;
+        .count {
+          margin-left: 5px;
+          width: 32px;
+          height: 20px;
+          background: #57bfa1;
+          border-radius: 10px;
+          display: inline-block;
+          text-align: center;
+        }
+      }
+.order-amount{
+  margin-top: 3px;
+}
+
+
+}
+.secondary-gradient{
+    background: var(--ion-color-secondary-gradient);
+    color: #fff;
+  }

@@ -1,0 +1,350 @@
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Master Availabilty Update </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="onCancel()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content no-padding class="animated fadeIn fast">
+    <ion-card class="card-layout text-white">
+        <ion-grid no-padding>
+            <form [formGroup]="addOrUpdateOTAAvailability">
+                <ion-row style="margin-top: 10px">
+                    <ion-text style=" font-size: 15px; color: black; margin: 0 0 5px 10px;">Choose Room <b style="color:red">*</b></ion-text>
+                    <ion-col size="12">
+                        
+                        <ion-select
+                            placeholder="Select Room Type"
+                            [value]="RoomName"
+                            value="hjj"
+                            name="Room"
+                            okText="Done"
+                            [formControl]="RoomName"
+                            [(ngModel)]="otaAvailability.roomId"
+                            (ionChange)="setRoomId(otaAvailability.roomId)"
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="font-size: 15px;text-align: left;"
+                        >
+                            <ion-row>
+                                <ion-select-option
+                                    [value]="item.id"
+                                    *ngFor="let item of  this.roomnamesone"
+                                >
+                                    {{item.name}}
+                                </ion-select-option>
+                            </ion-row>
+                        </ion-select>
+                        <ion-icon name="caret-down-outline" style="position: absolute; top: 50%; font-size: 20px;right: 5px; transform: translateY(-50%); color: black;"></ion-icon>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row style="margin-top: 10px">
+                    <ion-col size="12" style="position: relative;">
+                        <ion-input
+                          readonly
+                          style="font-size: 15px; text-align: left; padding-left: 14px !important;background-color: #dadada; color:#938585 !important"
+                          class="card-item"
+                          placeholder="Available"
+                          value="Available"
+                        ></ion-input>
+                        <span
+                          style="position: absolute; color: black; top: 50%; right: 20px; transform: translateY(-50%); font-size: 20px;z-index: 2; color:#938585 !important"
+                        >
+                          {{highestNoOfRooms}}
+                        </span>
+                      </ion-col>
+                      
+            </ion-row>
+                       
+               
+                <ion-row style="margin-top: 10px">
+                    <ion-text style="    font-size: 15px; color: black; margin: 0 0 5px 10px;">From Date <b style="color:red">*</b></ion-text>
+                        <ion-col size="12">
+                            <ion-datetime
+                                value="2"
+                                style=" font-size: 15px;text-align: left;"
+                                [formControl]="rateAndAvailFromDate"
+                                [(ngModel)]="otaAvailability.fromDate"
+                                (ionChange)="updateMaxToDate()"
+                                no-padding
+                                class="card-item"
+                                displayFormat="DD/MM/YYYY"
+                                placeholder="DD/MM/YYYY"
+                                min= "2000-12-31"
+                              max="2200-12-31"
+                            >
+                            
+                            </ion-datetime>
+                            <ion-icon name="calendar" style="    position: absolute;
+                            top: 50%;
+                            font-size: 20px;
+                            right: 8px;
+                            transform: translateY(-50%);
+                            color: black;"></ion-icon>
+                        </ion-col>
+                   
+                </ion-row>
+                <ion-row style="margin-top: 10px">
+                    <ion-text style=" font-size: 15px; color: black; margin: 0 0 5px 10px;">To Date: <b style="color:red">*</b></ion-text>
+                    <ion-col size="12">
+                        <ion-datetime
+                            value="2"
+                            style="font-size: 15px;text-align: left;"
+                            [formControl]="rateAndAvailToDate"
+                            [(ngModel)]="otaAvailability.toDate"
+                            no-padding
+                            class="card-item"
+                            displayFormat="DD/MM/YYYY"
+                            placeholder="DD/MM/YYYY"
+                            [min]="otaAvailability.fromDate"
+                            [max]="maxToDate"
+                        >
+                        
+                        </ion-datetime>
+                        <ion-icon name="calendar" style="    position: absolute;
+                        top: 50%;
+                        font-size: 20px;
+                        right: 8px;
+                        transform: translateY(-50%);
+                        color: black;"></ion-icon>
+                    </ion-col>
+               
+            </ion-row>
+                      
+                <ion-row style="margin-top: 10px">
+                    <ion-col size="12">
+                        <ion-text style="   font-size: 15px; color: black; margin: 0 0 5px 10px;"
+                            >No of Available <b style="color:red">*</b></ion-text
+                        >
+                    </ion-col>
+
+                    <ion-grid
+                        class="ion-align-items-center"
+                        style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-bottom: 20px;
+                        "
+                    >
+                        <div
+                            style="
+                                border-radius: 20px;
+                                overflow: hidden;
+                                background: linear-gradient(
+                                    0deg,
+                                    rgba(255, 255, 255, 0.1) 0%,
+                                    rgba(255, 255, 255, 0) 100%
+                                );
+                                
+
+                                color: black;
+                                border: 2px solid rgba(255, 255, 255, -1);
+                                width: 100%;
+                                height: 45px;
+                                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                            "
+                        >
+                            <ion-row class="">
+                                <ion-col
+                                size="4"
+                                style="text-align: center; font-size: 30px;font-weight: bold;"
+                            >
+                                <!-- <ion-icon
+                                    *ngIf="noOfAvailbale > 0"
+                                    (click)="updateCounter(-1)"
+                                    name="remove"
+                                ></ion-icon> -->
+                                <span style="position: absolute; top: 45%; font-size: 30px;left: 50px; transform: translateY(-50%); color:black" *ngIf="noOfAvailbale > 0" (click)="updateCounter(-1)">-</span>
+                            </ion-col>
+                                <ion-col
+                                    size="4"
+                                    style="text-align: center; font-size: 20px;font-weight: bold;"
+                                >
+                                    <span id="noOfAvailbale"
+                                        >{{noOfAvailbale}}</span
+                                    >
+                                </ion-col>
+                                <ion-col
+                                    size="4"
+                                    style="
+                                        text-align: center;
+                                        font-size: 30px;
+                                    "
+                                >
+                                    <!-- <ion-icon
+                                        (click)="updateCounter(1)"
+                                        name="add"
+                                    >
+                                    </ion-icon> -->
+                                    <span style="position: absolute; top: 45%; font-size: 30px;right: 50px; transform: translateY(-50%);color:black" *ngIf="noOfAvailbale < highestNoOfRooms" (click)="updateCounter(1)">+</span>
+                                </ion-col>
+                            
+                            </ion-row>
+                        </div>
+                    </ion-grid>
+
+                </ion-row>
+                <!-- <ion-row>
+                    <ion-col size="12">
+                        <ion-col size="12">
+                            <ion-checkbox
+                            style="margin-top: 5px;"
+                                [(ngModel)]="updateInPMSCheckbox"
+                                [formControl]="ChildrenNo"
+                                (ionChange)="updateCheckboxesone(updateInPMSCheckbox)"
+                            ></ion-checkbox>
+                        </ion-col>
+                        <ion-text
+                            class="check-in-out-text"
+                            style="font-size: 19px; position: absolute; color: black"
+                        >
+                            Property Management System
+                        </ion-text>
+                    </ion-col>
+                </ion-row> -->
+                
+                <ion-row style="margin-bottom: 10px; margin-top: 10px;">
+                    <ion-col size="12">
+                        <ion-col size="12">
+                            <ion-checkbox
+                                [(ngModel)]="selectAllCheckbox"
+                                (ionChange)="updateCheckboxes()"
+                                [formControl]="PersonNo"
+                            ></ion-checkbox>
+                        </ion-col>
+
+                        <ion-text style="font-size: 15px; position: absolute; color: black">
+                            Online Travel Agency  <b style="color:red">*</b>
+                        </ion-text>
+                    </ion-col>
+                    
+                </ion-row>
+
+                <ion-row
+                    *ngIf="propertyOTA?.length >= 0 && otaOne?.length === propertyOTA?.length"
+                    style="display: flex; margin: auto; border: 1px solid rgb(197, 197, 197);border-radius: 10px; margin-top: 10px;"
+                >
+                    <ion-col
+                        size="3.6"
+                        style="
+                            border-radius: 20px;
+                            margin: 5px;
+                        "
+                        *ngFor="let externalSite of propertyOTA;let i = index;"
+                    >
+                        <ion-row>
+                            <ion-col size="4" style="margin: auto !important">
+                                <ion-checkbox
+                                    [(ngModel)]="otaOne[i]"
+                                    [formControl]="PersonNo"
+                                    (click)="otaselected(externalSite.onlineTravelAgencyName)"
+                                ></ion-checkbox>
+                            </ion-col>
+                            <ion-col size="8">
+    
+                                
+
+                                <span
+                                *ngIf="externalSite?.onlineTravelAgencyLogoUrl == null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'">{{
+                                externalSite?.onlineTravelAgencyName }}</span>
+                              <span
+                                *ngIf="externalSite?.onlineTravelAgencyLogoUrl != null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"><img
+                                  src="{{ externalSite?.onlineTravelAgencyLogoUrl }}" class="otaimages"></span>
+                              <span
+                                *ngIf="externalSite?.onlineTravelAgencyName != null && (externalSite?.onlineTravelAgencyName == 'BookingJini' || externalSite?.onlineTravelAgencyName == 'Channex')"><img
+                                  src="{{getExternalOtaUrl()}}" class="otaimages">
+                                  <div *ngIf="!getExternalOtaUrl()" class="otaimages" style="color:#000 !important; font-size: 10px;">{{externalSite?.onlineTravelAgencyName}}</div>
+                                </span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+
+                <!-- room *ngIf="this.plans.length >0" person and children rpc-->
+                <ion-row  style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 20px;
+                margin-top: 10px;
+            ">
+                    <ion-col
+                    style="margin-bottom: 10px"
+                    size="6"
+                    size-xl="6"
+                    size-sm="6"
+                    size-md="6"
+                    size-lg="6"
+                >
+                
+                    <ion-button
+                        style="font-size: 16px;
+                        --background: #1D174D;
+                        color: white;
+                        border: 1px solid white;"
+                        size="small"
+                        expand="block"
+                        (click)="onCancel()"
+                        >Cancel</ion-button
+                    >
+                </ion-col>
+                    <ion-col
+                        style="margin-bottom: 10px"
+                        size="6"
+                    size-xl="6"
+                    size-sm="6"
+                    size-md="6"
+                    size-lg="6"
+                    >
+                    
+                        <ion-button
+                            style="font-size: 16px;"
+                            size="small"
+                            expand="block"
+                            class="button-submit"
+                            [disabled]="isDisabled() == true"
+                            (click)="onSubmit()"
+                            >Update</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+    </ion-card>
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+            <img
+                src="/assets/img/loader-logo.png"
+                alt="Loader Image"
+                class="loader-image"
+            />
+            <div class="loader-text">Please wait...</div>
+        </div>
+    </div>
+</ion-content>
+
+

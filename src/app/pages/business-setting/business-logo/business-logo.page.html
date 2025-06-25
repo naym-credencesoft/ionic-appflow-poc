@@ -1,0 +1,63 @@
+
+
+<ion-header class="headerColor">
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
+    </ion-avatar>
+    
+    
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back" (click)="navigateToPage()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Business Logo</ion-text>
+        
+    </ion-toolbar>
+    </ion-header>
+
+       
+<ion-content>
+    <ion-card no-margin>
+        <ion-card-content style="height: 100%; display: flex; align-items: center; justify-content: center;">
+          <ion-avatar >
+            <img
+    src="{{this.property.logoUrl}}"
+    onerror="this.src='/assets/img/app-logo.png'"
+/>
+         </ion-avatar>
+          <!-- <img  src="../../../../assets/icon/user_profile.svg" /> -->
+          
+        </ion-card-content>
+
+        <p class="sub-text" style="font-size: 17px;  text-align: center; color:#333" ><b>{{this.property.name}}</b></p>
+    </ion-card>
+    <ion-grid no-padding class="form-holder">
+
+        <div class="ion-margin-vertical upload-logo">
+            <ion-button icon-left size="medium" 
+            #file2
+            (click)="upload2.click()"
+            class="update-button" expand="full" 
+            [disabled]="loader" tappable>
+            <ion-icon name="cloud-upload"></ion-icon>
+            Upload Logo
+            </ion-button>
+
+            <input
+            [hidden]="true"
+            type="file"
+            #upload2
+            (change)="onImageSelect($event)"
+            accept="image/*" /> 
+    
+    
+        </div>
+
+      </ion-grid>
+
+</ion-content>

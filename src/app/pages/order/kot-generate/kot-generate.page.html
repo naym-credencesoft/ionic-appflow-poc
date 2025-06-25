@@ -1,0 +1,758 @@
+<!-- <ion-header>
+    <ion-toolbar  color="primary" class="animated fadeIn">
+        <ion-title  color="light" class="HeaderTitle">KOT</ion-title>
+
+        <ion-buttons slot="end">
+            <ion-button (click)="OrderList()" [strong]="true">Order List</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header> -->
+
+
+
+<ion-header>
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
+    </ion-avatar>
+
+
+    <ion-text class="HeaderSubTitle" >
+        KOT
+    </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon
+                (click)="menuAction()"
+                style="font-size: 20px; margin-top: -10px"
+                class="backbutton-icon"
+                src="/assets/img/icons/menu-icon-w.svg"
+            ></ion-icon>
+
+            <ion-text color="light" class="HeaderTitle"
+                >Restaurant Dashboard</ion-text
+            >
+            <ion-img
+                style="margin-left: -20px; margin-top: -9px"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card class="orderInfo" no-margin>
+        <ion-card-content no-padding>
+          <ion-grid>
+            <ion-row>
+              <!-- Left side: Order Details -->
+              <ion-col size="8">
+                <ion-row>
+                  <ion-text style="color:black;font-size: 14px;">
+                    <b>Property Name:</b> {{propertyName.name}}
+                  </ion-text>
+                </ion-row>
+                <ion-row>
+                  <ion-text style="color:black;font-size: 14px;">
+                    <b>Order Id:</b> #{{dialogOrder.bookOneOrderId}}
+                  </ion-text>
+                </ion-row>
+                <ion-row>
+                  <ion-text style="color:black;font-size: 14px;">
+                    <b>Order Time:</b> {{dialogOrder.orderedTime}}
+                  </ion-text>
+                </ion-row>
+                <!-- Uncomment if orderStatus is used -->
+                <!-- <ion-row>
+                    <ion-text style="color:black;font-size: 14px;">
+                      <b>Status:</b> {{dialogOrder.orderStatus}}
+                    </ion-text>
+                  </ion-row> -->
+                <ion-row>
+                  <ion-text style="color:black;font-size: 14px;">
+                    <b>Delivery Method:</b> {{this.dialogOrder.deliveryMethod}}
+                  </ion-text>
+                </ion-row>
+                <ion-row>
+                  <ion-text style="color:black;font-size: 14px;">
+                    <b>Notes:</b> {{this.dialogOrder.specialNotes}}
+                  </ion-text>
+                </ion-row>
+              </ion-col>
+                     <!-- Right side: SVG Graphic -->
+                     <ion-col size="4" class="text-right">
+                        <div class="voucher-svg-container">
+                          <svg viewBox="0 0 300 300" class="voucher-svg" preserveAspectRatio="xMidYMid meet">
+                            <!-- Half Egg Shape -->
+                            <circle cx="150" cy="150" r="130" stroke="red" stroke-width="10" fill="#fff" />
+                
+                            <!-- Inner Circle -->
+                            <circle cx="150" cy="150" r="120" stroke="red" stroke-width="10" fill="#fff" />
+                            <!-- Horizontal Lines -->
+                            <line x1="30" y1="120" x2="280" y2="120" stroke="red" stroke-width="5" transform="rotate(-15 150,150)" />
+                            <line x1="30" y1="165" x2="280" y2="165" stroke="red" stroke-width="5" transform="rotate(-15 150,150)" />
+                            
+                            <!-- Text -->
+                            <text x="50%" y="50%" text-anchor="middle" fill="red" font-size="25" font-weight="bold" transform="rotate(-15 150,150)">RUNNING TABLE</text>
+                          </svg>
+                        </div>
+                      </ion-col>
+                      
+  
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+      
+    <ion-card *ngIf="item2  != null && item2.length >0">
+        <ion-list class="list-room SofiaSansLight">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="1" class="cell-class">
+                        <ion-text style="font-size: 10px">No</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Name</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Status</ion-text>
+                    </ion-col>
+
+                    <ion-col size="1.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Code</ion-text>
+                    </ion-col>
+
+                    <ion-col size="1" class="cell-class">
+                        <ion-text style="font-size: 10px">Q.T</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class">
+                        <ion-text style="font-size: 10px">Note</ion-text>
+                    </ion-col>
+                    <ion-col size="1.5" class="cell-class">
+                        <ion-text style="font-size: 10px">AC</ion-text>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row
+                    *ngFor="let item of item2; let i = index"
+                    (click)="addKOT(item)"
+                >
+                    <ion-col size="1" class="cell-class2">
+                        <ion-text color="primary" style="font-size: 10px"
+                            >{{i+1}}.</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.name}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{checkStatus(item)}}</ion-text
+                        >
+                    </ion-col>
+                    <ion-col size="1.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.productCode}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="1" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.unitsInOrder}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.notes}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="1.5" class="cell-class2" color="primary">
+                        <ion-chip
+                            class="bg-primary"
+                            (click)="removeKOT(item)"
+                            style="float: right; height: 20px"
+                        >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                            >
+                                <ion-icon name="close-outline"></ion-icon
+                            ></ion-label>
+                        </ion-chip>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-list>
+
+        <form [formGroup]="onPriorityForm">
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text
+                        color="primary"
+                        class="check-in-out-text"
+                        style="font-size: 12px"
+                        >KOT Priority
+                    </ion-text>
+                    <ion-select
+                        placeholder="KOT Priority"
+                        [(ngModel)]="priority"
+                        class="dropdown"
+                        okText="Done"
+                        cancelText="Dismiss"
+                        formControlName="Priority"
+                    >
+                        <ion-row>
+                            <ion-select-option
+                                *ngFor="let line of orderLineList; let lineIndex = index"
+                                [value]="lineIndex + 1"
+                            >
+                                {{ lineIndex + 1 }}
+                            </ion-select-option>
+                        </ion-row>
+                    </ion-select>
+                </ion-col>
+            </ion-row>
+
+            <ion-row center>
+                <ion-col width-50 style="text-align: center">
+                    <ion-button
+                        [disabled]="item2 === null || item2 === undefined|| item2.length === 0"
+                        size="small"
+                        shape="round"
+                        color="primary"
+                        (click)="createKot()"
+                    >
+                        Create KOT
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </form>
+
+        <!--  -->
+    </ion-card>
+
+    <ion-segment  mode="md" [(ngModel)]="segmentName" value="2">
+        <ion-segment-button value="1">
+            <ion-label>Order Item</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="2">
+            <ion-label>KOT Item</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+    <!-- -->
+    <div *ngIf="segmentName === '2'">
+        <ion-card *ngFor="let kot of kotList" class="SofiaSansLight">
+            <ion-grid>
+                <ion-row class="ion-no-margin ion-no-padding">
+                    <ion-col
+                        class="ion-no-margin ion-no-padding"
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-row class="ion-no-margin ion-no-padding">
+                            <ion-text
+                                style="font-size: 19px"
+                                color="primary"
+                                ><b>#{{ kot.kotNo }}</b>
+                            </ion-text>
+                            <ion-text
+                            *ngIf="kot.priority != null && kot.priority != undefined"
+                            style="font-size: 14px"
+                            class="datavalue"
+                            color="primary"
+                            ><b> ({{ kot.priority }})</b>
+                        </ion-text>
+                        </ion-row>
+                    </ion-col>
+                    <ion-col
+                        class="ion-no-margin ion-no-padding"
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-chip
+                            class="bg-primary"
+                            style="float: right; height: 20px"
+                            (click)="deleteKot(kot)"
+                        >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                            >
+                                <ion-icon name="trash-outline"></ion-icon
+                            ></ion-label>
+                        </ion-chip>
+                    </ion-col>
+                </ion-row>
+
+
+                <hr class="line" class="ion-no-margin ion-no-padding" />
+                <ion-row>
+                    <ion-col size="1" class="cell-class">
+                        <ion-text style="font-size: 10px">No</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Name</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Status</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class">
+                        <ion-text style="font-size: 10px">Code</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class">
+                        <ion-text style="font-size: 10px">Q.T</ion-text>
+                    </ion-col>
+
+                    <!-- <ion-col size="2" class="cell-class">
+                        <ion-text style="font-size: 10px">Note</ion-text>
+                    </ion-col> -->
+                    <ion-col size="2" class="cell-class">
+                        <ion-text style="font-size: 10px">AC</ion-text>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row
+                    fxLayout="row"
+                    *ngIf="
+                  kot.orderLines === null ||
+                  kot.orderLines === undefined ||
+                  kot.orderLines.length === 0
+                "
+                >
+                    VOID KOT
+                </ion-row>
+
+                <ion-row *ngFor="let propduct of kot.orderLines; let i = index">
+                    <ion-col size="1" class="cell-class2">
+                        <ion-text color="primary" style="font-size: 10px"
+                            >{{i+1}}.</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 13px">
+                            {{propduct.name}}</ion-text
+                        > <br/>
+                        <ion-text color="primary" style="font-size: 10px;font-weight: 600; " *ngIf="propduct.notes">
+                         Note:{{propduct.notes}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{checkStatus(propduct)}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{propduct.productCode}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{propduct.unitsInOrder}}</ion-text
+                        >
+                    </ion-col>
+
+                    <!-- <ion-col size="2" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{propduct.notes}}</ion-text
+                        >
+                    </ion-col> -->
+
+                    <ion-col size="2" class="cell-class2" color="primary">
+                        <ion-chip
+                            class="bg-primary"
+                            style="float: right; height: 20px"
+                            (click)="deleteKotItem(propduct, kot)"
+                        >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                            >
+                                <ion-icon name="close-outline"></ion-icon
+                            ></ion-label>
+                        </ion-chip>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-card>
+    </div>
+
+    <div *ngIf="segmentName === '1'">
+        <ion-list class="list-room SofiaSansLight">
+            <ion-grid>
+                <ion-row>
+                    <ion-col size="1" class="cell-class">
+                        <ion-text style="font-size: 10px">No</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Name</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Status</ion-text>
+                    </ion-col>
+
+                    <ion-col size="1.5" class="cell-class">
+                        <ion-text style="font-size: 10px">Code</ion-text>
+                    </ion-col>
+
+                    <ion-col size="1" class="cell-class">
+                        <ion-text style="font-size: 10px">Q.T</ion-text>
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class">
+                        <ion-text style="font-size: 10px">Note</ion-text>
+                    </ion-col>
+                    <ion-col size="1.5" class="cell-class">
+                        <ion-text style="font-size: 10px">AC</ion-text>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row
+                    *ngFor="let item of items; let i = index"
+                    (click)="addKOT(item)"
+                >
+                    <ion-col size="1" class="cell-class2">
+                        <ion-text color="primary" style="font-size: 10px"
+                            >{{i+1}}.</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.name}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{checkStatus(item)}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="1.5" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.productCode}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="1" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.unitsInOrder}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="2" class="cell-class2" color="primary">
+                        <ion-text color="primary" style="font-size: 10px">
+                            {{item.notes}}</ion-text
+                        >
+                    </ion-col>
+
+                    <ion-col size="1.5" class="cell-class2" color="primary">
+                        <ion-chip
+                            class="bg-primary"
+                            style="float: right; height: 20px"
+                            *ngIf="
+                        isKotCreated(item) != null && isKotCreated(item) === true
+                      "
+                        >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                            >
+                                <ion-icon
+                                    name="checkmark-circle-outline"
+                                ></ion-icon> </ion-label
+                        ></ion-chip>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-list>
+
+        <!--  -->
+    </div>
+    <!-- <button (click)="generatePDF(kotPrintSection2)">Print</button> -->
+    <div
+    class="print-area"
+    id="kotPrintSection2"
+    *ngIf="dialogOrder !== null || dialogOrder !== undefined"
+    style="
+      font-family: Arial !important;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: none;
+    "
+  >
+    <table style=" display:flex;justify-content: center; font-size: 1.7vmax; font-family: Arial !important; color: black !important; width: 100%">
+      <tr>
+        <td>
+          <div class="header" style="text-align: center">
+            <div
+              class="profile-title text-center mb-1"
+              style="font-size: 2.5vmax"
+            >
+           
+  
+              <div
+              class="main-title"
+              style="font-size: 1vmax;"
+              *ngIf="
+                (businessService != null &&
+                  businessService != undefined &&
+                  businessService.brandName === null) ||
+                (businessService != null &&
+                  businessService != undefined &&
+                  businessService.brandName === undefined) ||
+                (businessService != null &&
+                  businessService != undefined &&
+                  businessService.brandName === '')
+              "
+            >
+              {{ property.name }}
+            </div>
+            <div
+              class="main-title"
+              style="font-size: 1vmax;"
+              *ngIf="
+                businessService != null &&
+                businessService != undefined &&
+                businessService.brandName != undefined &&
+                businessService.brandName != null
+              "
+            >
+              {{ businessService.brandName }}
+            </div>
+              <div class="subtitle mb-05" style="font-size: 2vmax">
+                {{ dialogOrder.bookOneOrderId }}
+              </div>
+  
+              <div
+                class="subtitle mb-05"
+                style="font-size: 2vmax"
+                *ngIf="this.dialogOrder.deliveryMethod === 'Room Order'"
+              >
+                <strong>Room No: </strong> {{ dialogOrder.roomNo }}
+              </div>
+              <div
+              class="subtitle mb-05 mt-05 room-no"
+              *ngIf="dialogOrder.orderStatus != 'Cancelled' && dialogOrder.orderStatus != 'Completed'"
+            >
+              <strong style="border-bottom: 1px solid #00bcd4;border-top: 1px solid #00bcd4;color: black;  text-align: center; font-size: 12px;"><span class="subtitle">Running Order</span></strong>
+            </div>
+            </div>
+            <div
+              *ngIf="
+                dialogOrder.locationName != null &&
+                dialogOrder.locationName != undefined
+              "
+            >
+              <div class="subtitle" style=" font-size: 1.2vmax">
+                <!-- <div>
+                  <strong>Location:</strong> {{ dialogOrder.locationName }}
+                </div> -->
+                <div>
+                  <strong>Resource:</strong> {{ dialogOrder.resourceName }}
+                </div>
+              </div>
+            </div>
+            <div
+            *ngIf="
+              dialogOrder.deliveryMethod != null &&
+              dialogOrder.deliveryMethod != undefined &&
+              dialogOrder.deliveryMethod === 'Take Away'
+            "
+          >
+            <div class="subtitle" style=" font-size: 1.2vmax">
+              <div>
+                <strong>Resource:</strong> {{ dialogOrder.deliveryMethod }}
+              </div>
+            </div>
+          </div>
+            <div class="subtitle" style=" font-size: 1.2vmax">
+              <!-- <strong>Order Date: </strong> -->
+              <span
+                *ngIf="
+                  dialogOrder.orderedDate != null ||
+                  dialogOrder.orderedDate != undefined
+                "
+                >{{
+                  dateService.convertMillisecondsToDateFormat(
+                    dialogOrder.orderedDate
+                  )
+                }} {{ dialogOrder.orderedTime }}</span
+              >
+            </div>
+            <!-- <div style="width: 100%; font-size: 1.7vmax">
+              <strong>Order Time: </strong> {{ dialogOrder.orderedTime }}
+            </div> -->
+            <!-- <div style="width: 100%; font-size: 1.7vmax">
+              <strong>KOT Time: </strong> {{ kotGenerateTime | date : "hh:mm aa" }}
+            </div> -->
+            <!-- <div
+              *ngIf="
+                dialogOrder.specialNotes != null &&
+                dialogOrder.specialNotes != undefined
+              "
+              style="width: 100%; font-size: 1.7vmax"
+            >
+              <strong>Notes: </strong> {{ dialogOrder.specialNotes }}
+            </div> -->
+            <div
+              style=" font-size: 1.2vmax"
+              *ngIf="this.dialogOrder.operatorName != null"
+              class="subtitle"
+            >
+              <strong>Operator: </strong> {{ dialogOrder.operatorName }}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <div class="table-frame" style=" 
+    border: 1px solid #dddddd; margin-top: 10px;
+    border-radius: 10px; margin-right: 10px;">
+      <div *ngFor="let kot of kotList">
+        <div
+          style="margin-left: 5px; margin-top: 7px; margin-bottom: 7px;"
+          *ngIf="
+            getKotOrderLine(kot) != null &&
+            getKotOrderLine(kot) != undefined &&
+            getKotOrderLine(kot).length > 0
+          "
+          class="text-size"
+        >
+          <span class="text-size">{{ kot.kotNo }}</span>
+          <span class="text-size" style="margin-left: 5px"
+            >Priority : {{ kot.priority }}</span>
+          <span class="text-size" style="margin-left: 5px" *ngIf="kot.productGroupName != null && kot.productGroupName != undefined">Group : {{kot.productGroupName}}</span>
+      </div>
+        <table
+          class="print-table-css"
+          *ngIf="
+            getKotOrderLine(kot) != null &&
+            getKotOrderLine(kot) != undefined &&
+            getKotOrderLine(kot).length > 0
+          "
+          style="
+            font-family: Arial !important;
+            text-align: center;
+            border-collapse: collapse;
+          "
+          class="print-table-css"
+        >
+          <thead>
+            <tr>
+              <!-- <th class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)">#</th> -->
+              <th class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)">NAME</th>
+              <th class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)">QTY</th>
+              <!-- <th class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)">STATUS</th> -->
+              <!-- <th class="tdth" *ngIf="isKotNoteAvailable == true">NOTES</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              fxLayout="row"
+              *ngIf="
+                kot.orderLines === null ||
+                kot.orderLines === undefined ||
+                kot.orderLines.length === 0
+              "
+            >
+              VOID KOT
+            </tr>
+            <tr *ngFor="let row of kot.orderLines; let i = index">
+              <ng-container *ngIf="checkStatus(row) === 'Available'">
+                <!-- <td class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)">{{ i + 1 }}</td> -->
+                <td class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)"><b>{{ row.name.toUpperCase() }}</b><br/>
+                <span *ngIf="row.notes != undefined && row.notes != null" style="font-style: italic;font-size: 14px!important;">Note: {{row.notes}}</span></td>
+                <td class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)">{{ row.unitsInOrder }}</td>
+                <!-- <td class="tdth" [ngStyle]="getStyle(isKotNoteAvailable)">{{ row.status }}</td> -->
+                <!-- <td class="tdth" *ngIf="isKotNoteAvailable == true" [ngStyle]="getStyle(isKotNoteAvailable)">
+                  <strong *ngIf="row.notes != undefined && row.notes != null">{{
+                    row.notes
+                  }}</strong>
+                </td> -->
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+       
+      </div>
+      <div class="text-size" style="font-size: 1.2vmax;margin-top: 5px;margin-left: 5px;"><strong>KOT Time: </strong> {{ kotGenerateTime | date : "hh:mm aa" }}</div>
+      <div
+              *ngIf="
+                dialogOrder.specialNotes != null && dialogOrder.specialNotes != undefined
+              "
+              style="width: 100%"
+              class="text-size"
+            >
+              <strong>Notes: </strong> {{ dialogOrder.specialNotes }}
+            </div>
+      
+      <!-- <div
+        style="
+          font-family: Arial !important;
+          text-align: center;
+          font-size: 2vmax;
+          margin-top: 20px;
+        "
+      >
+        Powered by BookOne.
+      </div> -->
+    </div>
+  </div>
+
+</ion-content>
+<ion-footer class="footer">
+    <ion-row class="selectItem">
+        <ion-col size="6">
+            <ion-button expand="full" class="footer-button" (click)="orderDashboard()"
+                >Dashboard</ion-button
+            >
+        </ion-col>
+        <ion-col size="6">
+            <ion-button expand="full" class="footer-button" (click)="OrderList()"
+                >Order Management</ion-button
+            >
+        </ion-col>
+    </ion-row>
+</ion-footer>
+<div class="loader-everyOne" *ngIf="loader">
+    <ion-spinner name="crescent" class="spinner"></ion-spinner>
+    <div class="loader-content">
+      <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+      <div class="loader-text">Please wait...</div>
+    </div>
+  </div>
+<script>
+    const svg = document.querySelector('.voucher-svg');
+    const circles = svg.querySelectorAll('circle');
+    circles.forEach(circle => circle.remove());
+  </script>

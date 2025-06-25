@@ -1,0 +1,389 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle">Invoice Details </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Service Dashboard</ion-text
+            >
+ 
+        </ion-buttons>
+
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <!-- <ion-progress-bar type="indeterminate" *ngIf="loader" reversed="true"></ion-progress-bar> -->
+    <ion-card class="bg-white orderInfo" no-margin>
+       
+        <ion-card-content no-padding style="padding: 7px;">
+            <ion-row style="background-color: #1d174d;border: 1px solid white;color: white;justify-content: center;display: flex;     padding: 7px;">
+                <ion-text style="font-size: 16px;"><b>Invoice From</b> </ion-text>
+            </ion-row>
+            <div class="table-containesss">
+                <table class="details-table">
+
+                    <!-- Business Email -->
+                    <tr>
+                      <td><b>Business Email</b></td>
+                      <td>{{this.property.email}}</td>
+                    </tr>
+                    <!-- Website -->
+                    <tr>
+                      <td><b>Website</b></td>
+                      <td>{{this.property.website}}</td>
+                    </tr>
+                    <!-- Mobile -->
+                    <tr>
+                      <td><b>Mobile</b></td>
+                      <td>{{this.property.mobile}}</td>
+                    </tr>
+                    <!-- Landphone -->
+                    <tr>
+                      <td><b>Landphone</b></td>
+                      <td>{{this.property.landphone}}</td>
+                    </tr>
+                    <!-- Address -->
+                    <tr>
+                      <td><b>Address</b></td>
+                      <td>
+                        <div>{{address.streetNumber}}, {{address.streetName}}, {{address.suburb}}, {{address.state}},</div>
+                        <div>{{address.city}}, {{address.country}}, {{address.postcode}}</div>
+                      </td>
+                    </tr>
+        
+                </table>
+              </div>
+           
+        </ion-card-content>
+        <ion-card-content no-padding style="padding: 7px;">
+
+            <ion-row  style="background-color: #1d174d;border: 1px solid white;color: white;justify-content: center;display: flex;     padding: 7px;">
+                <ion-text style="font-size: 16px;"><b>Bank Info</b> </ion-text>
+            </ion-row>
+
+            <div class="table-containesss">
+                <table class="details-table">
+
+
+                    <tr>
+                      <td><b>Bank Name:</b></td>
+                      <td> {{this.bankAccount.bankName}}</td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Branch Name:</b></td>
+                        <td>{{this.bankAccount.branchName}}</td>
+                      </tr>
+
+                      <tr>
+                        <td><b>Account Name:</b></td>
+                        <td>{{this.bankAccount.accountName}}</td>
+                      </tr>
+
+                      <tr>
+                        <td><b>Account Number:</b></td>
+                        <td>{{this.bankAccount.accountNumber}}</td>
+                      </tr>
+
+                      <tr>
+                        <td><b>Swift Code:</b></td>
+                        <td>{{this.bankAccount.swiftCode}}</td>
+                      </tr>
+
+                </table>
+                </div>
+
+        </ion-card-content>
+
+        <ion-card-content no-padding style="padding: 7px;">
+
+            <ion-row  style="background-color: #1d174d;border: 1px solid white;color: white;justify-content: center;display: flex;     padding: 7px;">
+                <ion-text style="font-size: 16px;"><b>Invoice Info</b> </ion-text>
+            </ion-row>
+
+            <div class="table-containesss">
+                <table class="details-table">
+
+                    <!-- Business Email -->
+                    <tr>
+                      <td><b>Invoice No:</b></td>
+                      <td> #{{this.invoice.invoiceNo}}</td>
+                    </tr>
+
+                    <tr>
+                        <td><b>Invoice Status:</b></td>
+                        <td> #{{this.invoice.invoiceNo}}</td>
+                      </tr>
+
+                      <tr>
+                        <td><b>Invoice To:</b></td>
+                        <td> {{ this.invoice.invoiceTo}}</td>
+                      </tr>
+
+                      <tr *ngIf="this.invoice.invoiceDate != null || this.invoice.invoiceDate != undefined">
+                        <td><b>Invoice Date:</b></td>
+                        <td> {{  dateService.convertMillisecondsToDateFormat( this.invoice.invoiceDate) }}</td>
+                      </tr>
+
+                      <tr *ngIf="this.invoice.dueDate != null || this.invoice.dueDate != undefined">
+                        <td><b>Due Date:</b></td>
+                        <td> {{  dateService.convertMillisecondsToDateFormat( this.invoice.dueDate) }}</td>
+                      </tr>
+
+
+
+                </table>
+                </div>
+
+           
+
+        </ion-card-content>
+
+        <ion-card-content no-padding *ngIf="this.invoice.invoiceTo === null || this.invoice.invoiceTo === undefined || this.invoice.invoiceTo.toLocaleLowerCase() ==='customer'" style="padding: 7px;">
+            <ion-row  style="background-color: #1d174d;border: 1px solid white;color: white;justify-content: center;display: flex;     padding: 7px;">
+                <ion-text style="font-size: 16px;"><b>Invoice To</b> </ion-text>
+            </ion-row>
+
+            <div class="table-containesss">
+                <table class="details-table">
+
+                    <tr *ngIf="this.customerInfo !=undefined && this.customerInfo != null">
+                      <td><b>Name:</b></td>
+                      <td> {{this.customerInfo.firstName}} {{this.customerInfo.lastName}}</td>
+                    </tr>
+
+                    <tr *ngIf="this.customerInfo ==undefined && this.customerInfo == null">
+                        <td><b>Name:</b></td>
+                        <td>{{this.invoice.customerName}}</td>
+                      </tr>
+                    
+                      <tr *ngIf="customerInfo?.email !=undefined && customerInfo?.email != null">
+                        <td><b>Email:</b></td>
+                        <td>{{customerInfo?.email}}</td>
+                      </tr>
+                    
+                      <tr *ngIf="customerInfo?.mobile !=undefined && customerInfo?.mobile != null">
+                        <td><b>Mobile:</b></td>
+                        <td>{{customerInfo?.mobile}}</td>
+                      </tr>
+
+                      <tr *ngIf="clientAddress != null && clientAddress != undefined">
+                        <td><b>Address:</b></td>
+                        <td>{{clientAddress.streetNumber}}, {{clientAddress.streetName}}, {{clientAddress.suburb}}, {{clientAddress.state}} <br/>
+                            {{clientAddress.city}}, {{clientAddress.country}}, {{clientAddress.postcode}}
+                        </td>
+                      </tr>
+                </table>
+            </div>
+
+
+        </ion-card-content>
+
+        <ion-card-content no-padding *ngIf="this.invoice.invoiceTo != null && this.invoice.invoiceTo != undefined && this.invoice.invoiceTo.toLocaleLowerCase() ==='business'"  style="padding: 7px;">
+            <ion-row  style="background-color: #1d174d;border: 1px solid white;color: white;justify-content: center;display: flex;">
+                <ion-text style="font-size: 16px;"><b>Invoice To</b> </ion-text>
+            </ion-row>
+
+            <div class="table-containesss">
+                <table class="details-table">
+
+                    <tr *ngIf="this.customerInfo !=undefined && this.customerInfo != null">
+                      <td><b>Name:</b></td>
+                      <td> {{this.customerInfo.firstName}} {{this.customerInfo.lastName}}</td>
+                    </tr>
+
+                    <tr *ngIf="this.customerInfo ==undefined && this.customerInfo == null">
+                        <td><b>Name:</b></td>
+                        <td>{{this.invoice.customerName}}</td>
+                      </tr>
+                    
+                      <tr *ngIf="customerInfo?.email !=undefined && customerInfo?.email != null">
+                        <td><b>Email:</b></td>
+                        <td>{{customerInfo?.email}}</td>
+                      </tr>
+                    
+                      <tr *ngIf="customerInfo?.mobile !=undefined && customerInfo?.mobile != null">
+                        <td><b>Mobile:</b></td>
+                        <td>{{customerInfo?.mobile}}</td>
+                      </tr>
+
+                      <tr *ngIf="clientAddress != null && clientAddress != undefined">
+                        <td><b>Address:</b></td>
+                        <td>{{clientAddress.streetNumber}}, {{clientAddress.streetName}}, {{clientAddress.suburb}}, {{clientAddress.state}} <br/>
+                            {{clientAddress.city}}, {{clientAddress.country}}, {{clientAddress.postcode}}
+                        </td>
+                      </tr>
+
+                     
+                </table>
+            </div>
+
+
+
+        </ion-card-content>
+    <ion-card-content style="padding: 7px;">
+    
+            <ion-row   style="background-color: #1d174d;border: 1px solid white;color: white;justify-content: center;display: flex;     padding: 7px;">
+                <ion-text><b>Products</b></ion-text>
+            </ion-row>
+
+            <div class="table-containesss">
+                <table class="details-table">
+                  <tbody *ngFor="let product of this.invoice.invoiceLinesDto">
+                    <!-- Product Description -->
+                    <tr>
+                      <td colspan="2" class="product-description">
+                        <b>{{ product.description }}</b>
+                      </td>
+                    </tr>
+            
+                    <!-- Product Code and Quantity -->
+                    <tr>
+                      <td >
+                        <b>Code:</b> {{ product.productCode }}
+                      </td>
+                      <td >
+                        <b>Quantity:</b> {{ product.quantity }}
+                      </td>
+                    </tr>
+            
+                    <!-- Tax Percentage and Tax Amount -->
+                    <tr>
+                      <td >
+                        <b>Tax Percentage:</b> {{ product.taxPercentage }}%
+                      </td>
+                      <td >
+                        <b>Tax Amount:</b> {{ product.taxAmount }}
+                      </td>
+                    </tr>
+            
+                    <!-- Unit Price and Total Amount -->
+                    <tr>
+                      <td >
+                        <b>Unit Price:</b> {{ product.unitPrice | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                      </td>
+                      <td >
+                        <b>Amount:</b> {{ product.unitPrice * product.quantity }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+    </ion-card-content> 
+    <ion-card-content *ngIf="invoice.notes" style="padding: 7px; margin-top: -25px;">
+        <ion-grid style="padding: 10px;">
+          <!-- Header -->
+          <ion-row>
+            <ion-col>
+              <ion-text color="primary" style="font-size: 16px; font-weight: bold; display: block; margin-bottom: 8px;">
+                <ion-icon name="clipboard-outline" style="margin-right: 6px; vertical-align: middle;"></ion-icon>Notes
+              </ion-text>
+            </ion-col>
+          </ion-row>
+      
+          <!-- Notes Content -->
+          <ion-row>
+            <ion-col size="12" style="background-color: #f9f9f9; border-radius: 8px; padding: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+              <ion-text style="font-size: 14px; color: #333; line-height: 1.5;">
+                {{ invoice.notes }}
+              </ion-text>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+      
+
+    <ion-card-content no-padding style="padding: 7px;">
+
+        <ion-row  style="background-color: #1d174d;border: 1px solid white;color: white;justify-content: center;display: flex;     padding: 7px;">
+            <ion-text style="font-size: 16px;"><b>Details</b> </ion-text>
+        </ion-row>
+
+        <div class="table-containesss">
+            <table class="details-table">
+
+                <tr>
+                  <td><b>Payment Mode:</b></td>
+                  <td>{{ this.invoice.paymentMode}}</td>
+                </tr>
+
+                <tr>
+                    <td><b>Payment Status:</b></td>
+                    <td>{{ this.invoice.paymentStatus}}</td>
+                  </tr>
+
+                  <tr >
+                    <td><b>Sub Total:</b></td>
+                    <td *ngIf="this.invoice.netAmount!=undefined || this.invoice.netAmount!= null">{{ this.invoice.netAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</td>
+                    <td *ngIf="this.invoice.netAmount==undefined || this.invoice.netAmount== null">{{0 | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Tax Amount:</b></td>
+                    <td style="font-size: 12px;"
+                    *ngIf="this.invoice.taxableAmount!=undefined && this.invoice.taxableAmount!= null">
+                    {{this.invoice.taxableAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</td>
+                <td style="font-size: 12px;"
+                    *ngIf="this.invoice.taxableAmount==undefined || this.invoice.taxableAmount== null">   {{ 0 | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Total Amount:</b></td>
+                    <td style="font-size: 12px;"
+                            *ngIf="this.invoice.totalAmount!=undefined && this.invoice.totalAmount!= null">
+                            {{ this.invoice.totalAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</td>
+                        <td style="font-size: 12px;"
+                            *ngIf="this.invoice.totalAmount==undefined ||this.invoice.totalAmount== null">
+                            {{ 0 | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                        </td>
+                  </tr>
+                  <tr>
+                    <td><b>Paid Amount:</b></td>
+                    <td style="font-size: 12px;"
+                    *ngIf="this.invoice.paidAmount!=undefined && this.invoice.paidAmount!= null">
+                    <b>{{ this.invoice.paidAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</b></td>
+                <td style="font-size: 12px;"
+                    *ngIf="this.invoice.paidAmount==undefined ||this.invoice.paidAmount== null">
+                    <b>{{ 0 | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</b></td>
+                  </tr>
+                  <tr>
+                    <td><b>Balance Amount:</b></td>
+                    <td style="font-size: 12px;"
+                    *ngIf="this.invoice.balanceAmount!=undefined && this.invoice.balanceAmount!= null">
+                    <b>{{ this.invoice.balanceAmount | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</b></td>
+                <td style="font-size: 12px;"
+                    *ngIf="this.invoice.balanceAmount==undefined ||this.invoice.balanceAmount== null">
+                    <b>{{ 0 | currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}</b></td>
+                  </tr>
+
+            </table>
+            </div>
+       
+
+    </ion-card-content>
+
+    </ion-card> 
+    <div class="loader-everyOne" *ngIf="loader">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+</ion-content>
+<ion-footer>
+    <ion-toolbar style=" height: 50px;">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

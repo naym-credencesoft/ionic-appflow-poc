@@ -1,0 +1,148 @@
+.invoice_loader{
+    background-color: #ffff !important;
+}
+
+ion-content {
+    --background: #fff;
+    --padding-start:10px;
+    --padding-end : 10px;
+    --padding-top : 10px;
+    --padding-bottom: 10px;
+}
+
+
+
+@media (min-width: 576px) {
+    .profile {
+        z-index: 100;
+        position: absolute;
+        top: -4px;
+        right: 0px;
+        height: 70px !important;
+        width: 70px !important;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+
+    ion-toolbar {
+        --background: #1D174D;
+        height: 80px;
+        border: none;
+    }
+
+    .details-table td:first-child {
+        font-weight: bold;
+        color: #1d174d;
+        width: 50%; /* Forces both columns to be the same width */
+      }
+      
+      .details-table td:last-child {
+        width: 50%; /* Matches the width of the first column */
+      }
+}
+
+@media (max-width: 576px) {
+    ion-toolbar {
+        top: 0px;
+        --background: #1D174D;
+        border: none;
+        height: 71px;
+        
+    }
+
+    .details-table td:first-child {
+        font-weight: bold;
+        color: #1d174d;
+        width: 28%; /* Forces both columns to be the same width */
+      }
+      
+      .details-table td:last-child {
+        width: 50%; /* Matches the width of the first column */
+      }
+}
+
+.left-image-header {
+    z-index: 1;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 22.5vw;
+}
+
+.HeaderTitle {
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: -17px;
+
+}
+
+.profile {
+    z-index: 100;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 15vw;
+    width: 15vw;
+    border: 2px solid white !important;
+    box-shadow: 2px 2px 3px #999;
+    margin-right: 6px;
+    margin-top: 6px;
+}
+
+.HeaderSubTitle {
+    position: absolute;
+    top: 37px;
+    left: 41px;
+    font-size: 12px;
+    z-index: 100;
+}
+
+.back {
+    margin-left: 10px;
+    color: white;
+}
+
+/* Container Styling */
+.table-containesss {
+    margin: 16px 0;
+    // overflow-x: auto;
+  }
+  
+  
+  /* Table Styling */
+  .details-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures equal column width */
+  }
+  
+  .details-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+    word-wrap: break-word; /* Ensures text wraps within the cell */
+    color: #333;
+    font-size: 14px;
+  }
+  
+
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .details-table td {
+      font-size: 12px;
+      padding: 8px;
+    }
+  }
+  
+  

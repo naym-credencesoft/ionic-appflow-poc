@@ -1,0 +1,333 @@
+
+
+<ion-header class="ion-no-border">
+
+
+    <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.property.logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle"> Manage Room </ion-text>
+    <ion-toolbar>
+        <ion-buttons slot="start" class="back">
+            <ion-icon name="arrow-back-outline"   (click)="navigateToPage()"  style="font-size: 20px; margin-top: -10px;cursor: pointer;"></ion-icon>
+            <ion-text color="light" class="HeaderTitle" 
+                >Accommodation</ion-text
+            >
+            <!-- <ion-img
+            style="height:50px; margin-top: -6px;"
+                src="/assets/img/icons/arrow-down-white.svg"
+                (click)="onMenu()"
+            ></ion-img> -->
+        </ion-buttons>
+        <!-- <ion-text color="light" class="HeaderTitle">Accommodation</ion-text> -->
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-no-margin ion-no-padding">
+    <!-- <ion-searchbar
+        class="list-search"
+        (ionInput)="getItems($event)" 
+        padding-left padding-right no-padding>
+    </ion-searchbar> -->
+
+    <ion-grid class="manageSec">
+        <ion-item lines="none" no-margin no-padding style="padding: 0px !important; margin-left: 5px; margin-right: 5px;" class="managDivi" (click)="showCards()">
+            <ion-label style="color: #1D174D">
+                Room Status
+            </ion-label>
+            <ion-icon *ngIf="!visibleCards" name="caret-down-outline" class="iconnnnn" style="position: absolute;  font-size: 20px;    right: 25px; transform: translateY(-50%); color: #1D174D;"></ion-icon>
+            <ion-icon *ngIf="visibleCards" name="caret-up-outline" class="iconnnnn" style="position: absolute;  font-size: 20px;    right: 25px; transform: translateY(-50%); color: #1D174D;"></ion-icon>
+        </ion-item>
+        
+        <div *ngIf="visibleCards">
+        <ion-row style="margin-top: 10px;">
+            
+            <ion-col size="3.8" class="available-clip" style="margin: 2px;border-radius: 8px;">
+                <!-- <ion-badge class="available-clip badge">Available</ion-badge> -->Available
+            </ion-col>
+            <ion-col size="3.8" class="booked-clip"  style="margin: 2px;border-radius: 8px;">
+                <!-- <ion-badge class="booked-clip badge">Booked</ion-badge> -->Booked
+            </ion-col>
+            <ion-col size="3.8" class="not-ready"  style="margin: 2px;border-radius: 8px;">
+                <!-- <ion-badge class="not-ready badge">Not Ready</ion-badge> -->
+                Not Ready
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="vacantready">
+                Vacant Ready
+            </ion-col>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="onQueue">
+                On Queue
+            </ion-col>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="Occupied">
+                Occupied
+            </ion-col>
+        </ion-row>
+        <ion-row> 
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="checkout">
+                Checking Out
+            </ion-col>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="blocked">
+                Blocked
+            </ion-col>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="sleepout">
+                Sleep Out
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="not-disturbed">
+                Do Not Distrub
+            </ion-col>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="cleaninprogress">
+                Cleaning in Progress
+            </ion-col>
+            <ion-col size="3.8" style="margin: 2px;border-radius: 8px;" class="late_checkout">
+                Late Checkout
+            </ion-col>
+        </ion-row>
+    </div>
+    </ion-grid>
+
+    <ion-grid>
+        
+        <ion-row>
+            <ion-col no-padding size="12">
+                <form [formGroup]="onRoomForm">
+                    <ion-item lines="none" no-margin no-padding style="padding: 0px !important;" class="managDivi">
+                        <ion-label style="color: #1D174D;">Select Date For Filter</ion-label>
+                        <ion-datetime style="color: #1D174D;"  min= "2000-12-31"
+                        max="2100-12-31" (ionChange)="DateChange()"
+                            formControlName="bookingFromDate" no-padding class="check-in-out-date"
+                            displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="rommAvailability.FromDate"
+                            placeholder="{{minDate}}"
+                            >
+                        </ion-datetime>
+                    </ion-item>
+                </form>
+
+
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    
+    <!-- </div> -->
+    <!-- <ion-segment scrollable mode="md" value="0" class="cardStyle">
+        <ion-segment-button class="date_sb" *ngFor="let data of roomData; let i = index" value="{{i}}"
+            (click)="onDateSelected(data.date)">
+            {{data.date| date:'EEE, MMM d'}}
+        </ion-segment-button>
+    </ion-segment> -->
+
+    
+    <ion-list style="background: none !important; ">
+        <div *ngFor="let data of roomData; let dateIndex = index" >
+            <div *ngIf="data.date === dateSelected">
+                <div *ngFor="let floor of data.floors; let i = index">
+                    <div (click)="indexvalue(i)" class="ion-no-margin ion-no-padding">
+                        <ion-card  class="ion-no-margin ion-no-padding managDivi" style="padding: 0px !important; box-shadow: none; margin-bottom: 12px;margin-left: 10px;
+    margin-right: 10px;">
+                            <ion-card-header>
+                                <ion-grid class="ion-no-margin ion-no-padding">
+                                    <ion-row >
+                                        <ion-col no-padding size="6">
+                                            <ion-row>
+                                                <ion-text style="color: #1D174D;">Floor Name : </ion-text>
+                                                <ion-text  style="color: #1D174D;" class="datavalue">
+                                                    {{floor.name}}
+                                                </ion-text>
+                                            </ion-row>
+
+                                        </ion-col>
+
+                                        <ion-col no-padding size="6">
+                                            <ion-row>
+                                                <ion-text  style="color: #1D174D;">Floor No :</ion-text>
+                                                <ion-text  style="color: #1D174D;" class="datavalue">
+                                                    {{floor.number}}
+                                                </ion-text>
+                                            </ion-row>
+
+                                        </ion-col>
+                                        <ion-icon  name="caret-down-outline" class="iconnnnnOne" style="position: absolute;  font-size: 20px;    right: 25px; transform: translateY(-50%); color: #1D174D;"></ion-icon>
+                                    </ion-row>
+                                </ion-grid>
+
+                            </ion-card-header>
+                            <ion-card-content class="ion-no-margin ion-no-padding">
+
+                            </ion-card-content>
+                        </ion-card>
+                        <div *ngFor="let room of floor.rooms; let j = index">
+                            <ion-card *ngIf="selectedIndex ===i && isToggle"  >
+                                <ion-card-header color="primary">
+                                    <ion-row class="ion-no-margin ion-no-padding">
+                                        <ion-col class="ion-no-margin ion-no-padding" size="5">
+                                            <ion-text  style="color: white;">Room No :</ion-text>
+                                            <ion-text  style="color: white;"> {{room.roomNumber}} </ion-text>
+                                        </ion-col>
+                                        <ion-col class="ion-no-margin ion-no-padding" size="7">
+                                            <ion-icon *ngIf="room.roomStatus ==='OCCUPIED'" class="viewdetail-second"
+                                                name="ellipsis-vertical-outline" style="float: right; font-size: 20px;"
+                                                (click)=" roomdetail(room);">
+                                            </ion-icon>
+                                            <ion-icon *ngIf="room.roomStatus !='OCCUPIED'" class="viewdetail-second"
+                                                name="ellipsis-vertical-outline" style="float: right; font-size: 20px;"
+                                                (click)=" roomdetail2(room,data.date);"></ion-icon>
+                                            <ion-chip class="not-ready" selected="true"
+                                                *ngIf="room.roomStatus === 'NOT_READY'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="not-disturbed" selected="true"
+                                                *ngIf="room.roomStatus === 'DO_NOT_DISTRUB'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="cleaninprogress" selected="true"
+                                                *ngIf="room.roomStatus === 'CLEANING_IN_PROGRESS'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: black;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="sleepout" selected="true"
+                                                *ngIf="room.roomStatus === 'SLEEP_OUT'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="onQueue" selected="true"
+                                                *ngIf="room.roomStatus === 'ON_QUEUE'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="late_checkout" selected="true"
+                                                *ngIf="room.roomStatus === 'LATE_CHECK_OUT'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="checkout" selected="true"
+                                                *ngIf="room.roomStatus === 'CHECKING_OUT'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="Occupied" selected="true"
+                                                *ngIf="room.roomStatus === 'OCCUPIED'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                            <ion-chip class="blocked" selected="true"
+                                                *ngIf="room.roomStatus === 'BLOCKED'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: white;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+
+                                            <ion-chip class="vacantready" selected="true"
+                                                *ngIf="room.roomStatus === 'VACANT_READY'"
+                                                style="float: right; height: 20px">
+                                                <ion-label style="font-size: 13px; color: black;" color="secondary">
+                                                    {{room.roomStatus}}</ion-label>
+                                            </ion-chip>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-card-header>
+                                <ion-card-content 
+                                        [ngClass]="{'available-clip': room.available === true, 'booked-clip' : room.available === false }">
+                                  
+                                        <!-- <ion-grid class="ion-no-margin ion-no-padding"> -->
+                                                 
+                                                <ion-row >
+                                                    <ion-col size="12" >
+                                                      
+                                                            <ion-text style="font-size: 13px;">Room Name :</ion-text>
+                                                            <ion-text style="font-size: 13px;" class="datavalue">
+                                                                {{room.roomType}}
+                                                            </ion-text>
+                                                     
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row   >
+                                                    <ion-col  size="12">
+                                                     
+                                                            <ion-text style="font-size: 13px;">Bed Type :</ion-text>
+                                                            <ion-text style="font-size: 13px;" class="datavalue">
+                                                                {{room.bedType}}
+                                                            </ion-text>
+                                                       
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row  >
+                                                    <ion-col   size="12">
+                                                   
+                                                            <ion-text style="font-size: 13px;">Description :</ion-text>
+                                                            <ion-text style="font-size: 13px;" class="datavalue">
+                                                                {{room.bedDescription}}</ion-text>
+                                                        
+                                                    </ion-col>
+                                                </ion-row>
+                                                
+                                                <hr class="line" class="ion-no-margin ion-no-padding">
+
+                                                <ion-row class=" ">
+                                                    <ion-col  size="12">
+                                                        <div *ngIf="room.guestName != null && room.guestName !=undefined">
+                                                            <ion-icon *ngIf="room.roomStatus === 'OCCUPIED' || room.roomStatus === 'BLOCKED'" name="arrow-forward" style="color: yellowgreen;font-weight: bold;height:10px;"></ion-icon>
+                                                            <ion-text  style="font-size: 13px;">Guest Name:</ion-text>
+                                                            <ion-text  class="uservalue">{{room.guestName}}</ion-text>
+                                                        </div>
+                                                        <div *ngIf="room.guestName == null && room.checkInGuest != null && room.checkInGuest !=undefined">
+                                                            <ion-text  style="font-size: 13px;"> Arrival Guest:</ion-text>
+                                                            <ion-text  class="uservalue">
+                                                                {{room.checkInGuest}}</ion-text>
+                                                        </div>
+
+                                                        <div  *ngIf="room.checkOutGuest != null && room.checkOutGuest !=undefined">
+                                                            <ion-icon *ngIf="room.roomStatus === 'CHECKING_OUT' || room.roomStatus === 'NOT_READY' || room.roomStatus === 'BLOCKED'" name="arrow-back" style="color: #3f51b5;font-weight: bold;height:10px;"></ion-icon>
+                                                            
+                                                            <ion-text  style="font-size: 13px;">Departure
+                                                                Guest :
+                                                            </ion-text>
+                                                            <ion-text  class="uservalue">
+                                                                {{room.checkOutGuest}}</ion-text>
+                                                        </div>
+
+                                                    </ion-col>
+                                                </ion-row>
+                                        <!-- </ion-grid> -->
+
+                                </ion-card-content>
+                            </ion-card>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </ion-list>
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
+          <div class="loader-text">Please wait...</div>
+        </div>
+      </div>
+</ion-content>
+<ion-footer>
+    <ion-toolbar style=" height: 50px;">
+        <app-footer></app-footer>
+    </ion-toolbar>
+</ion-footer>

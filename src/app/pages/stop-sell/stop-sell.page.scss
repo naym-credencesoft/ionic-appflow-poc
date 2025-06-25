@@ -1,0 +1,307 @@
+:host {
+    @media (min-width: 576px) {
+        .header-image {
+            display: none !important;
+        }
+        .profile {
+            display: none !important;
+        }
+        .left-image-header {
+            display: none !important;
+        }
+        .card-layout {
+            margin-top: 101px !important;
+            margin-left: 60px;
+            margin-right: 60px;
+            padding: 11px;
+        }
+
+        ion-toolbar {
+            position: absolute;
+            top: 0px;
+            --background: #1D174D;
+            border: none;
+            height: 71px;
+            
+        }
+    }
+    @media (max-width: 576px) {
+        .profile {
+            z-index: 100;
+            position: absolute;
+            top: -4px;
+            right: 0px;
+            height: 70px !important;
+            width: 70px !important;
+            border: 2px solid white !important;
+            box-shadow: 2px 2px 3px #999;
+            margin-right: 6px;
+            margin-top: 6px;
+        }
+        .left-image-header {
+            z-index: 1;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            height: 22.5vw;
+        }
+    
+        ion-toolbar {
+            --background: #1D174D;
+            height: 80px;
+            border: none;
+        }
+    }
+
+    
+    .masterrateOne {
+        margin-bottom: 10px;
+    }
+
+    
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+    .header-image {
+        background: var(--ion-color-tm2-terciary2);
+    }
+    .HeaderTitle {
+        color: white;
+        margin-left: 15px !important;
+    }
+
+    .profile {
+        z-index: 2;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+    }
+
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .tableheadOne table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        padding-left: 5px;
+        padding-right: 5px;
+        color: #1D174D;
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 500;
+        line-height: 18px;
+        background: linear-gradient(
+            -152.97deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        border-radius: 16px;
+    }
+    
+    .tableheadOne th,
+    .tableheadOne td {
+        white-space: nowrap;
+        padding: 13px;
+        // border: 1px solid #ddd; 
+        
+    }
+    
+ 
+    .table-responsive {
+        max-height: 400px; 
+        overflow-y: auto;
+    }
+    
+
+    ion-item.headerOneMaster {
+        font-weight: bold;
+      }
+      
+      ion-label.plan-name {
+        width:10px
+      }
+      
+      ion-label.plan-amount,
+      ion-label.extra-charge {
+        flex: 1;
+      }
+      
+      ion-label.actionMaster {
+        flex: 0.5;
+      }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 46px;
+        left: 45px;
+        font-size: 10px;
+        color: #fff;
+        z-index: 13;
+        font-size: 14px;
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+
+    .list-back{
+        background: #FFFFFF00;
+        z-index: 2;
+        position: relative;
+    }
+    .text-white{
+        color: #1D174D;
+    }
+
+    .footer {
+        --background: var(--ion-color-tm2-terciary1);
+        color: white;
+    }
+}
+.card-layout{
+
+    border-radius: 16px;
+    margin: 7px;
+    border: 1px solid #7b6e72 !important;
+    margin-top: 34px;
+}
+
+ .card-item{
+
+        --border-radius: 4.23077px;
+        font-size: 13px;
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, -1);
+        color: #1D174D;
+        text-align: center;
+        border: 1px solid #333;
+}
+.add_noofperson{
+    display: inherit;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    height: 39px;
+    border-radius: 5px;
+    text-align: center;
+    padding-top: 11px;
+    
+}
+#noOfPax{
+    font-weight: 700;
+    font-size: clamp(10px, 4vw, 23px); 
+}
+.remove_person{
+    margin-right: 10px;
+}
+.add_person{
+    margin-left: 10px;
+}
+.button-submit {
+    --background: #259BBF !important;
+    // -webkit-backdrop-filter: blur(17.7692px);
+    // backdrop-filter: blur(17.7692px);
+    border-radius: 10px;
+    color: white;
+}
+
+.card{
+    border: 1px solid rgb(123, 123, 123);
+}
+
+ion-select::part(icon) {
+    display: none !important;
+   }
+
+   table, th {
+    border: 2px solid #C4BFBF;
+    text-align: left;
+    padding: 10px;
+    font-size: 18px;
+  }
+
+  .sectiontd {
+    display: flex;
+    padding: 10px;
+    font-size: 18px;
+    border-right:2px solid #C4BFBF;
+    margin-left: 20px;
+  }
+
+  ion-chip {
+    --color: #1D174D;
+  }
+
+  @media (min-width: 601px){
+    .otaimages {
+        height: 90px;
+        margin-left: 5px;
+        margin-right: 5px;
+        display: flex;
+        align-items: center;
+    }
+}
+@media (max-width: 600px){
+    .otaimages {
+        height: 50px;
+        margin-left: 5px;
+        margin-right: 5px;
+        display: flex;
+        align-items: center;
+    }
+}
+.radio-group {
+    display: flex;
+    gap: 60px; /* Space between radio buttons */
+    align-items: flex-start;
+  }
+  
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between radio and text */
+    font-size: 16px; /* Adjust text size for better readability */
+  }
+  .tab-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+    color: #666;
+  }
+  
+  .tab.active {
+    background: #1D174D;
+    color: white;
+    font-weight: bold;
+  }
+  .tab-label {
+    font-size: 15px;
+    color: #1D174D;
+  }

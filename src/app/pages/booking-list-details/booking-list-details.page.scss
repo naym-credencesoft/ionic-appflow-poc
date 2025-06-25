@@ -1,0 +1,102 @@
+:host {
+    @media (min-width: 576px) {
+        .header-image {
+            display: none !important;
+        }
+        .profile {
+            display: none !important;
+            margin-top: 6px;
+            margin-right: 6px;
+        }
+        .left-image-header {
+            display: none !important;
+        }
+
+        ion-toolbar {
+            --background: #1D174D;
+            min-height: 80px;
+            border: none;
+        }
+    }
+    @media (max-width: 576px) {
+        .header-image {
+            display: none !important;
+        }
+        .profile {
+            display: none !important;
+            margin-top: 6px;
+            margin-right: 6px;
+        }
+        .left-image-header {
+            display: none !important;
+        }
+        .sctionedDev {
+            font-size: 10px;
+        }
+
+        ion-toolbar {
+            --background: #1D174D;
+            min-height: 80px;
+            border: none;
+        }
+    }
+
+    .left-image-header {
+        z-index: 1;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 22.5vw;
+    }
+    .header-image {
+        background: var(--ion-color-tm2-terciary2);
+    }
+    .HeaderTitle {
+        color: white;
+    }
+
+    .profile {
+        z-index: 2;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        height: 15vw;
+        width: 15vw;
+        border: 2px solid white !important;
+        box-shadow: 2px 2px 3px #999;
+        margin-right: 6px;
+        margin-top: 6px;
+    }
+
+    .HeaderSubTitle {
+        position: absolute;
+        top: 43px;
+        left: 45px;
+        font-size: 10px;
+        z-index: 14;
+
+    }
+
+    .back {
+        margin-left: 10px;
+        color: white;
+    }
+
+    ion-content {
+        --background: #fff;
+    }
+
+    .list-back{
+        background: #FFFFFF00;
+        z-index: 2;
+        position: relative;
+    }
+    .text-white{
+        color: white;
+    }
+
+    .footer {
+        --background: var(--ion-color-tm2-terciary1);
+        color: white;
+    }
+}

@@ -1,0 +1,42 @@
+<ion-tabs>
+    <ion-tab-bar slot="bottom" class="iontabs" no-margin no-padding style="background-color: #1D174D;">
+        <!-- <ion-tab-button no-margin no-padding class="setting-tab">
+            <ion-icon name="settings"></ion-icon>
+            <ion-label>Setting</ion-label>
+        </ion-tab-button> -->
+
+        <ion-tab-button no-margin no-padding (click)="option($event)" style="background-color: #1D174D;">
+            <ion-icon name="list-outline"class="colorWhite"></ion-icon>
+            <ion-label class="colorWhite">More</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button no-margin no-padding (click)="Dashboard()" style="background-color: #1D174D;">
+            <ion-icon name="home-outline" class="colorWhite"></ion-icon>
+            <ion-label class="colorWhite">Home</ion-label>
+        </ion-tab-button>
+
+        <!-- <ion-tab-button no-margin no-padding tab="notifications">
+            <ion-icon name="notifications"></ion-icon>
+            <ion-label>Notification</ion-label>
+        </ion-tab-button> -->
+
+        <!-- <ion-tab-button no-margin no-padding tab="menu">
+             <ion-menu-button color="primary"></ion-menu-button>
+             <ion-label>Menu</ion-label>
+        </ion-tab-button> -->
+
+        <ion-tab-button
+            no-margin
+            no-padding
+            (click)="menuClick()"
+            class="menu-tab"
+            style="background-color: #1D174D;"
+        >
+            <ion-icon
+                style="font-size: 30px"
+                name="menu-outline"
+                class="colorWhite"
+            ></ion-icon>
+        </ion-tab-button>
+    </ion-tab-bar>
+</ion-tabs>

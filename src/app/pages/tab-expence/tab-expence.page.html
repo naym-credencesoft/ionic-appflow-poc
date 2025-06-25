@@ -1,0 +1,464 @@
+<ion-header class="header">
+    <div class="header-image" no-padding>
+        <ion-grid no-margin no-padding>
+            <ion-col
+                no-margin
+                no-padding
+                size="12"
+                size-xl="12"
+                size-sm="12"
+                size-md="12"
+                size-lg="12"
+            >
+                <ion-button
+                    class="button-submit "
+                    expand="block"
+                    (click)="toggleLayout()"
+                    style="font-size: 14px"
+                >
+                    <ion-icon
+                        class="headericon"
+                        name="{{headerIcon}}"
+                    ></ion-icon>
+                    <ion-text class="headertitle"
+                        >{{headerTitle}}</ion-text
+                    >
+                </ion-button>
+            </ion-col>
+        </ion-grid>
+    </div>
+</ion-header>
+<ion-content no-padding class="animated fadeIn fast">
+    <ion-progress-bar
+        type="indeterminate"
+        *ngIf="isProgressing"
+        reversed="true"
+    ></ion-progress-bar>
+
+    <ion-grid
+        class="card-layout text-white"
+        *ngIf="isCreateExpence"
+        no-margin
+        no-padding
+    >
+        <!--  -->
+        <form [formGroup]="onExpenceTab" style="color:#333">
+            <ion-row>
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Date of Expense</ion-text
+                    >
+                    <ion-datetime
+                        class="card-item"
+                        formControlName="date"
+                        [(ngModel)]="expence.date"
+                        
+                        displayFormat="DD/MM/YYYY"
+                        pickerFormat="DD/MM/YYYY"
+                        placeholder="Select Date"
+                    ></ion-datetime>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Bill No</ion-text
+                    >
+
+                    <ion-input
+                        formControlName="BillNo"
+                        value="{{expence.billNo}}"
+                        [(ngModel)]="expence.billNo"
+                        placeholder="#"
+                        class="card-item"
+                        inputmode="text"
+                    ></ion-input>
+                </ion-col>
+
+                <!--  -->
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Booking Reference No</ion-text
+                    >
+
+                    <ion-input
+                        disabled
+                        formControlName="bookingId"
+                        value="{{BookingReferanceNo}}"
+                        [(ngModel)]="expence.bookingId"
+                        placeholder="#"
+                        class="card-item"
+                        inputmode="text"
+                    ></ion-input>
+                </ion-col>
+
+                <ion-col size="12" *ngIf="roomDetails.length >0 ">
+                    <ion-text  style="font-size: 12px"
+                        >Room No</ion-text
+                    >
+
+                    <ion-select
+                        class="card-item"
+                        formControlName="roomNo"
+                        [(ngModel)]="expence.roomNumber"
+                        placeholder="Room No"
+                        (ionChange)="setExpense(expence.roomNumber)"
+                    >
+                        <ion-select-option
+                            *ngFor="let room of roomDetails"
+                            [value]="room.roomNumber"
+                        >
+                            {{ room.roomNumber }}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Expense Type</ion-text
+                    >
+
+                    <ion-select
+                        class="card-item"
+                        formControlName="name"
+                        [(ngModel)]="expence.name"
+                        placeholder="Select Expence Type"
+                    >
+                        <!-- <ion-select-option value="Property Tax">Property Tax</ion-select-option>
+                        <ion-select-option value="Property Damage">Property Damage</ion-select-option>
+                        <ion-select-option value="Miscellaneous Damage">Miscellaneous Damage</ion-select-option>
+                        <ion-select-option value="Cleaning Fee">Cleaning Fee</ion-select-option>
+                        <ion-select-option value="House Insurance">House Insurance</ion-select-option>
+                        <ion-select-option value="Vehicle Insurance">Vehicle Insurance</ion-select-option>
+                        <ion-select-option value="Petrol">Petrol</ion-select-option>
+                        <ion-select-option value="Grocery">Grocery</ion-select-option>
+                        <ion-select-option value="Vehicle Maintenance">Vehicle Maintenance</ion-select-option>
+                        <ion-select-option value="Garden & Garden Maintenace">Garden & Garden Maintenace
+                        </ion-select-option>
+                        <ion-select-option value="Utility Bill">Utility Bill</ion-select-option>
+                        <ion-select-option value="Meal & Restaurant Bill">Meal & Restaurant Bill</ion-select-option>
+                        <ion-select-option value="Tea or Coffee or Soft Beverages or Alcohol">Tea or Coffee or Soft
+                            Beverages or Alcohol</ion-select-option>
+                        <ion-select-option value="NetFlix , Amazon Prime ,Sportify,4G">NetFlix , Amazon Prime
+                            ,Sportify,4G</ion-select-option>
+                        <ion-select-option value="Gym or Club Membership">Gym or Club Membership</ion-select-option>
+                        <ion-select-option value="Brokerage/ThirdParty Expenses">Brokerage/ThirdParty Expenses
+                        </ion-select-option>
+                        <ion-select-option value="Booking Refund">Booking Refund</ion-select-option>
+                        <ion-select-option value="Miscellaneous">Miscellaneous</ion-select-option>
+                        <ion-select-option value="Salary/Wages">Salary/Wages</ion-select-option>
+                        <ion-select-option value="Property Rent/Mortgage">Property Rent/Mortgage</ion-select-option> -->
+
+                        <ion-select-option
+                            *ngFor="let expenseItem of expensesList"
+                            [value]="expenseItem.value"
+                            (click)="onUnSelectExpDep()"
+                        >
+                            {{ expenseItem.viewValue }}
+                        </ion-select-option>
+
+                        <ion-select-option
+                            *ngFor="let expenseItem of propertyExpenseList"
+                            [value]="expenseItem.name"
+                            (click)="onSelectExpDep(expenseItem)"
+                        >
+                            {{ expenseItem.name }} ({{expenseItem.type}})
+                        </ion-select-option>
+                    </ion-select>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Description/Note</ion-text
+                    >
+
+                    <ion-input
+                        formControlName="description"
+                        [(ngModel)]="expence.description"
+                        placeholder="Description/Note"
+                        inputmode="text"
+                        class="card-item"
+                    ></ion-input>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-text  style="font-size: 12px"
+                        >Receipt Number</ion-text
+                    >
+                    <ion-row>
+                        <ion-input
+                            formControlName="receiptNumber"
+                            [(ngModel)]="expence.receiptNumber"
+                            placeholder="#"
+                            class="card-item"
+                            inputmode="text"
+                        ></ion-input>
+                    </ion-row>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-text  style="font-size: 12px"
+                        >Amount</ion-text
+                    >
+                    <ion-row>
+                        <ion-input
+                            formControlName="Amount"
+                            name="Amount"
+                            no-padding
+                            placeholder="0"
+                            no-margin
+                            class="card-item"
+                            type="number"
+                            [(ngModel)]="expence.amount"
+                            clearInput="true"
+                            min="0"
+                            (change)="onAmountChange(expence.amount)"
+                        ></ion-input>
+                    </ion-row>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >Mode of Payment</ion-text
+                    >
+                    <ion-col class="ion-no-padding" size="12">
+                        <ion-select
+                            class="card-item"
+                            [(ngModel)]="expence.paymentMode"
+                            formControlName="paymentMode"
+                            placeholder="Select Mode of Payment"
+                        >
+                            <ion-select-option
+                                value="Card"
+                                *ngIf="businessPlan === 'Business Premium'"
+                                >Card
+                            </ion-select-option>
+                            <ion-select-option value="Cash"
+                                >Cash</ion-select-option
+                            >
+                            <ion-select-option
+                                value="BankTransfer"
+                                *ngIf="isBankAvailable"
+                                >BankTransfer
+                            </ion-select-option>
+                            <ion-select-option
+                                value="Wallet"
+                                *ngIf="isWalletAvailable"
+                                >Wallet</ion-select-option
+                            >
+                            <!-- <ion-select-option value="Cheque">Cheque</ion-select-option> -->
+                            <ion-select-option value="Credit"
+                                >Credit</ion-select-option
+                            >
+                            <!-- <ion-select-option value="DemandDraft">DemandDraft</ion-select-option> -->
+                            <ion-select-option value="UPI"
+                                >UPI</ion-select-option
+                            >
+                            <ion-select-option value="PrePaid"
+                                >Prepaid
+                            </ion-select-option>
+                            <ion-select-option value="BillToRoom"
+                                >Bill to Room</ion-select-option
+                            >
+                        </ion-select>
+                    </ion-col>
+                </ion-col>
+
+                <ion-col size="12">
+                    <ion-label  style="font-size: 12px"
+                        >Choose File</ion-label
+                    >
+                    <ion-col>
+                        <ion-input
+                        #file2
+                        [hidden]="true"
+                        (click)="upload2.click()"
+                    ></ion-input>
+                    <input
+                        class="card-item"
+                        formControlName="uploadFileFC"
+                        type="file"
+                        #upload2
+                        (change)="uploadFile($event, file2)"
+                    />
+                    </ion-col>
+                   
+                 
+
+                </ion-col>
+         <ion-col size="12">
+            <ion-img *ngIf="imageUrl" class="list-thumb-img" style="max-height: 300px" [src]="imageUrl"></ion-img>
+
+            <ion-list *ngFor="let file of receiptFlieList; let i = index">
+              <!-- <ion-divider></ion-divider> -->
+              <ion-item>
+                <ion-label>{{ i + 1 }}.&nbsp;</ion-label>
+                <ion-thumbnail *ngIf="isImage(file.url)">
+                  <ion-img [src]="file.url" (click)="imageUrl = file.url"></ion-img>
+                </ion-thumbnail>
+                <a href="{{ file.url }}" download target="_blank" class="file-link">{{ file.url }}</a>
+                <ion-buttons slot="end">
+                  <ion-button (click)="deleteFile(i)">
+                    <ion-icon name="close"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+              <!-- <ion-divider></ion-divider> -->
+            </ion-list>
+         </ion-col>
+
+                <ion-col size="12">
+                    <ion-text  style="font-size: 12px"
+                        >External Booking Reference No</ion-text
+                    >
+
+                    <ion-input
+                        formControlName="externalReference"
+                        [(ngModel)]="expence.externalReference"
+                        placeholder="#"
+                        class="card-item"
+                        inputmode="text"
+                    ></ion-input>
+                </ion-col>
+            </ion-row>
+            <!--  -->
+
+            <ion-row>
+                <ion-col size="4">
+                    <ion-button
+                        size="small"
+                        expand="block"
+                        class="button-submit"
+                        (click)="FormSubMit()"
+                        [disabled]="!onExpenceTab.valid"
+                        >Add</ion-button
+                    >
+                </ion-col>
+                <ion-col size="4">
+                    <ion-button
+                        size="small"
+                        expand="block"
+                        class="btn-reset"
+                        (click)="reset()"
+                        >Reset</ion-button
+                    >
+                </ion-col>
+
+                <ion-col size="4">
+                    <ion-button
+                        size="small"
+                        expand="block"
+                        class="btn-cancel"
+                        (click)="toggleLayout()"
+                        >Cancel
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </form>
+    </ion-grid>
+
+    <ion-grid class="text-white" *ngIf="!isCreateExpence">
+        <!--  -->
+        <ion-row >
+            <ion-col size="12">
+                <ion-list class="list-back">
+                    <ion-item>
+                        <ion-text
+                            class="payment_List_Title text-white"
+                            style="font-size: 14px"
+                            >List of Expense</ion-text
+                        >
+                    </ion-item>
+
+                    <ion-card *ngFor="let expence of expences">
+                        <ion-card-header class="Crad-Header">
+                            <ion-row>
+                                <ion-col no-padding size="6">
+                                    <ion-text class="text-2"
+                                        > Date:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        style="font-size: 13px"
+                                    >
+                                        {{expence.date| date : "MMM d, y"}}</ion-text
+                                    >
+                                </ion-col>
+                                <ion-col no-padding size="6">
+                                    <ion-text class="text-2"
+                                        >Type:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        >{{expence.name}}</ion-text
+                                    >
+                                </ion-col>
+                            </ion-row>
+                        </ion-card-header>
+                        <ion-card-content>
+                            <ion-row>
+                                <ion-col no-padding size="12">
+                                    <ion-text
+                                        class="text-2"
+                                        >Reference:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        >{{expence.bookingId}}
+                                    </ion-text>
+                                </ion-col>
+                                <ion-col no-padding size="12">
+                                    <ion-text
+                                        class="text-2"
+                                        >Description:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        >{{expence.description}}
+                                    </ion-text>
+                                </ion-col>
+
+                                <ion-col
+                                    no-padding
+                                    size="12"
+                                    *ngIf="expence.roomNumber != null && expence.roomNumber != undefined"
+                                >
+                                    <ion-text
+                                       class="text-2"
+                                        >Room No:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                        >{{expence.roomNumber}}
+                                    </ion-text>
+                                </ion-col>
+
+                                <ion-col no-padding size="12">
+                                    <ion-text
+                                      class="text-2"
+                                        >Amount:</ion-text
+                                    >
+                                    <ion-text
+                                        class="TextValue text-2"
+                                    >
+                                        {{expence.amount| currency:
+                                        token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                        }}
+                                    </ion-text>
+                                </ion-col>
+
+                                <!-- <ion-col no-padding size="12">
+                                                <ion-text style="font-size: 13px;"  >Status:</ion-text>
+                                                <ion-text  class="TextValue" style="font-size: 13px;" >Paid</ion-text> 
+                                        </ion-col>
+
+                                        <ion-row class="payment-row-last">
+                                                <ion-text style="font-size: 13px;"  >Mode:</ion-text>
+                                                <ion-text  class="TextValue" style="font-size: 13px;" >Card</ion-text> 
+                                        </ion-row> -->
+                            </ion-row>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <!--  -->
+    </ion-grid>
+</ion-content>

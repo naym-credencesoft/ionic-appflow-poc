@@ -1,0 +1,215 @@
+<ion-header>
+    <ion-toolbar color="primary" class="animated fadeIn">
+        <ion-buttons slot="start" class="backbutton" (click)="onHome()">
+            <ion-icon name="arrow-back"></ion-icon>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">KOT</ion-text>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-progress-bar
+        type="indeterminate"
+        *ngIf="loader"
+        reversed="true"
+    ></ion-progress-bar>
+
+    <div *ngFor="let item of items">
+        <ion-list class="list-room">
+            <ion-card
+                class="bg-white header-card-1 ion-no-margin ion-no-padding"
+            >
+                <ion-row class="ion-no-margin ion-no-padding">
+                    <ion-col class="ion-no-margin ion-no-padding" size="6">
+                        <ion-row class="ion-no-margin ion-no-padding">
+                            <ion-text style="font-size: 14px"
+                                >Rsvn No#
+                            </ion-text>
+                            <ion-text
+                                style="font-size: 14px"
+                                class="datavalue"
+                                color="primary"
+                                ><b>{{item.bookOneOrderId}}</b>
+                            </ion-text>
+                        </ion-row>
+                    </ion-col>
+                    <ion-col class="ion-no-margin ion-no-padding" size="6">
+                        <ion-chip
+                            class="bg-primary"
+                            style="float: right; height: 20px"
+                        >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                                *ngIf="kotSelectionName!='Served'"
+                            >
+                                Next</ion-label
+                            >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                                *ngIf="kotSelectionName==='Served'"
+                            >
+                                Completed</ion-label
+                            >
+                        </ion-chip>
+
+                        <ion-chip
+                            class="bg-primary"
+                            style="float: right; height: 20px"
+                            (click)="details(item)"
+                        >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                            >
+                                Details</ion-label
+                            >
+                        </ion-chip>
+
+                        <ion-chip
+                            *ngIf="kotSelectionName==='Served'"
+                            class="bg-primary"
+                            style="float: right; height: 20px"
+                            (click)="paymentDetail(item)"
+                        >
+                            <ion-label
+                                style="font-size: 13px; color: white"
+                                color="secondary"
+                            >
+                                Payment Details</ion-label
+                            >
+                        </ion-chip>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row
+                    class="ion-no-margin ion-no-padding"
+                    class="row-Reservations"
+                    *ngIf="item.locationName != null && item.locationName != undefined"
+                >
+                    <ion-col class="ion-no-margin ion-no-padding" size="12">
+                        <ion-row>
+                            <ion-text style="font-size: 14px"
+                                >Location :</ion-text
+                            >
+                            <ion-text
+                                style="font-size: 14px"
+                                class="datavalue"
+                                color="primary"
+                            >
+                                <b>{{item.locationName}}</b>
+                            </ion-text>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row
+                    class="ion-no-margin ion-no-padding"
+                    class="row-Reservations"
+                    *ngIf="item.resourceName != null && item.resourceName != undefined"
+                >
+                    <ion-col
+                        class="ion-no-margin ion-no-padding"
+                        size="12"
+                        size-xl="12"
+                        size-sm="12"
+                        size-md="12"
+                        size-lg="12"
+                    >
+                        <ion-row>
+                            <ion-text style="font-size: 14px"
+                                >Resource :</ion-text
+                            >
+                            <ion-text
+                                style="font-size: 14px"
+                                class="datavalue"
+                                color="primary"
+                            >
+                                <b>{{item.resourceName}}</b>
+                            </ion-text>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row
+                    class="ion-no-margin ion-no-padding"
+                    class="row-Reservations"
+                >
+                    <ion-col
+                        class="ion-no-margin ion-no-padding"
+                        size="12"
+                        size-xl="12"
+                        size-sm="12"
+                        size-md="12"
+                        size-lg="12"
+                    >
+                        <ion-row>
+                            <ion-text style="font-size: 14px"
+                                >Delivery Date & Time :</ion-text
+                            >
+                            <ion-text
+                                style="font-size: 14px"
+                                class="datavalue"
+                                color="primary"
+                                ><b>{{item.requiredDate | date:'MMM d, y'}}</b>
+                                <b>{{item.requiredTime}}</b>
+                            </ion-text>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row
+                    class="ion-no-margin ion-no-padding"
+                    class="row-Reservations"
+                >
+                    <ion-col
+                        class="ion-no-margin ion-no-padding"
+                        size="12"
+                        size-xl="12"
+                        size-sm="12"
+                        size-md="12"
+                        size-lg="12"
+                    >
+                        <ion-row>
+                            <ion-text style="font-size: 14px"
+                                >Delivery Method :</ion-text
+                            >
+                            <ion-text
+                                style="font-size: 14px"
+                                class="datavalue"
+                                color="primary"
+                            >
+                                <b>{{item.deliveryMethod}}</b></ion-text
+                            >
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+
+                <hr class="line" class="ion-no-margin ion-no-padding" />
+
+                <div *ngFor="let status of statusList;">
+                    <ion-row>
+                        <ion-col class="ion-text-center kotitem"  size="12">
+                            <ion-text style="font-size: 14px"
+                                ><b>{{ status.name.toUpperCase() }}</b>
+                            </ion-text></ion-col>
+                    </ion-row>
+                    <!--  -->
+                    
+                    <ion-grid  *ngFor="
+                        let kot of getKotList(item.kotDtoList,0);
+                        let l = index" >
+                    
+                    </ion-grid>
+
+       
+                    <!--  -->
+                </div>
+            </ion-card>
+        </ion-list>
+    </div>
+</ion-content>
+<ion-footer>
+    <ion-toolbar style="height: 50px">
+        <app-order-footer></app-order-footer>
+    </ion-toolbar>
+</ion-footer>
