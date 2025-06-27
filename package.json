@@ -21,6 +21,7 @@
         "@angular/animations": "^10.2.2",
         "@angular/cdk": "^10.2.7",
         "@angular/common": "~10.2.2",
+        "@angular/cli": "~10.2.0",
         "@angular/core": "^10.2.2",
         "@angular/forms": "^10.2.2",
         "@angular/material": "^10.2.2",
@@ -60,7 +61,6 @@
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "~0.1002.0",
-        "@angular/cli": "~10.2.0",
         "@angular/core": "^10.2.2",
         "@angular/compiler": "~10.2.2",
         "@angular/compiler-cli": "~10.2.2",
