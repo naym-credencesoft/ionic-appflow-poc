@@ -60,6 +60,8 @@
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "~0.1002.0",
+        "@angular/cli": "~10.2.0",
+        "@angular/core": "^10.2.2",
         "@angular/compiler": "~10.2.2",
         "@angular/compiler-cli": "~10.2.2",
         "@angular/language-service": "~10.2.2",
