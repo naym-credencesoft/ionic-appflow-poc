@@ -55,6 +55,7 @@ import { AuditOrderReportComponent } from "./component/audit-order-report/audit-
 import { CollectPaymentModalComponent } from "./model/collect-payment-modal/collect-payment-modal.component";
 import { OpenProductComponent } from "./model/open-product/open-product.component";
 import { ItemReleaseComponent } from "./model/item-release/item-release.component";
+import { CancelOrderModalComponent } from "./component/cancel-order-modal/cancel-order-modal.component";
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -87,7 +88,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         DialogContentComponent,
         CollectPaymentModalComponent,
         ItemReleaseComponent,
-        OpenProductComponent
+        OpenProductComponent,
+        CancelOrderModalComponent
         
     ],
     entryComponents: [

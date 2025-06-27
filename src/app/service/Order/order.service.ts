@@ -33,6 +33,13 @@ export class OrderService {
           { observe: "response" }
         );
       }
+       silentPrintKOT(orderId:number) {
+    return this.http.get(this.countryConfig.getCoreApiURL() + "/api/kot/generateKotPdf?orderId="+orderId, {
+      responseType: 'text'
+    });
+  }
+
+
 
       createKots(kot:KOT[]) {
         return this.http.post<KOT[]>(

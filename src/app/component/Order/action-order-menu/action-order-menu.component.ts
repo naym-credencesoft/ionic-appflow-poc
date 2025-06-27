@@ -16,6 +16,8 @@ import { AUDIT_ORDER_CANCEL, AUDIT_ORDER_DELETE } from "src/app/app.component";
 import { DateService } from "src/app/service/DateService/date-service.service";
 import { PropertyService } from "src/app/service/property/property.service";
 import { Audit } from "src/app/service/audit";
+import { CancelOrderModalComponent } from "../../cancel-order-modal/cancel-order-modal.component";
+import { OrderEventsService } from "src/app/service/order-events.service";
 
 @Component({
     selector: "app-action-order-menu",
@@ -41,6 +43,8 @@ export class ActionOrderMenuComponent implements OnInit {
         private alertCtrl: AlertController,
         private dateService: DateService,
         private propertyService: PropertyService,
+        private modalCtrl: ModalController,
+          private orderEvents: OrderEventsService
     ) {
         this.order = new Order();
         this.audit = new Audit();
@@ -141,6 +145,21 @@ export class ActionOrderMenuComponent implements OnInit {
             this.router.navigate(["order-payment-details"], navigationExtras);
         }
     }
+        getCancelOrderByTimeId(order: Order) {
+        this.loader = true;
+        this.orderService.getOrderCancelByOrderId(order.id).subscribe(
+            (data) => {
+                this.loader = false;
+                this.presentToast("Order Cancelled successfully");
+                this.createAuditReport(order, AUDIT_ORDER_CANCEL);
+                this.closeSuccessDialog();
+                this.changeDetectorRefs.detectChanges();
+            },
+            (error) => {
+                this.loader = false;
+            }
+        );
+    }
 
     getPaymentById(id: number) {
         this.loader = true;
@@ -211,65 +230,104 @@ export class ActionOrderMenuComponent implements OnInit {
         );
     }
 
-    getCancelOrderByTimeId(order: Order) {
-        this.loader = true;
-        this.orderService.getOrderCancelByOrderId(order.id).subscribe(
-            (data) => {
-                this.loader = false;
-                this.presentToast("Order Cancelled successfully");
-                this.createAuditReport(order, AUDIT_ORDER_CANCEL);
-                this.closeSuccessDialog();
+    // getCancelOrderByTimeId(order: Order) {
+    //     this.loader = true;
+    //     this.orderService.getOrderCancelByOrderId(order.id).subscribe(
+    //         (data) => {
+    //             this.loader = false;
+    //             this.presentToast("Order Cancelled successfully");
+    //             this.createAuditReport(order, AUDIT_ORDER_CANCEL);
+    //             this.closeSuccessDialog();
+    //             this.changeDetectorRefs.detectChanges();
+    //         },
+    //         (error) => {
+    //             this.loader = false;
+    //         }
+    //     );
+    // }
+async openCancelModal(order: any) {
+       this.close();
+  const modal = await this.modalCtrl.create({
+    component: CancelOrderModalComponent,
+    componentProps: {
+      order: order,
+       updatedBy: this.order.operatorName,
+    },
+  });
+
+  await modal.present();
+
+  const { data } = await modal.onDidDismiss();
+
+  if (data?.reason) {
+    this.getCancelOrderById(order);
+
+  }
+  this.close();
+}
+
+  getCancelOrderById(row) {
+    this.loader = true;
+    this.orderService.getOrderCancelByOrderId(row.id).subscribe(
+      (data) => {
+        this.loader = false;
+                this.presentToast("Order cancelled successfully");
+        // this.openSuccessSnackBar("Order cancelled successfully");
+                        this.orderEvents.notifyOrderUpdated(); // ✅ Notify;
+        this.createAuditReport(row, AUDIT_ORDER_CANCEL);
+             this.closeSuccessDialog();
                 this.changeDetectorRefs.detectChanges();
-            },
-            (error) => {
-                this.loader = false;
-            }
-        );
+      },
+      (error) => {
+        this.loader = false;
+      }
+    );
+
+  }
+    createAuditReport(currentOrder : Order, operationType : string)
+  {
+    this.role = [];
+    JSON.parse(this.token.getRole()).forEach((item) => {
+      this.role.push(item);
+    });
+
+    let audit = new Audit();
+
+    audit.auditType = operationType;
+    audit.orderId = currentOrder.id;
+    audit.propertyId = currentOrder.propertyId;
+    audit.role = this.role[0];
+    audit.updatedAt = new Date().getTime().toString();
+    audit.updatedBy = this.audit.updateType;
+    audit.reservationId = currentOrder.bookOneOrderId;
+
+    if (AUDIT_ORDER_CANCEL === operationType)
+    {
+      audit.previousValue = "";
+      audit.newValue = `Order date:${this.dateService.convertMillisecondsToDateFormat(currentOrder.orderedDate)},Name: ${currentOrder.firstName},Email:${currentOrder.email},Mobile:${currentOrder.mobile},deliveryMethod:${currentOrder.deliveryMethod},Discount:${currentOrder.discountAmount}, Total:${currentOrder.totalOrderAmount}.`;
+      audit.operatorNotes = currentOrder.operatorNotes;
+      audit.updateType = "Order Cancel";
+    }
+    else  if (AUDIT_ORDER_DELETE === operationType)
+    {
+      audit.previousValue = "";
+      audit.newValue = `Order date:${this.dateService.convertMillisecondsToDateFormat(currentOrder.orderedDate)},Name: ${currentOrder.firstName},Email:${currentOrder.email},Mobile:${currentOrder.mobile},deliveryMethod:${currentOrder.deliveryMethod},Discount:${currentOrder.discountAmount}, Total:${currentOrder.totalOrderAmount}.`;
+      audit.operatorNotes = this.audit.operatorNotes;
+      audit.updateType = "Order Delete";
     }
 
-    createAuditReport(currentOrder : Order, operationType : string)
-    {
-      this.role = [];
-      JSON.parse(this.token.getRole()).forEach((item) => {
-        this.role.push(item);
-      });
-  
-      let audit = new Audit();
-  
-      audit.auditType = operationType;
-      audit.orderId = currentOrder.id;
-      audit.propertyId = currentOrder.propertyId;
-      audit.role = this.role[0];
-      audit.updatedAt = new Date().getTime().toString();
-      audit.updatedBy = this.audit.updateType;
-      audit.reservationId = currentOrder.bookOneOrderId;
-  
-      if (AUDIT_ORDER_CANCEL === operationType)
-      {
-        audit.previousValue = "";
-        audit.newValue = `Order date:${this.dateService.convertMillisecondsToDateFormat(currentOrder.orderedDate)},Name: ${currentOrder.firstName},Email:${currentOrder.email},Mobile:${currentOrder.mobile},deliveryMethod:${currentOrder.deliveryMethod},Discount:${currentOrder.discountAmount}, Total:${currentOrder.totalOrderAmount}.`;
-        audit.operatorNotes = this.audit.operatorNotes;
-        audit.updateType = "Order Cancel";
+    this.loader = true;
+    this.propertyService.createAuditReport(audit).subscribe(
+      (data) => {
+        this.loader = false;
+        // this.dialogRef.close({ event: "success" });
+        this.changeDetectorRefs.detectChanges();
+      },
+      (error) => {
+        this.loader = false;
       }
-      else  if (AUDIT_ORDER_DELETE === operationType)
-      {
-        audit.previousValue = "";
-        audit.newValue = `Order date:${this.dateService.convertMillisecondsToDateFormat(currentOrder.orderedDate)},Name: ${currentOrder.firstName},Email:${currentOrder.email},Mobile:${currentOrder.mobile},deliveryMethod:${currentOrder.deliveryMethod},Discount:${currentOrder.discountAmount}, Total:${currentOrder.totalOrderAmount}.`;
-        audit.operatorNotes = this.audit.operatorNotes;
-        audit.updateType = "Order Delete";
-      }
-  
-      this.loader = true;
-      this.propertyService.createAuditReport(audit).subscribe(
-        (data) => {
-          this.loader = false;
-          this.changeDetectorRefs.detectChanges();
-        },
-        (error) => {
-          this.loader = false;
-        }
-      );
-    }
+    );
+  }
 
     getConfirmOrderByTimeId(orderId: number) {
         this.loader = true;

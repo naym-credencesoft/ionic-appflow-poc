@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar class="toolbar-container">
+    <ion-title>Cancel Order</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon style="color: #fff" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Cancel By</ion-label>
+    <ion-input [value]="order.operatorName" readonly></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Reason</ion-label>
+    <ion-textarea [(ngModel)]="order.operatorNotes" autoGrow="true" label="Outline textarea" labelPlacement="floating" fill="outline" ></ion-textarea>
+  </ion-item>
+
+  <ion-footer class="ion-padding">
+    <ion-button expand="block" color="primary" [disabled]="!order.operatorNotes" (click)="confirmCancel()">
+      Confirm Cancel
+    </ion-button>
+  </ion-footer>
+</ion-content>

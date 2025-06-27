@@ -30,6 +30,7 @@ export class Booking {
     commissionAmount: string;
     gstAmount: string;
     paymentSurcharge: string;
+    generateInvoice:boolean;
     netAmount: string;
     airportService: string;
     accomodationType: string;

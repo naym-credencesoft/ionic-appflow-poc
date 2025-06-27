@@ -1,7 +1,7 @@
 <ion-header>
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
+            style="object-fit: fill"
             src="{{this.property.logoUrl}}"
             onerror="this.src='/assets/img/app-logo.png'"
         />
@@ -43,8 +43,9 @@
                 <ion-select
                     class="card-itemOne"
                     [formControl]="BusinesService"
+                    [disabled]="isTodaysDyneInOrder"
                     [(ngModel)]="bserviceid"
-                    (ionChange)="setService(bserviceid)"
+                    (ionChange)="setService(bserviceid);resetEvent()"
                     name="Room"
                     okText="Done"
                     cancelText="Dismiss"
@@ -112,6 +113,9 @@
             </ion-col>
         </ion-row>
         <ion-row class="centerItem section-2">
+            <div style="color: red; text-align: center" *ngIf="allowSelection">
+                Please choose an item to continue.
+            </div>
             <ion-col size="12">
                 <ion-searchbar
                     placeholder="Search Item"
@@ -319,13 +323,16 @@
                             <div
                                 *ngIf="product.productVariationDtoList !=null && product.productVariationDtoList.length >0"
                             >
-                                <ion-row class="row-center" style=" margin-top: 10px;">
+                                <ion-row
+                                    class="row-center"
+                                    style="margin-top: 10px"
+                                >
                                     <ion-col size="3" class="productImage">
                                         <ion-icon
                                             *ngIf="product.imageList == null || product.imageList.length ===0"
                                             name="layers-outline"
                                             size="large"
-                                            style="color:#fff"
+                                            style="color: #fff"
                                         ></ion-icon>
                                         <img
                                             *ngIf="product.imageList != null && product.imageList.length >0"
@@ -446,10 +453,10 @@
                                                                 class="centerItem"
                                                             >
                                                                 <button
-                                                                    [disabled]=" (order.id != null && variation.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) "
+                                                                    [disabled]=" (order.id != null && variation.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder"
                                                                     *ngIf="variation.unitsInOrder!=undefined && variation.unitsInOrder!=null && variation.unitsInOrder > 0"
                                                                     (click)="onProductVariationMinus(
-                                                                                product,
+                                                                                product,    
                                                                                 p,
                                                                                 productGroup,
                                                                                 businessServiceId,
@@ -461,10 +468,13 @@
                                                                     type="button"
                                                                     name="button"
                                                                 >
-                                                                    <div style="font-size: 22px;
-                                                                    color: black;
-                                                                    font-weight: bold;
-                                                                    margin-top: -4px;">
+                                                                    <div
+                                                                     [ngClass]="{
+                                                                        'minus-icon': true,
+                                                                        'disabled-color':  (order.id != null && variation.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder
+                                                                        }"
+                                                                
+                                                                    >
                                                                         -
                                                                     </div>
                                                                 </button>
@@ -494,7 +504,7 @@
                                                             >
                                                                 <button
                                                                     size="4"
-                                                                    [disabled]="isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) "
+                                                                    [disabled]="isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder"
                                                                     (click)=" onProductVariationAdd(
                                                                                     product,
                                                                                     p,
@@ -509,12 +519,14 @@
                                                                     type="button"
                                                                     name="button"
                                                                 >
-                                                                <div style="font-size: 22px;
-                                                                color: black;
-                                                                font-weight: bold;
-                                                                margin-top: -4px;">
-                                                                    +
-                                                                </div>
+                                                                    <div
+                                                                       [ngClass]="{
+                                                                            'minus-icon': true,
+                                                                            'disabled-color': isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder
+                                                                            }"
+                                                                    >
+                                                                        +
+                                                                    </div>
                                                                 </button>
                                                             </ion-col>
                                                         </ion-row>
@@ -530,7 +542,8 @@
                                 *ngIf="product.productVariationDtoList ==null || product.productVariationDtoList.length === 0"
                             >
                                 <ion-row
-                                    class="ion-align-items-center row-center" style="margin-top: 10px;"
+                                    class="ion-align-items-center row-center"
+                                    style="margin-top: 10px"
                                 >
                                     <ion-col size="3" class="productImage">
                                         <ion-img
@@ -541,7 +554,7 @@
                                             *ngIf="product.imageList == null || product.imageList.length ===0"
                                             name="cube-outline"
                                             size="large"
-                                            style="color:#fff"
+                                            style="color: #fff"
                                         ></ion-icon>
                                     </ion-col>
                                     <ion-col size="9">
@@ -639,7 +652,7 @@
                                                         class="centerItem"
                                                     >
                                                         <button
-                                                            [disabled]=" (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) "
+                                                            [disabled]=" (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder "
                                                             *ngIf="product.unitsInOrder !=null && product.unitsInOrder!=undefined &&  product.unitsInOrder >0"
                                                             (click)="onProductMinus(
                                                                                     product,
@@ -652,12 +665,14 @@
                                                             type="button"
                                                             name="button"
                                                         >
-                                                        <div style="font-size: 22px;
-                                                        color: black;
-                                                        font-weight: bold;
-                                                        margin-top: -4px;">
-                                                            -
-                                                        </div>
+                                                            <div
+                                                                [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder
+                                                                }"
+                                                            >
+                                                                -
+                                                            </div>
                                                         </button>
                                                     </ion-col>
 
@@ -686,7 +701,7 @@
                                                         class="centerItem"
                                                     >
                                                         <button
-                                                            [disabled]="isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) "
+                                                            [disabled]="isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder"
                                                             (click)=" onProductAdd(
                                                                                 product,
                                                                                 p,
@@ -699,12 +714,14 @@
                                                             type="button"
                                                             name="button"
                                                         >
-                                                        <div style="font-size: 22px;
-                                                        color: black;
-                                                        font-weight: bold;
-                                                        margin-top: -4px;">
-                                                            +
-                                                        </div>
+                                                            <div
+                                                                 [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder
+                                                                }"
+                                                            >
+                                                                +
+                                                            </div>
                                                         </button>
                                                     </ion-col>
                                                 </ion-row>
@@ -731,13 +748,16 @@
                                 <div
                                     *ngIf="product.productVariationDtoList !=null && product.productVariationDtoList.length >0"
                                 >
-                                    <ion-row class="row-center" style="margin-top: 10px;">
+                                    <ion-row
+                                        class="row-center"
+                                        style="margin-top: 10px"
+                                    >
                                         <ion-col size="3" class="productImage">
                                             <ion-icon
                                                 *ngIf="product.imageList == null || product.imageList.length ===0"
                                                 name="layers-outline"
                                                 size="large"
-                                                style="color:#fff"
+                                                style="color: #fff"
                                             ></ion-icon>
                                             <img
                                                 *ngIf="product.imageList != null && product.imageList.length >0"
@@ -745,7 +765,7 @@
                                             />
                                         </ion-col>
 
-                                        <ion-col size="9">
+                                        <ion-col size="9" class="itemCenter">
                                             <ion-text
                                                 class="font-product-name text-white"
                                             >
@@ -759,8 +779,12 @@
                                             </ion-text>
                                         </ion-col>
 
-                                        <ion-col size="12" class="row-center">
+                                        <ion-col size="12">
                                             <ion-item
+                                                style="
+                                                    margin: 0px;
+                                                    border: 1px solid gray;
+                                                "
                                                 *ngFor="let variation of product.productVariationDtoList; let v = index"
                                                 class="ion-no-margin ion-no-padding"
                                             >
@@ -792,6 +816,8 @@
                                                                 class="text-white varition-text-2"
                                                             >
                                                                 {{variation.code}}
+                                                                <!-- <br/>
+                                                            {{variation.unitsInOrder}} -->
                                                             </p>
 
                                                             <ion-icon
@@ -813,15 +839,49 @@
                                                             />
                                                         </ion-col>
                                                         <ion-col size="4">
+                                                            <ion-row>
+                                                                <p
+                                                                    style="
+                                                                        margin: 1px;
+                                                                    "
+                                                                    class="sellunitPriceVariation price"
+                                                                    *ngIf="variation.discountedPrice !== null && variation.discountedPrice >0"
+                                                                >
+                                                                    {{variation.discountedPrice
+                                                                    | currency:
+                                                                    this.currency:'symbol':'1.2-2'}}<span
+                                                                        class="discounted-price"
+                                                                        >{{variation.sellUnitPrice
+                                                                        |
+                                                                        currency:
+                                                                        this.currency:'symbol':'1.2-2'}}</span
+                                                                    >
+                                                                </p>
+                                                                <p
+                                                                    style="
+                                                                        margin: 3px;
+                                                                    "
+                                                                    class="sellunitPriceVariation price"
+                                                                    *ngIf="variation.discountedPrice == null || variation.discountedPrice == 0"
+                                                                >
+                                                                    {{variation.sellUnitPrice
+                                                                    | currency:
+                                                                    this.currency:'symbol':'1.2-2'}}
+                                                                </p>
+                                                            </ion-row>
                                                             <ion-row
                                                                 class="quantity"
+                                                                style="
+                                                                    margin-top: 0px;
+                                                                "
                                                             >
                                                                 <ion-col
                                                                     size="4"
                                                                     class="centerItem"
                                                                 >
                                                                     <button
-                                                                        [disabled]=" (order.id != null && variation.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) "
+                                                                        [disabled]=" (order.id != null && variation.isNewItem == false && 
+                                                                        isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder "
                                                                         *ngIf="variation.unitsInOrder!=undefined && variation.unitsInOrder!=null && variation.unitsInOrder > 0"
                                                                         (click)="onProductVariationMinus(
                                                                                 product,
@@ -836,12 +896,15 @@
                                                                         type="button"
                                                                         name="button"
                                                                     >
-                                                                    <div style="font-size: 22px;
-                                                                    color: black;
-                                                                    font-weight: bold;
-                                                                    margin-top: -4px;">
-                                                                        -
-                                                                    </div>
+                                                                        <div
+                                                                             [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': (order.id != null && variation.isNewItem == false && 
+                                                                        isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder 
+                                                                }"
+                                                                        >
+                                                                            -
+                                                                        </div>
                                                                     </button>
                                                                 </ion-col>
                                                                 <ion-col
@@ -869,7 +932,7 @@
                                                                 >
                                                                     <button
                                                                         size="4"
-                                                                        [disabled]="isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) "
+                                                                        [disabled]="isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder "
                                                                         (click)=" onProductVariationAdd(
                                                                                     product,
                                                                                     p,
@@ -884,38 +947,16 @@
                                                                         type="button"
                                                                         name="button"
                                                                     >
-                                                                    <div style="font-size: 22px;
-                                                                    color: black;
-                                                                    font-weight: bold;
-                                                                    margin-top: -4px;">
-                                                                        +
-                                                                    </div>
+                                                                        <div
+                                                                            [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder
+                                                                }"
+                                                                        >
+                                                                            +
+                                                                        </div>
                                                                     </button>
                                                                 </ion-col>
-                                                            </ion-row>
-                                                            <ion-row>
-                                                                <p
-                                                                    class="sellunitPriceVariation price"
-                                                                    *ngIf="variation.discountedPrice !== null && variation.discountedPrice >=0"
-                                                                >
-                                                                    {{variation.discountedPrice
-                                                                    | currency:
-                                                                    this.currency:'symbol':'1.2-2'}}<span
-                                                                        class="discounted-price"
-                                                                        >{{variation.sellUnitPrice
-                                                                        |
-                                                                        currency:
-                                                                        this.currency:'symbol':'1.2-2'}}</span
-                                                                    >
-                                                                </p>
-                                                                <p
-                                                                    class="sellunitPriceVariation price"
-                                                                    *ngIf="variation.discountedPrice == null || variation.discountedPrice == undefined"
-                                                                >
-                                                                    {{variation.sellUnitPrice
-                                                                    | currency:
-                                                                    this.currency:'symbol':'1.2-2'}}
-                                                                </p>
                                                             </ion-row>
                                                         </ion-col>
                                                     </ion-row>
@@ -929,7 +970,8 @@
                                     *ngIf="product.productVariationDtoList ==null || product.productVariationDtoList.length === 0"
                                 >
                                     <ion-row
-                                        class="ion-align-items-center row-center" style="margin-top: 10px;"
+                                        class="ion-align-items-center row-center"
+                                        style="margin-top: 10px"
                                     >
                                         <ion-col size="3" class="productImage">
                                             <ion-img
@@ -940,12 +982,12 @@
                                                 *ngIf="product.imageList == null || product.imageList.length ===0"
                                                 name="cube-outline"
                                                 size="large"
-                                                style="color:#fff"
+                                                style="color: #fff"
                                             ></ion-icon>
                                         </ion-col>
                                         <ion-col size="9">
                                             <ion-row
-                                                class="ion-justify-content-start"
+                                                class="ion-justify-content-start row-center"
                                             >
                                                 <ion-col size="8"
                                                     ><span
@@ -1002,13 +1044,43 @@
                                                     />
                                                 </ion-col>
                                                 <ion-col size="4">
-                                                    <ion-row class="quantity">
+                                                    <ion-row>
+                                                        <p
+                                                            class="price"
+                                                            *ngIf="product.discountedPrice !== null && product.discountedPrice !==0"
+                                                        >
+                                                            {{product.discountedPrice
+                                                            | currency:
+                                                            this.currency:'symbol':'1.2-2'}}<span
+                                                                class="discounted-price"
+                                                                >{{product.sellUnitPrice
+                                                                | currency:
+                                                                this.currency:'symbol':'1.2-2'}}</span
+                                                            >
+                                                        </p>
+                                                        <p
+                                                            class="price"
+                                                            *ngIf="product.discountedPrice == null || product.discountedPrice ==0"
+                                                        >
+                                                            {{product.sellUnitPrice
+                                                            | currency:
+                                                            this.currency:'symbol':'1.2-2'}}
+                                                        </p>
+                                                    </ion-row>
+                                                    <ion-row
+                                                        class="quantity"
+                                                        style="
+                                                            margin-top: 0px;
+                                                            display: flex;
+                                                            align-items: center;
+                                                        "
+                                                    >
                                                         <ion-col
                                                             size="4"
                                                             class="centerItem"
                                                         >
                                                             <button
-                                                                [disabled]=" (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) "
+                                                                [disabled]=" (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder "
                                                                 *ngIf="product.unitsInOrder !=null && product.unitsInOrder!=undefined &&  product.unitsInOrder >0"
                                                                 (click)="onProductMinus(
                                                                                     product,
@@ -1021,12 +1093,14 @@
                                                                 type="button"
                                                                 name="button"
                                                             >
-                                                            <div style="font-size: 22px;
-                                                            color: black;
-                                                            font-weight: bold;
-                                                            margin-top: -4px;">
-                                                                -
-                                                            </div>
+                                                                <div
+                                                                     [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder
+                                                                }"
+                                                                >
+                                                                    -
+                                                                </div>
                                                             </button>
                                                         </ion-col>
 
@@ -1055,7 +1129,7 @@
                                                             class="centerItem"
                                                         >
                                                             <button
-                                                                [disabled]="isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) "
+                                                                [disabled]="isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder"
                                                                 (click)=" onProductAdd(
                                                                                 product,
                                                                                 p,
@@ -1068,37 +1142,16 @@
                                                                 type="button"
                                                                 name="button"
                                                             >
-                                                            <div style="font-size: 22px;
-                                                            color: black;
-                                                            font-weight: bold;
-                                                            margin-top: -4px;">
-                                                                +
-                                                            </div>
+                                                                <div
+                                                                     [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder
+                                                                }"
+                                                                >
+                                                                    +
+                                                                </div>
                                                             </button>
                                                         </ion-col>
-                                                    </ion-row>
-                                                    <ion-row>
-                                                        <p
-                                                            class="price"
-                                                            *ngIf="product.discountedPrice !== null && product.discountedPrice !==0"
-                                                        >
-                                                            {{product.discountedPrice
-                                                            | currency:
-                                                            this.currency:'symbol':'1.2-2'}}<span
-                                                                class="discounted-price"
-                                                                >{{product.sellUnitPrice
-                                                                | currency:
-                                                                this.currency:'symbol':'1.2-2'}}</span
-                                                            >
-                                                        </p>
-                                                        <p
-                                                            class="price"
-                                                            *ngIf="product.discountedPrice == null || product.discountedPrice ==0"
-                                                        >
-                                                            {{product.sellUnitPrice
-                                                            | currency:
-                                                            this.currency:'symbol':'1.2-2'}}
-                                                        </p>
                                                     </ion-row>
                                                 </ion-col>
                                             </ion-row>
@@ -1125,7 +1178,7 @@
                                 *ngIf="product.productVariationDtoList !=null && product.productVariationDtoList.length >0"
                             >
                                 <ion-row
-                                style="margin-top: 10px;"
+                                    style="margin-top: 10px"
                                     class="row-center"
                                     *ngIf="isVariationAvailable(product.productVariationDtoList) == true"
                                 >
@@ -1134,7 +1187,7 @@
                                             *ngIf="product.imageList == null || product.imageList.length ===0"
                                             name="layers-outline"
                                             size="large"
-                                            style="color:#fff"
+                                            style="color: #fff"
                                         ></ion-icon>
                                         <img
                                             *ngIf="product.imageList != null && product.imageList.length >0"
@@ -1261,7 +1314,7 @@
                                                                     class="centerItem"
                                                                 >
                                                                     <button
-                                                                        [disabled]="  (order.id != null && variation.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) "
+                                                                        [disabled]="  (order.id != null && variation.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder "
                                                                         *ngIf="variation.unitsInOrder!=undefined && variation.unitsInOrder!=null && variation.unitsInOrder > 0"
                                                                         (click)="onProductVariationMinus(
                                                                                         product,
@@ -1276,12 +1329,14 @@
                                                                         type="button"
                                                                         name="button"
                                                                     >
-                                                                    <div style="font-size: 22px;
-                                                                    color: black;
-                                                                    font-weight: bold;
-                                                                    margin-top: -4px;">
-                                                                        -
-                                                                    </div>
+                                                                        <div
+                                                                             [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': (order.id != null && variation.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder
+                                                                }"
+                                                                        >
+                                                                            -
+                                                                        </div>
                                                                     </button>
                                                                 </ion-col>
                                                                 <ion-col
@@ -1309,7 +1364,7 @@
                                                                 >
                                                                     <button
                                                                         size="4"
-                                                                        [disabled]="isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) "
+                                                                        [disabled]="isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder "
                                                                         (click)=" onProductVariationAdd(
                                                                                             product,
                                                                                             p,
@@ -1324,12 +1379,14 @@
                                                                         type="button"
                                                                         name="button"
                                                                     >
-                                                                    <div style="font-size: 22px;
-                                                                    color: black;
-                                                                    font-weight: bold;
-                                                                    margin-top: -4px;">
-                                                                        +
-                                                                    </div>
+                                                                        <div
+                                                                             [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': isItemOutOfStock(variation.outOfStock) || !isAvailableStock(variation.status) || isConvertOrder
+                                                                }"
+                                                                        >
+                                                                            +
+                                                                        </div>
                                                                     </button>
                                                                 </ion-col>
                                                             </ion-row>
@@ -1346,7 +1403,7 @@
                                 *ngIf="product.productVariationDtoList ==null || product.productVariationDtoList.length === 0"
                             >
                                 <ion-row
-                                style="margin-top: 10px;"
+                                    style="margin-top: 10px"
                                     class="ion-align-items-center row-center"
                                 >
                                     <ion-col size="3" class="productImage">
@@ -1358,7 +1415,7 @@
                                             *ngIf="product.imageList == null || product.imageList.length ===0"
                                             name="cube-outline"
                                             size="large"
-                                            style="color:#fff"
+                                            style="color: #fff"
                                         ></ion-icon>
                                     </ion-col>
                                     <ion-col size="9">
@@ -1454,7 +1511,7 @@
                                                         class="centerItem"
                                                     >
                                                         <button
-                                                            [disabled]=" (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) "
+                                                            [disabled]=" (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder"
                                                             *ngIf="product.unitsInOrder !=null && product.unitsInOrder!=undefined &&  product.unitsInOrder >0"
                                                             (click)="onProductMinus(
                                                                                         product,
@@ -1467,12 +1524,14 @@
                                                             type="button"
                                                             name="button"
                                                         >
-                                                        <div style="font-size: 22px;
-                                                        color: black;
-                                                        font-weight: bold;
-                                                        margin-top: -4px;">
-                                                            -
-                                                        </div>
+                                                            <div
+                                                                 [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': (order.id != null && product.isNewItem == false && isPropServiceExecutive == true) || isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder
+                                                                }"
+                                                            >
+                                                                -
+                                                            </div>
                                                         </button>
                                                     </ion-col>
 
@@ -1501,7 +1560,7 @@
                                                         class="centerItem"
                                                     >
                                                         <button
-                                                            [disabled]="isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) "
+                                                            [disabled]="isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder"
                                                             (click)=" onProductAdd(
                                                                                     product,
                                                                                     p,
@@ -1514,12 +1573,14 @@
                                                             type="button"
                                                             name="button"
                                                         >
-                                                        <div style="font-size: 22px;
-                                                        color: black;
-                                                        font-weight: bold;
-                                                        margin-top: -4px;">
-                                                            +
-                                                        </div>
+                                                            <div
+                                                                 [ngClass]="{
+                                                                'minus-icon': true,
+                                                                'disabled-color': isItemOutOfStock(product.outOfStock) || !isAvailableStock(product.status) || isConvertOrder
+                                                                }"
+                                                            >
+                                                                +
+                                                            </div>
                                                         </button>
                                                     </ion-col>
                                                 </ion-row>
@@ -1552,7 +1613,7 @@
                 <ion-label>Review</ion-label>
             </ion-segment-button>
             <ion-segment-button value="Details" [disabled]="isMaxError">
-                <ion-label >{{this.order.deliveryMethod}}</ion-label>
+                <ion-label>{{this.order.deliveryMethod}}</ion-label>
             </ion-segment-button>
         </ion-segment>
 
@@ -1643,7 +1704,7 @@
                                     *ngIf="product.imageList == null || product.imageList.length ===0"
                                     name="layers-outline"
                                     size="large"
-                                    style="color:#fff"
+                                    style="color: #fff"
                                 ></ion-icon>
                                 <img
                                     *ngIf="product?.imageList != null && product?.imageList?.length >0"
@@ -1928,7 +1989,7 @@
                                             *ngIf="product.imageList == null || product.imageList.length ===0"
                                             name="cube-outline"
                                             size="large"
-                                            style="color:#fff"
+                                            style="color: #fff"
                                         ></ion-icon>
                                     </ion-col>
                                     <ion-col size="10">
@@ -2257,9 +2318,17 @@
                         > -->
 
                 <div>
-                    <h2 style="color: #333; font-size: 19px;">Payment Details</h2>
+                    <h2 style="color: #333; font-size: 19px">
+                        Payment Details
+                    </h2>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                    >
                         <div class="text-white">Total Product Amount:</div>
                         <div class="text-white">
                             {{ calculatePrice() + totalProductDiscount |
@@ -2267,7 +2336,13 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                    >
                         <div class="text-white">Product Discount:</div>
                         <div class="text-white">
                             (-) {{ totalProductDiscount | currency : currency :
@@ -2275,7 +2350,13 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                    >
                         <div class="text-white">
                             Sub Total (after product discount):
                         </div>
@@ -2295,7 +2376,8 @@
                             style="
                                 color: #333 !important;
                                 display: flex;
-                                justify-content: space-between; margin-top: 10px;
+                                justify-content: space-between;
+                                margin-top: 10px;
                             "
                         >
                             <ion-label>
@@ -2309,7 +2391,13 @@
                         </div>
                     </ion-radio-group>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                    >
                         <div class="text-white">
                             Discount Amount:
 
@@ -2332,7 +2420,7 @@
                         </div>
                     </div>
 
-                    <div style=" margin-top: 10px;">
+                    <div style="margin-top: 10px">
                         <ion-label
                             class="text-white"
                             style="color: #333"
@@ -2350,18 +2438,21 @@
                                     style="color: #333"
                                     [readonly]="isDiscountAmountChangeRq"
                                     min="0"
-                                    max={{maxOrderDiscountPercentage}}
-                                    
+                                    max="{{maxOrderDiscountPercentage}}"
                                     [(ngModel)]="discountPercentage"
                                     (ngModelChange)="onDiscountPercentageChange()"
                                     inputmode="numeric"
                                 ></ion-input>
                                 <span class="percentage-sign">%</span>
                             </div>
-                            <div *ngIf="isMaxError" class="error-message" style="color: red;">
-                                Maximum discount percentage is {{ maxOrderDiscountPercentage }}%
+                            <div
+                                *ngIf="isMaxError"
+                                class="error-message"
+                                style="color: red"
+                            >
+                                Maximum discount percentage is {{
+                                maxOrderDiscountPercentage }}%
                             </div>
-                            
                         </ion-col>
 
                         <div
@@ -2390,7 +2481,7 @@
                         </div>
                     </div>
 
-                     <!-- <ion-item
+                    <!-- <ion-item
                          style="border:1px solid gray"
                         *ngIf="methodType === 'HomeDelivery'"
                     >
@@ -2410,19 +2501,21 @@
                         >
                     </ion-item> -->
 
-                    <div style="margin-top: 10px;">
+                    <div style="margin-top: 10px">
                         <ion-row
                             *ngIf="serviceCharges && serviceCharges.length > 0"
                         >
                             <ion-col size="12">
-                                <ion-label
-                                    style=" color: #333"
+                                <ion-label style="color: #333"
                                     >Service Charge Details</ion-label
                                 >
-                                <div >
+                                <div>
                                     <ion-select
-                                      
-                                        style="    border: 1px solid gray; margin-top: 10px;color: #333"
+                                        style="
+                                            border: 1px solid gray;
+                                            margin-top: 10px;
+                                            color: #333;
+                                        "
                                         placeholder="Select Service Change"
                                         [(ngModel)]="order.serviceChargeName"
                                         (ionChange)="serviceChargeChange()"
@@ -2438,23 +2531,37 @@
                                 </div>
                             </ion-col>
                             <ion-col size="6"
-                                ><div style="display:flex"
+                                ><div
+                                    style="display: flex"
                                     *ngIf="serviceCharges && serviceCharges.length > 0"
                                 >
-                                    <ion-input style="    border: 1px solid gray; color: #333"
-                                        
+                                    <ion-input
+                                        style="
+                                            border: 1px solid gray;
+                                            color: #333;
+                                        "
                                         [(ngModel)]="order.serviceChargePercentage"
                                         (ionChange)="calculatePrice()"
                                         readonly
                                     ></ion-input>
-                                    <ion-label  style="    position: relative;
-                                    right: 19px;
-                                    top: 10px;color: #333">%</ion-label>
+                                    <ion-label
+                                        style="
+                                            position: relative;
+                                            right: 19px;
+                                            top: 10px;
+                                            color: #333;
+                                        "
+                                        >%</ion-label
+                                    >
                                 </div></ion-col
                             >
                             <ion-col size="6"
                                 ><div>
-                                    <ion-input style=" border: 1px solid gray; color: #333"
+                                    <ion-input
+                                        style="
+                                            border: 1px solid gray;
+                                            color: #333;
+                                        "
                                         *ngIf="serviceCharges && serviceCharges.length > 0"
                                         formControlName="ServiceChargeAmount"
                                         [(ngModel)]="order.serviceChargeAmount"
@@ -2492,10 +2599,14 @@
                         </ion-item>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-                        <div class="text-white">
-                            No of Pax:
-                        </div>
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                    >
+                        <div class="text-white">No of Pax:</div>
                         <div class="text-white">
                             <div class="add_noofperson">
                                 <ion-icon
@@ -2515,101 +2626,116 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;" *ngIf="isPaidOrder">
-                        <div class="text-white">
-                            Refund Amount:
-                        </div>
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                        *ngIf="isPaidOrder"
+                    >
+                        <div class="text-white">Refund Amount:</div>
                         <div class="text-white">
                             {{ this.order.refundAmount | currency:
-                                    currency:"symbol":"1.2-2" }}
+                            currency:"symbol":"1.2-2" }}
                         </div>
                     </div>
 
-                    <div style="margin-top: 10px;">
-                        <div class="text-white">
-                            Tax Type:
-                        </div>
-                        <div style="display:flex; justify-content:space-between">
-                            <ion-col
-                            size="4"
-                            *ngFor="let tax of propertyTaxDetails"
+                    <div style="margin-top: 10px">
+                        <div class="text-white">Tax Type:</div>
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                            "
                         >
-                            <ion-item
-                                style="width: 85px;
-                                box-shadow: none;
-                                border: 1px solid gray;"
-                                [disabled]="this.user.disableGstService == true"
-                                (click)="taxSelection(tax)"
+                            <ion-col
+                                size="4"
+                                *ngFor="let tax of propertyTaxDetails"
                             >
-                                <ion-icon
-                                    *ngIf="checkTaxType(tax)"
-                                    name="checkbox-outline"
-                                    class="text-white"
-                                ></ion-icon>
-                                <ion-icon
-                                    *ngIf="!checkTaxType(tax)"
-                                    name="stop-outline"
-                                    class="text-white"
-                                ></ion-icon
-                                ><span
-                                    class="text-white taxName-selection"
-                                    >{{tax.name}}</span
+                                <ion-item
+                                    style="
+                                        width: 85px;
+                                        box-shadow: none;
+                                        border: 1px solid gray;
+                                    "
+                                    [disabled]="this.user.disableGstService == true"
+                                    (click)="taxSelection(tax)"
                                 >
-                            </ion-item>
-                        </ion-col>
+                                    <ion-icon
+                                        *ngIf="checkTaxType(tax)"
+                                        name="checkbox-outline"
+                                        class="text-white"
+                                    ></ion-icon>
+                                    <ion-icon
+                                        *ngIf="!checkTaxType(tax)"
+                                        name="stop-outline"
+                                        class="text-white"
+                                    ></ion-icon
+                                    ><span class="text-white taxName-selection"
+                                        >{{tax.name}}</span
+                                    >
+                                </ion-item>
+                            </ion-col>
                         </div>
-                        
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;" >
-                        <div class="text-white">
-                            Tax Amount:
-                        </div>
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                    >
+                        <div class="text-white">Tax Amount:</div>
                         <div class="text-white">
                             {{ this.order.taxAmount | currency:
-                                    currency:"symbol":"1.2-2" }}
+                            currency:"symbol":"1.2-2" }}
                         </div>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px;" >
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                        "
+                    >
+                        <div class="text-white">Total Amount:</div>
                         <div class="text-white">
-                            Total Amount:
-                        </div>
-                        <div class="text-white">
-                            {{ this.order.totalOrderAmount |
-                                currency: currency:"symbol":"1.2-2"
-                                }}
+                            {{ this.order.totalOrderAmount | currency:
+                            currency:"symbol":"1.2-2" }}
                         </div>
                     </div>
 
-                    <div  *ngIf="methodType === 'RoomOrder'" style="margin-top: 10px;">
-                        
+                    <div
+                        *ngIf="methodType === 'RoomOrder'"
+                        style="margin-top: 10px"
+                    >
                         <ion-label
-                                        position="stacked"
-                                        color="primary"
-                                        class="text-white"
-                                        >Select Table</ion-label
-                                    >
-                                    <ion-select
-                                    style=" border: 1px solid gray;"
-                                        [(ngModel)]="order.specialNotes"
-                                        class="text-white"
-                                        no-margin
-                                        no-padding
-                                        placeholder="Select Table"
-                                    >
-                                        <ion-select-option
-                                            *ngFor="let rec of selectedResourceArray"
-                                            [value]="rec.name"
-                                        >
-                                            <p>{{ rec.name }}</p>
-                                        </ion-select-option>
-                                    </ion-select>
+                            position="stacked"
+                            color="primary"
+                            class="text-white"
+                            >Select Table</ion-label
+                        >
+                        <ion-select
+                            style="border: 1px solid gray"
+                            [(ngModel)]="order.specialNotes"
+                            class="text-white"
+                            no-margin
+                            no-padding
+                            placeholder="Select Table"
+                        >
+                            <ion-select-option
+                                *ngFor="let rec of selectedResourceArray"
+                                [value]="rec.name"
+                            >
+                                <p>{{ rec.name }}</p>
+                            </ion-select-option>
+                        </ion-select>
                     </div>
-                    <div  style="margin-top: 10px;">
-                        <div class="text-white">
-                            Special Notes:
-                        </div>
+                    <div style="margin-top: 10px">
+                        <div class="text-white">Special Notes:</div>
                         <div class="text-white">
                             <ion-textarea
                                 rows="3"
@@ -2663,7 +2789,10 @@
                         <ion-row *ngIf="isTodaysDyneInOrder === false">
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none" style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -2672,11 +2801,11 @@
                                         </ion-label>
                                         <ion-select
                                             [disabled]="
-                            this.order.id != undefined &&
-                            this.order.id != null"
+                                            this.order.id != undefined &&
+                                            this.order.id != null"
                                             formControlName="BusinesService"
                                             [(ngModel)]="bserviceid"
-                                            (ionChange)="setService(bserviceid)"
+                                            (ionChange)="setService(bserviceid);onBusinessServiceChange($event)"
                                             class="text-white"
                                             no-margin
                                             no-padding
@@ -2736,7 +2865,10 @@
                             <ion-row>
                                 <ion-col size="6">
                                     <ion-list>
-                                        <ion-item lines="none" style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 position="stacked"
                                                 color="primary"
@@ -2768,7 +2900,10 @@
 
                                 <ion-col size="6">
                                     <ion-list>
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 position="stacked"
                                                 color="primary"
@@ -2813,7 +2948,10 @@
                             <ion-row>
                                 <ion-col no-margin no-padding size="12">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none" style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 position="stacked"
                                                 color="primary"
@@ -2929,8 +3067,11 @@
 
                                     <ion-row class="forecast_container">
                                         <ion-col
-                                            
-                                            size="6" size-xl="4" size-sm="6" size-md="4" size-lg="4"
+                                            size="6"
+                                            size-xl="4"
+                                            size-sm="6"
+                                            size-md="4"
+                                            size-lg="4"
                                             *ngFor="
                                 let rec of this.selectedResourceArray"
                                         >
@@ -2980,7 +3121,6 @@
                         >
 
                         <ion-segment
-                        
                             class="mt-1"
                             mode="md"
                             scrollable
@@ -2990,20 +3130,16 @@
                             value="fn"
                         >
                             <ion-segment-button value="fn">
-                                <ion-label 
-                                    >First Name</ion-label
-                                >
+                                <ion-label>First Name</ion-label>
                             </ion-segment-button>
                             <ion-segment-button value="ln">
-                                <ion-label 
-                                    >Last Name</ion-label
-                                >
+                                <ion-label>Last Name</ion-label>
                             </ion-segment-button>
                             <ion-segment-button value="Phone">
-                                <ion-label >Phone</ion-label>
+                                <ion-label>Phone</ion-label>
                             </ion-segment-button>
                             <ion-segment-button value="Email">
-                                <ion-label >Email</ion-label>
+                                <ion-label>Email</ion-label>
                             </ion-segment-button>
                         </ion-segment>
 
@@ -3028,25 +3164,23 @@
                             >
                                 <ion-row>
                                     <ion-col size="12">
-                                      
-                                            <ion-item
-                                                lines="none"
-                                                style="border:1px solid gray"
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                class="text-white"
+                                                position="stacked"
+                                                color="primary"
+                                                >Email*</ion-label
                                             >
-                                                <ion-label
-                                                    class="text-white"
-                                                    position="stacked"
-                                                    color="primary"
-                                                    >Email*</ion-label
-                                                >
-                                                <ion-input
-                                                    formControlName="EmailCheck"
-                                                    [(ngModel)]="order.email"
-                                                    placeholder="Email"
-                                                    inputmode="text"
-                                                ></ion-input>
-                                            </ion-item>
-                                        
+                                            <ion-input
+                                                formControlName="EmailCheck"
+                                                [(ngModel)]="order.email"
+                                                placeholder="Email"
+                                                inputmode="text"
+                                            ></ion-input>
+                                        </ion-item>
 
                                         <ion-row
                                             *ngIf="onEmailCheckForm.get('EmailCheck').dirty && !onEmailCheckForm.valid"
@@ -3058,8 +3192,6 @@
                                         </ion-row>
                                     </ion-col>
                                 </ion-row>
-
-                             
 
                                 <ion-row
                                     center
@@ -3086,83 +3218,78 @@
                             >
                                 <ion-row>
                                     <ion-col size="12">
-                                      
-                                            <ion-item
-                                                lines="none"
-                                                style="border:1px solid gray"
-                                            >
-                                                <ion-label
-                                                    position="stacked"
-                                                    color="primary"
-                                                    class="text-white"
-                                                    >Country Code*
-                                                </ion-label>
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                position="stacked"
+                                                color="primary"
+                                                class="text-white"
+                                                >Country Code*
+                                            </ion-label>
 
-                                                <ion-select
-                                                    [(ngModel)]="CodeNumber"
-                                                    placeholder="Select Country Code"
-                                                    formControlName="countryCodeC"
-                                                    (ionChange)="countryCodePicker($event)"
+                                            <ion-select
+                                                [(ngModel)]="CodeNumber"
+                                                placeholder="Select Country Code"
+                                                formControlName="countryCodeC"
+                                                (ionChange)="countryCodePicker($event)"
+                                            >
+                                                <ion-select-option
+                                                    *ngFor="let country of countryCode.countries"
+                                                    [value]="country.code"
                                                 >
-                                                    <ion-select-option
-                                                        *ngFor="let country of countryCode.countries"
-                                                        [value]="country.code"
-                                                    >
-                                                        {{country.name}}
-                                                        ({{country.code}})
-                                                    </ion-select-option>
-                                                </ion-select>
-                                            </ion-item>
-                                       
+                                                    {{country.name}}
+                                                    ({{country.code}})
+                                                </ion-select-option>
+                                            </ion-select>
+                                        </ion-item>
                                     </ion-col>
                                 </ion-row>
                                 <ion-row>
                                     <ion-col size="4">
-                                     
-                                            <ion-item
-                                                lines="none"
-                                                style="border:1px solid gray"
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                class="text-white"
+                                                position="stacked"
+                                                color="primary"
+                                                >Code</ion-label
                                             >
-                                                <ion-label
-                                                    class="text-white"
-                                                    position="stacked"
-                                                    color="primary"
-                                                    >Code</ion-label
-                                                >
-                                                <ion-input
-                                                    formControlName="countryCodeController"
-                                                    [(ngModel)]="CodeNumber"
-                                                    readonly
-                                                    placeholder="Code"
-                                                    inputmode="text"
-                                                ></ion-input>
-                                            </ion-item>
-                                       
+                                            <ion-input
+                                                formControlName="countryCodeController"
+                                                [(ngModel)]="CodeNumber"
+                                                readonly
+                                                placeholder="Code"
+                                                inputmode="text"
+                                            ></ion-input>
+                                        </ion-item>
                                     </ion-col>
 
                                     <ion-col size="8">
-                                     
-                                            <ion-item
-                                                lines="none"
-                                                style="border:1px solid gray"
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                class="text-white"
+                                                position="stacked"
+                                                color="primary"
+                                                >Phone*</ion-label
                                             >
-                                                <ion-label
-                                                    class="text-white"
-                                                    position="stacked"
-                                                    color="primary"
-                                                    >Phone*</ion-label
-                                                >
-                                                <ion-input
-                                                    formControlName="PhoneC"
-                                                    [disabled]="CodeNumber=== undefined "
-                                                    [(ngModel)]="PhoneNumberWithOutCode"
-                                                    placeholder="Phone"
-                                                    inputmode="text"
-                                                    maxlength="15"
-                                                >
-                                                </ion-input>
-                                            </ion-item>
-                                      
+                                            <ion-input
+                                                formControlName="PhoneC"
+                                                [disabled]="CodeNumber=== undefined "
+                                                [(ngModel)]="PhoneNumberWithOutCode"
+                                                placeholder="Phone"
+                                                inputmode="text"
+                                                maxlength="15"
+                                            >
+                                            </ion-input>
+                                        </ion-item>
+
                                         <p
                                             ion-text
                                             class="heading-medium font-11"
@@ -3297,7 +3424,7 @@
                                 <ion-list class="list-back">
                                     <ion-item
                                         lines="none"
-                                        style="border:1px solid gray"
+                                        style="border: 1px solid gray"
                                         *ngIf="isCustomercheck && this.order.customerId === undefined"
                                     >
                                         <ion-label
@@ -3318,7 +3445,7 @@
                                     </ion-item>
                                     <ion-item
                                         lines="none"
-                                        style="border:1px solid gray"
+                                        style="border: 1px solid gray"
                                         *ngIf="this.order.customerId !== undefined"
                                     >
                                         <ion-label
@@ -3355,7 +3482,7 @@
                                 <ion-list class="list-back">
                                     <ion-item
                                         lines="none"
-                                        style="border:1px solid gray"
+                                        style="border: 1px solid gray"
                                         *ngIf="isCustomercheck && this.order.customerId === undefined"
                                     >
                                         <ion-label
@@ -3375,7 +3502,7 @@
                                     </ion-item>
                                     <ion-item
                                         lines="none"
-                                        style="border:1px solid gray"
+                                        style="border: 1px solid gray"
                                         *ngIf="this.order.customerId !== undefined"
                                     >
                                         <ion-label
@@ -3414,7 +3541,7 @@
                                 <ion-list class="list-back">
                                     <ion-item
                                         lines="none"
-                                        style="border:1px solid gray"
+                                        style="border: 1px solid gray"
                                         *ngIf="isCustomercheck && this.order.customerId === undefined"
                                     >
                                         <ion-label
@@ -3433,7 +3560,7 @@
                                     </ion-item>
                                     <ion-item
                                         lines="none"
-                                        style="border:1px solid gray"
+                                        style="border: 1px solid gray"
                                         *ngIf="this.order.customerId !== undefined"
                                     >
                                         <ion-label
@@ -3483,7 +3610,7 @@
                                     <ion-list class="list-back">
                                         <ion-item
                                             lines="none"
-                                            style="border:1px solid gray"
+                                            style="border: 1px solid gray"
                                             *ngIf="isCustomercheck && this.order.customerId === undefined"
                                         >
                                             <ion-label
@@ -3503,7 +3630,7 @@
                                         </ion-item>
                                         <ion-item
                                             lines="none"
-                                            style="border:1px solid gray"
+                                            style="border: 1px solid gray"
                                             *ngIf="this.order.customerId !== undefined"
                                         >
                                             <ion-label
@@ -3534,7 +3661,7 @@
                                     <ion-list class="list-back">
                                         <ion-item
                                             lines="none"
-                                            style="border:1px solid gray"
+                                            style="border: 1px solid gray"
                                             *ngIf="isCustomercheck && this.order.customerId === undefined"
                                         >
                                             <ion-label
@@ -3561,7 +3688,7 @@
                                         </ion-item>
                                         <ion-item
                                             lines="none"
-                                            style="border:1px solid gray"
+                                            style="border: 1px solid gray"
                                             *ngIf="this.order.customerId !== undefined"
                                         >
                                             <ion-label
@@ -3596,7 +3723,7 @@
                                     <ion-list class="list-back">
                                         <ion-item
                                             lines="none"
-                                            style="border:1px solid gray"
+                                            style="border: 1px solid gray"
                                             *ngIf="isCustomercheck && this.order.customerId === undefined"
                                         >
                                             <ion-label
@@ -3615,7 +3742,7 @@
                                         </ion-item>
                                         <ion-item
                                             lines="none"
-                                            style="border:1px solid gray"
+                                            style="border: 1px solid gray"
                                             *ngIf="this.order.customerId !== undefined"
                                         >
                                             <ion-label
@@ -3637,49 +3764,47 @@
                                 </ion-col>
 
                                 <ion-col size="8">
-                                   
-                                        <ion-item
-                                            lines="none"
-                                            style="border:1px solid gray"
-                                            *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Phone</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Phone</ion-label
-                                            >
-                                            <ion-input
-                                                formControlName="Phone"
-                                                [(ngModel)]="PhoneNumberWithOutCode"
-                                                maxlength="12"
-                                                class="text-white"
-                                                placeholder="Phone Number"
-                                                inputmode="text"
-                                            ></ion-input>
-                                        </ion-item>
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="this.order.customerId !== undefined"
+                                        <ion-input
+                                            formControlName="Phone"
+                                            [(ngModel)]="PhoneNumberWithOutCode"
+                                            maxlength="12"
+                                            class="text-white"
+                                            placeholder="Phone Number"
+                                            inputmode="text"
+                                        ></ion-input>
+                                    </ion-item>
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="this.order.customerId !== undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Phone</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Phone</ion-label
-                                            >
-                                            <ion-input
-                                                formControlName="Phone"
-                                                [(ngModel)]="PhoneNumberWithOutCode"
-                                                maxlength="12"
-                                                class="text-white"
-                                                readonly
-                                                placeholder="Phone Number"
-                                                inputmode="text"
-                                            ></ion-input>
-                                        </ion-item>
-                                 
+                                        <ion-input
+                                            formControlName="Phone"
+                                            [(ngModel)]="PhoneNumberWithOutCode"
+                                            maxlength="12"
+                                            class="text-white"
+                                            readonly
+                                            placeholder="Phone Number"
+                                            inputmode="text"
+                                        ></ion-input>
+                                    </ion-item>
 
                                     <p
                                         ion-text
@@ -3719,7 +3844,10 @@
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -3763,7 +3891,10 @@
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -3803,12 +3934,12 @@
             <div *ngIf="methodType === 'TakeAway'">
                 <form [formGroup]="onTakeAwayForm">
                     <ion-col size="12">
-                        <ion-card-title class=" orderSubName"
+                        <ion-card-title class="orderSubName"
                             >Search Customer By*</ion-card-title
                         >
 
                         <ion-segment
-                        style="margin-top:10px"
+                            style="margin-top: 10px"
                             mode="md"
                             scrollable
                             formControlName="customerSearchController"
@@ -3817,20 +3948,16 @@
                             value="fn"
                         >
                             <ion-segment-button value="fn">
-                                <ion-label 
-                                    >First Name</ion-label
-                                >
+                                <ion-label>First Name</ion-label>
                             </ion-segment-button>
                             <ion-segment-button value="ln">
-                                <ion-label 
-                                    >Last Name</ion-label
-                                >
+                                <ion-label>Last Name</ion-label>
                             </ion-segment-button>
                             <ion-segment-button value="Phone">
-                                <ion-label >Phone</ion-label>
+                                <ion-label>Phone</ion-label>
                             </ion-segment-button>
                             <ion-segment-button value="Email">
-                                <ion-label >Email</ion-label>
+                                <ion-label>Email</ion-label>
                             </ion-segment-button>
                         </ion-segment>
 
@@ -3855,22 +3982,22 @@
                             >
                                 <ion-row>
                                     <ion-col size="12">
-                                       
-                                            <ion-item style="border:1px solid gray">
-                                                <ion-label
-                                                    class="text-white"
-                                                    position="stacked"
-                                                    color="primary"
-                                                    >Email*</ion-label
-                                                >
-                                                <ion-input
-                                                    formControlName="EmailCheck"
-                                                    [(ngModel)]="order.email"
-                                                    placeholder="Email"
-                                                    inputmode="text"
-                                                ></ion-input>
-                                            </ion-item>
-                                       
+                                        <ion-item
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                class="text-white"
+                                                position="stacked"
+                                                color="primary"
+                                                >Email*</ion-label
+                                            >
+                                            <ion-input
+                                                formControlName="EmailCheck"
+                                                [(ngModel)]="order.email"
+                                                placeholder="Email"
+                                                inputmode="text"
+                                            ></ion-input>
+                                        </ion-item>
 
                                         <ion-row
                                             *ngIf="onEmailCheckForm.get('EmailCheck').dirty && !onEmailCheckForm.valid"
@@ -3910,83 +4037,78 @@
                             >
                                 <ion-row>
                                     <ion-col size="12">
-                                        
-                                            <ion-item
-                                                lines="none"
-                                                style="border:1px solid gray"
-                                            >
-                                                <ion-label
-                                                    position="stacked"
-                                                    color="primary"
-                                                    class="text-white"
-                                                    >Country Code*
-                                                </ion-label>
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                position="stacked"
+                                                color="primary"
+                                                class="text-white"
+                                                >Country Code*
+                                            </ion-label>
 
-                                                <ion-select
-                                                    [(ngModel)]="CodeNumber"
-                                                    placeholder="Select Country Code"
-                                                    formControlName="countryCodeC"
-                                                    (ionChange)="countryCodePicker($event)"
+                                            <ion-select
+                                                [(ngModel)]="CodeNumber"
+                                                placeholder="Select Country Code"
+                                                formControlName="countryCodeC"
+                                                (ionChange)="countryCodePicker($event)"
+                                            >
+                                                <ion-select-option
+                                                    *ngFor="let country of countryCode.countries"
+                                                    [value]="country.code"
                                                 >
-                                                    <ion-select-option
-                                                        *ngFor="let country of countryCode.countries"
-                                                        [value]="country.code"
-                                                    >
-                                                        {{country.name}}
-                                                        ({{country.code}})
-                                                    </ion-select-option>
-                                                </ion-select>
-                                            </ion-item>
-                                       
+                                                    {{country.name}}
+                                                    ({{country.code}})
+                                                </ion-select-option>
+                                            </ion-select>
+                                        </ion-item>
                                     </ion-col>
                                 </ion-row>
                                 <ion-row>
                                     <ion-col size="4">
-                                        
-                                            <ion-item
-                                                lines="none"
-                                                style="border:1px solid gray"
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                class="text-white"
+                                                position="stacked"
+                                                color="primary"
+                                                >Code</ion-label
                                             >
-                                                <ion-label
-                                                    class="text-white"
-                                                    position="stacked"
-                                                    color="primary"
-                                                    >Code</ion-label
-                                                >
-                                                <ion-input
-                                                    formControlName="countryCodeController"
-                                                    [(ngModel)]="CodeNumber"
-                                                    readonly
-                                                    placeholder="Code"
-                                                    inputmode="text"
-                                                ></ion-input>
-                                            </ion-item>
-                                   
+                                            <ion-input
+                                                formControlName="countryCodeController"
+                                                [(ngModel)]="CodeNumber"
+                                                readonly
+                                                placeholder="Code"
+                                                inputmode="text"
+                                            ></ion-input>
+                                        </ion-item>
                                     </ion-col>
 
                                     <ion-col size="8">
-                                  
-                                            <ion-item
-                                                lines="none"
-                                                style="border:1px solid gray"
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
+                                            <ion-label
+                                                class="text-white"
+                                                position="stacked"
+                                                color="primary"
+                                                >Phone*</ion-label
                                             >
-                                                <ion-label
-                                                    class="text-white"
-                                                    position="stacked"
-                                                    color="primary"
-                                                    >Phone*</ion-label
-                                                >
-                                                <ion-input
-                                                    formControlName="PhoneC"
-                                                    [disabled]="CodeNumber=== undefined "
-                                                    [(ngModel)]="PhoneNumberWithOutCode"
-                                                    placeholder="Phone"
-                                                    inputmode="text"
-                                                    maxlength="15"
-                                                >
-                                                </ion-input>
-                                            </ion-item>
-                                      
+                                            <ion-input
+                                                formControlName="PhoneC"
+                                                [disabled]="CodeNumber=== undefined "
+                                                [(ngModel)]="PhoneNumberWithOutCode"
+                                                placeholder="Phone"
+                                                inputmode="text"
+                                                maxlength="15"
+                                            >
+                                            </ion-input>
+                                        </ion-item>
+
                                         <p
                                             ion-text
                                             class="heading-medium font-11"
@@ -4116,49 +4238,47 @@
 
                         <ion-row>
                             <ion-col size="6">
-                            
-                                    <ion-item
-                                        lines="none"
-                                         style="border:1px solid gray"
-                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                <ion-item
+                                    lines="none"
+                                    style="border: 1px solid gray"
+                                    *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                >
+                                    <ion-label
+                                        class="text-white"
+                                        position="stacked"
+                                        color="primary"
+                                        >First Name*</ion-label
                                     >
-                                        <ion-label
-                                            class="text-white"
-                                            position="stacked"
-                                            color="primary"
-                                            >First Name*</ion-label
-                                        >
-                                        <ion-input
-                                            formControlName="firstName"
-                                            [(ngModel)]="order.firstName"
-                                            placeholder="First Name"
-                                            inputmode="text"
-                                            class="text-white"
-                                        >
-                                        </ion-input>
-                                    </ion-item>
-                                    <ion-item
-                                        lines="none"
-                                         style="border:1px solid gray"
-                                        *ngIf="this.order.customerId !== undefined"
+                                    <ion-input
+                                        formControlName="firstName"
+                                        [(ngModel)]="order.firstName"
+                                        placeholder="First Name"
+                                        inputmode="text"
+                                        class="text-white"
                                     >
-                                        <ion-label
-                                            class="text-white"
-                                            position="stacked"
-                                            color="primary"
-                                            >First Name*</ion-label
-                                        >
-                                        <ion-input
-                                            readonly
-                                            formControlName="firstName"
-                                            [(ngModel)]="order.firstName"
-                                            placeholder="First Name"
-                                            inputmode="text"
-                                            class="text-white"
-                                        >
-                                        </ion-input>
-                                    </ion-item>
-                               
+                                    </ion-input>
+                                </ion-item>
+                                <ion-item
+                                    lines="none"
+                                    style="border: 1px solid gray"
+                                    *ngIf="this.order.customerId !== undefined"
+                                >
+                                    <ion-label
+                                        class="text-white"
+                                        position="stacked"
+                                        color="primary"
+                                        >First Name*</ion-label
+                                    >
+                                    <ion-input
+                                        readonly
+                                        formControlName="firstName"
+                                        [(ngModel)]="order.firstName"
+                                        placeholder="First Name"
+                                        inputmode="text"
+                                        class="text-white"
+                                    >
+                                    </ion-input>
+                                </ion-item>
 
                                 <p
                                     ion-text
@@ -4172,49 +4292,47 @@
                                 </p>
                             </ion-col>
                             <ion-col size="6">
-                            
-                                    <ion-item
-                                        lines="none"
-                                         style="border:1px solid gray"
-                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                <ion-item
+                                    lines="none"
+                                    style="border: 1px solid gray"
+                                    *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                >
+                                    <ion-label
+                                        class="text-white"
+                                        position="stacked"
+                                        color="primary"
+                                        >Last Name*</ion-label
                                     >
-                                        <ion-label
-                                            class="text-white"
-                                            position="stacked"
-                                            color="primary"
-                                            >Last Name*</ion-label
-                                        >
-                                        <ion-input
-                                            formControlName="lastName"
-                                            [(ngModel)]="order.lastName"
-                                            placeholder="Last Name"
-                                            inputmode="text"
-                                            class="text-white"
-                                        >
-                                        </ion-input>
-                                    </ion-item>
-                                    <ion-item
-                                        lines="none"
-                                         style="border:1px solid gray"
-                                        *ngIf="this.order.customerId !== undefined"
+                                    <ion-input
+                                        formControlName="lastName"
+                                        [(ngModel)]="order.lastName"
+                                        placeholder="Last Name"
+                                        inputmode="text"
+                                        class="text-white"
                                     >
-                                        <ion-label
-                                            class="text-white"
-                                            position="stacked"
-                                            color="primary"
-                                            >Last Name*</ion-label
-                                        >
-                                        <ion-input
-                                            readonly
-                                            formControlName="lastName"
-                                            [(ngModel)]="order.lastName"
-                                            placeholder="Last Name"
-                                            inputmode="text"
-                                            class="text-white"
-                                        >
-                                        </ion-input>
-                                    </ion-item>
-                               
+                                    </ion-input>
+                                </ion-item>
+                                <ion-item
+                                    lines="none"
+                                    style="border: 1px solid gray"
+                                    *ngIf="this.order.customerId !== undefined"
+                                >
+                                    <ion-label
+                                        class="text-white"
+                                        position="stacked"
+                                        color="primary"
+                                        >Last Name*</ion-label
+                                    >
+                                    <ion-input
+                                        readonly
+                                        formControlName="lastName"
+                                        [(ngModel)]="order.lastName"
+                                        placeholder="Last Name"
+                                        inputmode="text"
+                                        class="text-white"
+                                    >
+                                    </ion-input>
+                                </ion-item>
 
                                 <p
                                     ion-text
@@ -4231,47 +4349,45 @@
                         <!-- email -->
                         <ion-row>
                             <ion-col size="12">
-                              
-                                    <ion-item
-                                        lines="none"
-                                         style="border:1px solid gray"
-                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                <ion-item
+                                    lines="none"
+                                    style="border: 1px solid gray"
+                                    *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                >
+                                    <ion-label
+                                        class="text-white"
+                                        position="stacked"
+                                        color="primary"
+                                        >Email</ion-label
                                     >
-                                        <ion-label
-                                            class="text-white"
-                                            position="stacked"
-                                            color="primary"
-                                            >Email</ion-label
-                                        >
-                                        <ion-input
-                                            formControlName="Email"
-                                            [(ngModel)]="order.email"
-                                            placeholder="Email address"
-                                            inputmode="email"
-                                            class="text-white"
-                                        ></ion-input>
-                                    </ion-item>
-                                    <ion-item
-                                        lines="none"
-                                         style="border:1px solid gray"
-                                        *ngIf="this.order.customerId !== undefined"
+                                    <ion-input
+                                        formControlName="Email"
+                                        [(ngModel)]="order.email"
+                                        placeholder="Email address"
+                                        inputmode="email"
+                                        class="text-white"
+                                    ></ion-input>
+                                </ion-item>
+                                <ion-item
+                                    lines="none"
+                                    style="border: 1px solid gray"
+                                    *ngIf="this.order.customerId !== undefined"
+                                >
+                                    <ion-label
+                                        class="text-white"
+                                        position="stacked"
+                                        color="primary"
+                                        >Email</ion-label
                                     >
-                                        <ion-label
-                                            class="text-white"
-                                            position="stacked"
-                                            color="primary"
-                                            >Email</ion-label
-                                        >
-                                        <ion-input
-                                            readonly
-                                            formControlName="Email"
-                                            [(ngModel)]="order.email"
-                                            placeholder="Email address"
-                                            inputmode="email"
-                                            class="text-white"
-                                        ></ion-input>
-                                    </ion-item>
-                               
+                                    <ion-input
+                                        readonly
+                                        formControlName="Email"
+                                        [(ngModel)]="order.email"
+                                        placeholder="Email address"
+                                        inputmode="email"
+                                        class="text-white"
+                                    ></ion-input>
+                                </ion-item>
 
                                 <p
                                     ion-text
@@ -4300,49 +4416,47 @@
                         >
                             <ion-row>
                                 <ion-col size="12">
-                                    
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Phone</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Phone</ion-label
-                                            >
-                                            <ion-input
-                                                formControlName="Phone"
-                                                [(ngModel)]="this.order.mobile"
-                                                maxlength="15"
-                                                placeholder="Phone Number"
-                                                inputmode="text"
-                                                class="text-white"
-                                            ></ion-input>
-                                        </ion-item>
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="this.order.customerId !== undefined"
+                                        <ion-input
+                                            formControlName="Phone"
+                                            [(ngModel)]="this.order.mobile"
+                                            maxlength="15"
+                                            placeholder="Phone Number"
+                                            inputmode="text"
+                                            class="text-white"
+                                        ></ion-input>
+                                    </ion-item>
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="this.order.customerId !== undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Phone</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Phone</ion-label
-                                            >
-                                            <ion-input
-                                                readonly
-                                                formControlName="Phone"
-                                                [(ngModel)]="this.order.mobile"
-                                                maxlength="15"
-                                                placeholder="Phone Number"
-                                                inputmode="text"
-                                                class="text-white"
-                                            ></ion-input>
-                                        </ion-item>
-                              
+                                        <ion-input
+                                            readonly
+                                            formControlName="Phone"
+                                            [(ngModel)]="this.order.mobile"
+                                            maxlength="15"
+                                            placeholder="Phone Number"
+                                            inputmode="text"
+                                            class="text-white"
+                                        ></ion-input>
+                                    </ion-item>
                                 </ion-col>
                             </ion-row>
                         </div>
@@ -4351,127 +4465,121 @@
                         >
                             <ion-row>
                                 <ion-col size="12">
-                                    
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="isCustomercheck && this.order.customerId === undefined"
-                                        >
-                                            <ion-label
-                                                position="stacked"
-                                                color="primary"
-                                                class="text-white"
-                                                >Country Code
-                                            </ion-label>
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    >
+                                        <ion-label
+                                            position="stacked"
+                                            color="primary"
+                                            class="text-white"
+                                            >Country Code
+                                        </ion-label>
 
-                                            <ion-select
-                                                class="text-white"
-                                                [(ngModel)]="CodeNumber"
-                                                placeholder="Select Country Code"
-                                                formControlName="countryCodeController"
+                                        <ion-select
+                                            class="text-white"
+                                            [(ngModel)]="CodeNumber"
+                                            placeholder="Select Country Code"
+                                            formControlName="countryCodeController"
+                                        >
+                                            <ion-select-option
+                                                *ngFor="let country of countryCode.countries"
+                                                [value]="country.code"
                                             >
-                                                <ion-select-option
-                                                    *ngFor="let country of countryCode.countries"
-                                                    [value]="country.code"
-                                                >
-                                                    {{country.name}}
-                                                    ({{country.code}})
-                                                </ion-select-option>
-                                            </ion-select>
-                                        </ion-item>
-                                
+                                                {{country.name}}
+                                                ({{country.code}})
+                                            </ion-select-option>
+                                        </ion-select>
+                                    </ion-item>
                                 </ion-col>
                             </ion-row>
 
                             <ion-row>
                                 <ion-col size="4">
-                                  
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Code</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Code</ion-label
-                                            >
-                                            <ion-input
-                                                formControlName="countryCodeController"
-                                                [(ngModel)]="CodeNumber"
-                                                class="text-white"
-                                                placeholder="Code"
-                                                inputmode="text"
-                                            ></ion-input>
-                                        </ion-item>
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="this.order.customerId !== undefined"
+                                        <ion-input
+                                            formControlName="countryCodeController"
+                                            [(ngModel)]="CodeNumber"
+                                            class="text-white"
+                                            placeholder="Code"
+                                            inputmode="text"
+                                        ></ion-input>
+                                    </ion-item>
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="this.order.customerId !== undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Code</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Code</ion-label
-                                            >
-                                            <ion-input
-                                                readonly
-                                                formControlName="countryCodeController"
-                                                [(ngModel)]="CodeNumber"
-                                                class="text-white"
-                                                placeholder="Code"
-                                                inputmode="text"
-                                            ></ion-input>
-                                        </ion-item>
-                                 
+                                        <ion-input
+                                            readonly
+                                            formControlName="countryCodeController"
+                                            [(ngModel)]="CodeNumber"
+                                            class="text-white"
+                                            placeholder="Code"
+                                            inputmode="text"
+                                        ></ion-input>
+                                    </ion-item>
                                 </ion-col>
 
                                 <ion-col size="8">
-                                 
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="isCustomercheck && this.order.customerId === undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Phone</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Phone</ion-label
-                                            >
-                                            <ion-input
-                                                formControlName="Phone"
-                                                [(ngModel)]="PhoneNumberWithOutCode"
-                                                maxlength="12"
-                                                class="text-white"
-                                                placeholder="Phone Number"
-                                                inputmode="text"
-                                            ></ion-input>
-                                        </ion-item>
-                                        <ion-item
-                                            lines="none"
-                                             style="border:1px solid gray"
-                                            *ngIf="this.order.customerId !== undefined"
+                                        <ion-input
+                                            formControlName="Phone"
+                                            [(ngModel)]="PhoneNumberWithOutCode"
+                                            maxlength="12"
+                                            class="text-white"
+                                            placeholder="Phone Number"
+                                            inputmode="text"
+                                        ></ion-input>
+                                    </ion-item>
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                        *ngIf="this.order.customerId !== undefined"
+                                    >
+                                        <ion-label
+                                            class="text-white"
+                                            position="stacked"
+                                            color="primary"
+                                            >Phone</ion-label
                                         >
-                                            <ion-label
-                                                class="text-white"
-                                                position="stacked"
-                                                color="primary"
-                                                >Phone</ion-label
-                                            >
-                                            <ion-input
-                                                readonly
-                                                formControlName="Phone"
-                                                [(ngModel)]="PhoneNumberWithOutCode"
-                                                maxlength="12"
-                                                class="text-white"
-                                                placeholder="Phone Number"
-                                                inputmode="text"
-                                            ></ion-input>
-                                        </ion-item>
-                                 
+                                        <ion-input
+                                            readonly
+                                            formControlName="Phone"
+                                            [(ngModel)]="PhoneNumberWithOutCode"
+                                            maxlength="12"
+                                            class="text-white"
+                                            placeholder="Phone Number"
+                                            inputmode="text"
+                                        ></ion-input>
+                                    </ion-item>
 
                                     <p
                                         ion-text
@@ -4507,52 +4615,53 @@
 
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
-                             
-                                    <ion-item lines="none"  style="border:1px solid gray">
-                                        <ion-label
-                                            position="stacked"
-                                            color="primary"
-                                            class="text-white"
-                                            >Choose Counter
-                                        </ion-label>
-                                        <ion-select
-                                            formControlName="CounterNumber"
-                                            [(ngModel)]="order.counterNumber"
-                                            (ionChange)="setCounter(order.counterNumber)"
-                                            class="text-white"
-                                            no-margin
-                                            no-padding
-                                            placeholder="Choose Counter"
+                                <ion-item
+                                    lines="none"
+                                    style="border: 1px solid gray"
+                                >
+                                    <ion-label
+                                        position="stacked"
+                                        color="primary"
+                                        class="text-white"
+                                        >Choose Counter
+                                    </ion-label>
+                                    <ion-select
+                                        formControlName="CounterNumber"
+                                        [(ngModel)]="order.counterNumber"
+                                        (ionChange)="setCounter(order.counterNumber)"
+                                        class="text-white"
+                                        no-margin
+                                        no-padding
+                                        placeholder="Choose Counter"
+                                    >
+                                        <ion-select-option
+                                            class="text-wrap"
+                                            *ngFor="let pos of pointOfSaleList"
+                                            [value]="pos.counterNumber"
                                         >
-                                            <ion-select-option
-                                                class="text-wrap"
-                                                *ngFor="let pos of pointOfSaleList"
-                                                [value]="pos.counterNumber"
-                                            >
-                                                <p class="text-wrap">
-                                                    <b>
-                                                        {{ pos.counterName }} </b
-                                                    ><span
-                                                        style="
-                                                            color: blueviolet;
-                                                        "
-                                                    >
-                                                        Counter Number : {{
-                                                        pos.counterNumber }}
-                                                    </span>
-                                                </p>
-                                            </ion-select-option>
-                                        </ion-select>
-                                        <!-- [(ngModel)]="search.to" -->
-                                    </ion-item>
-                         
+                                            <p class="text-wrap">
+                                                <b> {{ pos.counterName }} </b
+                                                ><span
+                                                    style="color: blueviolet"
+                                                >
+                                                    Counter Number : {{
+                                                    pos.counterNumber }}
+                                                </span>
+                                            </p>
+                                        </ion-select-option>
+                                    </ion-select>
+                                    <!-- [(ngModel)]="search.to" -->
+                                </ion-item>
                             </ion-col>
                         </ion-row>
 
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -4606,7 +4715,7 @@
 
                         <ion-list *ngIf="isShowBookingList" class="list-back">
                             <ion-item
-                                 style="border:1px solid gray"
+                                style="border: 1px solid gray"
                                 *ngFor="let book of bookingdata"
                                 (click)="onBookingDetailsSelected(book)"
                             >
@@ -4618,7 +4727,9 @@
                             </ion-item>
                         </ion-list>
 
-                        <ion-card-title class="orderSubName" style="padding-top:10px"
+                        <ion-card-title
+                            class="orderSubName"
+                            style="padding-top: 10px"
                             >Booking Information
                         </ion-card-title>
 
@@ -4632,7 +4743,10 @@
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -4670,7 +4784,10 @@
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -4710,7 +4827,10 @@
                         <ion-row>
                             <ion-col size="6">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             class="text-white"
                                             position="stacked"
@@ -4742,7 +4862,10 @@
                             </ion-col>
                             <ion-col size="6">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             class="text-white"
                                             position="stacked"
@@ -4777,7 +4900,10 @@
                         <ion-row>
                             <ion-col size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             class="text-white"
                                             position="stacked"
@@ -4834,7 +4960,10 @@
                             <ion-row>
                                 <ion-col size="12">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -4865,7 +4994,10 @@
                             <ion-row>
                                 <ion-col size="4">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -4886,7 +5018,10 @@
 
                                 <ion-col size="8">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -4940,7 +5075,10 @@
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -4984,7 +5122,10 @@
                         <ion-row>
                             <ion-col no-margin no-padding size="12">
                                 <ion-list class="list-back">
-                                    <ion-item lines="none"  style="border:1px solid gray">
+                                    <ion-item
+                                        lines="none"
+                                        style="border: 1px solid gray"
+                                    >
                                         <ion-label
                                             position="stacked"
                                             color="primary"
@@ -5075,7 +5216,10 @@
                             <ion-row>
                                 <ion-col size="4">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5096,7 +5240,10 @@
 
                                 <ion-col size="8">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5160,7 +5307,10 @@
                             <ion-row>
                                 <ion-col size="12">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5216,7 +5366,10 @@
                             <ion-row>
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5248,7 +5401,10 @@
                                 </ion-col>
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5282,7 +5438,10 @@
                             <ion-row>
                                 <ion-col size="12">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5325,7 +5484,10 @@
                             <ion-row>
                                 <ion-col size="12">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5373,7 +5535,10 @@
                             <ion-row>
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5394,7 +5559,10 @@
 
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5417,7 +5585,10 @@
                             <ion-row>
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5438,7 +5609,10 @@
 
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5461,7 +5635,10 @@
                             <ion-row>
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5482,7 +5659,10 @@
 
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5505,7 +5685,10 @@
                             <ion-row>
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5526,7 +5709,10 @@
 
                                 <ion-col size="6">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 class="text-white"
                                                 position="stacked"
@@ -5562,7 +5748,10 @@
                             <ion-row>
                                 <ion-col no-margin no-padding size="12">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 position="stacked"
                                                 color="primary"
@@ -5607,7 +5796,10 @@
                             <ion-row>
                                 <ion-col no-margin no-padding size="12">
                                     <ion-list class="list-back">
-                                        <ion-item lines="none"  style="border:1px solid gray">
+                                        <ion-item
+                                            lines="none"
+                                            style="border: 1px solid gray"
+                                        >
                                             <ion-label
                                                 position="stacked"
                                                 color="primary"
@@ -5706,14 +5898,34 @@
                             
                         </div>
                     </form> -->
+                    <!-- <ion-card color="light" *ngIf="true"> 
+  <ion-card-header>
+    <ion-card-title>Button Condition Debug</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <p>loader: {{ loader }}</p>
+    <p>isTodaysDyneInOrder: {{ isTodaysDyneInOrder }}</p>
+    <p>methodType: {{ methodType }}</p>
+    <p>onInDineForm.valid: {{ onInDineForm?.valid }}</p>
+    <p>resourceSelected?.length: {{ resourceSelected?.length }}</p>
+    <p>resourceSelected === undefined: {{ resourceSelected === undefined }}</p>
+    <p>locationNameSelected: {{ locationNameSelected }}</p>
+    <p>onTakeAwayForm.valid: {{ onTakeAwayForm?.valid }}</p>
+    <p>calculatePrice(): {{ calculatePrice() }}</p>
+    <p>calculateQuantity(): {{ calculateQuantity() }}</p>
+    <p>onRoomOrderForm.valid: {{ onRoomOrderForm?.valid }}</p>
+    <p>onSubmitForm.valid: {{ onSubmitForm?.valid }}</p>
+  </ion-card-content>
+</ion-card> -->
+
                     <ion-row center>
                         <ion-col width-50 style="text-align: center">
                             <ion-button
                                 [disabled]=" loader ||
                             isTodaysDyneInOrder === false && methodType === 'InDine' && !this.onInDineForm.valid || 
-                            isTodaysDyneInOrder === false && methodType === 'InDine' && (this.resourceSelected.length == 0 ||this.resourceSelected === undefined) || 
+                            isTodaysDyneInOrder === false && methodType === 'InDine' && (this.resourceSelected?.length == 0 ||this.resourceSelected === undefined) || 
                             isTodaysDyneInOrder === false && methodType === 'InDine' && (this.locationNameSelected === null || this.locationNameSelected === undefined) ||
-                            isTodaysDyneInOrder === true && methodType === 'InDine' && (this.resourceSelected.length == 0 || this.resourceSelected === undefined) || 
+                            isTodaysDyneInOrder === true && methodType === 'InDine' && (this.resourceSelected?.length == 0 || this.resourceSelected === undefined) || 
                             isTodaysDyneInOrder === true && methodType === 'InDine' && (this.locationNameSelected === null || this.locationNameSelected === undefined) ||
                             methodType === 'TakeAway' && !this.onTakeAwayForm.valid || calculatePrice() === undefined ||
                             calculatePrice() === null ||
@@ -6172,6 +6384,28 @@
 </ion-content>
 
 <ion-footer class="footer" transparent *ngIf="!isOderDetailsPlace">
+    <!-- {{orderProducts?.length}} {{checkUserDecreaseItem()}} -->
+    <ion-row *ngIf="orderProducts?.length > 0 && checkUserDecreaseItem()">
+       <ion-col size="12">
+  <div *ngIf="orderProducts?.length > 0 && checkUserDecreaseItem()" class="note-restrict">
+    <form appearance="outline" class="note-field">
+      <div for="note" class="note-label">Note <b style="color:#ff0000">*</b> <span class="note-warning" *ngIf="noteInputForProceed.trim().length === 0">Note is required for item decrease.</span> </div>
+      <ion-textarea
+        matInput
+        placeholder="Enter your note here..."
+        name="note"
+        id="note"
+        rows="2"
+        [(ngModel)]="noteInputForProceed"
+        class="note-input"
+      ></ion-textarea>
+    </form>
+
+    
+  </div>
+</ion-col>
+
+    </ion-row>
     <ion-row
         class="cart-amount-review"
         *ngIf="calculatePrice() != null &&  calculatePrice() != undefined &&  calculatePrice() >= 0"
@@ -6186,7 +6420,8 @@
         <ion-col size="6">
             <ion-button
                 class="placeOrderbtn"
-                [class.disabled]="calculatePrice() === undefined || calculatePrice() === null || calculateQuantity() == 0"
+                [class.disabled]="calculatePrice() === undefined || calculatePrice() === null || calculateQuantity() == 0 ||
+                (checkUserDecreaseItem() && !noteInputForProceed)"
                 (click)="calculatePrice() !== undefined && calculatePrice() !== null && calculateQuantity() != 0 && orderNow()"
             >
                 Place Order
@@ -6215,8 +6450,11 @@
 <div class="loader-everyOne" *ngIf="loader">
     <ion-spinner name="crescent" class="spinner"></ion-spinner>
     <div class="loader-content">
-      <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
-      <div class="loader-text">Please wait...</div>
+        <img
+            src="/assets/img/loader-logo.png"
+            alt="Loader Image"
+            class="loader-image"
+        />
+        <div class="loader-text">Please wait...</div>
     </div>
-  </div>
-
+</div>

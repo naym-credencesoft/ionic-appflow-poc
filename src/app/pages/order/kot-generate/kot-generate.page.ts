@@ -1,6 +1,6 @@
 import { Token } from "./../../../model/token";
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewRef } from "@angular/core";
-import { ActionSheetController, MenuController, ModalController, NavController } from "@ionic/angular";
+import { ActionSheetController, MenuController, ModalController, NavController, ToastController } from "@ionic/angular";
 import { KOT } from "../KOT";
 import { OrderService } from "src/app/service/Order/order.service";
 import { Order } from "src/app/model/Order/order";
@@ -79,6 +79,7 @@ export class KotGeneratePage implements OnInit {
         private Token: TokenStorage,
         private bookingservice: BookingService,
         private navCtrl: NavController,
+        private toastController:ToastController,
         private paymentService: PaymentService,
         public datepipe: DatePipe,
         public menuCtrl: MenuController,
@@ -252,22 +253,22 @@ export class KotGeneratePage implements OnInit {
                 ) {
                     this.items = this.dialogOrder.orderLineDtoList;
                 }
-
-                if (this.businessService?.kotQueueUrl != null && this.businessService?.kotQueueUrl != ''
-                    && this.businessService?.printerName != null && this.businessService?.printerName != ''
-                    && this.isSilentPrinter == true
-                ) {
-                    setTimeout(() => {
-                        this.generateGroupedPDFs("kotPrintSection2");
-                    }, 2000);
-                }
+                 
+                // if (this.businessService?.kotQueueUrl != null && this.businessService?.kotQueueUrl != ''
+                //     && this.businessService?.printerName != null && this.businessService?.printerName != ''
+                //     && this.isSilentPrinter == true
+                // ) {
+                //     setTimeout(() => {
+                //         this.generateGroupedPDFs("kotPrintSection2");
+                //     }, 500);
+                // }
 
                 if (
-                    this.dialogOrder.kotDtoList != null &&
-                    this.dialogOrder.kotDtoList.length > 0
+                    this.dialogOrder?.kotDtoList != null &&
+                    this.dialogOrder?.kotDtoList?.length > 0
                 ) {
 
-                    this.kotListReadyToPrint = this.dialogOrder.kotDtoList.filter((k) => {
+                    this.kotListReadyToPrint = this.dialogOrder?.kotDtoList?.filter((k) => {
                         return k.orderLines.some((ol) => {
                             if (ol.notes != null && ol.notes != undefined) {
                                 this.isKotNoteAvailable = true;
@@ -277,13 +278,13 @@ export class KotGeneratePage implements OnInit {
                     });
 
 
-                    this.kotList = this.dialogOrder.kotDtoList;
+                    this.kotList = this.dialogOrder?.kotDtoList;
 
 
 
                 } else if (
-                    this.dialogOrder.kotDtoList != null &&
-                    this.dialogOrder.kotDtoList.length === 0
+                    this.dialogOrder?.kotDtoList != null &&
+                    this.dialogOrder?.kotDtoList.length === 0
                 ) {
                     this.kotList = [];
                 }
@@ -297,7 +298,12 @@ export class KotGeneratePage implements OnInit {
                     this.updateKOTListItem();
                     this.CreateOrUpdateKotAndConfirmOrder(orderId);
                 }
-
+                setTimeout(() => {
+                        if ( this.isSilentPrinter === true) {
+                        this.silentlyPrintKOT(this.dialogOrder.id);
+                    } 
+                    }, 500);
+                
                 this.UIDetectChange();
                 this.loader = false;
             },
@@ -438,6 +444,30 @@ export class KotGeneratePage implements OnInit {
     //         console.error('Element not found or no KOTs ready to print');
     //     }
     // }
+    
+ silentlyPrintKOT(orderId: number) {
+  this.orderService.silentPrintKOT(orderId).subscribe({
+    next: (data) => {
+    //   console.log("Success:", data);
+      this.isSilentPrinter = false;
+    //   this.openSuccessSnackBar(data);
+    //   this.dialogRef.close({ event: "list" });
+    },
+    error: (error) => {
+      console.error("Error:", error);
+      this.presentToast("Failed to generate and process KOT PDFs");
+      this.loader = false;
+    }
+  });
+}
+    async presentToast(Message: string) {
+        const toast = await this.toastController.create({
+            message: Message,
+            duration: 2000,
+        });
+        toast.present();
+    }
+
     generateGroupedPDFs(printSectionId: string) {
         // Get all unique group names from kotList
         const uniqueGroupNames = [...new Set(this.kotList.map(kot => kot.productGroupName))];
@@ -484,85 +514,80 @@ export class KotGeneratePage implements OnInit {
             printElement.style.padding = '0';
 
             // Build the HTML content
-            let content = `
-            <table style="width: 100%;">
-              <tr>
-                <td>
-                  <div style="text-align: center">
-                    <div class="profile-title text-center" style="font-size: 2.5vmax">
-                                  ${(this.businessService == null ||
+              let content = `
+        <table style="width: 100%;">
+          <tr>
+            <td>
+              <div style="text-align: center">
+                <div class="profile-title text-center" style="font-size: 2.5vmax">
+                              ${ (this.businessService == null ||
                     this.businessService.brandName == null ||
                     this.businessService.brandName === '')
-                    ? `<div style="font-size: 1.5vmax;color:black;">${this.property.name}</div>`
-                    : `<div style="font-size: 1.5vmax;color:black;">${this.businessService.brandName}</div>`
-                }
-                      <div style="font-size: 1.3vmax;color:black;">${this.dialogOrder.bookOneOrderId}</div>
-                       
-    
-                              ${this.dialogOrder.deliveryMethod === 'Room Order'
-                    ? `<div style="font-size: 1.3vmax;color:black;"><strong>Room No: </strong>${this.dialogOrder.roomNo}</div>`
-                    : ''}
-                    ${this.dialogOrder.deliveryMethod !== 'Room Order' &&  this.dialogOrder.deliveryMethod !== 'Take Away'? `
-                        <div style="width: 100%; font-size: 1.3vmax;color:black;">
-                          <div><strong>Resource:</strong> ${this.dialogOrder.resourceName}</div>
-                        </div>` : ''}
-                    
-                        ${this.dialogOrder.deliveryMethod === 'Take Away'? `
-                            <div style="width: 100%; font-size: 1.3vmax;color:black;">
-                              <div><strong>Resource:</strong> Take Away</div>
-                            </div>` : ''}
+                    ? `<div style="font-size: 1vmax;color:black;">${this.property.name}</div>`
+                    : `<div style="font-size: 1vmax;color:black;">${this.businessService.brandName}</div>`
+                      }
+                  <div style="font-size: 0.7vmax;color:black;">${this.dialogOrder.bookOneOrderId}</div>
 
-                      ${this.dialogOrder.orderedDate
-                    ? `<div style="width: 100%; font-size: 1.3vmax;color:black;">
-                             <span>${this.dateService.convertMillisecondsToDateFormat(this.dialogOrder.orderedDate)} ${this.dialogOrder.orderedTime}</span>
-                           </div>`
-                    : ''
-                }
-                      ${this.dialogOrder.operatorName
-                    ? `<div style="width: 100%; font-size: 1.3vmax;color:black;">
-                             <strong>Operator: </strong> ${this.dialogOrder.operatorName}
-                           </div>`
-                    : ''
-                }
-                    </div>
+
+                          ${this.dialogOrder.deliveryMethod === 'Room Order'
+                              ? `<div style="font-size: 0.7vmax;color:black;"><strong>Room No: </strong>${this.dialogOrder.roomNo}</div>`
+                            : ''}
+
+
+                  <div style="width: 100%; font-size: 0.7vmax;color:black;">
+                    <div><strong>Resource:</strong> ${this.dialogOrder.resourceName}</div>
                   </div>
-                </td>
-              </tr>
+                  ${ this.dialogOrder.orderedDate
+                    ? `<div style="width: 100%; font-size: 0.7vmax;color:black;">
+                         <span>${this.dateService.convertMillisecondsToDateFormat(this.dialogOrder.orderedDate)} ${this.dialogOrder.orderedTime}</span>
+                       </div>`
+                    : ''
+                  }
+                  ${ this.dialogOrder.operatorName
+                    ? `<div style="width: 100%; font-size: 0.7vmax;color:black;">
+                         <strong>Operator: </strong> ${this.dialogOrder.operatorName}
+                       </div>`
+                    : ''
+                  }
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div style="border: 1px solid black;border-radius: 10px;">
+          ${filteredKOTList.map(kot => `
+            <div style="margin-left: 5px;">
+              <span style="font-size: 0.7vmax;color:black;">${kot.kotNo}</span>
+
+            ${kot.productGroupName ?`<span style="font-size: 0.7vmax;margin-left: 5px;color:black;">Group: ${kot.productGroupName}</span>`: ''}
+            </div>
+            <table class="print-table-css" style="font-family: Arial; text-align: center; width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;">NAME</th>
+                  <th style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;">QTY</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${kot.orderLines.length === 0 ? '<tr><td colspan="2">VOID KOT</td></tr>' : kot.orderLines.map(row => `
+                  <tr>
+                    <td style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;"><b>${row.name.toUpperCase()}</b><br/>${row.notes?`<span>${row.notes}</span>`:''}</td>
+                    <td style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;">${row.unitsInOrder}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
             </table>
-            <div style="border: 1px solid black;border-radius: 10px; margin-top: 10px">
-              ${filteredKOTList.map(kot => `
-                <div style="margin-left: 5px;">
-                  <span style="font-size: 1.3vmax;color:black;">${kot.kotNo}</span>
-                   
-                ${kot.productGroupName ? `<span style="font-size: 1.3vmax;margin-left: 5px;color:black;">Group: ${kot.productGroupName}</span>` : ''}
-                </div>
-                <table class="print-table-css" style="font-family: Arial; text-align: center; width: 100%; border-collapse: collapse;">
-                  <thead>
-                    <tr>
-                      <th style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:1.3vmax;color:black;">NAME</th>
-                      <th style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:1.3vmax;color:black;">QTY</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${kot.orderLines.length === 0 ? '<tr><td colspan="2">VOID KOT</td></tr>' : kot.orderLines.map(row => `
-                      <tr>
-                        <td style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:1.3vmax;color:black;"><b>${row.name.toUpperCase()}</b><br/>${row.notes ? `<span>${row.notes}</span>` : ''}</td>
-                        <td style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:1.3vmax;color:black;">${row.unitsInOrder}</td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              `).join('')}
-              
-                  <div style="font-size: 1.3vmax; margin-top: 2px; margin-left: 5px;color:black;">
-                    <strong>KOT Time: </strong> ${this.formatDateTime(Number(this.kotGenerateTime))}
-                  </div>
-                  ${this.dialogOrder.specialNotes ? `<div style="font-size: 1.3vmax; margin-top: 2px; margin-left: 5px;color:black;">
-                    <strong>Notes: </strong> ${this.dialogOrder.specialNotes}
-                  </div>`: ''}
-                </div>
-            
-          `;
+          `).join('')}
+
+              <div style="font-size: 0.7vmax; margin-top: 2px; margin-left: 5px;color:black;">
+                <strong>KOT Time: </strong> ${this.formatDateTime(Number(this.kotGenerateTime))}
+              </div>
+              ${this.dialogOrder.specialNotes?`<div style="font-size: 0.7vmax; margin-top: 2px; margin-left: 5px;color:black;">
+                <strong>Notes: </strong> ${this.dialogOrder.specialNotes}
+              </div>`:''}
+            </div>
+
+      `;
 
             printElement.innerHTML = content;
             document.body.appendChild(printElement);
@@ -924,7 +949,8 @@ export class KotGeneratePage implements OnInit {
                 let addUnitInLine =
                   this.dialogOrder.orderLineDtoList[i].unitsInOrder -
                   this.checkKotUnitInOrder(this.dialogOrder.orderLineDtoList[i]);
-    
+                
+                   let previousUnitInline = this.checkKotUnitInOrder(this.dialogOrder.orderLineDtoList[i]);
                 let koties = this.getKotDetails(
                   this.dialogOrder.orderLineDtoList[i]
                 );
@@ -947,144 +973,173 @@ export class KotGeneratePage implements OnInit {
     
                 } else {
                   this.dialogOrder.orderLineDtoList[i].unitsInOrder = addUnitInLine;
+                  this.dialogOrder.orderLineDtoList[i].unitsInStock = previousUnitInline;
                   updatedKotList.push(this.dialogOrder.orderLineDtoList[i]);
                 }
               }
             }
         }
     
-           // Filter orderLines for those with groupKot set to true
-        const orderLinesToGroup = updatedKotList.filter(line => line.groupKot);
-    
-        // Group those orderLines by productGroupId
-        let groupedOrderLines = this.groupByProductGroupId(orderLinesToGroup);
-    
-        for (const productGroupId in groupedOrderLines) {
-          if (groupedOrderLines.hasOwnProperty(productGroupId)) {
-            const orderLineDtoList = groupedOrderLines[productGroupId];
-            let printerName = this.productGroupsList.find((group)=>group.name == orderLineDtoList[0].productGroupName).printerName;
-            let kot = new KOT();
-            kot.date = this.datepipe.transform(new Date(), "yyyy-MM-dd");
-            kot.operatorName = this.dialogOrder.operatorName;
-            kot.propertyId = this.dialogOrder.propertyId;
-            kot.tableNo = this.dialogOrder.resourceName;
-            kot.time = this.dialogOrder.requiredTime;
-            kot.orderLines = orderLineDtoList;
-            kot.productGroupName = orderLineDtoList[0].productGroupName;
-            kot.orderNo = this.dialogOrder.bookOneOrderId;
-            kot.orderType = this.dialogOrder.deliveryMethod;
-            kot.priority = this.kotList.length + 1;
-            kot.printerName = printerName;
-    
-            this.orderService.createKot(kot).subscribe(
+   const uniqueRemovedItems = new Set();
+
+   this.kotList.forEach((existingKot) => {
+     existingKot.orderLines.forEach((kotLine) => {
+       const key = `${kotLine.productCode}_${kotLine.name}`;
+
+       if (uniqueRemovedItems.has(key)) return;
+
+       const matched = this.dialogOrder.orderLineDtoList.find(
+         (newLine) =>
+           newLine.productCode === kotLine.productCode &&
+           newLine.name === kotLine.name
+       );
+
+       if (!matched || matched.unitsInOrder === 0) {
+         let removedLine = { ...kotLine };
+         removedLine.unitsInStock = kotLine.unitsInOrder;
+         removedLine.unitsInOrder = 0;
+         updatedKotList.push(removedLine);
+         uniqueRemovedItems.add(key);
+       }
+     });
+   });
+
+
+       // Filter orderLines for those with groupKot set to true
+    const orderLinesToGroup = updatedKotList.filter(line => line.groupKot);
+
+    // Group those orderLines by productGroupId
+    let groupedOrderLines = this.groupByProductGroupId(orderLinesToGroup);
+
+    for (const productGroupId in groupedOrderLines) {
+      if (groupedOrderLines.hasOwnProperty(productGroupId)) {
+        const orderLineDtoList = groupedOrderLines[productGroupId];
+        orderLineDtoList.forEach((io) => io.status = 'Available');
+        let printerName = this.productGroupsList.find((group)=>group.name == orderLineDtoList[0].productGroupName).printerName;
+        let kot = new KOT();
+        kot.date = this.datepipe.transform(new Date(), "yyyy-MM-dd");
+        kot.operatorName = this.dialogOrder.operatorName;
+        kot.propertyId = this.dialogOrder.propertyId;
+        kot.tableNo = this.dialogOrder.resourceName;
+        kot.time = this.dialogOrder.requiredTime;
+        kot.orderLines = orderLineDtoList;
+        kot.productGroupName = orderLineDtoList[0].productGroupName;
+        kot.orderNo = this.dialogOrder.bookOneOrderId;
+        kot.orderType = this.dialogOrder.deliveryMethod;
+        kot.priority = this.kotList.length + 1;
+        kot.printerName = printerName;
+        kot.kotNo = this.kotList[0]?.kotNo;
+        kot.version = "V-" + (this.kotList.length + 1);
+        this.orderService.createKot(kot).subscribe(
+          (data) => {
+            this.orderService.getOrderByOrderId(orderId).subscribe(
               (data) => {
-                this.orderService.getOrderByOrderId(orderId).subscribe(
-                  (data) => {
-                    this.dialogOrder = data.body;
-    
-                    if (
-                      this.dialogOrder.orderLineDtoList != null &&
-                      this.dialogOrder.orderLineDtoList != undefined &&
-                      this.dialogOrder.orderLineDtoList.length > 0
-                    ) {
-                      this.items = this.dialogOrder.orderLineDtoList;
-                    }
-    
-                    if (
-                      this.dialogOrder.kotDtoList != null &&
-                      this.dialogOrder.kotDtoList.length > 0
-                    ) {
-                      this.kotListReadyToPrint = this.dialogOrder.kotDtoList.filter((k) => {
-                        return k.orderLines.some((ol) => {
-                          return (ol.status == null || ol.status === "Available");
-                        });
-                      });
-                      this.kotList = this.dialogOrder.kotDtoList;
-                    } else if (
-                      this.dialogOrder.kotDtoList != null &&
-                      this.dialogOrder.kotDtoList.length === 0
-                    ) {
-                      this.kotList = [];
-                    }
-    
-                    this.UIDetectChange();
-                    this.loader = false;
-                  },
-                  (error) => {
-                    this.loader = false;
-                  }
-                );
-              },
-              (error) => {
-                this.loader = false;
-                // Handle error
-              }
-            );
-    
-            // Update priority for next KOT
-            this.kotList.push(kot);
-          }
-        }
-    
-        let individualOrderLines = updatedKotList.filter(line => !line.groupKot)
-          if (individualOrderLines != null && individualOrderLines.length > 0) {
-            let printerName = this.productGroupsList.find((group)=>group.name == individualOrderLines[0].productGroupName).printerName;
-            this.kot.date = this.datepipe.transform(new Date(), "yyyy-MM-dd");
-            this.kot.operatorName = this.dialogOrder.operatorName;
-            this.kot.propertyId = this.dialogOrder.propertyId;
-            this.kot.tableNo = this.dialogOrder.resourceName;
-            this.kot.time = this.dialogOrder.requiredTime;
-            this.kot.orderLines = individualOrderLines;
-            this.kot.orderNo = this.dialogOrder.bookOneOrderId;
-            this.kot.orderType = this.dialogOrder.deliveryMethod;
-            this.kot.priority = this.kotList.length + 1;
-            this.kot.printerName = printerName;
-            this.orderService.createKot(this.kot).subscribe(
-              (data) => {
-                this.loader = true;
-                this.orderService.getOrderByOrderId(orderId).subscribe(
-                  (data) => {
-                    this.dialogOrder = data.body;
-    
-                    if (
-                      this.dialogOrder.orderLineDtoList != null &&
-                      this.dialogOrder.orderLineDtoList != undefined &&
-                      this.dialogOrder.orderLineDtoList.length > 0
-                    ) {
-                      this.items = this.dialogOrder.orderLineDtoList;
-                    }
-    
-                    if (
-                      this.dialogOrder.kotDtoList != null &&
-                      this.dialogOrder.kotDtoList.length > 0
-                    ) {
-                      this.kotListReadyToPrint = this.dialogOrder.kotDtoList.filter((k) => {
-                        return k.orderLines.some((ol) => {
-                          return (ol.status == null || ol.status === "Available");
-                        });
-                      });
-                      this.kotList = this.dialogOrder.kotDtoList;
-                    } else if (
-                      this.dialogOrder.kotDtoList != null &&
-                      this.dialogOrder.kotDtoList.length === 0
-                    ) {
-                      this.kotList = [];
-                    }
-    
-                    this.UIDetectChange();
-                    this.loader = false;
-                  },
-                  (error) => {
-                    this.loader = false;
-                  }
-                );
+                this.dialogOrder = data.body;
+
+                if (
+                  this.dialogOrder.orderLineDtoList != null &&
+                  this.dialogOrder.orderLineDtoList != undefined &&
+                  this.dialogOrder.orderLineDtoList.length > 0
+                ) {
+                  this.items = this.dialogOrder.orderLineDtoList;
+                }
+
+                if (
+                  this.dialogOrder.kotDtoList != null &&
+                  this.dialogOrder.kotDtoList.length > 0
+                ) {
+                  this.kotListReadyToPrint = this.dialogOrder.kotDtoList.filter((k) => {
+                    return k.orderLines.some((ol) => {
+                      return (ol.status == null || ol.status === "Available");
+                    });
+                  });
+                  this.kotList = this.dialogOrder.kotDtoList;
+                } else if (
+                  this.dialogOrder.kotDtoList != null &&
+                  this.dialogOrder.kotDtoList.length === 0
+                ) {
+                  this.kotList = [];
+                }
+
+                this.UIDetectChange();
               },
               (error) => {
                 this.loader = false;
               }
             );
+          },
+          (error) => {
+            this.loader = false;
+            // Handle error
           }
-        }
+        );
+
+        // Update priority for next KOT
+        this.kotList.push(kot);
+      }
+    }
+
+    let individualOrderLines = updatedKotList.filter(line => !line.groupKot)
+        individualOrderLines.forEach((io) => io.status = 'Available');
+      if (individualOrderLines != null && individualOrderLines.length > 0) {
+        let printerName = this.productGroupsList.find((group)=>group.name == individualOrderLines[0].productGroupName)?.printerName;
+        this.kot.date = this.datepipe.transform(new Date(), "yyyy-MM-dd");
+        this.kot.operatorName = this.dialogOrder.operatorName;
+        this.kot.propertyId = this.dialogOrder.propertyId;
+        this.kot.tableNo = this.dialogOrder.resourceName;
+        this.kot.time = this.dialogOrder.requiredTime;
+        this.kot.orderLines = individualOrderLines;
+        this.kot.orderNo = this.dialogOrder.bookOneOrderId;
+        this.kot.orderType = this.dialogOrder.deliveryMethod;
+        this.kot.priority = this.kotList.length + 1;
+        this.kot.printerName = printerName;
+        this.kot.kotNo = this.kotList[0]?.kotNo;
+        this.kot.version = "V-" + (this.kotList.length + 1);
+        this.orderService.createKot(this.kot).subscribe(
+          (data) => {
+            this.loader = true;
+            this.orderService.getOrderByOrderId(orderId).subscribe(
+              (data) => {
+                this.dialogOrder = data.body;
+
+                if (
+                  this.dialogOrder.orderLineDtoList != null &&
+                  this.dialogOrder.orderLineDtoList != undefined &&
+                  this.dialogOrder.orderLineDtoList.length > 0
+                ) {
+                  this.items = this.dialogOrder.orderLineDtoList;
+                }
+
+                if (
+                  this.dialogOrder.kotDtoList != null &&
+                  this.dialogOrder.kotDtoList.length > 0
+                ) {
+                  this.kotListReadyToPrint = this.dialogOrder.kotDtoList.filter((k) => {
+                    return k.orderLines.some((ol) => {
+                      return (ol.status == null || ol.status === "Available");
+                    });
+                  });
+                  this.kotList = this.dialogOrder.kotDtoList;
+                } else if (
+                  this.dialogOrder.kotDtoList != null &&
+                  this.dialogOrder.kotDtoList.length === 0
+                ) {
+                  this.kotList = [];
+                }
+
+                this.UIDetectChange();
+              },
+              (error) => {
+                this.loader = false;
+              }
+            );
+          },
+          (error) => {
+            this.loader = false;
+          }
+        );
+      }
+    }
       }
 
       groupByProductGroupId(orderLines: any[]): any {
@@ -1098,66 +1153,61 @@ export class KotGeneratePage implements OnInit {
         }, {});
       }
 
-    updateKot(kotId, orderLineDtoList) {
-        this.orderService.updateKotLine(kotId, orderLineDtoList).subscribe(
-            (data) => {
-                let kot = data.body;
+  updateKot(kotId, orderLineDtoList) {
+    this.orderService.updateKotLine(kotId, orderLineDtoList).subscribe(
+      (data) => {
+        let kot = data.body;
 
-                let kotIndex = kot.orderLines.findIndex(
-                    (data) => data.unitsInOrder === 0
-                );
-
-                if (kotIndex != null && kotIndex > -1) {
-                    this.orderService
-                        .removeKotItem(
-                            kot.id,
-                            kot.orderLines[kotIndex].productCode
-                        )
-                        .subscribe(
-                            (data) => {
-                                kot.orderLines.splice(kotIndex, 1);
-                                let index = this.kotList.findIndex(
-                                    (data) => data.id === kotId
-                                );
-                                this.kotList[index] = kot;
-
-                                for (let i = 0; i < this.kotList.length; i++) {
-                                    if (
-                                        this.kotList[i].orderLines != null &&
-                                        this.kotList[i].orderLines !=
-                                        undefined &&
-                                        this.kotList[i].orderLines.length === 0
-                                    ) {
-                                        this.orderService
-                                            .deleteKotById(this.kotList[i].id)
-                                            .subscribe(
-                                                (data) => {
-                                                    this.kotList.splice(i, 1);
-                                                },
-                                                (error) => {
-                                                    this.loader = false;
-                                                }
-                                            );
-                                    }
-                                }
-                            },
-                            (error) => {
-                                this.loader = false;
-                            }
-                        );
-                } else {
-                    let index = this.kotList.findIndex(
-                        (data) => data.id === kotId
-                    );
-                    this.kotList[index] = kot;
-                }
-                this.loader = false;
-            },
-            (error) => {
-                this.loader = false;
-            }
+        let kotIndex = kot.orderLines.findIndex(
+          (data) => data.unitsInOrder === 0
         );
-    }
+        /*
+        if (kotIndex != null && kotIndex > -1) {
+
+          this.orderService
+            .removeKotItem(kot.id, kot.orderLines[kotIndex].productCode)
+            .subscribe(
+              (data) => {
+                kot.orderLines.splice(kotIndex, 1);
+                let index = this.kotList.findIndex((data) => data.id === kotId);
+                this.kotList[index] = kot;
+
+                for (let i = 0; i < this.kotList.length; i++) {
+                  if (
+                    this.kotList[i].orderLines != null &&
+                    this.kotList[i].orderLines != undefined &&
+                    this.kotList[i].orderLines.length === 0
+                  ) {
+                    this.orderService
+                      .deleteKotById(this.kotList[i].id)
+                      .subscribe(
+                        (data) => {
+                          this.kotList.splice(i, 1);
+                        },
+                        (error) => {
+                          this.loader = false;
+                        }
+                      );
+                  }
+                }
+              },
+              (error) => {
+                this.loader = false;
+              }
+            );
+
+        } else {
+
+        }
+          */
+         let index = this.kotList.findIndex((data) => data.id === kotId);
+          this.kotList[index] = kot;
+      },
+      (error) => {
+        this.loader = false;
+      }
+    );
+  }
 
     getKotDetails(item) {
         let kot = this.kotList.filter((data) =>

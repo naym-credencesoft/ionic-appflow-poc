@@ -21,6 +21,8 @@ import {
 import { ApplicationUser } from "src/app/model/user";
 import { AuthService } from "src/app/service/auth.service";
 import { ActionOrderMenuComponent } from "src/app/component/Order/action-order-menu/action-order-menu.component";
+import { OrderEventsService } from "src/app/service/order-events.service";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "app-order-details",
@@ -52,6 +54,7 @@ export class OrderDetailsPage implements OnInit {
     isProductStatusDisabled: boolean = false;
     total: number = 0;
     subTotalAmount: number = 0;
+     private orderUpdateSub: Subscription;
     constructor(
         private acRoute: ActivatedRoute,
         private toastController: ToastController,
@@ -66,8 +69,10 @@ export class OrderDetailsPage implements OnInit {
         public dateService: DateService,
         private authService: AuthService,
         private modalController: ModalController,
-        private router: Router
+        private router: Router,
+        private orderEvents: OrderEventsService
     ) {
+
         this.userData = new ApplicationUser();
         this.order = new Order();
         this.paymentDTO = new Payment();
@@ -98,10 +103,72 @@ export class OrderDetailsPage implements OnInit {
                 this.isProductStatusDisabled = true;
             }
         });
-
+        this.orderUpdateSub = this.orderEvents.orderUpdated$.subscribe(() => {
+            console.log('Order updated, refreshing...');
+            this.loadOrderDetails(); // Refresh order data
+            });
        
   
     }
+
+    ionViewWillEnter(){
+ 
+                this.getUserData();
+        this.acRoute.queryParams.subscribe((params) => {
+            this.currency = this.token
+                .getProperty()
+                .localCurrency.toUpperCase();
+
+            if (params["order"] != undefined) {
+                this.order = JSON.parse(params["order"]);
+                this.address = this.token.getProperty().address;
+
+                this.getOrderDetailsById(this.order.id);
+            } else if (params["orderId"] != undefined) {
+                this.loader = true;
+
+                this.order.id = params["orderId"];
+                this.getOrderDetailsById(this.order.id);
+            }
+
+            if (params["isUpdateAble"] != undefined) {
+                // this.order = JSON.parse(params['isUpdateAble']);
+                Logger.log("order update able");
+                this.isProductStatusDisabled = true;
+            }
+        });
+
+    }
+ngOnDestroy() {
+    this.orderUpdateSub?.unsubscribe();
+  }
+
+  loadOrderDetails(){
+            this.getUserData();
+        this.acRoute.queryParams.subscribe((params) => {
+            this.currency = this.token
+                .getProperty()
+                .localCurrency.toUpperCase();
+
+            if (params["order"] != undefined) {
+                this.order = JSON.parse(params["order"]);
+                this.address = this.token.getProperty().address;
+
+                this.getOrderDetailsById(this.order.id);
+            } else if (params["orderId"] != undefined) {
+                this.loader = true;
+
+                this.order.id = params["orderId"];
+                this.getOrderDetailsById(this.order.id);
+            }
+
+            if (params["isUpdateAble"] != undefined) {
+                // this.order = JSON.parse(params['isUpdateAble']);
+                Logger.log("order update able");
+                this.isProductStatusDisabled = true;
+            }
+        });
+  }
 
     getUserData() {
         this.loader = true;

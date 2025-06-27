@@ -77,6 +77,7 @@ import { OpenProductComponent } from "src/app/model/open-product/open-product.co
 import { ItemReleaseComponent } from "src/app/model/item-release/item-release.component";
 import { BusinessOfferDto } from "src/app/model/businessOfferDto";
 import { ServiceCharge } from "src/app/model/serviceCharge";
+import { th } from "date-fns/locale";
 
 
 export interface ProductGroupList {
@@ -300,6 +301,7 @@ export class CheckoutPage implements OnInit {
     businessServiceList: BusinessServiceDtoList[] = [];
     bserviceid: number;
     selectedIndex: number;
+    allowSelection = false;
     businessServiceId: number;
 
     productGroup: ProductGroup;
@@ -407,6 +409,9 @@ export class CheckoutPage implements OnInit {
     kot: KOT;
     isMaxError: boolean = false;
     previousDeliveryMethod:string;
+    propertyDetails: any;
+      orderProductsBackup: any;
+        noteInputForProceed: string = "";
     constructor(
         private toastController: ToastController,
         private navCtrl: NavController,
@@ -1320,6 +1325,7 @@ showproducts(){
             this.token.getBusinessProperties() != undefined
         ) {
             this.propertiesDto = this.token.getBusinessProperties();
+            
             this.businessServiceSetup();
         } else {
             this.getAllBusinessService(String(this.property.id));
@@ -1352,7 +1358,7 @@ showproducts(){
         this.orderService.findByPropertyId(PropertyId).subscribe(
             (data) => {
                 this.propertiesDto = data.body;
-
+                
                 this.token.saveBusinessProperties(this.propertiesDto);
 
                 this.loader = false;
@@ -1376,6 +1382,7 @@ showproducts(){
             let businessServiceRestaurant = [];
 
             if (this.order.id === undefined) {
+                
                 // for (let i = 0; i < this.propertiesDto.businessServiceDtoList.length; i++) {
                 //   if (this.propertiesDto.businessServiceDtoList[i].active === true) {
                 //     this.bserviceid = this.propertiesDto.businessServiceDtoList[i].id;
@@ -1395,18 +1402,21 @@ showproducts(){
                             item.active != null &&
                             item.active != undefined &&
                             item.active === true;
-
                         return searchResult;
+                       
                     }
                 );
 
                 if (
                     businessServiceRestaurant != null &&
                     businessServiceRestaurant != undefined &&
-                    businessServiceRestaurant.length > 0
+                    businessServiceRestaurant.length > 0 && this.isTodaysDyneInOrder !== true
                 ) {
                     this.bserviceid = businessServiceRestaurant[0].id;
                     this.setService(businessServiceRestaurant[0].id);
+                } else if (this.isTodaysDyneInOrder === true) {
+                    this.bserviceid = this.order.businessServiceId;
+                    this.setService(this.order.businessServiceId);
                 } else {
                     this.bserviceid =
                         this.propertiesDto.businessServiceDtoList[0].id;
@@ -1449,43 +1459,7 @@ showproducts(){
         this.changeDetectorRefs.detectChanges();
     }
 
-    calculateTaxSlab() {
-        this.totalSplitTax = [];
-        this.order.taxAmount = 0;
 
-        if (this.taxDetailsSelected.length > 0) {
-            for (let i = 0; i < this.taxDetailsSelected.length; i++) {
-                let taxPercentage = this.token.getTaxPercentageByTaxDetail(
-                    this.total,
-                    this.taxDetailsSelected[i]
-                );
-
-                if (taxPercentage != null && taxPercentage != undefined) {
-                    let totalTaxAmount =
-                        (this.subTotalAmount - this.nonGstTotalAmount) * (taxPercentage / 100)
-                    this.order.taxAmount =
-                        this.order.taxAmount + totalTaxAmount;
-
-                    let tax: SplitTaxDTO = {
-                        name: this.taxDetailsSelected[i].name,
-                        percentage: taxPercentage,
-                        taxAmount: totalTaxAmount,
-                    };
-
-                    this.taxDetailsSelected[i].percentage = taxPercentage;
-                    this.taxDetailsSelected[i].taxAmount = totalTaxAmount;
-                    this.taxDetailsSelected[i].taxableAmount =
-                        this.total - this.order.discountAmount;
-
-                    this.totalSplitTax.push(tax);
-                } else {
-                    this.taxDetailsSelected[i].taxAmount = 0;
-                }
-            }
-        }
-        this.order.taxAmount = Math.round(this.order.taxAmount)
-        this.order.taxDetails = this.taxDetailsSelected;
-    }
 
     taxSelection(tax) {
         // Check if the tax is already selected
@@ -1501,15 +1475,16 @@ showproducts(){
 
     }
 
-    checkTaxType(tax) {
-        let check: boolean = false;
-        if (this.taxDetailsSelected.some((r) => r.name === tax.name) === true) {
-            check = true;
-        }
-        return check;
-    }
+  checkTaxType(tax) {
+  let check: boolean = false;
+  if (this.taxDetailsSelected.some((r) => r.name.toLowerCase() === tax.name.toLowerCase())) {
+    check = true;
+  }
+  return check;
+}
 
     setService(ServiceId: number) {
+        
         this.selectedIndex = -1;
         this.serviceSelected = !!ServiceId;
         this.businessServiceId = 0;
@@ -1520,13 +1495,18 @@ showproducts(){
         this.businessService = this.propertiesDto.businessServiceDtoList.find(
             (data) => data.id === ServiceId
         );
+        
+         this.propertyDetails = this.token?.getBusinessProperties();
+      this.businessService = this.propertyDetails?.businessServiceDtoList.find(
+    (data) => data.id === ServiceId
+);
 
         this.propertyTaxDetails = this.token.getTaxDetails(
             this.businessService,
             this.property
         );
-
-        this.checkBusinessServiceType();
+        
+       
         this.checkTaxPercentage();
 
         this.orderProducts = [];
@@ -1543,6 +1523,10 @@ showproducts(){
         this.getAllDeliveryOptionByServiceId(this.businessService.id);
         this.getServiceCharge(this.businessService.id);
         this.requiredDateAndTimeCalculate();
+         this.checkBusinessServiceType();
+         this.calculatePrice();
+         this.UIDetectChange();
+
     }
 
     getAllDeliveryOptionByServiceId(businessServiceId: number) {
@@ -1571,7 +1555,8 @@ showproducts(){
                     }
                 }
 
-                this.changeDetectorRefs.detectChanges();
+                // this.changeDetectorRefs.detectChanges();
+                this.UIDetectChange();
             },
             (error) => {
                 this.loader = false;
@@ -1817,7 +1802,8 @@ showproducts(){
                     // }
                     this.loader = false;
 
-                    this.changeDetectorRefs.detectChanges();
+                    // this.changeDetectorRefs.detectChanges();
+                    this.UIDetectChange();
                 },
                 (error) => {
                     this.loader = false;
@@ -1851,147 +1837,791 @@ showproducts(){
 
         }
 
-        if (
-            this.order.orderLineDtoList != null &&
-            this.order.orderLineDtoList
-        ) {
-            for (let i = 0; i < this.order.orderLineDtoList.length; i++) {
-                for (let j = 0; j < this.productGroupListData.length; j++) {
-                    for (
-                        let k = 0;
-                        k < this.productGroupListData[j].productDtoList.length;
-                        k++
-                    ) {
-                        if (
-                            this.productGroupListData[j].productDtoList[k]
-                                .productCode ===
-                            this.order.orderLineDtoList[i].productCode &&
-                            this.productGroupListData[j].productDtoList[k]
-                                .name === this.order.orderLineDtoList[i].name
-                        ) {
-                            this.selectedIndex = j;
-                            this.productGroupListData[j].productDtoList[
-                                k
-                            ].notes = this.order.orderLineDtoList[i].notes;
+     if (this.order.orderLineDtoList != null && this.order.orderLineDtoList) {
+      for (let i = 0; i < this.order.orderLineDtoList.length; i++) {
+        for (let j = 0; j < this.productGroupListData.length; j++) {
+          for (
+            let k = 0;
+            k < this.productGroupListData[j].productDtoList.length;
+            k++
+          ) {
+            if (
+              this.productGroupListData[j].productDtoList[k].productCode ===
+                this.order.orderLineDtoList[i].productCode &&
+              this.productGroupListData[j].productDtoList[k].name ===
+                this.order.orderLineDtoList[i].name
+            ) {
+              if (
+                this.checkOrderLine(
+                  this.order.orderLineDtoList,
+                  this.order.orderLineDtoList[i].name,
+                  this.order.orderLineDtoList[i].productCode
+                ) > 1
+              ) {
+                this.orderProduct = new OrderProduct();
 
-                            this.productGroupListData[j].productDtoList[
-                                k
-                            ].status = this.order.orderLineDtoList[i].status;
+                this.orderProduct.id =
+                  this.productGroupListData[j].productDtoList[k].id;
+                this.orderProduct.description =
+                  this.productGroupListData[j].productDtoList[k].description;
+                this.orderProduct.name =
+                  this.productGroupListData[j].productDtoList[k].name;
+                this.orderProduct.notes = this.order.orderLineDtoList[i].notes;
+                this.orderProduct.productCode =
+                  this.productGroupListData[j].productDtoList[k].productCode;
+                this.orderProduct.businessServiceId =
+                  this.productGroupListData[j].productDtoList[
+                    k
+                  ].businessServiceId;
+                this.orderProduct.productGroupName =
+                  this.productGroupListData[j].productDtoList[
+                    k
+                  ].productGroupName;
+                this.orderProduct.unitsInOrder =
+                  this.order.orderLineDtoList[i].unitsInOrder;
+                this.orderProduct.buyUnitPrice =
+                  this.productGroupListData[j].productDtoList[k].buyUnitPrice;
+                this.orderProduct.category =
+                  this.productGroupListData[j].productDtoList[k].category;
+                this.orderProduct.discountedPrice =
+                  this.productGroupListData[j].productDtoList[
+                    k
+                  ].discountedPrice;
+                this.orderProduct.productGroupId =
+                  this.productGroupListData[j].productDtoList[k].productGroupId;
+                this.orderProduct.shortDescription =
+                  this.productGroupListData[j].productDtoList[
+                    k
+                  ].shortDescription;
+                this.orderProduct.groupName =
+                  this.productGroupListData[j].productDtoList[k].groupName;
+                this.orderProduct.sellUnitPrice =
+                  this.productGroupListData[j].productDtoList[k].sellUnitPrice;
+                this.orderProduct.imageList =
+                  this.productGroupListData[j].productDtoList[k].imageList;
+                this.orderProduct.inventoryId =
+                  this.productGroupListData[j].productDtoList[k].inventoryId;
+                this.orderProduct.recipeId =
+                  this.productGroupListData[j].productDtoList[k].recipeId;
+                this.orderProduct.isNotesChecked =
+                  this.productGroupListData[j].productDtoList[k].isNotesChecked;
+                this.orderProduct.supplierId =
+                  this.productGroupListData[j].productDtoList[k].supplierId;
+                this.orderProduct.quantityProduct =
+                  this.productGroupListData[j].productDtoList[
+                    k
+                  ].quantityProduct;
 
-                            this.productGroupListData[j].productDtoList[
-                                k
-                            ].unitsInOrder =
-                                this.order.orderLineDtoList[i].unitsInOrder;
-                            this.productGroupListData[j].productDtoList[k].discountInPercentage =
-                                this.order.orderLineDtoList[i].discountInPercentage;
-                            this.productGroupListData[j].productDtoList[k].discountedPrice =
-                                this.order.orderLineDtoList[i].discountedPrice;
-                            this.productGroupListData[j].productDtoList[k].sellUnitPrice =
-                                this.order.orderLineDtoList[i].sellUnitPrice;
-                                this.productGroupListData[j].productDtoList[k].isNewItem = false;
-                                this.productGroupListData[j].productDtoList[k].shiftVariation = false;
+                this.productGroupListData[j].productDtoList[k].status =
+                  "Cooking";
 
-                            this.onProductAdd(
-                                this.productGroupListData[j].productDtoList[k],
-                                k,
-                                this.productGroupListData[j],
-                                this.order.businessServiceId,
-                                this.selectedIndex,
-                                true
-                            );
-                        } else {
-                            for (
-                                let l = 0;
-                                l <
-                                this.productGroupListData[j].productDtoList[k]
-                                    .productVariationDtoList.length;
-                                l++
-                            ) {
-                                if (
-                                    ((this.order.orderLineDtoList[i]
-                                        .productCode === null ||
-                                        this.order.orderLineDtoList[i]
-                                            .productCode === undefined) &&
-                                        this.productGroupListData[j]
-                                            .productDtoList[k]
-                                            .productVariationDtoList[l].name ===
-                                        this.order.orderLineDtoList[i]
-                                            .name) ||
-                                    (this.order.orderLineDtoList[i]
-                                        .productCode != null &&
-                                        this.order.orderLineDtoList[i]
-                                            .productCode != undefined &&
-                                        this.productGroupListData[j]
-                                            .productDtoList[k]
-                                            .productVariationDtoList[l].code ===
-                                        this.order.orderLineDtoList[i]
-                                            .productCode &&
-                                        this.productGroupListData[j]
-                                            .productDtoList[k]
-                                            .productVariationDtoList[l].name ===
-                                        this.order.orderLineDtoList[i].name)
-                                ) {
-                                    //Logger.log('variation === ');
-                                    this.selectedIndex = j;
-                                    this.productGroupListData[j].productDtoList[
-                                        k
-                                    ].productVariationDtoList[l].notes =
-                                        this.order.orderLineDtoList[i].notes;
-
-                                    this.productGroupListData[j].productDtoList[
-                                        k
-                                    ].productVariationDtoList[l].status =
-                                        this.order.orderLineDtoList[i].status;
-
-                                    this.productGroupListData[j].productDtoList[
-                                        k
-                                    ].productVariationDtoList[l].unitsInOrder =
-                                        this.order.orderLineDtoList[
-                                            i
-                                        ].unitsInOrder;
-                                    this.productGroupListData[j].productDtoList[
-                                        k
-                                    ].productVariationDtoList[l].discountedPrice =
-                                        this.order.orderLineDtoList[i].discountedPrice;
-                                    this.productGroupListData[j].productDtoList[
-                                        k
-                                    ].productVariationDtoList[l].discountInPercentage =
-                                        this.order.orderLineDtoList[i].discountInPercentage;
-
-                                    this.productGroupListData[j].productDtoList[
-                                        k
-                                    ].productVariationDtoList[l].sellUnitPrice =
-                                        this.order.orderLineDtoList[i].sellUnitPrice;
-                                        this.productGroupListData[j].productDtoList[
-                                            k
-                                          ].productVariationDtoList[l].isNewItem = false;
-                                          this.productGroupListData[j].productDtoList[
-                                            k
-                                          ].productVariationDtoList[l].shiftVariation = false;
-                  
-                                    this.onProductVariationAdd(
-                                        this.productGroupListData[j]
-                                            .productDtoList[k],
-                                        k,
-                                        this.productGroupListData[j],
-                                        this.order.businessServiceId,
-                                        this.selectedIndex,
-                                        this.productGroupListData[j]
-                                            .productDtoList[k]
-                                            .productVariationDtoList[l],
-                                        l,
-                                        true
-                                    );
-
-                                    //onProductVariationAdd(product,p,productGroup,businessServiceId,this.selectedIndex,variation ,v ,true)
-                                }
-                            }
-                        }
-                    }
+                if (
+                  this.productGroupListData[j].productDtoList[k]
+                    .discountedPrice !== null
+                ) {
+                  this.totalPrice =
+                    this.productGroupListData[j].productDtoList[k]
+                      .discountedPrice *
+                    this.order.orderLineDtoList[i].unitsInOrder;
+                } else {
+                  this.totalPrice =
+                    this.productGroupListData[j].productDtoList[k]
+                      .sellUnitPrice *
+                    this.order.orderLineDtoList[i].unitsInOrder;
                 }
+
+                this.orderProduct.totalPrice = this.totalPrice;
+                this.orderProduct.status =
+                  this.order.orderLineDtoList[i].status;
+
+                this.orderProducts.push(this.orderProduct);
+              } else {
+                this.selectedIndex = j;
+                this.productGroupListData[j].productDtoList[k].notes =
+                  this.order.orderLineDtoList[i].notes;
+
+                this.productGroupListData[j].productDtoList[k].status =
+                  this.order.orderLineDtoList[i].status;
+
+                this.productGroupListData[j].productDtoList[k].unitsInOrder =
+                  this.order.orderLineDtoList[i].unitsInOrder;
+                this.productGroupListData[j].productDtoList[
+                  k
+                ].discountInPercentage =
+                  this.order.orderLineDtoList[i].discountInPercentage;
+                this.productGroupListData[j].productDtoList[k].discountedPrice =
+                  this.order.orderLineDtoList[i].discountedPrice;
+                this.productGroupListData[j].productDtoList[k].sellUnitPrice =
+                  this.order.orderLineDtoList[i].sellUnitPrice;
+                this.productGroupListData[j].productDtoList[k].isNewItem =
+                  false;
+                this.order.orderLineDtoList[i].sellUnitPrice;
+                this.productGroupListData[j].productDtoList[k].shiftVariation =
+                  false;
+
+                this.onProductAdd(
+                  this.productGroupListData[j].productDtoList[k],
+                  k,
+                  this.productGroupListData[j],
+                  this.order.businessServiceId,
+                  this.selectedIndex,
+                  true
+                );
+              }
+
+              for (
+                let line1 = 0;
+                line1 < this.order.orderLineDtoList.length;
+                line1++
+              ) {
+                // checking topping
+                if (
+                  this.order.orderLineDtoList[line1].toppingProductGroupId ===
+                  this.productGroupListData[j].productDtoList[k]
+                    .toppingProductGroupId
+                ) {
+                  if (
+                    this.productGroupListData[j].productDtoList[k]
+                      .addOnProductGroup != null &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .addOnProductGroup.productDtoList != null &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .addOnProductGroup.productDtoList != undefined &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .addOnProductGroup.productDtoList.length > 0
+                  ) {
+                    for (
+                      let pIndex = 0;
+                      pIndex <
+                      this.productGroupListData[j].productDtoList[k]
+                        .addOnProductGroup.productDtoList.length;
+                      pIndex++
+                    ) {
+                      if (
+                        this.productGroupListData[j].productDtoList[k]
+                          .addOnProductGroup.productDtoList[pIndex]
+                          .productCode ===
+                          this.order.orderLineDtoList[line1].productCode &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .addOnProductGroup.productDtoList[pIndex].name ===
+                          this.order.orderLineDtoList[line1].name
+                      ) {
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].addOnProductGroup.productDtoList[
+                          pIndex
+                        ].unitsInOrder =
+                          this.order.orderLineDtoList[line1].unitsInOrder;
+
+                        if (
+                          this.isProductOutOfStock(
+                            this.productGroupListData[j].productDtoList[k]
+                              .status
+                          ) === true
+                        ) {
+                          this.productGroupListData[j].productDtoList[
+                            k
+                          ].addOnProductGroup.productDtoList[pIndex].status =
+                            this.productGroupListData[j].productDtoList[
+                              k
+                            ].status;
+                        } else {
+                          this.productGroupListData[j].productDtoList[
+                            k
+                          ].addOnProductGroup.productDtoList[pIndex].status =
+                            this.order.orderLineDtoList[line1].status;
+                        }
+                      }
+                    }
+                  }
+                }
+                // checking extra
+                if (
+                  this.order.orderLineDtoList[line1].extraProductGroupId ===
+                  this.productGroupListData[j].productDtoList[k]
+                    .extraProductGroupId
+                ) {
+                  if (
+                    this.productGroupListData[j].productDtoList[k]
+                      .extraProductGroupDto != null &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .extraProductGroupDto.productDtoList != null &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .extraProductGroupDto.productDtoList != undefined &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .extraProductGroupDto.productDtoList.length > 0
+                  ) {
+                    for (
+                      let pIndex = 0;
+                      pIndex <
+                      this.productGroupListData[j].productDtoList[k]
+                        .extraProductGroupDto.productDtoList.length;
+                      pIndex++
+                    ) {
+                      if (
+                        this.productGroupListData[j].productDtoList[k]
+                          .extraProductGroupDto.productDtoList[pIndex]
+                          .productCode ===
+                          this.order.orderLineDtoList[line1].productCode &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .extraProductGroupDto.productDtoList[pIndex].name ===
+                          this.order.orderLineDtoList[line1].name
+                      ) {
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].extraProductGroupDto.productDtoList[
+                          pIndex
+                        ].unitsInOrder =
+                          this.order.orderLineDtoList[line1].unitsInOrder;
+
+                        if (
+                          this.isProductOutOfStock(
+                            this.productGroupListData[j].productDtoList[k]
+                              .status
+                          ) === true
+                        ) {
+                          this.productGroupListData[j].productDtoList[
+                            k
+                          ].extraProductGroupDto.productDtoList[pIndex].status =
+                            this.productGroupListData[j].productDtoList[
+                              k
+                            ].status;
+                        } else {
+                          this.productGroupListData[j].productDtoList[
+                            k
+                          ].extraProductGroupDto.productDtoList[pIndex].status =
+                            this.order.orderLineDtoList[line1].status;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            } else {
+              for (
+                let l = 0;
+                l <
+                this.productGroupListData[j].productDtoList[k]
+                  .productVariationDtoList.length;
+                l++
+              ) {
+                if (
+                  ((this.order.orderLineDtoList[i].productCode === null ||
+                    this.order.orderLineDtoList[i].productCode === undefined) &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .productVariationDtoList[l].name ===
+                      this.order.orderLineDtoList[i].name) ||
+                  (this.order.orderLineDtoList[i].productCode != null &&
+                    this.order.orderLineDtoList[i].productCode != undefined &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .productVariationDtoList[l].code ===
+                      this.order.orderLineDtoList[i].productCode &&
+                    this.productGroupListData[j].productDtoList[k]
+                      .productVariationDtoList[l].name ===
+                      this.order.orderLineDtoList[i].name)
+                ) {
+                  if (
+                    this.checkOrderLine(
+                      this.order.orderLineDtoList,
+                      this.order.orderLineDtoList[i].name,
+                      this.order.orderLineDtoList[i].productCode
+                    ) > 1
+                  ) {
+                    this.selectedIndex = j;
+                    this.productVariation = new productVariationDtoList();
+                    this.productVariation.unitsInOrder =
+                      this.order.orderLineDtoList[i].unitsInOrder;
+                    this.productVariation.sellUnitPrice =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].sellUnitPrice;
+                    this.productVariation.discountedPrice =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].discountedPrice;
+                    this.productVariation.id =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].id;
+                    this.productVariation.buyUnitPrice =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].buyUnitPrice;
+                    this.productVariation.code =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].code;
+                    this.productVariation.productId =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].productId;
+                    this.productVariation.buyUnitPrice =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].buyUnitPrice;
+                    this.productVariation.name =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].name;
+                    this.productVariation.quantityVariation =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].quantityVariation;
+                    this.productVariation.maintainStock =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].maintainStock;
+                    this.productVariation.factorToProduct =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].factorToProduct;
+                    this.productVariation.inventoryId =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].inventoryId;
+                    this.productVariation.recipeId =
+                      this.productGroupListData[j].productDtoList[
+                        k
+                      ].productVariationDtoList[l].recipeId;
+                    this.productVariation.status =
+                      this.order.orderLineDtoList[i].status;
+
+                    if (
+                      this.productVariation.discountedPrice !== null &&
+                      this.productVariation.discountedPrice !== 0
+                    ) {
+                      this.productVariation.totalPrice =
+                        this.productVariation.discountedPrice *
+                        this.productVariation.unitsInOrder;
+                    } else {
+                      this.productVariation.totalPrice =
+                        this.productVariation.sellUnitPrice *
+                        this.productVariation.unitsInOrder;
+                    }
+
+                    let productData =
+                      this.productGroupListData[j].productDtoList[k];
+
+                    if (
+                      this.orderProducts.some(
+                        (opRoduct) => opRoduct.id === productData.id
+                      ) === true
+                    ) {
+                      //this.setVariation(, this.productVariation,l);
+                      this.orderProduct = new OrderProduct();
+
+                      this.orderProduct.id =
+                        this.productGroupListData[j].productDtoList[k].id;
+                      this.orderProduct.description =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].description;
+                      this.orderProduct.name =
+                        this.productGroupListData[j].productDtoList[k].name;
+                      this.orderProduct.notes =
+                        this.order.orderLineDtoList[i].notes;
+                      this.orderProduct.productCode =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].productCode;
+                      this.orderProduct.businessServiceId =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].businessServiceId;
+                      this.orderProduct.productGroupName =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].productGroupName;
+                      this.orderProduct.unitsInOrder =
+                        this.order.orderLineDtoList[i].unitsInOrder;
+                      this.orderProduct.buyUnitPrice =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].buyUnitPrice;
+                      this.orderProduct.category =
+                        this.productGroupListData[j].productDtoList[k].category;
+                      this.orderProduct.discountedPrice =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].discountedPrice;
+                      this.orderProduct.productGroupId =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].productGroupId;
+                      this.orderProduct.shortDescription =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].shortDescription;
+                      this.orderProduct.groupName =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].groupName;
+                      this.orderProduct.sellUnitPrice =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].sellUnitPrice;
+                      this.orderProduct.imageList =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].imageList;
+                      this.orderProduct.inventoryId =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].inventoryId;
+                      this.orderProduct.recipeId =
+                        this.productGroupListData[j].productDtoList[k].recipeId;
+                      this.orderProduct.isNotesChecked =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].isNotesChecked;
+                      this.orderProduct.supplierId =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].supplierId;
+                      this.orderProduct.quantityProduct =
+                        this.productGroupListData[j].productDtoList[
+                          k
+                        ].quantityProduct;
+
+                      if (
+                        this.productGroupListData[j].productDtoList[k]
+                          .discountedPrice !== null
+                      ) {
+                        this.totalPrice =
+                          this.productGroupListData[j].productDtoList[k]
+                            .discountedPrice *
+                          this.order.orderLineDtoList[i].unitsInOrder;
+                      } else {
+                        this.totalPrice =
+                          this.productGroupListData[j].productDtoList[k]
+                            .sellUnitPrice *
+                          this.order.orderLineDtoList[i].unitsInOrder;
+                      }
+
+                      // this.orderProduct.totalPrice = this.totalPrice;
+                      this.orderProduct.status =
+                        this.order.orderLineDtoList[i].status;
+                      this.orderProduct.productVariationDtoList = [];
+                      this.orderProduct.productVariationDtoList.push(
+                        this.productVariation
+                      );
+
+                      // this.orderProducts.push(this.orderProduct);
+                    } else {
+                      this.setNotExistingProductVariation(
+                        productData,
+                        this.productVariation,
+                        l
+                      );
+                    }
+                  } else {
+                    this.selectedIndex = j;
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].notes =
+                      this.order.orderLineDtoList[i].notes;
+
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].status =
+                      this.order.orderLineDtoList[i].status;
+
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].unitsInOrder =
+                      this.order.orderLineDtoList[i].unitsInOrder;
+
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].discountedPrice =
+                      this.order.orderLineDtoList[i].discountedPrice;
+
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].discountInPercentage =
+                      this.order.orderLineDtoList[i].discountInPercentage;
+
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].sellUnitPrice =
+                      this.order.orderLineDtoList[i].sellUnitPrice;
+
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].isNewItem = false;
+                    this.productGroupListData[j].productDtoList[
+                      k
+                    ].productVariationDtoList[l].shiftVariation = false;
+
+                    this.onProductVariationAdd(
+                      this.productGroupListData[j].productDtoList[k],
+                      k,
+                      this.productGroupListData[j],
+                      this.order.businessServiceId,
+                      this.selectedIndex,
+                      this.productGroupListData[j].productDtoList[k]
+                        .productVariationDtoList[l],
+                      l,
+                      true
+                    );
+                  }
+
+                  /// variaton topping and extra
+                  for (
+                    let line2 = 0;
+                    line2 < this.order.orderLineDtoList.length;
+                    line2++
+                  ) {
+                    // topping
+                    if (
+                      this.order.orderLineDtoList[line2]
+                        .toppingProductGroupId ===
+                      this.productGroupListData[j].productDtoList[k]
+                        .productVariationDtoList[l].toppingProductGroupId
+                    ) {
+                      if (
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].addOnProductGroup !=
+                          null &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].addOnProductGroup
+                          .productDtoList != null &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].addOnProductGroup
+                          .productDtoList != undefined &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].addOnProductGroup
+                          .productDtoList.length > 0
+                      ) {
+                        for (
+                          let pIndex = 0;
+                          pIndex <
+                          this.productGroupListData[j].productDtoList[k]
+                            .productVariationDtoList[l].addOnProductGroup
+                            .productDtoList.length;
+                          pIndex++
+                        ) {
+                          if (
+                            this.checkVariationCode(
+                              this.productGroupListData[j].productDtoList[k]
+                                .productVariationDtoList[l].addOnProductGroup
+                                .productDtoList[pIndex].productCode
+                            ) ===
+                              this.checkVariationCode(
+                                this.order.orderLineDtoList[line2].productCode
+                              ) &&
+                            this.productGroupListData[j].productDtoList[k]
+                              .productVariationDtoList[l].addOnProductGroup
+                              .productDtoList[pIndex].name ===
+                              this.order.orderLineDtoList[line2].name
+                          ) {
+                            this.productGroupListData[j].productDtoList[
+                              k
+                            ].productVariationDtoList[
+                              l
+                            ].addOnProductGroup.productDtoList[
+                              pIndex
+                            ].unitsInOrder =
+                              this.order.orderLineDtoList[line2].unitsInOrder;
+
+                            if (
+                              this.isProductOutOfStock(
+                                this.productGroupListData[j].productDtoList[k]
+                                  .productVariationDtoList[l].status
+                              ) === true
+                            ) {
+                              this.productGroupListData[j].productDtoList[
+                                k
+                              ].productVariationDtoList[
+                                l
+                              ].addOnProductGroup.productDtoList[
+                                pIndex
+                              ].status =
+                                this.productGroupListData[j].productDtoList[
+                                  k
+                                ].productVariationDtoList[l].status;
+                            } else {
+                              this.productGroupListData[j].productDtoList[
+                                k
+                              ].productVariationDtoList[
+                                l
+                              ].addOnProductGroup.productDtoList[
+                                pIndex
+                              ].status =
+                                this.order.orderLineDtoList[line2].status;
+                            }
+                          }
+                        }
+                      }
+                    }
+                    // extra
+                    if (
+                      this.order.orderLineDtoList[line2].extraProductGroupId ===
+                      this.productGroupListData[j].productDtoList[k]
+                        .productVariationDtoList[l].extraProductGroupId
+                    ) {
+                      if (
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].extraProductGroup !=
+                          null &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].extraProductGroup
+                          .productDtoList != null &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].extraProductGroup
+                          .productDtoList != undefined &&
+                        this.productGroupListData[j].productDtoList[k]
+                          .productVariationDtoList[l].extraProductGroup
+                          .productDtoList.length > 0
+                      ) {
+                        for (
+                          let pIndex = 0;
+                          pIndex <
+                          this.productGroupListData[j].productDtoList[k]
+                            .productVariationDtoList[l].extraProductGroup
+                            .productDtoList.length;
+                          pIndex++
+                        ) {
+                          if (
+                            this.checkVariationCode(
+                              this.productGroupListData[j].productDtoList[k]
+                                .productVariationDtoList[l].extraProductGroup
+                                .productDtoList[pIndex].productCode
+                            ) ===
+                              this.checkVariationCode(
+                                this.order.orderLineDtoList[line2].productCode
+                              ) &&
+                            this.productGroupListData[j].productDtoList[k]
+                              .productVariationDtoList[l].extraProductGroup
+                              .productDtoList[pIndex].name ===
+                              this.order.orderLineDtoList[line2].name
+                          ) {
+                            this.productGroupListData[j].productDtoList[
+                              k
+                            ].productVariationDtoList[
+                              l
+                            ].extraProductGroup.productDtoList[
+                              pIndex
+                            ].unitsInOrder =
+                              this.order.orderLineDtoList[line2].unitsInOrder;
+
+                            if (
+                              this.isProductOutOfStock(
+                                this.productGroupListData[j].productDtoList[k]
+                                  .productVariationDtoList[l].status
+                              ) === true
+                            ) {
+                              this.productGroupListData[j].productDtoList[
+                                k
+                              ].productVariationDtoList[
+                                l
+                              ].extraProductGroup.productDtoList[
+                                pIndex
+                              ].status =
+                                this.productGroupListData[j].productDtoList[
+                                  k
+                                ].productVariationDtoList[l].status;
+                            } else {
+                              this.productGroupListData[j].productDtoList[
+                                k
+                              ].productVariationDtoList[
+                                l
+                              ].extraProductGroup.productDtoList[
+                                pIndex
+                              ].status =
+                                this.order.orderLineDtoList[line2].status;
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  //
+                }
+              }
             }
+          }
         }
+      }
+
+      if (
+        this.order.id != undefined &&
+        this.order.id != null &&
+        this.order.deliveryMethod === "Room Order"
+      ) {
+        //this.orderNow();
+      } else if (
+        this.order.id != undefined &&
+        this.order.id != null &&
+        this.order.deliveryMethod === "Dine In"
+      ) {
+        this.isTimeSlotAvailable = true;
+        // this.isFutureBooking = true;
+      } else if (
+        !this.isOrderIdAvailable &&
+        this.order.deliveryMethod === "Dine In"
+      ) {
+        this.isTimeSlotAvailable = true;
+        // this.isFutureBooking = true;
+      }
     }
+   this.orderProductsBackup = JSON.parse(JSON.stringify(this.orderProducts));
+    }
+ checkVariationCode(code) {
+    if (code != null && code != undefined) {
+      return code;
+    } else {
+      return "";
+    }
+  }
+    
+  checkOrderLine(orderLine, name, productCode) {
+    let searchResult;
+    let line = orderLine;
+    line = line.filter((item) => {
+      // Logger.log(this.dateService.convertMillisecondsToDateFormat(this.CheckedOutDate)+' === '+this.dateService.convertMillisecondsToDateFormat(item.toTime) );
+
+      searchResult = item.name === name && item.productCode === productCode;
+
+      return searchResult;
+    });
+
+    if (line != null && line != undefined) {
+      return line.length;
+    } else {
+      return 0;
+    }
+  }
+      isProductOutOfStock(status: string) {
+    if (
+      (status != undefined &&
+        status != null &&
+        status === this.PaidButOutOfStock_Status) ||
+      (status != undefined &&
+        status != null &&
+        status === this.OutOfStock_Status)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+     setNotExistingProductVariation(product, variation, v) {
+    this.orderProduct = new OrderProduct();
+    this.orderProduct = product;
+
+    this.productVariation = new productVariationDtoList();
+    this.productVariation = variation;
+
+    this.productVariations = [];
+
+    this.productVariations = this.orderProduct.productVariationDtoList;
+
+    this.productVariations[v] = this.productVariation;
+
+    this.orderProduct.productVariationDtoList = this.productVariations;
+    this.orderProducts.push(this.orderProduct);
+  }
     async shiftItems() {
         const modal = await this.modalController.create({
             component: ItemReleaseComponent,
@@ -2474,6 +3104,7 @@ showproducts(){
                         this.token.getBusinessProperties() != undefined
                     ) {
                         this.propertiesDto = this.token.getBusinessProperties();
+                         
                         this.businessServiceSetup();
                     } else {
                         this.getAllBusinessService(String(this.property.id));
@@ -3009,7 +3640,7 @@ showproducts(){
 
     checkBusinessServiceType() {
         this.AvailableSLotBusinessServiceTypes = [];
-
+            this.UIDetectChange();
         if (
             this.businessService.businessServiceTypes != null &&
             this.businessService.businessServiceTypes != undefined
@@ -3187,7 +3818,7 @@ showproducts(){
         this.slot.resourceList = this.resources;
 
         this.businessServiceType.slots.push(this.slot);
-
+        
         this.slotReservation.businessServiceTypes = [];
         this.slotReservation.businessServiceTypes.push(
             this.businessServiceType
@@ -3345,18 +3976,20 @@ showproducts(){
         this.slotTimingArrayList = [];
         this.timesArray = [];
 
-        if (
-            this.token.getORDER_SLOT_DATA() != null &&
-            this.token.getORDER_SLOT_DATA() != undefined
-        ) {
-            this.slot = this.token.getORDER_SLOT_DATA();
-            this.slotSetup();
-        } else {
-            this.getSlotByDate(
-                this.slot,
-                String(this.slot.businessServiceTypeId)
-            );
-        }
+    if (
+      this.datepipe.transform(this.order.orderedDate, "yyyy-MM-dd") ===
+      this.datepipe.transform(new Date().getTime(), "yyyy-MM-dd")
+    ) {
+      Logger.log("current = ");
+      this.getSlotByDate(this.slot, String(this.slot.businessServiceTypeId));
+    } else {
+      Logger.log("future/past = ");
+      this.getSlotByOtherDate(
+        this.slot,
+        String(this.slot.businessServiceTypeId)
+      );
+    }
+
 
         this.ResourceName.reset();
         this.LocationName.reset();
@@ -3364,15 +3997,15 @@ showproducts(){
     }
 
     getSlotByDate(slot: Slots, serviceTypeId: string) {
+        
         this.loader = true;
-
+        this.slot = new Slots();
         this.reservationService
             .getSlotDataByDate(slot, serviceTypeId)
             .subscribe(
                 (data) => {
                     this.slot = data.body;
-                    this.token.saveORDER_SLOT_DATA(this.slot);
-
+                    // this.token.saveORDER_SLOT_DATA(this.slot);
                     this.slotSetup();
                 },
                 (error) => {
@@ -3381,7 +4014,161 @@ showproducts(){
                 }
             );
     }
+  async getSlotByOtherDate(slot: Slots, serviceTypeId: string) {
+    try {
+      this.loader = true;
+      const data = await this.reservationService
+        .getSlotDataByDate(slot, serviceTypeId)
+        .toPromise();
+      this.slot = data.body;
 
+      this.slotTimingArrayList = [];
+      this.timesArray = [];
+
+      if (
+        this.slot.resourceList != null &&
+        this.slot.resourceList != undefined &&
+        this.slot.resourceList.length > 0
+      ) {
+        for (let i = 0; i < this.slot.resourceList.length; i++) {
+          if (
+            this.slot.resourceList[i].availableTimings != null &&
+            this.slot.resourceList[i].availableTimings != undefined &&
+            this.slot.resourceList[i].availableTimings.length > 0
+          ) {
+            for (
+              let j = 0;
+              j < this.slot.resourceList[i].availableTimings.length;
+              j++
+            ) {
+              if (
+                this.slotTimingArrayList.indexOf(
+                  this.slot.resourceList[i].availableTimings[j].startTime +
+                    "-" +
+                    this.slot.resourceList[i].availableTimings[j].finishTime
+                ) == -1
+              ) {
+                this.slotTimingArrayList.push(
+                  this.slot.resourceList[i].availableTimings[j].startTime +
+                    "-" +
+                    this.slot.resourceList[i].availableTimings[j].finishTime
+                );
+
+                const timeSLot: TimingArrayAndDetails = {
+                  time:
+                    this.slot.resourceList[i].availableTimings[j].startTime +
+                    "-" +
+                    this.slot.resourceList[i].availableTimings[j].finishTime,
+                  details: this.slot.resourceList[i].availableTimings[j],
+                };
+
+                this.timesArray.push(timeSLot);
+              }
+            }
+          }
+        }
+      }
+
+    //   this.isFutureBooking = true;
+      //&& isconvertOrder === false
+      if (this.isNewOrderCreated === false) {
+        if (
+          this.order.businessReservationNumber != null &&
+          this.order.businessReservationNumber != undefined &&
+          this.businessService != undefined &&
+          this.businessService != null &&
+          this.businessService.serviceReservation != null &&
+          this.businessService.serviceReservation != undefined &&
+          this.businessService.serviceReservation === true
+        ) {
+          if (
+            this.slotReservation.slotReservationDtos != null &&
+            this.slotReservation.slotReservationDtos != undefined &&
+            this.slotReservation.slotReservationDtos.length > 0
+          ) {
+            for (let i = 0; i < this.timesArray.length; i++) {
+              if (
+                this.timesArray[i].time ===
+                this.slotReservation.slotReservationDtos[0].startTime +
+                  "-" +
+                  this.slotReservation.slotReservationDtos[0].finishTime
+              ) {
+                this.TimeSlotDetails = this.timesArray[i];
+                this.setTimeSlotForReservation(this.TimeSlotDetails);
+              }
+            }
+          }
+          //Logger.log("service reservation");
+        } else if (
+          this.orderSlotTime != null &&
+          this.orderSlotTime != undefined
+        ) {
+          for (let i = 0; i < this.timesArray.length; i++) {
+            if (this.timesArray[i].time === this.orderSlotTime) {
+              this.TimeSlotDetails = this.timesArray[i];
+              this.setTimeSlotForOrder(this.TimeSlotDetails);
+            }
+          }
+
+          // Logger.log("service order");
+        } else if (this.isOrderIdAvailable === false) {
+          for (let i = 0; i < this.timesArray.length; i++) {
+            if (
+              this.timeCheckDyneIn(
+                this.timesArray[i].time,
+                this.timesArray[i]
+              ) === true
+            ) {
+              break;
+            }
+          }
+        }
+      } else {
+        // for (let i = 0; i < this.timesArray.length; i++) {
+        //   this.timeCheck(this.timesArray[i].time, this.timesArray[i]);
+        // }
+      }
+
+      this.loader = false;
+      this.UIDetectChange();
+    } catch (error) {
+      this.loader = false;
+      // Logger.log('all service' + JSON.stringify(error));
+    }
+  }
+
+    timeCheckDyneIn(timeIntervalString: string, timeArrayDetails: any) {
+
+    let isTimeChecked: boolean = false;
+    let startTime = timeIntervalString.split("-")[0];
+    let endTime = timeIntervalString.split("-")[1];
+
+    let currentDate = new Date();
+
+    //currentDate.setHours(1);
+
+    let startDate = new Date(currentDate.getTime());
+    startDate.setHours(Number(startTime.split(":")[0]));
+    startDate.setMinutes(Number(startTime.split(":")[1]));
+    startDate.setSeconds(0);
+
+    let endDate = new Date(currentDate.getTime());
+    endDate.setHours(Number(endTime.split(":")[0]));
+    endDate.setMinutes(Number(endTime.split(":")[1]));
+    endDate.setSeconds(0);
+
+    let valid = startDate < currentDate && endDate > currentDate;
+
+    if (valid === true) {
+      this.setTimeSlot(timeArrayDetails);
+      this.isTimeSlotAvailable = true;
+       
+      this.order.orderSlot = timeArrayDetails.time;
+      return true;
+    } else {
+      return false;
+    }
+  }
     async slotSetup() {
         const loaderCycle = await this.loadingCtrl.create({});
         // loaderCycle.present();
@@ -3458,9 +4245,9 @@ showproducts(){
                 if (
                     this.slotReservation.slotReservationDtos != null &&
                     this.slotReservation.slotReservationDtos != undefined &&
-                    this.slotReservation.slotReservationDtos.length > 0
+                    this.slotReservation.slotReservationDtos?.length > 0
                 ) {
-                    for (let i = 0; i < this.timesArray.length; i++) {
+                    for (let i = 0; i < this.timesArray?.length; i++) {
                         if (
                             this.timesArray[i].time ===
                             this.slotReservation.slotReservationDtos[0]
@@ -3483,7 +4270,7 @@ showproducts(){
                     this.orderSlotTime != null &&
                     this.orderSlotTime != undefined
                 ) {
-                    for (let i = 0; i < this.timesArray.length; i++) {
+                    for (let i = 0; i < this.timesArray?.length; i++) {
                         // console.log(
                         //     "service order" +
                         //         this.timesArray[i].time +
@@ -3497,8 +4284,15 @@ showproducts(){
                     }
                 } else {
 
-                    for (let i = 0; i < this.timesArray.length; i++) {
-                        this.timeCheck(this.timesArray[i].time, this.timesArray[i]);
+                    for (let i = 0; i < this.timesArray?.length; i++) {
+                        if (
+                this.timeCheckDyneIn(
+                  this.timesArray[i].time,
+                  this.timesArray[i]
+                ) === true
+              ) {
+                break;
+              }
 
 
 
@@ -3529,7 +4323,8 @@ showproducts(){
         }
         loaderCycle.dismiss();
         this.loader = false;
-        this.changeDetectorRefs.detectChanges();
+        this.UIDetectChange();
+        // this.changeDetectorRefs.detectChanges();
     }
 
     timeCheck(timeIntervalString: string, timeArrayDetails: any) {
@@ -3556,12 +4351,14 @@ showproducts(){
         if (valid === true) {
             this.setTimeSlot(timeArrayDetails);
             this.isTimeSlotAvailable = true;
+            
             this.order.orderSlot = timeArrayDetails.time;
-
+            
             if (this.isTodaysDyneInOrder === true) {
                 this.setTimeSlotForOrder(timeArrayDetails);
             }
-        }
+        } 
+
     }
 
     setTimeSlotForOrder(data) {
@@ -3612,14 +4409,15 @@ showproducts(){
                                     this.slot.resourceList[i].locationList[k]
                                         .name
                                 );
+
                             }
                         }
                     }
                 }
             }
         }
-
-        this.locationNameSelected = this.order.locationName.split(",");
+        if(this.order.locationName) {
+             this.locationNameSelected = this.order.locationName.split(",");
 
         this.locations = [];
         for (let i = 0; i < this.locationNameSelected.length; i++) {
@@ -3627,10 +4425,13 @@ showproducts(){
             this.location.name = this.locationNameSelected[i];
             this.locations.push(this.location);
         }
+        }
+
+       
 
         this.resourceSelected = [];
-
-        let resourceNameList = this.order.resourceName.split(",");
+        if(this.order.resourceName) {
+                    let resourceNameList = this.order.resourceName.split(",");
 
         for (let i = 0; i < this.selectedResourceArray.length; i++) {
             for (let j = 0; j < resourceNameList.length; j++) {
@@ -3641,8 +4442,9 @@ showproducts(){
                 }
             }
         }
-
         this.setResource(this.resourceSelected);
+        }
+
     }
 
     setDateTime = function (date, str) {
@@ -3654,6 +4456,7 @@ showproducts(){
     };
 
     setTimeSlotForReservation(data) {
+        this.UIDetectChange();
         this.selectedResourceArray = [];
         this.selectedLocationArray = [];
         this.TimeSlotDetails = data;
@@ -3701,6 +4504,7 @@ showproducts(){
                                     this.slot.resourceList[i].locationList[k]
                                         .name
                                 );
+
                             }
                         }
                     }
@@ -4439,6 +5243,20 @@ showproducts(){
         );
     }
 
+  async onBusinessServiceChange(event: any) {
+  this.allowSelection = false;
+
+  // Navigate using your custom method
+  await this.backPage();
+            this.setTimeSlot(null);
+            this.isTimeSlotAvailable = false;
+    this.allowSelection = true;
+
+  setTimeout(() => {
+    this.allowSelection = false;
+  }, 3000);
+}
+
     submitReservation() {
 
         this.slotReservation.businessName = this.propertiesDto.businessName;
@@ -4593,6 +5411,42 @@ showproducts(){
             this.savePayment(this.payment);
         }
     }
+    checkUserDecreaseItem(): boolean {
+    try {
+      if (!this.orderProducts || !this.orderProductsBackup || this.orderProducts.length === 0) {
+        return false;
+      }
+      const isDecreased = this.orderProducts.some((currentItem) => {
+        const backupItem = this.orderProductsBackup.find(b => b?.id === currentItem?.id);
+        if (!backupItem) return false;
+        const currUnits = currentItem.unitsInOrder ?? 0;
+        const backupUnits = backupItem.unitsInOrder ?? 0;
+        if (currUnits < backupUnits) {
+          return true;
+        }
+        const currVariations = currentItem.productVariationDtoList || [];
+        const backupVariations = backupItem.productVariationDtoList || [];
+        return currVariations.some(currVar => {
+          const backupVar = backupVariations.find(bVar => bVar?.code === currVar?.code);
+          if (!backupVar) {
+            return false;
+          }
+          const currVarUnits = currVar.unitsInOrder ?? 0;
+          const backupVarUnits = backupVar.unitsInOrder ?? 0;
+          if (currVarUnits < backupVarUnits) {
+            return true;
+          }
+          return false;
+        });
+      });
+      return isDecreased;
+    } 
+    catch (error) {
+      console.error("Error in checkUserDecreaseItem:", error);
+      return false;
+    }
+  }
+
     getPosInfo() {
         let counterName = this.token.getProperty().name + "-" + this.token.getProperty().id;
         this.pointOfSale = this.pointOfSaleListFilter.find(data => data.counterName === counterName);
@@ -4621,7 +5475,7 @@ showproducts(){
 
     onCashPayment() {
         this.loader = true;
-        console.log("total order", this.order.totalOrderAmount)
+
 
         if (
             this.order.mobile === undefined && 
@@ -4996,7 +5850,7 @@ showproducts(){
         else {
             return 0;
         }
-        //   console.log("orderAmount"+ orderAmount)
+
     }
     deletepayment(Id) {
         this.paymentService.deletePaymentById(Id).subscribe(
@@ -5210,7 +6064,7 @@ showproducts(){
 
 
                 this.orderComplete(this.order?.id);
-                console.log("total order", this.order.totalOrderAmount)
+  
             },
             (error) => {
                 this.loader = false;
@@ -5248,7 +6102,9 @@ showproducts(){
             } if (this.order.deliveryMethod === "Room Order") {
                 this.confirmRoomOrder(data.body.id)
             }
-               
+              if (this.order.deliveryMethod === "Take Away") {
+                this.confirmRoomOrder(data.body.id)
+            } 
                
             }
 
@@ -5384,6 +6240,7 @@ showproducts(){
         this.kot.orderType = this.order.deliveryMethod;
         this.kot.priority = this.kotList.length +1;
         this.kot.printerName = printerName;
+        this.kot.version = "V-" + (this.kotList.length + 1);
         this.orderService.createKot(this.kot).subscribe(
           (data) => {
           },
@@ -6104,6 +6961,20 @@ showproducts(){
         } else {
           audit.operatorNotes = "";
         }
+
+        if (
+          this.orderProducts?.length > 0 &&
+          this.checkUserDecreaseItem() &&
+          this.noteInputForProceed
+        ) {
+          if (audit.operatorNotes && audit.operatorNotes.trim().length > 0) {
+            audit.operatorNotes +=
+              ", Order decreased: " + this.noteInputForProceed;
+          } else {
+            audit.operatorNotes =
+              "Order decreased: " + this.noteInputForProceed;
+          }
+        }
   
         if(currentOrder.deliveryMethod === (this.previousDeliveryMethod || prevOrder.deliveryMethod)){
           audit.updateType = "Update Order";
@@ -6251,6 +7122,15 @@ showproducts(){
 
     backPage() {
         this.isOderDetailsPlace = false;
+    }
+
+    resetEvent(){
+        this.backPage();
+                this.bookingSearchReselt = "";
+        this.productGroupsSearchList = this.filteredProductGroupsSearchList;
+        this.getAllGroupProductFromTokenStorage(this.bserviceid);
+            this.setTimeSlot(null);
+            this.isTimeSlotAvailable = false;
     }
 
     onSelectType(typeName) {
@@ -6401,115 +7281,116 @@ showproducts(){
         //this.calculateQuantity();
     }
 
-    onProductAdd(
-        product: any,
-        p: number,
-        productGroup: any,
-        businessServiceId: number,
-        i: number,
-        isChangeFromInput: boolean
+   onProductAdd(
+    product: any,
+    p: number,
+    productGroup: any,
+    businessServiceId: number,
+    i: number,
+    isChangeFromInput: boolean
+  ) {
+        this.isExpend = true;
+
+    if (
+      product.groupName != undefined &&
+      product.groupName != productGroup.name
     ) {
-        if (
-            this.orderProducts.some(
-                (opRoduct) => opRoduct.id === product.id
-            ) === true
-        ) {
-            this.orderProduct = new OrderProduct();
-
-            this.orderProduct = this.orderProducts.find(
-                (cart) => cart.id === product.id
-            );
-
-            // if( this.orderProduct.unitsInOrder <0)
-            // {
-            //   this.orderProduct.unitsInOrder = 0;
-            // }
-
-            this.quantity = this.orderProduct.unitsInOrder;
-           
-        this.changeDetectorRefs.detectChanges();
-            if (product.discountInPercentage > this.maxOrderItemDiscountPercentage) {
-                product.discountInPercentage = this.maxOrderItemDiscountPercentage;
-            }
-            if (isChangeFromInput === true) {
-            } else {
-                this.quantity = this.quantity + 1;
-            }
-            if (product.discountInPercentage != null && product.discountInPercentage > 0) {
-                let productDiscount = (product.sellUnitPrice * product.discountInPercentage) / 100;
-                product.discountedPrice = product.sellUnitPrice - productDiscount;
-            } else {
-                product.discountedPrice = null;
-            }
-
-            if (product.discountInPercentage > this.maxOrderItemDiscountPercentage) {
-                product.discountInPercentage = this.maxOrderItemDiscountPercentage;
-            }
-            if (product.discountedPrice !== null) {
-                this.totalPrice = product.discountedPrice * this.quantity;
-            } else {
-                this.totalPrice = product.sellUnitPrice * this.quantity;
-            }
-
-            this.orderProduct.unitsInOrder = this.quantity;
-
-            product.unitsInOrder = this.quantity;
-            productGroup?.productDtoList?.forEach(element => {
-                if (element.id === product.id) {
-                    element.unitsInOrder = this.quantity
-                } else {
-                    
-                }
-            
-        });
-            this.orderProduct.totalPrice = this.totalPrice;
-            this.orderProduct.nonGstItem = productGroup.nonGstItem;
-            // this.productGroupsList[i].productGroup[pg].productDtoList[p].unitsInOrder = this.orderProduct.unitsInOrder;
-
-            this.orderProducts[this.orderProducts.indexOf(product)] =
-                this.orderProduct;
-        } else {
-            this.orderProduct = new OrderProduct();
-            this.orderProduct = product;
-            this.orderProduct.businessServiceId = businessServiceId;
-            this.orderProduct.productGroupName = productGroup.name;
-            if (
-                product.unitsInOrder != undefined &&
-                product.unitsInOrder != null &&
-                product.unitsInOrder > 0
-            ) {
-                if (isChangeFromInput === true) {
-                } else {
-                    this.orderProduct.unitsInOrder = product.unitsInOrder;
-                }
-            } else {
-                if (isChangeFromInput === true) {
-                } else {
-                    this.orderProduct.unitsInOrder = 1;
-                }
-            }
-            if (product.discountedPrice !== null) {
-                this.totalPrice =
-                    product.discountedPrice * product.unitsInOrder;
-            } else {
-                this.totalPrice = product.sellUnitPrice * product.unitsInOrder;
-            }
-
-            // this.orderProduct.unitsInOrder = this.quantity;
-            this.orderProduct.totalPrice = this.totalPrice;
-            this.orderProduct.nonGstItem = productGroup.nonGstItem
-            // this.orderProduct.totalPrice = product.sellUnitPrice * this.orderProduct.unitsInOrder;
-
-            // this.productGroupsList[i].productGroup[pg].productDtoList[p].unitsInOrder = this.orderProduct.unitsInOrder;
-
-            this.orderProducts.push(this.orderProduct);
-        }
-        // this.token.saveAddToCartProduct(this.orderProducts);
-        // this.isTimmerOff = true;
-
-        //this.calculateQuantity();
-        this.calculateTaxSlab();
+      productGroup = this.productGroupsList[0].productGroup.find(
+        (gp) => gp.name == product.groupName
+      );
     }
+
+    if (this.orderProducts.some((opRoduct) => opRoduct.id === product.id)) {
+      this.orderProduct = new OrderProduct();
+
+      this.orderProduct = this.orderProducts.find(
+        (cart) =>
+          cart.id === product.id &&
+          cart.unitsInOrder === product.unitsInOrder &&
+          this.checkStatus(cart.status) === this.checkStatus(product.status)
+      );
+
+      // Update quantity based on input change flag
+      this.quantity = isChangeFromInput
+        ? this.orderProduct.unitsInOrder
+        : this.orderProduct.unitsInOrder + 1;
+
+      // Apply discount if greater than max allowed
+      if (product.discountInPercentage > this.maxOrderItemDiscountPercentage) {
+        product.discountInPercentage = this.maxOrderItemDiscountPercentage;
+      }
+
+      // Calculate discounted price
+      if (
+        product.discountInPercentage != null &&
+        product.discountInPercentage > 0
+      ) {
+        let productDiscount =
+          (product.sellUnitPrice * product.discountInPercentage) / 100;
+        product.discountedPrice = product.sellUnitPrice - productDiscount;
+      }
+
+      // Set total price based on discounted price or regular price
+      if (product.discountedPrice !== null) {
+        this.totalPrice = product.discountedPrice * this.quantity;
+      } else {
+        this.totalPrice = product.sellUnitPrice * this.quantity;
+      }
+
+      this.orderProduct.unitsInOrder = this.quantity;
+      this.orderProduct.totalPrice = this.totalPrice;
+      this.orderProduct.nonGstItem = productGroup.nonGstItem;
+
+      // Update the existing order product in the cart
+      this.orderProducts[this.orderProducts.indexOf(product)] =
+        this.orderProduct;
+    } else {
+      // Create a new order product if not found in the cart
+      this.orderProduct = new OrderProduct();
+      this.orderProduct = product;
+      this.orderProduct.businessServiceId = businessServiceId;
+      this.orderProduct.productGroupName = productGroup.name;
+
+      // Set units in order based on input or default to 1
+      this.orderProduct.unitsInOrder = isChangeFromInput
+        ? product.unitsInOrder
+        : product.unitsInOrder > 0
+        ? product.unitsInOrder
+        : 1;
+
+      // Set total price based on discounted price or regular price
+      if (product.discountedPrice !== null) {
+        this.totalPrice =
+          product.discountedPrice * this.orderProduct.unitsInOrder;
+      } else {
+        this.totalPrice =
+          product.sellUnitPrice * this.orderProduct.unitsInOrder;
+      }
+
+      this.orderProduct.totalPrice = this.totalPrice;
+      this.orderProduct.nonGstItem = productGroup.nonGstItem;
+
+      // Add the new product to the order list
+      this.orderProducts.push(this.orderProduct);
+    }
+
+    // Calculate taxes and reset search term value
+    this.calculateTaxSlab();
+    // this.viewValueSerachTermProduct.nativeElement.value = "";
+
+    // Check if toppings are available and add if necessary
+    // if (this.checkIsToppingAvailable(product) && !isUpdateOrder) {
+    //   this.addOnExtraOrToppingForProduct(
+    //     product,
+    //     p,
+    //     productGroup,
+    //     businessServiceId
+    //   );
+    // }
+
+    // Trigger change detection to update the view
+    this.changeDetectorRefs.detectChanges();
+  }
     onProductVariationMinus(
         product: any,
         p: number,
@@ -6521,7 +7402,7 @@ showproducts(){
     ) {
         
         // this.token.isDataShowed('false');
-        console.log("variation", productGroup.productDtoList)
+
         if (
             this.orderProducts.some(
                 (opRoduct) => opRoduct.id === product.id
@@ -6561,11 +7442,10 @@ showproducts(){
                         this.quantityVariation;
                 }
 
-                // this.productVariation.discountedPrice = 0;
-                console.log(this.quantityVariation,variation.unitsInOrder);
+
                 variation.unitsInOrder = this.quantityVariation;
                
-                console.log( variation.unitsInOrder);
+
                 
                 this.productVariation.totalPrice = this.totalPriceVariation;
 
@@ -6657,159 +7537,180 @@ showproducts(){
         //this.calculateQuantity();
     }
 
-    onProductVariationAdd(
-        product: any,
-        p: number,
-        productGroup: any,
-        businessServiceId: number,
-        i: number,
-        variation: any,
-        v: number,
-        isChangeFromInput: boolean
+  onProductVariationAdd(
+    product: any,
+    p: number,
+    productGroup: any,
+    businessServiceId: number,
+    i: number,
+    variation: any,
+    v: number,
+    isChangeFromInput: boolean
+  ) {
+    this.isExpend = true;
+    if (
+      product.groupName != undefined &&
+      product.groupName != productGroup.name
     ) {
-        if (
-            this.orderProducts.some(
-                (opRoduct) => opRoduct.id === product.id
-            ) === true
-        ) {
-            this.orderProduct = new OrderProduct();
+      productGroup = this.productGroupsList[0].productGroup.find(
+        (gp) => gp.name == product.groupName
+      );
+    }
+    if (
+      this.orderProducts.some((opRoduct) => opRoduct.id === product.id) === true
+    ) {
+      this.orderProduct = new OrderProduct();
 
-            this.orderProduct = this.orderProducts.find(
-                (cart) => cart.id === product.id
-            );
-            this.calculateVariationAmount(this.orderProduct);
-            this.productVariations = [];
-            this.productVariation = new productVariationDtoList();
+      this.orderProduct = this.orderProducts.find(
+        (cart) =>
+          cart.id === product.id &&
+          cart.unitsInOrder === product.unitsInOrder &&
+          this.checkStatus(cart.status) === this.checkStatus(product.status)
+      );
+      this.calculateVariationAmount(this.orderProduct);
+      this.productVariations = [];
+      this.productVariation = new productVariationDtoList();
 
-            this.productVariations = this.orderProduct.productVariationDtoList;
+      this.productVariations = this.orderProduct.productVariationDtoList;
 
-            if (variation.discountInPercentage > this.maxOrderItemDiscountPercentage) {
-                variation.discountInPercentage = this.maxOrderItemDiscountPercentage;
-            }
-            if (
-                this.productVariations.some(
-                    (c) => c.code === variation.code
-                ) === true
-            ) {
-                this.productVariation = this.productVariations.find(
-                    (list) => list.code === variation.code
-                );
+      if (
+        this.productVariations.some((c) => c.code === variation.code) === true
+      ) {
+        this.productVariation = this.productVariations.find(
+          (list) =>
+            list.code === variation.code &&
+            list.unitsInOrder === variation.unitsInOrder &&
+            this.checkStatus(list.status) === this.checkStatus(variation.status)
+        );
 
-                this.quantityVariation = this.productVariation.unitsInOrder;
-                if (isChangeFromInput === false) {
-                    this.quantityVariation = this.quantityVariation + 1;
-                }
-                if (variation.discountInPercentage > this.maxOrderItemDiscountPercentage) {
-                    variation.discountInPercentage = this.maxOrderItemDiscountPercentage;
-                }
+        this.quantityVariation = this.productVariation.unitsInOrder;
 
-                if (variation.discountInPercentage != null && variation.discountInPercentage >= 0) {
-                    let variationDiscount = (variation.sellUnitPrice * variation.discountInPercentage) / 100;
-                    variation.discountedPrice = variation.sellUnitPrice - variationDiscount;
-                } else {
-                    variation.discountedPrice = null;
-                }
-                this.productVariation.discountedPrice = variation.discountedPrice;
-
-                if (
-                    this.productVariation.discountedPrice !== null &&
-                    this.productVariation.discountedPrice >= 0
-                ) {
-                    this.totalPriceVariation =
-                        this.productVariation.discountedPrice * this.quantityVariation;
-                } else {
-                    this.totalPriceVariation =
-                        this.productVariation.sellUnitPrice * this.quantityVariation;
-                }
-
-                // this.productVariation.discountedPrice = 0;
-                variation.unitsInOrder = this.quantityVariation;
-                this.productVariation.unitsInOrder = this.quantityVariation;
-                productGroup?.productDtoList?.forEach(element => {
-                    element.productVariationDtoList.forEach(element2 => {
-                        if (element2.code === variation.code) {
-                            element2.unitsInOrder = this.quantityVariation
-                        } else {
-                            
-                        }
-                    });
-                });
-                this.productVariation.totalPrice = this.totalPriceVariation;
-
-                this.productVariations[
-                    this.productVariations.indexOf(this.productVariation)
-                ] = this.productVariation;
-
-                this.orderProduct.productVariationDtoList =
-                    this.productVariations;
-                this.orderProduct.nonGstItem = productGroup.nonGstItem;
-                this.orderProducts[this.orderProducts.indexOf(product)] =
-                    this.orderProduct;
-                
-            }
-        } else {
-            this.orderProduct = new OrderProduct();
-            this.orderProduct = product;
-            this.orderProduct.productGroupName = productGroup.name;
-            this.orderProduct.businessServiceId = businessServiceId;
-
-            this.productVariation = new productVariationDtoList();
-            this.productVariation = variation;
-
-            // this.productVariation.discountedPrice = 0;
-            if (variation.discountInPercentage == null) {
-                this.productVariation.discountedPrice = null;
-            }
-            if (
-                variation.unitsInOrder != undefined ||
-                variation.unitsInOrder != null
-            ) {
-                this.productVariation.unitsInOrder = variation.unitsInOrder;
-
-                if (
-                    this.productVariation.discountedPrice !== null &&
-                    this.productVariation.discountedPrice !== 0
-                ) {
-                    this.productVariation.totalPrice =
-                        this.productVariation.discountedPrice *
-                        this.productVariation.unitsInOrder;
-                } else {
-                    this.productVariation.totalPrice =
-                        this.productVariation.sellUnitPrice *
-                        this.productVariation.unitsInOrder;
-                }
-                // this.productVariation.totalPrice = this.productVariation.sellUnitPrice * this.productVariation.unitsInOrder;
-            } else {
-                this.productVariation.unitsInOrder = 1;
-                if (
-                    this.productVariation.discountedPrice !== null &&
-                    this.productVariation.discountedPrice !== 0
-                ) {
-                    this.productVariation.totalPrice =
-                        this.productVariation.discountedPrice *
-                        this.productVariation.unitsInOrder;
-                } else {
-                    this.productVariation.totalPrice =
-                        this.productVariation.sellUnitPrice *
-                        this.productVariation.unitsInOrder;
-                }
-            }
-
-            this.productVariations = [];
-
-            this.productVariations = this.orderProduct.productVariationDtoList;
-
-            this.productVariations[v] = this.productVariation;
-
-            this.orderProduct.productVariationDtoList = this.productVariations;
-            this.orderProduct.nonGstItem = productGroup.nonGstItem;
-            this.orderProducts.push(this.orderProduct);
+        if (isChangeFromInput === false) {
+          this.quantityVariation = this.quantityVariation + 1;
         }
 
-        //this.calculateQuantity();
-        this.calculateTaxSlab();
-        // this.viewValueSerachTermProduct.nativeElement.value = "";
+        if (
+          variation.discountInPercentage > this.maxOrderItemDiscountPercentage
+        ) {
+          variation.discountInPercentage = this.maxOrderItemDiscountPercentage;
+        }
+
+        if (
+          variation.discountInPercentage != null &&
+          variation.discountInPercentage >= 0
+        ) {
+          let variationDiscount =
+            (variation.sellUnitPrice * variation.discountInPercentage) / 100;
+          variation.discountedPrice =
+            variation.sellUnitPrice - variationDiscount;
+        } else {
+          variation.discountedPrice = null;
+        }
+        this.productVariation.discountedPrice = variation.discountedPrice;
+
+        if (
+          this.productVariation.discountedPrice !== null &&
+          this.productVariation.discountedPrice >= 0
+        ) {
+          this.totalPriceVariation =
+            this.productVariation.discountedPrice * this.quantityVariation;
+        } else {
+          this.totalPriceVariation =
+            this.productVariation.sellUnitPrice * this.quantityVariation;
+        }
+
+        // this.productVariation.discountedPrice = 0;
+        this.productVariation.unitsInOrder = this.quantityVariation;
+        this.productVariation.totalPrice = this.totalPriceVariation;
+
+        this.productVariations[
+          this.productVariations.indexOf(this.productVariation)
+        ] = this.productVariation;
+        this.orderProduct.productVariationDtoList = this.productVariations;
+        this.orderProduct.nonGstItem = productGroup.nonGstItem;
+        this.orderProducts[this.orderProducts.indexOf(product)] =
+          this.orderProduct;
+      }
+    } else {
+      this.orderProduct = new OrderProduct();
+      this.orderProduct = product;
+      this.orderProduct.productGroupName = productGroup.name;
+      this.orderProduct.businessServiceId = businessServiceId;
+
+      this.productVariation = new productVariationDtoList();
+      this.productVariation = variation;
+
+      // this.productVariation.discountedPrice = 0;
+
+      if (variation.discountInPercentage == null) {
+        this.productVariation.discountedPrice = null;
+      }
+
+      if (
+        variation.unitsInOrder != undefined ||
+        variation.unitsInOrder != null
+      ) {
+        this.productVariation.unitsInOrder = variation.unitsInOrder;
+
+        if (
+          this.productVariation.discountedPrice !== null &&
+          this.productVariation.discountedPrice !== 0
+        ) {
+          this.productVariation.totalPrice =
+            this.productVariation.discountedPrice *
+            this.productVariation.unitsInOrder;
+        } else {
+          this.productVariation.totalPrice =
+            this.productVariation.sellUnitPrice *
+            this.productVariation.unitsInOrder;
+        }
+        // this.productVariation.totalPrice = this.productVariation.sellUnitPrice * this.productVariation.unitsInOrder;
+      } else {
+        this.productVariation.unitsInOrder = 1;
+        if (
+          this.productVariation.discountedPrice !== null &&
+          this.productVariation.discountedPrice !== 0
+        ) {
+          this.productVariation.totalPrice =
+            this.productVariation.discountedPrice *
+            this.productVariation.unitsInOrder;
+        } else {
+          this.productVariation.totalPrice =
+            this.productVariation.sellUnitPrice *
+            this.productVariation.unitsInOrder;
+        }
+      }
+
+      this.productVariations = [];
+
+      this.productVariations = this.orderProduct.productVariationDtoList;
+
+      this.productVariations[v] = this.productVariation;
+
+      this.orderProduct.productVariationDtoList = this.productVariations;
+      this.orderProduct.nonGstItem = productGroup.nonGstItem;
+      this.orderProducts.push(this.orderProduct);
     }
+
+    //this.calculateQuantity();
+    this.calculateTaxSlab();
+    // this.viewValueSerachTermProduct.nativeElement.value = "";
+
+    // if (
+    //   this.checkIsToppingAvailable(variation) === true &&
+    //   isUpdateOrder === false
+    // ) {
+    //   this.addOnExtraOrTopping(
+    //     product,
+    //     p,
+    //     productGroup,
+    //     businessServiceId,
+    //     null,
+    //     variation,
+    //     v
+    //   );
+    // }
+  }
 
   
     calculateVariationAmount(orderProduct: any) {
@@ -6994,6 +7895,7 @@ showproducts(){
       }
       
       calculatePrice() {
+        
         this.total = 0;
         this.nonGstTotalAmount = 0;
         for (let i = 0; i < this.orderProducts.length; i++) {
@@ -7484,6 +8386,44 @@ showproducts(){
         this.calculateProductDistount();
         return this.total;
       }
+
+          calculateTaxSlab() {
+        this.totalSplitTax = [];
+        this.order.taxAmount = 0;
+
+        if (this.taxDetailsSelected.length > 0) {
+            for (let i = 0; i < this.taxDetailsSelected.length; i++) {
+                let taxPercentage = this.token.getTaxPercentageByTaxDetail(
+                    this.total,
+                    this.taxDetailsSelected[i]
+                );
+
+                if (taxPercentage != null && taxPercentage != undefined) {
+                    let totalTaxAmount =
+                        (this.subTotalAmount - this.nonGstTotalAmount) * (taxPercentage / 100)
+                      
+                    this.order.taxAmount =
+                        this.order.taxAmount + totalTaxAmount;
+                    let tax: SplitTaxDTO = {
+                        name: this.taxDetailsSelected[i].name,
+                        percentage: taxPercentage,
+                        taxAmount: totalTaxAmount,
+                    };
+
+                    this.taxDetailsSelected[i].percentage = taxPercentage;
+                    this.taxDetailsSelected[i].taxAmount = totalTaxAmount;
+                    this.taxDetailsSelected[i].taxableAmount =
+                        this.total - this.order.discountAmount;
+
+                    this.totalSplitTax.push(tax);
+                } else {
+                    this.taxDetailsSelected[i].taxAmount = 0;
+                }
+            }
+        }
+        this.order.taxAmount = Math.round(this.order.taxAmount)
+        this.order.taxDetails = this.taxDetailsSelected;
+    }
     
 
     // calculatePrice() {
@@ -8240,6 +9180,7 @@ showproducts(){
             this.token.getBusinessProperties() != undefined
         ) {
             this.propertiesDto = this.token.getBusinessProperties();
+
             this.businessServiceSetup();
         } else {
             this.getAllBusinessService(String(this.property.id));

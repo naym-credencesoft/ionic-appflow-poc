@@ -9,6 +9,7 @@ export class KOT {
   orderLines: OrderLineDto[];
   propertyId: number;
   tableNo: string;
+    version: string;
   time: string;
   orderNo: string;
   orderType: string;

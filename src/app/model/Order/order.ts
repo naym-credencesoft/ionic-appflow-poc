@@ -84,6 +84,6 @@ export class Order {
   orderInvoicePrintCount:number;
   complimentary:boolean;
   productDiscount:number;
-
+operatorNotes: any;
     constructor() {}
 }

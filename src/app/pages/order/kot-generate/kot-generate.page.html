@@ -61,6 +61,7 @@
                     <b>Order Id:</b> #{{dialogOrder.bookOneOrderId}}
                   </ion-text>
                 </ion-row>
+                 
                 <ion-row>
                   <ion-text style="color:black;font-size: 14px;">
                     <b>Order Time:</b> {{dialogOrder.orderedTime}}
@@ -72,13 +73,23 @@
                       <b>Status:</b> {{dialogOrder.orderStatus}}
                     </ion-text>
                   </ion-row> -->
+                  <ion-row>
+                  <ion-text style="color:black;font-size: 14px;" *ngIf=" dialogOrder.deliveryMethod === 'Dine In'">
+                    <b>Location Name:</b> {{dialogOrder.locationName}}
+                  </ion-text>
+                </ion-row>
+                 <ion-row>
+                  <ion-text style="color:black;font-size: 14px;" *ngIf="dialogOrder.roomNo && dialogOrder.deliveryMethod === 'Room Order'">
+                    <b>Room No:</b> {{this.dialogOrder.roomNo}}
+                  </ion-text>
+                </ion-row>
                 <ion-row>
                   <ion-text style="color:black;font-size: 14px;">
                     <b>Delivery Method:</b> {{this.dialogOrder.deliveryMethod}}
                   </ion-text>
                 </ion-row>
                 <ion-row>
-                  <ion-text style="color:black;font-size: 14px;">
+                  <ion-text style="color:black;font-size: 14px;" *ngIf="dialogOrder.specialNotes">
                     <b>Notes:</b> {{this.dialogOrder.specialNotes}}
                   </ion-text>
                 </ion-row>

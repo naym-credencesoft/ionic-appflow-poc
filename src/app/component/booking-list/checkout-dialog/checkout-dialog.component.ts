@@ -820,40 +820,42 @@ export class CheckoutDialogComponent implements OnInit {
         }
         return sum;
     }
-
-    onCheckOut() {
-        if (
-          this.booking.checkoutTime != undefined &&
-          this.booking.checkoutTime != null
-        ) {
-          this.booking.checkoutTime = new Date(this.booking.checkoutTime)
-            .getTime()
-            .toString();
-        }
-    
-        if (
-          this.booking.roomDetails != undefined &&
-          this.booking.roomDetails != null &&
-          this.booking.roomDetails.length > 0
-        ) {
-          this.roomNumberList = [];
-          for (let i = 0; i < this.booking.roomDetails.length; i++) {
-            this.roomNumberList.push(this.booking.roomDetails[i].roomNumber);
-          }
-    
-          this.booking.roomNumbers = this.roomNumberList.toString();
-        }
-    
-        if (this.booking.taxDetails != null && this.booking.taxDetails != undefined && this.booking.taxDetails.length > 0)
-        {
-          this.checkout(this.booking);
-        }
-        else
-        {
-          this.roomReleaseAndManualCheckOut(this.booking, this.booking.checkoutTime);
-        }
-    
+  onCheckOut() {
+    if (
+      this.booking.checkoutTime != undefined &&
+      this.booking.checkoutTime != null
+    ) {
+      this.booking.checkoutTime = new Date(this.booking.checkoutTime)
+        .getTime()
+        .toString();
     }
+
+    if (
+      this.booking.roomDetails != undefined &&
+      this.booking.roomDetails != null &&
+      this.booking.roomDetails.length > 0
+    ) {
+      this.roomNumberList = [];
+      for (let i = 0; i < this.booking.roomDetails.length; i++) {
+        this.roomNumberList.push(this.booking.roomDetails[i].roomNumber);
+      }
+
+      this.booking.roomNumbers = this.roomNumberList.toString();
+    }
+
+    //this.booking.operatorNotes = "Checkout Booking Rev Id :"+this.booking.propertyReservationNumber;
+    this.booking.auditType = AUDIT_BOOKING_CHECKOUT;
+    this.booking.generateInvoice = true;
+    if (this.booking.taxDetails != null && this.booking.taxDetails != undefined && this.booking.taxDetails.length > 0)
+    {
+      this.checkout(this.booking);
+    }
+    else
+    {
+      this.roomReleaseAndManualCheckOut(this.booking, this.booking.checkoutTime);
+    }
+
+  }
 
     roomReleaseAndManualCheckOut(row,checkoutTime){
         this.loader = true;

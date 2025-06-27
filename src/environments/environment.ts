@@ -37,6 +37,14 @@ export const environment = {
         addressApi: 'https://api.bookone.io/api-address',
         scheduleApiUrl: "https://api.bookone.io/api-scheduler",
         channelIntegrationApi: 'https://api.bookone.io/channel-integration'
+        // coreApi: 'https://api.uat.bookone.io/api',
+        // apiUrlInventory: 'https://api.uat.bookone.io/ims',
+        // apiUrlEms: 'https://api.uat.bookone.io/ems',
+        // promotionApi: 'https://api.uat.bookone.io/promotion-api',
+        // promotionApis:'https://api.uat.bookone.io/promotion',
+        // addressApi: 'https://api.uat.bookone.io/api-address',
+        // scheduleApiUrl: "https://api.bookonelocal.in/api-scheduler",
+        // channelIntegrationApi: 'https://api.uat.bookone.io/channel-integration'
       }
     }
   ],
