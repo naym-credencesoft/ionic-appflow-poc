@@ -1,103 +1,124 @@
-
-
-
 <ion-header class="ion-no-border">
-
-
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
-        src="{{this.property.logoUrl}}"
-        onerror="this.src='/assets/img/app-logo.png'"
-    />
+            style="object-fit: fill"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
     </ion-avatar>
 
     <ion-text class="HeaderSubTitle"> Reports </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon (click)="menuAction()" style="font-size: 20px; margin-top: -10px;" class="backbutton-icon"
-        src="/assets/img/icons/menu-icon-w.svg"></ion-icon>
+            <ion-icon
+                (click)="menuAction()"
+                style="font-size: 20px; margin-top: -10px"
+                class="backbutton-icon"
+                src="/assets/img/icons/menu-icon-w.svg"
+            ></ion-icon>
 
-            <ion-text color="light" class="HeaderTitle" 
-                >Service Dashboard</ion-text>
- 
+            <ion-text color="light" class="HeaderTitle"
+                >Service Dashboard</ion-text
+            >
         </ion-buttons>
-
     </ion-toolbar>
 </ion-header>
 <ion-content>
+    <ion-grid class="reportSect">
+        <ion-row>
+            <ion-col size="12">
+                <ion-card
+                    style="
+                        border-radius: 0px;
+                        border: 1px solid gray;
+                        border-radius: 10px;
+                    "
+                    class="bg-white bottom-item-card cardsrepo"
+                    (click)="navOrderReport()"
+                >
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            gap: 20px;
+                            margin: 10px;
+                        "
+                    >
+                        <div>
+                            <ion-img
+                                no-margin
+                                style="width: 71px; height: 86px"
+                                src="/assets/img/icons/diagram.png"
+                            ></ion-img>
+                        </div>
 
-
-<ion-grid class="reportSect">
-    <ion-row>
-        <ion-col size="12" >
-            <ion-card
-                style="border-radius: 0px; border:1px solid gray; border-radius: 10px;"
-                class="bg-white bottom-item-card  cardsrepo"
-                (click)="navOrderReport()"
-            >
-            <div style="display: flex;
-            align-items: center;
-            gap: 20px; margin: 10px;">
-                <div>
-                    <ion-img
-                        no-margin
-                        style=" width: 71px; height: 86px;"
-                        src="/assets/img/icons/diagram.png"
-                    ></ion-img>
-                </div>
-
-                <div >
+                        <div>
                             <ion-text
-                            class="headingSec"
-                                style="
-                                text-align: center;
-                                font-weight: bold;"
+                                class="headingSec"
+                                style="text-align: center; font-weight: bold"
                                 color="primary"
-                                >Order Report</ion-text>
-                                <div class="semisec" style="margin-top: 5px;color:#1D174D">
-                                    The Order Report summarizes orders, including item details, 
-                                    quantities, and totals, helping track sales and monitor inventory.
-                                </div>
-                </div>
-            </div>
-            </ion-card>
-        </ion-col>
+                                >Order Report</ion-text
+                            >
+                            <div
+                                class="semisec"
+                                style="margin-top: 5px; color: #1d174d"
+                            >
+                                The Order Report summarizes orders, including
+                                item details, quantities, and totals, helping
+                                track sales and monitor inventory.
+                            </div>
+                        </div>
+                    </div>
+                </ion-card>
+            </ion-col>
 
-        <ion-col size="12" >
-            <ion-card
-                style="border-radius: 0px; border:1px solid gray; border-radius: 10px;margin-top: 20px;"
-                class="bg-white bottom-item-card cardsrepo"
-                (click)="navOrder()"
-            >
-            <div style="display: flex;
-            align-items: center;
-            gap: 20px; margin: 10px;">
-                <div>
-                    <ion-img
-                        no-margin
-                        style=" width: 71px; height: 86px;"
-                        src="assets/img/report/dailyreport.png"
-                    ></ion-img>
-                </div>
+            <ion-col size="12">
+                <ion-card
+                    style="
+                        border-radius: 0px;
+                        border: 1px solid gray;
+                        border-radius: 10px;
+                        margin-top: 20px;
+                    "
+                    class="bg-white bottom-item-card cardsrepo"
+                    (click)="navOrder()"
+                >
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            gap: 20px;
+                            margin: 10px;
+                        "
+                    >
+                        <div>
+                            <ion-img
+                                no-margin
+                                style="width: 71px; height: 86px"
+                                src="assets/img/report/dailyreport.png"
+                            ></ion-img>
+                        </div>
 
-                <div >
+                        <div>
                             <ion-text
-                            class="headingSec"
-                                style="
-                                text-align: center;
-                                font-weight: bold;"
+                                class="headingSec"
+                                style="text-align: center; font-weight: bold"
                                 color="primary"
-                                >Today's Summary Report</ion-text>
-                                <div class="semisec" style="margin-top: 5px;color:#1D174D">
-                                    The Today’s Summary Report provides a snapshot of all orders placed today, 
-                                    including item details, quantities, and total revenue, helping track daily sales and performance.
-                                </div>
-                </div>
-            </div>
-            </ion-card>
-        
-        </ion-col>
-    </ion-row>
-</ion-grid>
+                                >Today's Summary Report</ion-text
+                            >
+                            <div
+                                class="semisec"
+                                style="margin-top: 5px; color: #1d174d"
+                            >
+                                The Today’s Summary Report provides a snapshot
+                                of all orders placed today, including item
+                                details, quantities, and total revenue, helping
+                                track daily sales and performance.
+                            </div>
+                        </div>
+                    </div>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

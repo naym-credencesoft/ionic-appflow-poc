@@ -1,6 +1,6 @@
 <ion-app>
-    <ion-menu class="side-nav">
-        <ion-content class="side-nav bg-profile font-14">
+    <ion-menu class="side-nav"  side="start" menuId="mainMenu" contentId="main-content" id="mainMenu">
+        <ion-content class="side-nav bg-profile font-14" >
             <ion-header>
                 <!-- class="user-profile" -->
                 <!-- <ion-toolbar> -->
@@ -89,15 +89,14 @@
                 <!-- </div> -->
             </ion-header>
 
-            <div *ngFor="let p of menuItems">
-                <!-- Standard Menu Item -->
+            <!-- <div *ngFor="let p of menuItems">
                 <div *ngIf="p.url">
+                    {{p.url}}
                     <ion-item
-                        [routerLink]="p.url"
+                       (click)="menuClosed()"
                         routerDirection="root"
                         routerLinkActive="active"
                         lines="none"
-                        (click)="menuClosed()"
                     >
                         <ion-icon
                             [name]="p.icon"
@@ -108,8 +107,9 @@
                             {{ p.title }}
                         </ion-label>
                     </ion-item>
+
                 </div>
-                <!-- Item with Children -->
+
 
                 <ion-item
                     button
@@ -134,7 +134,6 @@
                     <ion-label style="color: #1D174D;">{{ p.title }}</ion-label>
                 </ion-item>
 
-                <!-- Children List for clicked Item -->
                 <ion-list *ngIf="p.open">
                     <div>
                         <ion-item
@@ -144,7 +143,6 @@
                             routerDirection="root"
                             lines="none"
                             routerLinkActive="active"
-                            (click)="menuClosed()"
                         >
                             <ion-icon
                                 [name]="sub.icon"
@@ -157,7 +155,58 @@
                         </ion-item>
                     </div>
                 </ion-list>
-            </div>
+            </div> -->
+           
+            <div *ngFor="let p of menuItems">
+ <div *ngIf="p.url">
+  <ion-item
+   [routerLink]="[p.url]"
+    routerDirection="root"
+    routerLinkActive="active"
+    lines="none"
+    detail="false"
+    (click)="menuClosed()"
+  >
+    <ion-icon [name]="p.icon" slot="start" style="color: #1D174D;"></ion-icon>
+    <ion-label style="color: #1D174D;">{{ p.title }}</ion-label>
+  </ion-item>
+</div>
+
+
+  <div *ngIf="p.children && p.children.length > 0">
+    <ion-item
+      button
+      (click)="p.open = !p.open"
+      [class.parent-active]="p.open"
+      detail="false"
+      lines="none"
+    >
+      <ion-icon
+        slot="start"
+        style="color: #1D174D;"
+        [name]="p.open ? 'arrow-down' : 'arrow-forward'"
+      ></ion-icon>
+      <ion-label style="color: #1D174D;">{{ p.title }}</ion-label>
+    </ion-item>
+
+    <ion-list *ngIf="p.open">
+      <ion-item
+        *ngFor="let sub of p.children"
+       [routerLink]="[sub.url]"
+        routerDirection="root"
+        routerLinkActive="active"
+        lines="none"
+        class="sub-item"
+        (click)="menuClosed()"
+      >
+        <ion-icon [name]="sub.icon" slot="start" style="color: #1D174D;"></ion-icon>
+        <ion-label style="color: #1D174D;">{{ sub.title }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</div>
+
+
             <div style="border: none">
                 <ion-item (click)="logout()">
                     <ion-icon
@@ -201,6 +250,7 @@
             </ion-row>
         </ion-footer>
     </ion-menu>
-    <ion-router-outlet main></ion-router-outlet>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+
     <!-- </ion-split-pane> -->
 </ion-app>

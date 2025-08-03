@@ -76,7 +76,7 @@
         color: #1D174D;
     }
 
-    
+ 
     .content-header-titleone {
         display: block;
         margin-top: 5px;
@@ -109,14 +109,27 @@
         border: 1px solid #7b6e72 !important;
     }
     .card-item {
-
+        font-size: 12px;
         /* Note: backdrop-filter has minimal browser support */
         border-radius: 5px;
-        color: #1D174D;
+        color: #000;
+        padding-left: 10px;
         border:1px solid gray;
         text-align: center;
     }
 
+    .custom-datepicker-modal{
+  --height: auto;
+  --width: 90%;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --background: #fff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    }
     ion-searchbar {
         --icon-color: white; 
         --background: linear-gradient(
@@ -428,4 +441,10 @@ td {
     text-align: center;
     padding-left: 10px;
     padding-right: 10px;
+}
+
+ion-datetime-button::part(native) {
+  background: transparent !important;
+  font-size: 13px;
+  color: #000;
 }

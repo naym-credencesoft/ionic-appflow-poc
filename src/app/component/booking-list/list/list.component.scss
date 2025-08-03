@@ -88,7 +88,9 @@
         color: #1d174d;
 
     }
-
+ion-select::part(icon) {
+  display: none;
+}
     .card-item {
         background-color: #259BBF;
         border-radius: 6px;
@@ -205,4 +207,9 @@
         font-size: 10px !important;
         color: #2B2B2B;
     }
+}
+ion-datetime-button::part(native) {
+background: transparent !important;
+ box-shadow: none !important;
+
 }

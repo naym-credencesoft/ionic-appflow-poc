@@ -109,3 +109,9 @@
     
 
 }
+
+ion-datetime-button::part(native) {
+ background: transparent !important;
+box-shadow: none !important;
+
+}

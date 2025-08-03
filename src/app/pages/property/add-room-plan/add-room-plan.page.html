@@ -129,12 +129,43 @@
                             <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Effective Date
                             </ion-text>
 
-                            <ion-datetime  [(ngModel)]="plan.effectiveDate" min="2000-01-01"
+                            <!-- <ion-datetime  [(ngModel)]="plan.effectiveDate" min="2000-01-01"
                             max="2100-12-31" (ionChange)="fromDateChange()"
                             formControlName="EffectiveDate" no-padding class="check-in-out-date"
                             color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                            placeholder="Effective Date" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-datetime>
-                            <ion-icon _ngcontent-wcm-c196="" name="calendar" style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
+                            placeholder="Effective Date" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-datetime> -->
+                            <!-- Datetime Button -->
+                            <ion-datetime-button datetime="effectiveDatePicker"
+                            [disabled]="isInventoryPlanUpdate"
+                              color="primary"
+                            class="input-background">
+                            </ion-datetime-button>
+
+                            <!-- Modal Wrapper -->
+                            <ion-modal [keepContentsMounted]="true" [isOpen]="isFromModalOpen" (ionModalDidDismiss)="setEffectiveDateOpen(false)">
+                            <ng-template>
+                                <ion-datetime
+                                id="effectiveDatePicker"
+                                [(ngModel)]="plan.effectiveDate"
+                                min="2000-01-01"
+                                max="2100-12-31"
+                                (ionChange)="fromDateChange()"
+                                formControlName="EffectiveDate"
+                                [showDefaultButtons]="true"
+                                presentation="date"
+                                style="color: #000"
+                                doneText="Done"
+                                cancelText="Cancel"
+
+                                display-format="DD/MM/YYYY"
+                                picker-format="DD/MM/YYYY"
+                                placeholder="Effective Date"
+                                >
+                                </ion-datetime>
+                            </ng-template>
+                            </ion-modal>
+
+                            <ion-icon _ngcontent-wcm-c196=""  (click)="setEffectiveDateOpen(true)" name="calendar-clear" style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
 
                         </ion-col>
     
@@ -143,14 +174,45 @@
                             <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">Expiry Date
                             </ion-text>
 
-                            <ion-datetime [(ngModel)]="plan.expiryDate"
+                            <!-- <ion-datetime [(ngModel)]="plan.expiryDate"
                             min="{{plan.effectiveDate}}"
                             max="2100-12-31"
                             formControlName="ExpiryDate" no-padding class="check-in-out-date"
                             color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                            placeholder="Expiry Date" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-datetime>
+                            placeholder="Expiry Date" disabled="{{isInventoryPlanUpdate}}" class="input-background"></ion-datetime> -->
+                            <!-- Datetime Button -->
+                            <ion-datetime-button 
+                            datetime="expiryDatePicker"
+                             color="primary"
+                            [disabled]="isInventoryPlanUpdate"
+                            class="input-background ">
+                            </ion-datetime-button>
 
-                            <ion-icon _ngcontent-wcm-c196="" name="calendar" style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
+                            <!-- Modal Wrapper -->
+                            <ion-modal [keepContentsMounted]="true" [isOpen]="isToModalOpen" (ionModalDidDismiss)="setExpiryDateOpen(false)">
+                            <ng-template>
+                                <ion-datetime
+                                id="expiryDatePicker"
+                                [(ngModel)]="plan.expiryDate"
+                                [min]="plan.effectiveDate"
+                                max="2100-12-31"
+                                formControlName="ExpiryDate"
+                                color="primary"
+                                [showDefaultButtons]="true"
+                                presentation="date"
+                                style="color: #000"
+                                doneText="Done"
+                                cancelText="Cancel"
+
+                                display-format="DD/MM/YYYY"
+                                picker-format="DD/MM/YYYY"
+                                placeholder="Expiry Date"
+                                >
+                                </ion-datetime>
+                            </ng-template>
+                            </ion-modal>
+
+                            <ion-icon _ngcontent-wcm-c196=""  name="calendar-clear"(click)="setExpiryDateOpen(true)"  style="position: absolute; top: 66%; font-size: 20px; right: 8px; transform: translateY(-50%); color: black;" ng-reflect-name="calendar" role="img" class="md hydrated" aria-label="calendar"></ion-icon>
     
                         </ion-col>
     

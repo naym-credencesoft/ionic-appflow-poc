@@ -20,6 +20,8 @@ import { OTANames } from 'src/app/model/OTANames';
   styleUrls: ['./availability-update.page.scss'],
 })
 export class AvailabilityUpdatePage implements OnInit {
+  isModalOpen = false;
+  isModalOpen2 = false;
   noOfAvailbale = 0;
   rooms: Room[] = [];
   isProgressing: boolean = false
@@ -94,7 +96,6 @@ export class AvailabilityUpdatePage implements OnInit {
   // selectAllCheckbox: boolean = false;
   highestNoOfRooms: number;
   subscriptionSelected: any[];
-  maxToDate: string = "";
   isBookingjiniSubscription:boolean = false;
   isAirbnbSubscription:boolean = false;
   isBookingDotcomSubscription:boolean = false;
@@ -108,6 +109,9 @@ export class AvailabilityUpdatePage implements OnInit {
     Validators.required,
   ]);
 
+
+  isFromDateSelected = false;
+  isToDateSelected = false;
   constructor(public navCtrl: NavController, public token: TokenStorage, private propertyService: PropertyService, 
     private bookingService: BookingService,private acRoute: ActivatedRoute, private formBuilder: FormBuilder, private _location: Location, private toastController: ToastController, public datepipe: DatePipe, private availabilityService: AvailabilityService,
     private cdr: ChangeDetectorRef) {
@@ -197,14 +201,47 @@ export class AvailabilityUpdatePage implements OnInit {
       );
   }
 
+
+  setOpen(isOpen: boolean) {
+    this.isModalOpen = isOpen;
+  }
+
+  setOpen2(isOpen: boolean) {
+    this.isModalOpen2 = isOpen;
+  }
+
+  minToDate: string = '2000-12-31';   // Default min date
+maxToDate: string = '2200-12-31';   // Default max date
+  
   updateMaxToDate() {
-    if (this.otaAvailability.fromDate) {
-        const startDate = new Date(this.otaAvailability.fromDate);
-        const maxDate = new Date(startDate);
-        maxDate.setMonth(maxDate.getMonth() + 3); // Add 3 months
-        this.maxToDate = maxDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-    }
+  const fromDate = this.otaAvailability.fromDate;
+
+  if (fromDate) {
+    const startDate = new Date(fromDate);
+
+    // Set min date as selected From Date
+    this.minToDate = startDate.toISOString().split('T')[0];
+
+    // Set max date as From Date + 3 months
+    const maxDate = new Date(startDate);
+    maxDate.setMonth(maxDate.getMonth() + 3);
+    this.maxToDate = maxDate.toISOString().split('T')[0];
+
+  }
+  this.isFromDateSelected = true;
 }
+toDateChange() {
+  const toDate = this.rateAndAvailToDate?.value || this.otaAvailability.toDate;
+  this.isToDateSelected = !!toDate;
+}
+//   updateMaxToDate() {
+//     if (this.otaAvailability.fromDate) {
+//         const startDate = new Date(this.otaAvailability.fromDate);
+//         const maxDate = new Date(startDate);
+//         maxDate.setMonth(maxDate.getMonth() + 3); // Add 3 months
+//         this.maxToDate = maxDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+//     }
+// }
 
 ionViewWillEnter(){
     if(this.acRoute.queryParams){

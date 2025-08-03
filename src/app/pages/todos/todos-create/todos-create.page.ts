@@ -107,7 +107,8 @@ formData: FormData;
   
  
  
-  
+  isArrivalSelected : boolean = false;
+  isDepartureSelected : boolean = false;
 
    permission: any;
     
@@ -216,7 +217,6 @@ formData: FormData;
   ngOnInit() 
   {
     this.property = this.token.getProperty();
-        console.log("property details", this.property)
 
     this.acRoute.queryParams.subscribe((params) => {
         if (JSON.parse(params["data"]) != undefined && JSON.parse(params["data"]) != null) {
@@ -480,7 +480,7 @@ formData: FormData;
 fromDateChange() {
     this.todos.checkOutDate = '';
     let toDate = new Date(this.todos.checkInDate);
-
+    this.isArrivalSelected = true;
     toDate.setDate(toDate.getDate() + 1);
     this.toMinDate = this.getDate(toDate);
 
@@ -499,6 +499,7 @@ onCheckOutDateChange() {
     {
       this.checkAvailabilty();
     }
+      this.isDepartureSelected = true;
 }
 
 checkAvailabilty() {

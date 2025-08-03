@@ -80,9 +80,61 @@
                        
                
                 <ion-row style="margin-top: 10px">
-                    <ion-text style="    font-size: 15px; color: black; margin: 0 0 5px 10px;">From Date <b style="color:red">*</b></ion-text>
+                    <ion-text style="    font-size: 15px; color: black; margin: 0 0 5px 10px;">
+                        From Date <b style="color:red">*</b></ion-text>
                         <ion-col size="12">
-                            <ion-datetime
+                            <!-- Trigger Button -->
+                             <div class="datetime-box">
+
+                                 <ion-item >
+                                      <ion-datetime-button datetime="availabilityFromDate"
+                                       slot="start"
+                                      class="date-btn"
+                                       [ngClass]="isFromDateSelected ? 'selected' : 'unselected'"
+                                      ></ion-datetime-button>
+          
+                                      <!-- Modal with Datetime Picker -->
+                                      <ion-modal [keepContentsMounted]="true"  [isOpen]="isModalOpen"  (didDismiss)="setOpen(false)">
+                                      <ng-template>
+                                          <ion-datetime
+                                          id="availabilityFromDate"
+                                          presentation="date"
+                                          style="font-size: 15px; text-align: left;"
+                                          [formControl]="rateAndAvailFromDate"
+                                          [(ngModel)]="otaAvailability.fromDate"
+                                          (ionChange)="updateMaxToDate()"
+                                          [min]="'2000-12-31'"
+                                          [max]="'2200-12-31'"
+                                          style="color: #000;"
+                                          [showDefaultButtons]="true"
+                                          cancelText="Cancel"
+                                          doneText="Done"
+                                          placeholder="DD/MM/YYYY"
+                                          displayFormat="DD/MM/YYYY"
+                                          >
+                                          </ion-datetime>
+                                      </ng-template>
+                                      </ion-modal>
+          
+                                      <ion-icon
+                                         name="calendar-clear"
+                                         slot="end"
+                                         (click)="setOpen(true)"
+                                         class="calendar-icon">
+                                     </ion-icon>
+                                     <!-- <ion-icon name="calendar-clear" 
+                                         (click)="setOpen(true)"
+                                         style=" position: absolute;
+                                         top: 50%;
+                                         font-size: 20px;
+                                         right: 8px;
+                                         transform: translateY(-50%);
+                                         color: black;"></ion-icon> -->
+                                  
+                                  </ion-item>
+                             </div>
+
+                            <!-- <ion-datetime
                                 value="2"
                                 style=" font-size: 15px;text-align: left;"
                                 [formControl]="rateAndAvailFromDate"
@@ -96,20 +148,106 @@
                               max="2200-12-31"
                             >
                             
-                            </ion-datetime>
-                            <ion-icon name="calendar" style="    position: absolute;
+                            </ion-datetime> -->
+                           
+                      
+                        </ion-col>
+                   
+                </ion-row>
+                <ion-row style="margin-top: 10px">
+                    <ion-text style=" font-size: 15px; color: black; margin: 0 0 5px 10px;">
+                    To Date: <b style="color:red">*</b></ion-text>
+                    <ion-col size="12">
+                        <div class="datetime-box" >
+                            <ion-item [disabled]="!isFromDateSelected" >
+                                <ion-datetime-button 
+                                    datetime="availabilityToDate" 
+                                    class="date-btn"
+                                    [ngClass]="isToDateSelected ? 'selected' : 'unselected'">
+                                </ion-datetime-button>
+                            
+                                            <ion-icon
+                                        name="calendar-clear"
+                                        slot="end"
+                                        (click)="setOpen2(true)"
+                                        class="calendar-icon">
+                                    </ion-icon>
+                                <!-- <ion-icon 
+                                    name="calendar-clear"
+                                    (click)="setOpen2(true)"
+                                    style="position: absolute;
+                                           top: 50%;
+                                           font-size: 20px;
+                                           right: 8px;
+                                           transform: translateY(-50%);
+                                           color: black;">
+                                </ion-icon> -->
+    
+                            <ion-modal 
+                                [keepContentsMounted]="true" 
+                                [isOpen]="isModalOpen2"  
+                                (didDismiss)="setOpen2(false)">
+                                <ng-template>
+                                <ion-datetime
+                                    id="availabilityToDate"
+                                    presentation="date"
+                                    [formControl]="rateAndAvailToDate"
+                                    [(ngModel)]="otaAvailability.toDate"
+                                    [min]="minToDate"
+                                    [max]="maxToDate"
+                                    style="color: #000;"
+                                    [showDefaultButtons]="true"
+                                    cancelText="Cancel"
+                                    doneText="Done"
+                                    displayFormat="DD/MM/YYYY"
+                                    placeholder="DD/MM/YYYY"
+                                    (ionChange)="toDateChange()">
+                                </ion-datetime>
+                                </ng-template>
+                            </ion-modal>
+                            </ion-item>
+                        </div>
+
+                        <!-- <div class="datetime-box">
+                            <ion-datetime-button datetime="availabilityToDate" class="date-btn"
+                            [ngClass]="isToDateSelected ? 'selected' : 'unselected'"
+                            [disabled]="!isFromDateSelected"
+                            ></ion-datetime-button>
+                            
+                                <ion-icon name="calendar-clear" 
+                            (click)="setOpen2(true)"
+                            
+                            style="position: absolute;
                             top: 50%;
                             font-size: 20px;
                             right: 8px;
                             transform: translateY(-50%);
                             color: black;"></ion-icon>
-                        </ion-col>
-                   
-                </ion-row>
-                <ion-row style="margin-top: 10px">
-                    <ion-text style=" font-size: 15px; color: black; margin: 0 0 5px 10px;">To Date: <b style="color:red">*</b></ion-text>
-                    <ion-col size="12">
-                        <ion-datetime
+                            <ion-modal [keepContentsMounted]="true" [isOpen]="isModalOpen2"  (didDismiss)="setOpen2(false)">
+                            <ng-template>
+                                <ion-datetime
+                                id="availabilityToDate"
+                                presentation="date"
+                                style="font-size: 15px; text-align: left;"
+                                [formControl]="rateAndAvailToDate"
+                                [(ngModel)]="otaAvailability.toDate"
+                                [min]="'2000-12-31'"
+                                [max]="'2200-12-31'"
+                                style="color: #000;"
+                                [showDefaultButtons]="true"
+                                cancelText="Cancel"
+                                doneText="Done"
+                                displayFormat="DD/MM/YYYY"
+                                placeholder="DD/MM/YYYY"
+                                (ionChange)="toDateChange()"
+                                >
+                                </ion-datetime>
+                            </ng-template>
+                            </ion-modal>
+
+                        </div> -->
+
+                        <!-- <ion-datetime
                             value="2"
                             style="font-size: 15px;text-align: left;"
                             [formControl]="rateAndAvailToDate"
@@ -122,13 +260,8 @@
                             [max]="maxToDate"
                         >
                         
-                        </ion-datetime>
-                        <ion-icon name="calendar" style="    position: absolute;
-                        top: 50%;
-                        font-size: 20px;
-                        right: 8px;
-                        transform: translateY(-50%);
-                        color: black;"></ion-icon>
+                        </ion-datetime> -->
+     
                     </ion-col>
                
             </ion-row>

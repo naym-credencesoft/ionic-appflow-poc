@@ -10,6 +10,7 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import {
     LoadingController,
+    ModalController,
     NavController,
     ToastController,
 } from "@ionic/angular";
@@ -30,6 +31,7 @@ import { TokenStorage } from "./../../token.storage";
 import { Booking } from "src/app/model/manage-booking/Booking/Booking";
 import { Payment } from "src/app/model/manage-booking/Payment/Payment";
 import { Property } from "src/app/model/property/Property";
+import { DatePipe } from "@angular/common";
 
 @Component({
     selector: "app-manage-expence",
@@ -122,7 +124,10 @@ export class ManageExpencePage implements OnInit {
     loader: boolean = false;
     booking: Booking;
     payment: Payment;
-
+    isModalOpentoDate: boolean = false;
+    isModalOpenfromDate: boolean = false;
+    isModalOpen = false;
+    
     constructor(
         private expenseService: ExpenseService,
         private navCtrl: NavController,
@@ -136,7 +141,9 @@ export class ManageExpencePage implements OnInit {
         private route: ActivatedRoute,
         public loadingCtrl: LoadingController,
         private toastController: ToastController,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private modalController: ModalController,
+        private datePipe: DatePipe
     ) {
         this.property = new Property();
         this.expence = new ExpenseModel();
@@ -168,7 +175,6 @@ export class ManageExpencePage implements OnInit {
 
     ngOnInit() {
         this.property = this.token.getProperty();
-        console.log("property details", this.property)
         this.route.queryParams.subscribe((params) => {
             if (params["permission"] != undefined) {
                 this.permission = params["permission"];
@@ -235,6 +241,11 @@ export class ManageExpencePage implements OnInit {
 
         this.getPropertyExpense(this.token.getProperty().id);
     }
+
+
+  setOpen(isOpen: boolean) {
+    this.isModalOpen = isOpen;
+  }
 
     navigateToPage() {
         this.navCtrl.navigateForward('/expence-list');
@@ -322,17 +333,26 @@ export class ManageExpencePage implements OnInit {
         this.formData = new FormData();
         this.formData.append("file", file1, this.expence.receiptFileName);
         Logger.log("File Data" + JSON.stringify(this.formData));
-        this.fileService
-            .fileUploadToCloud(this.formData)
-            .subscribe((fileUploadResponse) => {
-                if (fileUploadResponse.status === 200) {
-                    this.expence.receiptUrl = fileUploadResponse.url;
-                    this.expence.receiptFileName = fileUploadResponse.name;
-                    this.presentToast("File Uploaded Successfully");
-                } else {
-                    this.presentToast("File upload Error");
-                }
-            });
+        // this.fileService
+        //     .fileUploadToCloud(this.formData)
+        //     .subscribe((fileUploadResponse) => {
+        //         if (fileUploadResponse.status === 200) {
+        //             this.expence.receiptUrl = fileUploadResponse.url;
+        //             this.expence.receiptFileName = fileUploadResponse.name;
+        //             this.presentToast("File Uploaded Successfully");
+        //         } else {
+        //             this.presentToast("File upload Error");
+        //         }
+        //     });
+        this.fileService.fileUploadToCloud(this.formData).subscribe((fileUploadResponse) => {
+            if (fileUploadResponse && fileUploadResponse.url && fileUploadResponse.name) {
+               this.expence.receiptUrl = fileUploadResponse.url;
+               this.expence.receiptFileName = fileUploadResponse.name;
+               this.presentToast("File Uploaded Successfully");
+            } else {
+               this.presentToast("File upload Error");
+            }
+        });
     }
 
     async FormSubMit() {
@@ -553,4 +573,24 @@ export class ManageExpencePage implements OnInit {
         });
         toast.present();
     }
+
+    openDateTimePicker() {
+    this.isModalOpenfromDate = true;
+  }
+  async closeModalSeven() {
+    await this.modalController.dismiss();
+  }
+  closeDateTimePickerOne() {
+    this.isModalOpentoDate = false;
+  }
+  closeDateTimePicker() {
+    this.isModalOpenfromDate = false;
+  }
+fromDateChange(event: any) {
+    const selectedDate = event.detail.value; // Get the date string from ionChange
+    if (selectedDate) {
+      this.expence.date = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+    }
+  }
+
 }

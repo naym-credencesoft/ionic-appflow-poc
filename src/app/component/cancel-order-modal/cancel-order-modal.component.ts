@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { OrderEventsService } from 'src/app/service/order-events.service';
 
 @Component({
@@ -15,7 +15,8 @@ export class CancelOrderModalComponent {
 
   constructor(private modalCtrl: ModalController,
           private changeDetectorRefs: ChangeDetectorRef,
-            private orderEvents: OrderEventsService
+            private orderEvents: OrderEventsService,
+            private navCtrl: NavController
   ) {
 
   }
@@ -38,6 +39,7 @@ export class CancelOrderModalComponent {
                 this.orderEvents.notifyOrderUpdated(); // ✅ Notify
                 this.modalCtrl.dismiss({ reason: this.reason }, 'updated');
                 this.changeDetectorRefs.detectChanges();
+
 
     }
   }

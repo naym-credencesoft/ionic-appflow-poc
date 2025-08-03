@@ -59,7 +59,7 @@
             <ion-row>
                 <ion-text style="font-size: 12px">Date of Services*</ion-text>
                 <ion-col size="12">
-                    <ion-datetime
+                    <!-- <ion-datetime
                         class="card-item"
                         [(ngModel)]="service.date"
                         formControlName="date"
@@ -68,7 +68,32 @@
                         pickerFormat="DD/MM/YYYY"
                         placeholder="Select Date"
                         [disabled]="isView"
-                    ></ion-datetime>
+                    ></ion-datetime> -->
+                    <ion-datetime-button 
+                    datetime="serviceDateTime" 
+                    [disabled]="isView"
+                    style="border-radius: 5px; border: 1px solid #aaa;">
+                    </ion-datetime-button>
+
+                    <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                        <ion-datetime
+                        id="serviceDateTime"
+                        class="card-item"
+                        [(ngModel)]="service.date"
+                        formControlName="date"
+                        color="primary"
+                        presentation="date"
+                        placeholder="Select Date"
+                        style="color: #000"
+                        [disabled]="isView"
+                        [showDefaultButtons]="true"
+                        doneText="Done"
+                        cancelText="Cancel"
+                        ></ion-datetime>
+                    </ng-template>
+                    </ion-modal>
+
                     <!--  [(ngModel)]="search.to" -->
                 </ion-col>
             </ion-row>

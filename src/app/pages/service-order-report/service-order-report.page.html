@@ -27,21 +27,35 @@
 <ion-content no-margin>
   <div style="margin-top: 15px; margin-left: 5px; margin-right: 5px; margin-bottom: 20px;">
     <!-- select services -->
-    <ion-row>
+    <ion-row >
       <ion-col size="12">
-        <ion-datetime value="2" style=" font-size: 15px; text-align: left; color: #333"
-          [formControl]="FromDateController" [(ngModel)]="selectedDateString" (ionChange)="dateChange()" no-padding
-          class="card-item" displayFormat="DD/MM/YYYY" placeholder="From Date" min= "2000-12-31"
-          max="2100-12-31"></ion-datetime>
-        <ion-icon name="calendar"
-          style="position: absolute;
-          top: 50%;
-          font-size: 20px;
-          right: 20px;
-          transform: translateY(-50%);
-          color: #333;
-          z-index: 7;"></ion-icon>
+        <div class=" datetime-box">
+          <ion-datetime-button datetime="datetime" class="date-btn"></ion-datetime-button>
+
+          <ion-icon name="calendar-clear" (click)="setOpen(true)"  class="calendar-icon"></ion-icon>
+
+          <ion-modal [keepContentsMounted]="true" [isOpen]="isModalOpen" (ionModalDidDismiss)="dismissModal()" #fromModal>
+            <ng-template>
+              <ion-datetime
+                id="datetime"
+                [formControl]="FromDateController"
+                [(ngModel)]="selectedDateString"
+                (ionChange)="dateChange()"
+                presentation="date"
+                displayFormat="DD/MM/YYYY"
+                placeholder="From Date"
+                min="2000-12-31"
+                max="2100-12-31"
+                [showDefaultButtons]="true"
+                doneText="Done"
+                cancelText="Cancel"
+                style="color: #000;">
+              </ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </div>
       </ion-col>
+
       <ion-col size="12">
         <ion-select class="card-item" [formControl]="BusinesService" [(ngModel)]="bserviceid"
           (ionChange)="setService(bserviceid)" name="Room" okText="Done" cancelText="Dismiss"

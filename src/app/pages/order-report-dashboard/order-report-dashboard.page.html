@@ -1,231 +1,344 @@
-
 <ion-header class="ion-no-border">
-
-
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
-        src="{{this.property.logoUrl}}"
-        onerror="this.src='/assets/img/app-logo.png'"
-    />
+            style="object-fit: fill"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
     </ion-avatar>
 
     <ion-text class="HeaderSubTitle"> Order Report </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon name="arrow-back-outline" (click)="menuAction()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
-            <ion-text color="light" class="HeaderTitle" 
+            <ion-icon
+                name="arrow-back-outline"
+                (click)="menuAction()"
+                style="font-size: 20px; margin-top: -10px"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle"
                 >Service Dashboard</ion-text
             >
- 
         </ion-buttons>
-
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="button-action mt-1" fxLayoutAlign.gt-xs="space-between start" fxLayout.xs="column">
-    <div class="search-box mat-elevation-z2" fxFlex="1 1 0%" style="margin-left: 10px; margin-right: 10px; margin-bottom: 20px;">
-
-      <!-- <ion-searchbar placeholder="Search" class="list-search" (ionChange)="applyFilter($event.target.value)"
+    <div
+        class="button-action mt-1"
+        fxLayoutAlign.gt-xs="space-between start"
+        fxLayout.xs="column"
+    >
+        <div
+            class="search-box mat-elevation-z2"
+            fxFlex="1 1 0%"
+            style="margin-left: 10px; margin-right: 10px; margin-bottom: 20px"
+        >
+            <!-- <ion-searchbar placeholder="Search" class="list-search" (ionChange)="applyFilter($event.target.value)"
         (ionClear)="clear($event)" mode="md" padding-left padding-right class="ion-no-padding">
       </ion-searchbar> -->
+            <ion-row *ngIf="isOrgAdmin" style="margin-top: 10px">
+                <ion-col size="6">
+                    <!-- <ion-label style="color: #fff;">From Date</ion-label> -->
+                      <ion-datetime-button datetime="reportFromDatePicker" class="card-item"
+                      
+                      ></ion-datetime-button>
 
-      <ion-row *ngIf="isOrgAdmin" style="margin-top: 10px;">
-        <ion-col size="6">
-          <!-- <ion-label style="color: #fff;">From Date</ion-label> -->
-          <ion-datetime value="2" (ionChange)="fromDateChange()" 
-          min= "2000-12-31"
-          max="2100-12-31"
-          [formControl]="reportFromDate"
-          [(ngModel)]="reportfromDateString"  style=" font-size: 15px;text-align: left;" no-padding class="card-item"
-            displayFormat="DD/MM/YYYY" placeholder="From Date">
+                      <ion-modal [keepContentsMounted]="true">
+                        <ng-template>
+                          <ion-datetime
+                            id="reportFromDatePicker"
+                            presentation="date"
+                            [formControl]="reportFromDate"
+                            (ionChange)="fromDateChange()"
+                            min="2000-12-31"
+                            max="2100-12-31"
+                            [showDefaultButtons]="true"
+                            cancelText="Cancel"
+                            doneText="Done"
+                            displayFormat="DD/MM/YYYY"
+                            placeholder="DD/MM/YYYY"
+                            style="font-size: 15px; text-align: left"
+                          ></ion-datetime>
+                        </ng-template>
+                      </ion-modal>
 
-          </ion-datetime>
-          <ion-icon name="calendar"
-            style="    position: absolute;
-            font-size: 19px;
-            z-index: 10;
-            right: 20px;
-            top: 29px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
+                    <ion-icon
+                        name="calendar-clear"
+                        style="
+                            position: absolute;
+                            font-size: 19px;
+                            z-index: 10;
+                            right: 20px;
+                            top: 29px;
+                            transform: translateY(-50%);
+                            color: #333;
+                        "
+                    ></ion-icon>
+                </ion-col>
 
+                <ion-col size="6">
+                    <!-- <ion-label style="color: #fff;">To Date</ion-label> -->
+                  <ion-datetime-button datetime="reportToDatePicker" class="card-item">
+                        </ion-datetime-button>
 
+                        <ion-modal [keepContentsMounted]="true" #toModal>
+                        <ng-template>
+                            <ion-datetime
+                            id="reportToDatePicker"
+                            presentation="date"
+                            [formControl]="reportToDate"
+                            max="2100-12-31"
+                            [min]="reportFromDate"
+                            [showDefaultButtons]="true"
+                            cancelText="Cancel"
+                            doneText="Done"
+                            displayFormat="DD/MM/YYYY"
+                            placeholder="To Date"
+                            style="color: #000;"
+                            (ionChange)="toDateChange()"
+                            ></ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+                    <ion-icon
+                        name="calendar-clear"
+                        style="
+                            position: absolute;
+                            font-size: 19px;
+                            z-index: 10;
+                            right: 20px;
+                            top: 29px;
+                            transform: translateY(-50%);
+                            color: #333;
+                        "
+                    ></ion-icon>
+                </ion-col>
+            </ion-row>
 
-        <ion-col size="6">
-          <!-- <ion-label style="color: #fff;">To Date</ion-label> -->
-          <ion-datetime value="2" [formControl]="reportToDate" [(ngModel)]="reportToDateString" 
-          min= "{{reportfromDateString}}"
-          max="2100-12-31"
-          style="font-size: 15px;text-align: left;" no-padding class="card-item"
-            displayFormat="DD/MM/YYYY" placeholder="To Date">
+            <ion-row *ngIf="!isOrgAdmin" style="margin-top: 10px">
+                <ion-col size="6">
+                    <!-- <ion-label style="color: #fff;">From Date</ion-label> -->
+                   <ion-datetime-button datetime="reportFromDatePicker2" class="card-item">
+                  </ion-datetime-button>
 
-          </ion-datetime>
-          <ion-icon name="calendar"
-            style="    position: absolute;
-            font-size: 19px;
-            z-index: 10;
-            right: 20px;
-            top: 29px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
-      </ion-row>
+                          <ion-modal [keepContentsMounted]="true" [isOpen]="isFromModalOpen" 
+                           (ionModalDidDismiss)="dismissFromModal()" #fromModal>
+                            <ng-template>
+                              <ion-datetime
+                                id="reportFromDatePicker2"
+                                presentation="date"
+                                [formControl]="reportFromDate"
+                                displayFormat="DD/MM/YYYY"
+                                placeholder="From Date"
+                                style="color: #000;"
+                                min="2000-12-31"
+                                max="2100-12-31"
+                                [showDefaultButtons]="true"
+                                cancelText="Cancel"
+                                doneText="Done"
+                                (ionChange)="fromDateChange()"
+                              ></ion-datetime>
+                            </ng-template>
+                          </ion-modal>
 
-      <ion-row *ngIf="!isOrgAdmin" style="margin-top: 10px;">
-        <ion-col size="6">
-          <!-- <ion-label style="color: #fff;">From Date</ion-label> -->
-          <ion-datetime value="2" (ionChange)="fromDateChange()" [formControl]="reportFromDate"
-            [(ngModel)]="reportfromDateString" style=" font-size: 15px;text-align: left;" no-padding
-            class="card-item" displayFormat="DD/MM/YYYY" placeholder="From Date" min= "2000-12-31"
-            max="2100-12-31">
+                     <ion-icon
+                        name="calendar-clear"
+                        (click)="setFromModalOpen(true)"
+                        style="
+                            position: absolute;
+                            font-size: 19px;
+                            z-index: 10;
+                            right: 20px;
+                            top: 20px;
+                            transform: translateY(-50%);
+                            color: #333;
+                        "
+                    ></ion-icon> 
+                </ion-col>
 
-          </ion-datetime>
-          <ion-icon name="calendar"
-            style="    position: absolute;
-            font-size: 19px;
-            z-index: 10;
-            right: 20px;
-            top: 29px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
+                <ion-col size="6">
+                    <!-- <ion-label style="color: #fff;">To Date</ion-label> -->
+                    <ion-datetime-button datetime="reportToDatePicker2" class="card-item">
+                        </ion-datetime-button>
 
+                        <ion-modal [keepContentsMounted]="true" [isOpen]="isToModalOpen" 
+                         (ionModalDidDismiss)="dismissToModal()" #toModal>
+                        <ng-template>
+                            <ion-datetime
+                            id="reportToDatePicker2"
+                            presentation="date"
+                            [formControl]="reportToDate"
+                          
+                            max="2100-12-31"
+                            displayFormat="DD/MM/YYYY"
+                            placeholder="To Date"
+                            [showDefaultButtons]="true"
+                            cancelText="Cancel"
+                            doneText="Done"
+                            style="color: #000;"
+                            (ionChange)="toDateChange()"
+                            ></ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+                     <ion-icon
+                        name="calendar-clear"
+                        (click)="setToModalOpen(true)"
+                        style="
+                            position: absolute;
+                            font-size: 19px;
+                            z-index: 10;
+                            right: 20px;
+                            top: 20px;
+                            transform: translateY(-50%);
+                            color: #333;
+                        "
+                    ></ion-icon> 
+                </ion-col>
+            </ion-row>
 
-
-        <ion-col size="6">
-          <!-- <ion-label style="color: #fff;">To Date</ion-label> -->
-          <ion-datetime value="2" [formControl]="reportToDate" [(ngModel)]="reportToDateString" min= "{{reportfromDateString}}"
-          max="2100-12-31" style=" font-size: 15px;text-align: left;" no-padding
-            class="card-item" displayFormat="DD/MM/YYYY" placeholder="To Date">
-
-          </ion-datetime>
-          <ion-icon name="calendar"
-            style="    position: absolute;
-            font-size: 19px;
-            z-index: 10;
-            right: 20px;
-            top: 29px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
-      </ion-row>
-      <ion-row  *ngIf="ordersFilter.length > 0">
-        
-        <ion-col size="6">
-          <button
-          (click)="selectReportType('Order Report')"
-          [ngStyle]="{
-            'background-color': reportType === 'Order Report' ? '#1d174d' : 'gray',
-            'font-size': '16px',
-            'color': 'white',
-            'border': '1px solid white',
-            'width': '100%',
-            'padding': '10px',
-            'border-radius': '10px'
-          }">
-            Order
-          </button>
-        </ion-col>
-        <ion-col size="6">
-          <button
-          (click)="selectReportType('Product Report')"
-          [ngStyle]="{
-            'background-color': reportType === 'Product Report' ? '#1d174d' : 'gray',
-            'font-size': '16px',
-            'color': 'white',
-            'border': '1px solid white',
-            'width': '100%',
-            'padding': '10px',
-            'border-radius': '10px'
-          }">
-            Product
-          </button>
-        </ion-col>
-        <!-- <ion-col size="4"> <button
+            <ion-row *ngIf="ordersFilter.length > 0">
+                <ion-col size="6">
+                    <button
+                        (click)="selectReportType('Order Report')"
+                        [ngStyle]="{
+                        'background-color': reportType === 'Order Report' ? '#1d174d' : 'gray',
+                        'font-size': '16px',
+                        'color': 'white',
+                        'border': '1px solid white',
+                        'width': '100%',
+                        'padding': '10px',
+                        'border-radius': '10px'
+                    }"
+                    >
+                        Order
+                    </button>
+                </ion-col>
+                <ion-col size="6">
+                    <button
+                        (click)="selectReportType('Product Report')"
+                        [ngStyle]="{
+                        'background-color': reportType === 'Product Report' ? '#1d174d' : 'gray',
+                        'font-size': '16px',
+                        'color': 'white',
+                        'border': '1px solid white',
+                        'width': '100%',
+                        'padding': '10px',
+                        'border-radius': '10px'
+                    }"
+                    >
+                        Product
+                    </button>
+                </ion-col>
+                <!-- <ion-col size="4"> <button
 
             style="font-size: 16px;color: white;border: 1px solid white; width: 100%; padding: 10px; border-radius: 10px; background-color: #1d174d;">
             <ion-icon name="print"></ion-icon> Print
           </button></ion-col> -->
-      </ion-row>
-      <ion-row *ngIf="ordersFilter.length > 0">
-        <ion-col size="6">
-          <button
-            (click)="setActiveButton('allData')"
-            [ngStyle]="{
-              'font-size': '16px',
-              'color': 'white',
-              'border': '1px solid white',
-              'width': '100%',
-              'padding': '10px',
-              'border-radius': '10px',
-              'background-color': isAllDataActive ? '#1d174d' : 'gray'
-            }"
-          >
-            All Data
-          </button>
-        </ion-col>
-        <ion-col size="6">
-          <button
-            (click)="setActiveButton('total')"
-            [ngStyle]="{
-              'font-size': '16px',
-              'color': 'white',
-              'border': '1px solid white',
-              'width': '100%',
-              'padding': '10px',
-              'border-radius': '10px',
-              'background-color': isTotalActive ? '#1d174d' : 'gray'
-            }"
-          >
-            Total
-          </button>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size="5" style="margin-top: 10px;" *ngIf="anyDateSelected()">
-          <button (click)="onResetDate()" style="font-size: 16px;color: white;border: 1px solid white; 
-            width: 100%; padding: 10px; border-radius: 10px;
-            background-color: #E84424;">Reset</button>
-        </ion-col>
+            </ion-row>
+            <ion-row *ngIf="ordersFilter.length > 0">
+                <ion-col size="6">
+                    <button
+                        (click)="setActiveButton('allData')"
+                        [ngStyle]="{
+                        'font-size': '16px',
+                        'color': 'white',
+                        'border': '1px solid white',
+                        'width': '100%',
+                        'padding': '10px',
+                        'border-radius': '10px',
+                        'background-color': isAllDataActive ? '#1d174d' : 'gray'
+                        }"
+                                >
+                        All Data
+                    </button>
+                </ion-col>
+                <ion-col size="6">
+                    <button
+                        (click)="setActiveButton('total')"
+                        [ngStyle]="{
+                        'font-size': '16px',
+                        'color': 'white',
+                        'border': '1px solid white',
+                        'width': '100%',
+                        'padding': '10px',
+                        'border-radius': '10px',
+                        'background-color': isTotalActive ? '#1d174d' : 'gray'
+                        }"
+                    >
+                        Total
+                    </button>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col
+                    size="5"
+                    style="margin-top: 10px"
+                    *ngIf="anyDateSelected()"
+                >
+                    <button
+                        (click)="onResetDate()"
+                        style="
+                            font-size: 16px;
+                            color: white;
+                            border: 1px solid white;
+                            width: 100%;
+                            padding: 10px;
+                            border-radius: 10px;
+                            background-color: #e84424;
+                        "
+                    >
+                        Reset
+                    </button>
+                </ion-col>
 
-        <ion-col size="5" style="margin-top: 10px;">
-          <button [disabled]="loader || anyDateSelected() === false" (click)="onSearchDate()" [ngStyle]="{
-            'font-size': '16px',
-            'color': 'white',
-            'border': '1px solid white',
-            'width': '100%',
-            'padding': '10px',
-            'border-radius': '10px',
-            'background-color': (loader || anyDateSelected() === false) ? 'gray' : '#1d174d'
-          }">Search</button>
-        </ion-col>
+                <ion-col size="5" style="margin-top: 10px">
+                    <button
+                        [disabled]="loader || anyDateSelected() === false"
+                        (click)="onSearchDate()"
+                        [ngStyle]="{
+                        'font-size': '16px',
+                        'color': 'white',
+                        'border': '1px solid white',
+                        'width': '100%',
+                        'padding': '10px',
+                        'border-radius': '10px',
+                        'background-color': (loader || anyDateSelected() === false) ? 'gray' : '#1d174d'
+                    }"
+                    >
+                        Search
+                    </button>
+                </ion-col>
 
-      
-        <ion-col size="2" style="margin-top: 10px;" *ngIf="ordersFilter.length > 0">
-          <button expand="block" (click)="isRowVisible = !isRowVisible" [disabled]="
-            reportFromDate.value == null ||
-            reportFromDate.value == undefined ||
-            reportToDate.value == null ||
-            reportToDate.value == undefined
-          " [ngStyle]="{
-            'font-size': '22px',
-            'color': 'white',
-            'border': '1px solid white',
-            'width': '100%',
-            'padding': '5px',
-            'border-radius': '10px',
-            'background-color': (reportFromDate.value == null ||
-            reportFromDate.value == undefined ||
-            reportToDate.value == null ||
-            reportToDate.value == undefined) ? 'gray' : '#1d174d'
-          }">
-            <ion-icon name="filter-circle-outline"></ion-icon>
-          </button>
-        </ion-col>
-        <!-- <ion-col size="6" style="margin-top: 10px;">
+                <ion-col
+                    size="2"
+                    style="margin-top: 10px"
+                    *ngIf="ordersFilter.length > 0"
+                >
+                    <button
+                        expand="block"
+                        (click)="isRowVisible = !isRowVisible"
+                        [disabled]="
+                        reportFromDate.value == null ||
+                        reportFromDate.value == undefined ||
+                        reportToDate.value == null ||
+                        reportToDate.value == undefined
+                    "
+                        [ngStyle]="{
+                        'font-size': '22px',
+                        'color': 'white',
+                        'border': '1px solid white',
+                        'width': '100%',
+                        'padding': '5px',
+                        'border-radius': '10px',
+                        'background-color': (reportFromDate.value == null ||
+                        reportFromDate.value == undefined ||
+                        reportToDate.value == null ||
+                        reportToDate.value == undefined) ? 'gray' : '#1d174d'
+                    }"
+                    >
+                        <ion-icon name="filter-circle-outline"></ion-icon>
+                    </button>
+                </ion-col>
+                <!-- <ion-col size="6" style="margin-top: 10px;">
           <button [disabled]="
     reportFromDate.value == null ||
     reportFromDate.value == undefined ||
@@ -244,7 +357,7 @@
             Order Report in Excel</button>
         </ion-col> -->
 
-        <!-- <ion-col size="6" style="margin-top: 10px;">
+                <!-- <ion-col size="6" style="margin-top: 10px;">
           <button [disabled]="
             reportFromDate.value == null ||
             reportFromDate.value == undefined ||
@@ -265,406 +378,674 @@
             <ion-icon name="cloud-download"></ion-icon>
             GST Report in Excel</button>
         </ion-col> -->
-      </ion-row>
-    <div *ngIf="ordersFilter.length > 0">
-   
+            </ion-row>
+            <div *ngIf="ordersFilter.length > 0">
+                <ion-row *ngIf="isRowVisible">
+                    <ion-col size="12">
+                        <ion-select
+                            class="card-item"
+                            (ionChange)="ReportfilterByDropdown()"
+                            placeholder="Filter By Business Service"
+                            [formControl]="BusinessServicesFilterControll"
+                            (ionChange)="ReportfilterByDropdown()"
+                            [(ngModel)]="serviceId"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option value="0">
+                                All
+                            </ion-select-option>
+                            <ng-container
+                                *ngFor="let service of businessServices"
+                            >
+                                <ion-select-option
+                                    *ngIf="service.active"
+                                    [value]="service.id"
+                                    class="text-wrap"
+                                >
+                                    <p
+                                        class="text-wrap"
+                                        *ngIf="service.name == 'Restaurants' && service.brandName != null && service.brandName !=''"
+                                    >
+                                        {{ service.name }}-{{service.brandName}}
+                                    </p>
+                                    <p
+                                        class="text-wrap"
+                                        *ngIf="service.name == 'Restaurants' && (service.brandName == null || service.brandName =='')"
+                                    >
+                                        {{ service.name }}
+                                    </p>
+                                    <p
+                                        class="text-wrap"
+                                        *ngIf="service.name != 'Restaurants'"
+                                    >
+                                        {{ service.name }}
+                                    </p>
+                                </ion-select-option>
+                            </ng-container>
+                        </ion-select>
 
-    
-      <ion-row *ngIf="isRowVisible">
-        <ion-col size="12" >
-          <ion-select class="card-item" (ionChange)="ReportfilterByDropdown()" placeholder="Filter By Business Service" [formControl]="BusinessServicesFilterControll" (ionChange)="ReportfilterByDropdown()"
-          [(ngModel)]="serviceId"
-          
-          name="Room" okText="Done" cancelText="Dismiss"
-            style=" font-size: 15px; text-align: left; color: #333;">
-            <ion-select-option value="0">
-              All
-            </ion-select-option>
-            <ng-container *ngFor="let service of businessServices" >
-              <ion-select-option *ngIf="service.active" [value]="service.id" class="text-wrap">
-                <p class="text-wrap" *ngIf="service.name == 'Restaurants' && service.brandName != null && service.brandName !=''">{{ service.name
-                }}-{{service.brandName}}</p>
-              <p class="text-wrap" *ngIf="service.name == 'Restaurants' && (service.brandName == null || service.brandName =='')">{{ service.name }}</p>
-              <p class="text-wrap" *ngIf="service.name != 'Restaurants'">{{ service.name }}</p>
-              </ion-select-option>
-            </ng-container>
-       
-          </ion-select>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
+                    <ion-col size="12" *ngIf="reportType === 'Order Report'">
+                        <ion-select
+                            placeholder="Filter By Delivery Method"
+                            [formControl]="DeliveryMethodFilterControll"
+                            [(ngModel)]="deliveryMethod"
+                            (ionChange)="ReportfilterByDropdown()"
+                            multiple
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option value="Dine In"
+                                >Dine In</ion-select-option
+                            >
+                            <ion-select-option value="Take Away"
+                                >Take Away</ion-select-option
+                            >
+                            <ion-select-option value="Room Order"
+                                >Room Order</ion-select-option
+                            >
+                        </ion-select>
 
-          
-          <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
-        <ion-col size="12" *ngIf="reportType === 'Order Report'">
-          <ion-select placeholder="Filter By Delivery Method" 
-          [formControl]="DeliveryMethodFilterControll"
-          [(ngModel)]="deliveryMethod"
-          (ionChange)="ReportfilterByDropdown()" multiple
-          class="card-item" name="Room" okText="Done" cancelText="Dismiss"
-            style=" font-size: 15px; text-align: left; color: #333;">
-            <ion-select-option value="Dine In">Dine In</ion-select-option>
-            <ion-select-option value="Take Away">Take Away</ion-select-option>
-            <ion-select-option value="Room Order">Room Order</ion-select-option>
-          </ion-select>
-       
-          <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
-        <ion-col size="12" >
-          <ion-select placeholder="Filter By Status" 
-          [formControl]="OrderStatusFilterControll"
-          [(ngModel)]="OrderStatus"
-          (ionChange)="ReportfilterByDropdown()"
-           multiple
-          class="card-item" name="Room" okText="Done" cancelText="Dismiss"
-            style=" font-size: 15px; text-align: left; color: #333">
-            <ion-select-option value="Submitted">Submitted</ion-select-option>
-            <ion-select-option value="Confirmed">Confirmed</ion-select-option>
-            <ion-select-option value="InProgress">In Progress</ion-select-option>
-            <ion-select-option value="ReadyToServe">Ready to Serve</ion-select-option>
-            <ion-select-option value="Served">Served</ion-select-option>
-            <ion-select-option value="OutForDelivery">Out for Delivery</ion-select-option>
-            <ion-select-option value="Shipped">Shipped</ion-select-option>
-            <ion-select-option value="Completed">Completed</ion-select-option>
-            <ion-select-option value="Cancelled">Cancelled</ion-select-option>
-          </ion-select>
-       
-          <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
-        <ion-col size="12"  *ngIf="reportType ==='Product Report'" >
-            <ion-select placeholder="Filter By Product Group Name" 
-            [formControl]="ProductGroupNameFilterControll"
-            [(ngModel)]="productGroupName"
-            (ionChange)="ReportfilterByDropdown()"
-             multiple
-            class="card-item" name="Room" okText="Done" cancelText="Dismiss"
-              style="font-size: 15px; text-align: left; color: #333">
-              <ion-select-option *ngFor="let productGroup of productGroupNameList" [value]="productGroup">
-                <p>{{ productGroup }}</p>
-              </ion-select-option>
-              
-            </ion-select>
-            <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-         
-          </ion-col> 
-        <ion-col size="12" *ngIf="reportType === 'Order Report'">
-          <ion-select placeholder="Filter By Resource" 
-          [formControl]="ResourceFilterControll"
-          [(ngModel)]="resourceName"
-          (ionChange)="ReportfilterByDropdown()"
-           multiple
-          class="card-item" name="Room" okText="Done" cancelText="Dismiss"
-            style=" font-size: 15px; text-align: left; color: #333">
-            <ion-select-option *ngFor="let res of resource" [value]="res">{{res}}</ion-select-option>
-          </ion-select>
-       
-          <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
+                    <ion-col size="12">
+                        <ion-select
+                            placeholder="Filter By Status"
+                            [formControl]="OrderStatusFilterControll"
+                            [(ngModel)]="OrderStatus"
+                            (ionChange)="ReportfilterByDropdown()"
+                            multiple
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option value="Submitted"
+                                >Submitted</ion-select-option
+                            >
+                            <ion-select-option value="Confirmed"
+                                >Confirmed</ion-select-option
+                            >
+                            <ion-select-option value="InProgress"
+                                >In Progress</ion-select-option
+                            >
+                            <ion-select-option value="ReadyToServe"
+                                >Ready to Serve</ion-select-option
+                            >
+                            <ion-select-option value="Served"
+                                >Served</ion-select-option
+                            >
+                            <ion-select-option value="OutForDelivery"
+                                >Out for Delivery</ion-select-option
+                            >
+                            <ion-select-option value="Shipped"
+                                >Shipped</ion-select-option
+                            >
+                            <ion-select-option value="Completed"
+                                >Completed</ion-select-option
+                            >
+                            <ion-select-option value="Cancelled"
+                                >Cancelled</ion-select-option
+                            >
+                        </ion-select>
 
-        <ion-col size="12" *ngIf="reportType === 'Product Report'">
-          <ion-select placeholder="Filter By Product Name" 
-          [formControl]="ProductNameFilterControll"
-          [(ngModel)]="productName"
-          (ionChange)="ReportfilterByDropdown()"
-           multiple
-          class="card-item" name="Room" okText="Done" cancelText="Dismiss"
-            style=" font-size: 15px; text-align: left; color: #333">
-            <ion-select-option *ngFor="let product of productNameList" [value]="product">{{ product }}</ion-select-option>
-          </ion-select>
-       
-          <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
+                    <ion-col size="12" *ngIf="reportType ==='Product Report'">
+                        <ion-select
+                            placeholder="Filter By Product Group Name"
+                            [formControl]="ProductGroupNameFilterControll"
+                            [(ngModel)]="productGroupName"
+                            (ionChange)="ReportfilterByDropdown()"
+                            multiple
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option
+                                *ngFor="let productGroup of productGroupNameList"
+                                [value]="productGroup"
+                            >
+                                <p>{{ productGroup }}</p>
+                            </ion-select-option>
+                        </ion-select>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
+                    <ion-col size="12" *ngIf="reportType === 'Order Report'">
+                        <ion-select
+                            placeholder="Filter By Resource"
+                            [formControl]="ResourceFilterControll"
+                            [(ngModel)]="resourceName"
+                            (ionChange)="ReportfilterByDropdown()"
+                            multiple
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option
+                                *ngFor="let res of resource"
+                                [value]="res"
+                                >{{res}}</ion-select-option
+                            >
+                        </ion-select>
 
-        <ion-col size="12" *ngIf="reportType === 'Order Report'">
-          <ion-select placeholder="Filter By Source" 
-          [formControl]="SourceFilterControll"
-          [(ngModel)]="source"
-          (ionChange)="ReportfilterByDropdown()"
-           multiple
-          class="card-item" name="Room" okText="Done" cancelText="Dismiss"
-            style="font-size: 15px; text-align: left; color: #333">
-            <ion-select-option value="Swiggy">Swiggy</ion-select-option>
-            <ion-select-option value="Zomato">Zomato</ion-select-option>
-            <ion-select-option value="POS">POS</ion-select-option>
-          </ion-select>
-       
-          <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
 
-        <ion-col size="12" *ngIf="reportType === 'Order Report'" >
-          <ion-select placeholder="Filter By Operator" 
-          [formControl]="OPFilterControll"
-          [(ngModel)]="operatorName"
-          (ionChange)="ReportfilterByDropdown()"
-          class="card-item" name="Room" okText="Done" cancelText="Dismiss"
-            style="font-size: 15px; text-align: left; color: #333;">
-            <ion-select-option *ngFor="let op of operatorNameList"
-            value="{{op}}">{{ op }}</ion-select-option>
+                    <ion-col size="12" *ngIf="reportType === 'Product Report'">
+                        <ion-select
+                            placeholder="Filter By Product Name"
+                            [formControl]="ProductNameFilterControll"
+                            [(ngModel)]="productName"
+                            (ionChange)="ReportfilterByDropdown()"
+                            multiple
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option
+                                *ngFor="let product of productNameList"
+                                [value]="product"
+                                >{{ product }}</ion-select-option
+                            >
+                        </ion-select>
 
-          </ion-select>
-       
-          <ion-icon name="caret-down-outline"
-            style="    position: absolute;
-            top: 50%;
-            right: 9px;
-            z-index: 4;
-            font-size: 19px;
-            transform: translateY(-50%);
-            color: #333;"></ion-icon>
-        </ion-col>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
 
-        <ion-col size="12" style="margin-top: 5px;" *ngIf="reportType === 'Order Report'">
-          <ion-col size="12">
-            <ion-checkbox [formControl]="Controller1"
-            [(ngModel)]="complimentaryMethodType"
-             (ionChange)="filterByComplimentary(complimentaryMethodType)" style="margin-top: 5px;"></ion-checkbox>
-          </ion-col>
-          <ion-text class="check-in-out-text" style="font-size: 19px; position: absolute; color: #333;">
-            Complimentary
-          </ion-text>
-        </ion-col>
-      </ion-row>
+                    <ion-col size="12" *ngIf="reportType === 'Order Report'">
+                        <ion-select
+                            placeholder="Filter By Source"
+                            [formControl]="SourceFilterControll"
+                            [(ngModel)]="source"
+                            (ionChange)="ReportfilterByDropdown()"
+                            multiple
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option value="Swiggy"
+                                >Swiggy</ion-select-option
+                            >
+                            <ion-select-option value="Zomato"
+                                >Zomato</ion-select-option
+                            >
+                            <ion-select-option value="POS"
+                                >POS</ion-select-option
+                            >
+                        </ion-select>
 
-     
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
 
-      <div *ngIf="isTotalActive">
-      <div *ngIf="reportType === 'Order Report' && orders.length > 0">
-      <ion-card  class="card-container2" style="margin-top: 10px;" >
-        <div>
-          <div
-          style="background-color: #1d174d; width:100%; color: #fff; padding: 15px; text-align: center; font-weight: 600;">
-          Total</div>
+                    <ion-col size="12" *ngIf="reportType === 'Order Report'">
+                        <ion-select
+                            placeholder="Filter By Operator"
+                            [formControl]="OPFilterControll"
+                            [(ngModel)]="operatorName"
+                            (ionChange)="ReportfilterByDropdown()"
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #333;
+                            "
+                        >
+                            <ion-select-option
+                                *ngFor="let op of operatorNameList"
+                                value="{{op}}"
+                                >{{ op }}</ion-select-option
+                            >
+                        </ion-select>
 
-        <p style="padding: 10px;">Service Charge: {{
-          getServiceChargeAmount()
-            | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">Net Amount: {{
-          getNetAmount() | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">Adv. Amount: {{
-          getAdvanceAmount() | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">Discount Amount: {{
-          getDiscountAmount() | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">SGST: {{
-          getTaxAmountByName("SGST")
-            | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">CGST: {{
-          getTaxAmountByName("CGST")
-            | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">Tax Amount: {{
-          getTaxAmount() | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">Total Amount: {{
-          getTotalAmount() | currency : currency : "" : "1.2-2"
-        }}</p>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                right: 9px;
+                                z-index: 4;
+                                font-size: 19px;
+                                transform: translateY(-50%);
+                                color: #333;
+                            "
+                        ></ion-icon>
+                    </ion-col>
+
+                    <ion-col
+                        size="12"
+                        style="margin-top: 5px"
+                        *ngIf="reportType === 'Order Report'"
+                    >
+                        <ion-col size="12">
+                            <ion-checkbox
+                                [formControl]="Controller1"
+                                [(ngModel)]="complimentaryMethodType"
+                                (ionChange)="filterByComplimentary(complimentaryMethodType)"
+                                style="margin-top: 5px"
+                            ></ion-checkbox>
+                        </ion-col>
+                        <ion-text
+                            class="check-in-out-text"
+                            style="
+                                font-size: 19px;
+                                position: absolute;
+                                color: #333;
+                            "
+                        >
+                            Complimentary
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+
+                <div *ngIf="isTotalActive">
+                    <div
+                        *ngIf="reportType === 'Order Report' && orders.length > 0"
+                    >
+                        <ion-card
+                            class="card-container2"
+                            style="margin-top: 10px"
+                        >
+                            <div>
+                                <div
+                                    style="
+                                        background-color: #1d174d;
+                                        width: 100%;
+                                        color: #fff;
+                                        padding: 15px;
+                                        text-align: center;
+                                        font-weight: 600;
+                                    "
+                                >
+                                    Total
+                                </div>
+
+                                <p style="padding: 10px">
+                                    Service Charge: {{ getServiceChargeAmount()
+                                    | currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    Net Amount: {{ getNetAmount() | currency :
+                                    currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    Adv. Amount: {{ getAdvanceAmount() |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    Discount Amount: {{ getDiscountAmount() |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    SGST: {{ getTaxAmountByName("SGST") |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    CGST: {{ getTaxAmountByName("CGST") |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    Tax Amount: {{ getTaxAmount() | currency :
+                                    currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    Total Amount: {{ getTotalAmount() | currency
+                                    : currency : "" : "1.2-2" }}
+                                </p>
+                            </div>
+                        </ion-card>
+                    </div>
+                    <div
+                        *ngIf="reportType === 'Product Report' && productLineDtos.length > 0"
+                    >
+                        <ion-card
+                            class="card-container2"
+                            style="margin-top: 10px"
+                        >
+                            <div>
+                                <div
+                                    style="
+                                        background-color: #1d174d;
+                                        width: 100%;
+                                        color: #fff;
+                                        padding: 15px;
+                                        text-align: center;
+                                        font-weight: 600;
+                                    "
+                                >
+                                    Total
+                                </div>
+
+                                <p style="padding: 10px">
+                                    Units in Order: {{ getTotalUnit() }}
+                                </p>
+                                <p style="padding: 10px">
+                                    Sell Unit Price: {{ getTotaSellPrice() |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p style="padding: 10px">
+                                    Discount Amount: {{
+                                    getTotalDiscountedPrice() | currency :
+                                    currency : "" : "1.2-2" }}
+                                </p>
+
+                                <p style="padding: 10px">
+                                    Total Amount: {{ getTotalPrice() | currency
+                                    : currency : "" : "1.2-2" }}
+                                </p>
+                            </div>
+                        </ion-card>
+                    </div>
+                </div>
+
+                <div *ngIf="isAllDataActive && reportType === 'Order Report'">
+                    <ion-card
+                        *ngFor="let row of orders| paginate: { itemsPerPage: 5, currentPage: p }; let i = index;"
+                        class="card-container2"
+                        style="margin-top: 10px"
+                    >
+                        <div>
+                            <div
+                                (click)="toggleCardBody(i)"
+                                [ngStyle]="{'background-color': i % 2 === 0 ? '#D3EBF2' : '#FEEBD6'}"
+                                style="
+                                    width: 100%;
+                                    color: #333;
+                                    padding: 10px;
+                                    font-weight: 600;
+                                    padding-left: 15px;
+                                "
+                            >
+                                <p>Sl.No: {{ 1 + i }}</p>
+                                <p style="margin-top: -10px">
+                                    Order Date: {{
+                                    dateService.convertMillisecondsToDateFormat(row.orderedDate)
+                                    }}
+                                </p>
+                                <p style="margin-top: -10px">
+                                    Service Name: {{ row.propertyName }}
+                                </p>
+                                <p style="margin-top: -10px">
+                                    Prop Ref ID: {{ row.bookOneOrderId }}
+                                    <span
+                                        style="margin-top: -10px"
+                                        *ngIf="row?.complimentary == true"
+                                        >(complimentary)</span
+                                    >
+                                </p>
+                            </div>
+                            <div
+                                style="padding: 15px; color: #333"
+                                *ngIf="openedCardIndex === i"
+                            >
+                                <p>
+                                    Name :
+                                    <span
+                                        *ngIf="row.firstName != null && row.firstName != undefined"
+                                        >{{ row.firstName }} {{ row.lastName
+                                        }}</span
+                                    >
+                                    <span
+                                        *ngIf="row.firstName === null || row.firstName === undefined"
+                                        >{{ row.customerName }}</span
+                                    >
+                                </p>
+                                <p>Contact: {{ row.mobile }}</p>
+                                <p>Status: {{ row.orderStatus }}</p>
+                                <p>
+                                    Product Group Name: {{row.productGroupName}}
+                                </p>
+                                <p>Delivery Method: {{ row.deliveryMethod }}</p>
+                                <p>Transaction Id: {{ row.receiptNumber }}</p>
+                                <p>Room No: {{ row.roomNo }}</p>
+                                <p>Order Source: {{ row.externalSite }}</p>
+                                <p>Resource: {{ row.resourceName }}</p>
+                                <p>No Of Pax: {{ row.noOfPerson }}</p>
+                                <p>Operator: {{ row.createdBy }}</p>
+                                <p>
+                                    Service Charge: {{ row.serviceChargeAmount |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p>
+                                    Net Amount: {{ row.netAmount | currency :
+                                    currency : "" : "1.2-2" }}
+                                </p>
+                                <p>
+                                    Advance Amount: {{ row.advanceAmount |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p>
+                                    Discount Amount: {{ row.discountAmount |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+
+                                <p *ngFor="let tax of row.taxDetails">
+                                    <span *ngIf="tax.name === 'SGST'">
+                                        SGST: {{ tax.taxAmount | currency :
+                                        currency : '' : '1.2-2' }}
+                                    </span>
+                                </p>
+                                <p *ngFor="let tax of row.taxDetails">
+                                    <span *ngIf="tax.name === 'CGST'">
+                                        CGST: {{ tax.taxAmount | currency :
+                                        currency : '' : '1.2-2' }}
+                                    </span>
+                                </p>
+                                <p>
+                                    Tax Amount: {{ row.taxAmount | currency :
+                                    currency : "" : "1.2-2" }}
+                                </p>
+                                <p>
+                                    Total Amount: {{ row.totalOrderAmount |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p>Notes: {{ row.specialNotes }}</p>
+                            </div>
+                        </div>
+                    </ion-card>
+
+                    <pagination-controls
+                        *ngIf="this.orders.length >0"
+                        (pageChange)="p = $event"
+                    ></pagination-controls>
+                </div>
+
+                <div *ngIf="isAllDataActive && reportType === 'Product Report'">
+                    <ion-card
+                        *ngFor="let row of productLineDtos| paginate: { itemsPerPage: 5, currentPage: p }; let i = index;"
+                        class="card-container2"
+                        style="margin-top: 10px"
+                    >
+                        <div>
+                            <div
+                                style="
+                                    background-color: #1d174d;
+                                    width: 100%;
+                                    color: #fff;
+                                    padding: 15px;
+                                    font-weight: 600;
+                                "
+                            >
+                                <p>Sl.No: {{ 1 + i }}</p>
+                                <p>
+                                    Order Date: {{
+                                    dateService.convertMillisecondsToDateFormat(row.orderedDate)
+                                    }}
+                                </p>
+                                <p>Service Name: {{ row.propertyName }}</p>
+                                <p>Prop Ref ID: {{ row.propRefId }}</p>
+                            </div>
+                            <div style="padding: 15px">
+                                <p>Name: {{ row.customerName }}</p>
+                                <p>Status: {{ row.orderStatus }}</p>
+                                <p>Product Name: {{ row.productName }}</p>
+                                <p>
+                                    Product Group Name: {{ row.productGroupName
+                                    }}
+                                </p>
+                                <p>Units in Order: {{ row.unitInOrder }}</p>
+                                <p>
+                                    Sell Unit Price: {{ row.sellUnitPrice |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p>
+                                    Discount Amount: {{ row.discountAmount |
+                                    currency : currency : "" : "1.2-2" }}
+                                </p>
+                                <p>
+                                    Total Amount: {{ row.totalAmount | currency
+                                    : currency : "" : "1.2-2" }}
+                                </p>
+                                <p>Product Status: {{ checkStatus(row) }}</p>
+                                <p>Notes: {{ row.notes }}</p>
+                            </div>
+                        </div>
+                    </ion-card>
+                    <pagination-controls
+                        *ngIf="this.productLineDtos.length >0"
+                        (pageChange)="p = $event"
+                    ></pagination-controls>
+                </div>
+            </div>
+            <div *ngIf="orders.length === 0 && productLineDtos.length === 0 ">
+                <p style="text-align: center; color: red">No Data Found</p>
+            </div>
         </div>
-      </ion-card>
-    </div>
-    <div *ngIf="reportType === 'Product Report' && productLineDtos.length > 0">
-      <ion-card class="card-container2" style="margin-top: 10px;" >
-        <div>
-          <div
-          style="background-color: #1d174d; width:100%; color: #fff; padding: 15px; text-align: center; font-weight: 600;">
-          Total</div>
 
-        <p style="padding: 10px;">Units in Order: {{ getTotalUnit() }}</p>
-        <p style="padding: 10px;">Sell Unit Price: {{
-          getTotaSellPrice() | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p style="padding: 10px;">Discount Amount: {{
-          getTotalDiscountedPrice()
-            | currency : currency : "" : "1.2-2"
-        }} </p>
-
-        <p style="padding: 10px;">Total Amount: {{
-          getTotalPrice() | currency : currency : "" : "1.2-2"
-        }}</p>
+        <div class="loader-everyOne" *ngIf="loader">
+            <ion-spinner name="crescent" class="spinner-service"></ion-spinner>
+            <div class="loader-content-service">
+                <img
+                    src="/assets/img/loader-logo.png"
+                    alt="Loader Image"
+                    class="loader-image"
+                />
+                <div class="loader-text">Please wait...</div>
+            </div>
         </div>
-      </ion-card>
     </div>
-
-  </div>
-
-    
-
-      <div *ngIf="isAllDataActive && reportType === 'Order Report'">
-      <ion-card  *ngFor="let row of orders| paginate: { itemsPerPage: 5, currentPage: p }; let i = index;"  class="card-container2" style="margin-top: 10px;" >
-        <div >
-          <div (click)="toggleCardBody(i)" [ngStyle]="{'background-color': i % 2 === 0 ? '#D3EBF2' : '#FEEBD6'}"
-          style=" width:100%; color: #333; padding: 10px ;  font-weight: 600;     padding-left: 15px;">
-           
-            <p  >Sl.No: {{ 1 + i }}</p>
-            <p style="margin-top: -10px;" >Order Date: {{
-                dateService.convertMillisecondsToDateFormat(row.orderedDate)
-              }}</p>
-            <p style="margin-top: -10px;">Service Name: {{ row.propertyName }}</p>
-            <p style="margin-top: -10px;">Prop Ref ID: {{ row.bookOneOrderId }} 
-            <span style="margin-top: -10px;" *ngIf="row?.complimentary == true">(complimentary)</span>
-          </p>
-        </div>
-        <div style="padding: 15px; color: #333" *ngIf="openedCardIndex === i">
-          <p>Name :  <span *ngIf="row.firstName != null && row.firstName != undefined"
-            >{{ row.firstName }} {{ row.lastName }}</span
-          >
-          <span
-            *ngIf="row.firstName === null || row.firstName === undefined"
-            >{{ row.customerName }}</span
-          ></p>
-        <p>Contact: {{ row.mobile }}</p>
-        <p>Status: {{ row.orderStatus }}</p>
-        <p>Product Group Name: {{row.productGroupName}}</p>
-        <p>Delivery Method: {{ row.deliveryMethod }}</p>
-        <p>Transaction Id: {{ row.receiptNumber }}</p>
-        <p>Room No: {{ row.roomNo }}</p>
-        <p>Order Source: {{ row.externalSite }}	</p>
-        <p>Resource: {{ row.resourceName }}</p>
-        <p>No Of Pax: {{ row.noOfPerson }}</p>
-        <p>Operator: {{ row.createdBy }}</p>
-        <p>Service Charge: {{   row.serviceChargeAmount | currency : currency : "" : "1.2-2" }}</p>
-        <p>Net Amount: {{
-          row.netAmount | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p>Advance Amount: {{
-          row.advanceAmount | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p>Discount Amount: {{
-          row.discountAmount | currency : currency : "" : "1.2-2"
-        }}</p>
-        
-        <p *ngFor="let tax of row.taxDetails">
-          
-          <span *ngIf="tax.name === 'SGST'">
-            SGST: {{ tax.taxAmount | currency : currency : '' : '1.2-2' }}
-          </span>
-        </p>
-        <p *ngFor="let tax of row.taxDetails">
-          <span *ngIf="tax.name === 'CGST'">
-            CGST: {{ tax.taxAmount | currency : currency : '' : '1.2-2' }}
-          </span>
-        </p>
-        <p>Tax Amount: {{
-          row.taxAmount | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p>Total Amount: {{
-          row.totalOrderAmount
-            | currency : currency : "" : "1.2-2"
-        }}	</p>
-        <p>Notes: {{ row.specialNotes }}</p>
-        </div>
-        </div>
-      </ion-card>
-
-      <pagination-controls
-      *ngIf="this.orders.length >0"
-      (pageChange)="p = $event"
-  ></pagination-controls>
-    </div>
-
-    <div *ngIf="isAllDataActive && reportType === 'Product Report'">
-      <ion-card *ngFor="let row of productLineDtos| paginate: { itemsPerPage: 5, currentPage: p }; let i = index;" class="card-container2" style="margin-top: 10px;" >
-        <div >
-          <div
-          style="background-color: #1d174d; width:100%; color: #fff; padding: 15px;  font-weight: 600;">
-  
-            <p>Sl.No: {{ 1 + i }}</p>
-            <p>Order Date: {{
-              dateService.convertMillisecondsToDateFormat(row.orderedDate)
-            }}</p>
-            <p>Service Name: {{ row.propertyName }}</p>
-            <p>Prop Ref ID: {{ row.propRefId }}</p>
-        </div>
-        <div style="padding: 15px;">
-          <p>Name: {{ row.customerName }}</p>
-        <p>Status: {{ row.orderStatus }}</p>
-        <p>Product Name: {{ row.productName }}</p>
-        <p>Product Group Name: {{ row.productGroupName }}</p>
-        <p>Units in Order: {{ row.unitInOrder }}</p>
-        <p>Sell Unit Price: {{
-          row.sellUnitPrice | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p>Discount Amount: {{
-          row.discountAmount | currency : currency : "" : "1.2-2"
-        }} </p>
-        <p>Total Amount: {{
-          row.totalAmount | currency : currency : "" : "1.2-2"
-        }}</p>
-        <p>Product Status: {{ checkStatus(row) }}</p>
-        <p>Notes: {{ row.notes }}</p>
-        
-        </div>
-        </div>
-      </ion-card>
-      <pagination-controls
-      *ngIf="this.productLineDtos.length >0"
-      (pageChange)="p = $event"
-  ></pagination-controls>
-    </div>
-    </div>
-    <div *ngIf="orders.length === 0 && productLineDtos.length === 0 ">
-      <p style="text-align: center; color: red;">No Data Found</p>
-      
-    </div>
-   
-    </div>
-
-    <div class="loader-everyOne" *ngIf="loader">
-      <ion-spinner name="crescent" class="spinner-service"></ion-spinner>
-      <div class="loader-content-service">
-        <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
-        <div class="loader-text">Please wait...</div>
-      </div>
-    </div>
-  </div>
 </ion-content>

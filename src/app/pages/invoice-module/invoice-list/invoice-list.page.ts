@@ -1,7 +1,8 @@
 import { Logger } from "../../../service/logger.service";
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import {
     ActionSheetController,
+    IonModal,
     NavController,
     ToastController,
 } from "@ionic/angular";
@@ -19,6 +20,8 @@ import { Property } from "src/app/model/property/Property";
     styleUrls: ["./invoice-list.page.scss"],
 })
 export class InvoiceListPage implements OnInit {
+    @ViewChild("fromModal", { static: false }) fromModal: IonModal;
+    @ViewChild("toModal", { static: false }) toModal: IonModal;
     onSeachForm: FormGroup;
     property: Property;
     invoices: Invoice[];
@@ -33,7 +36,11 @@ export class InvoiceListPage implements OnInit {
     fromDate: string;
     toDate: string;
     openedCardIndex: number | null = null;
+    formattedDate: string;
 
+         isFromModalOpen = false;
+    isToModalOpen = false;
+    
     constructor(
         private invoiceService: InvoiceService,
         private formBuilder: FormBuilder,
@@ -46,12 +53,20 @@ export class InvoiceListPage implements OnInit {
     ) {
         this.property = new Property();
         this.onSeachForm = this.formBuilder.group({
-            rateAndAvailFromDate: [
-                "",
-                Validators.compose([Validators.required]),
-            ],
-            rateAndAvailToDate: ["", Validators.compose([Validators.required])],
-        });
+  rateAndAvailFromDate: [new Date().toISOString().split("T")[0],
+                Validators.compose([Validators.required])],
+  rateAndAvailToDate: [new Date().toISOString().split("T")[0],
+                Validators.compose([Validators.required])],
+});
+
+
+        // this.onSeachForm = this.formBuilder.group({
+        //     rateAndAvailFromDate: [ new Date(),
+                
+        //         Validators.compose([Validators.required]),
+        //     ],
+        //     rateAndAvailToDate: [new Date(), Validators.compose([Validators.required])],
+        // });
     }
 
     ngOnInit() {
@@ -86,20 +101,34 @@ export class InvoiceListPage implements OnInit {
     // }
     currentDateInterval() {
         const currentDate = new Date();
-        this.fromDate = this.dateService.convertMillisecondsToYYYMMDDFormat(currentDate);
+        // this.onSeachForm.get('rateAndAvailFromDate')?.setValue(currentDate);
+        // this.onSeachForm.get('rateAndAvailToDate')?.setValue(currentDate);
+        this.formattedDate  = this.dateService.convertMillisecondsToYYYMMDDFormat(currentDate);
         this.toDate = this.dateService.convertMillisecondsToYYYMMDDFormat(currentDate);
+       
         this.getInvoiceByPropertyAnddateRange(
             Number(this.token.getPropertyId()),
-            this.fromDate,
-            this.toDate
-        );
+            this.formattedDate,
+            this.formattedDate
+        )
     }
 
     onReset() {
-        this.invoices = [];
-        this.toDate = '';
-        this.fromDate = '';
-        this.p = 1;
+    // Clear your data variables
+    this.invoices = [];
+    this.p = 1;
+
+    // Reset the form controls so UI updates
+    this.onSeachForm.reset();
+
+    // Reset min/max dates if needed
+    this.fromDate = '';
+    this.toDate = '';
+    this.toMinDate = '';
+
+    // Optionally close modals if open
+    //   this.isFromModalOpen = false;
+    //   this.isToModalOpen = false;
     }
 
     toggleCardBody(index: number): void {
@@ -108,29 +137,66 @@ export class InvoiceListPage implements OnInit {
       }
 
     onSearch() {
-        this.toDate = this.dateService.convertMillisecondsToYYYMMDDFormat(
-            this.toDate
-        );
-        this.fromDate = this.dateService.convertMillisecondsToYYYMMDDFormat(
-            this.fromDate
-        );
+       const fromDateValue = this.onSeachForm.get('rateAndAvailFromDate')?.value;
+        const toDateValue = this.onSeachForm.get('rateAndAvailToDate')?.value;
+
+        if (!fromDateValue || !toDateValue) {
+            this.presentToast("Please select both From and To dates.");
+            return;
+        }
+
+        const formattedFromDate = this.dateService.convertMillisecondsToYYYMMDDFormat(fromDateValue);
+        const formattedToDate = this.dateService.convertMillisecondsToYYYMMDDFormat(toDateValue);
 
         this.getInvoiceByPropertyAnddateRange(
             Number(this.token.getPropertyId()),
-            this.fromDate,
-            this.toDate
+            formattedFromDate,
+            formattedToDate
         );
     }
 
+
+
+    setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
+    
+
     fromDateChange() {
-        Logger.log("date change :" + this.fromDate);
-        let toDate = new Date(this.fromDate);
+       const fromDateControl = this.onSeachForm.get('rateAndAvailFromDate');
+        const fromDateValue = fromDateControl?.value;
 
-        toDate.setDate(toDate.getDate() + 1);
-        this.toMinDate = this.getDate(toDate);
+        if (fromDateValue) {
+            Logger.log("From Date changed: " + fromDateValue);
+            const toDate = new Date(fromDateValue);
+            toDate.setDate(toDate.getDate() + 1);
+            this.toMinDate = this.getDate(toDate);
+        }
 
-        // toDate.setDate(toDate.getDate() + 15);
-        // this.toMaxDate = this.getDate(toDate);
+    }
+    onCancel() {
+    // console.log("Date selection cancelled");
+    // Handle cancel action
+    }
+
+    
+    toDateChange(){
+
+        setTimeout(() => {
+            this.toModal?.dismiss();
+        }, 100);
     }
 
     getDate(date: Date) {

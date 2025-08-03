@@ -17,10 +17,11 @@ const routes: Routes = [
         pathMatch:'full',
         redirectTo: 'servicesTab'
         },
-        {
-        path: 'servicesTab',
-        loadChildren: '../../pages/tab-service/tab-service.module#TabServicePageModule'
-        }
+      {
+  path: 'servicesTab',
+  loadChildren: () => import('../../pages/tab-service/tab-service.module').then(m => m.TabServicePageModule)
+}
+
     ],
 
    }

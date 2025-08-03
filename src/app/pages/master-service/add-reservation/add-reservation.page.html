@@ -1,21 +1,21 @@
-
-
 <ion-header class="ion-no-border">
-
-
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
-        src="{{this.property.logoUrl}}"
-        onerror="this.src='/assets/img/app-logo.png'"
-    />
+            style="object-fit: fill"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
     </ion-avatar>
 
     <ion-text class="HeaderSubTitle"> Reservations </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
-            <ion-text color="light" class="HeaderTitle" 
+            <ion-icon
+                name="arrow-back-outline"
+                (click)="navigateToPage()"
+                style="font-size: 20px; margin-top: -10px"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle"
                 >Service Dashboard</ion-text
             >
             <!-- <ion-img
@@ -33,92 +33,185 @@
     <div class="loader-everyOne" *ngIf="loader">
         <ion-spinner name="crescent" class="spinner"></ion-spinner>
         <div class="loader-content">
-          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
-          <div class="loader-text">Please wait...</div>
+            <img
+                src="/assets/img/loader-logo.png"
+                alt="Loader Image"
+                class="loader-image"
+            />
+            <div class="loader-text">Please wait...</div>
         </div>
-      </div>
-    <div
-        *ngIf="propertiesDto.businessServiceDtoList === undefined || propertiesDto.businessServiceDtoList === null || propertiesDto.businessServiceDtoList.length === 0">
-        <h6 style="color: #FF0000;"> No service found</h6>
     </div>
-    <ion-list *ngFor="let bServiceDtoList of propertiesDto.businessServiceDtoList; let serviceIndex = index;" class="sectioned">
-        <ion-item no-margin no-padding style="  display: flex;
-            align-items: start;">
+    <div
+        *ngIf="propertiesDto.businessServiceDtoList === undefined || propertiesDto.businessServiceDtoList === null || propertiesDto.businessServiceDtoList.length === 0"
+    >
+        <h6 style="color: #ff0000">No service found</h6>
+    </div>
+    <ion-list
+        *ngFor="let bServiceDtoList of propertiesDto.businessServiceDtoList; let serviceIndex = index;"
+        class="sectioned"
+    >
+        <ion-item
+            no-margin
+            no-padding
+            style="display: flex; align-items: start"
+        >
             <ion-avatar slot="start">
-                <ion-icon name="briefcase-outline" size="large" style="color: #333"></ion-icon>
+                <ion-icon
+                    name="briefcase-outline"
+                    size="large"
+                    style="color: #333"
+                ></ion-icon>
             </ion-avatar>
             <ion-text>
-                <h2 class="heading-semibold font-14 text-violet text-white">{{bServiceDtoList.name}}</h2>
-                <div class=" font-12  text-order-grey text-white" [innerHTML]="bServiceDtoList.description"></div>
+                <h2 class="heading-semibold font-14 text-violet text-white">
+                    {{bServiceDtoList.name}}
+                </h2>
+                <div
+                    class="font-12 text-order-grey text-white"
+                    [innerHTML]="bServiceDtoList.description"
+                ></div>
                 <!-- <p>Listen, I've had a pretty messed up day...</p> -->
             </ion-text>
         </ion-item>
         <ion-row>
-            <ion-col size="12" style="background: none;">
+            <ion-col size="12" style="background: none">
                 <div
-                    *ngIf="bServiceDtoList.businessServiceTypes === undefined || bServiceDtoList.businessServiceTypes === null || bServiceDtoList.businessServiceTypes.length === 0">
-                    <h6 style="color: #FF0000; margin-left: 70px;"> No offering found</h6>
+                    *ngIf="bServiceDtoList.businessServiceTypes === undefined || bServiceDtoList.businessServiceTypes === null || bServiceDtoList.businessServiceTypes.length === 0"
+                >
+                    <h6 style="color: #ff0000; margin-left: 70px">
+                        No offering found
+                    </h6>
                 </div>
                 <ion-text
                     *ngIf="bServiceDtoList.businessServiceTypes != undefined && bServiceDtoList.businessServiceTypes != null && bServiceDtoList.businessServiceTypes.length > 0"
-                    color="primary" class="input-text" style="font-size: 20px;margin-left: 15px;">Service Offerings
+                    color="primary"
+                    class="input-text"
+                    style="font-size: 20px; margin-left: 15px"
+                    >Service Offerings
                 </ion-text>
 
-
-                <ion-list *ngFor="let service of bServiceDtoList.businessServiceTypes; let serviceTypeIndex = index;">
-
+                <ion-list
+                    *ngFor="let service of bServiceDtoList.businessServiceTypes; let serviceTypeIndex = index;"
+                >
                     <div
-                        *ngIf="serviceTypeIndex ===0 && checckOfferingByMethod(bServiceDtoList.businessServiceTypes, this.isBookingOffering) === false">
-                        <h6 *ngIf="this.isBookingOffering" style="color: #FF0000;"> No
-                            offering found for booking</h6>
+                        *ngIf="serviceTypeIndex ===0 && checckOfferingByMethod(bServiceDtoList.businessServiceTypes, this.isBookingOffering) === false"
+                    >
+                        <h6
+                            *ngIf="this.isBookingOffering"
+                            style="color: #ff0000"
+                        >
+                            No offering found for booking
+                        </h6>
                         <!-- <h6 *ngIf="!this.isBookingOffering" style="color: #FF0000;"> No
                         offering found for enquiry</h6> -->
                     </div>
 
-                    <ion-item class="" (click)="setServiceType(service, serviceIndex, serviceTypeIndex);"
-                        *ngIf="service.bookable === null || service.bookable === undefined || service.bookable">
+                    <ion-item
+                        class=""
+                        (click)="setServiceType(service, serviceIndex, serviceTypeIndex);"
+                        *ngIf="service.bookable === null || service.bookable === undefined || service.bookable"
+                    >
                         <ion-avatar slot="start">
-                            <ion-icon name="heart-outline" size="large" style="color: #333"></ion-icon>
+                            <ion-icon
+                                name="heart-outline"
+                                size="large"
+                                style="color: #333"
+                            ></ion-icon>
                         </ion-avatar>
                         <ion-grid>
                             <ion-row>
                                 <ion-col size="12">
-                                    <h2 class="heading-semibold font-14 text-violet text-white" style="font-size: 14px;">
-                                        {{service.name}}</h2>
-                                    <h3 class="heading-medium font-12  text-order-grey text-white" style="font-size: 12px;">
-                                        {{service.description}}</h3>
-                                    <ion-badge color="white" *ngFor="let tags of service.serviceTagList">
-                                        {{ tags }}</ion-badge>
+                                    <h2
+                                        class="heading-semibold font-14 text-violet text-white"
+                                        style="font-size: 14px"
+                                    >
+                                        {{service.name}}
+                                    </h2>
+                                    <h3
+                                        class="heading-medium font-12 text-order-grey text-white"
+                                        style="font-size: 12px"
+                                    >
+                                        {{service.description}}
+                                    </h3>
+                                    <ion-badge
+                                        color="white"
+                                        *ngFor="let tags of service.serviceTagList"
+                                    >
+                                        {{ tags }}</ion-badge
+                                    >
                                 </ion-col>
 
                                 <!-- <p>Listen, I've had a pretty messed up day...</p> -->
                             </ion-row>
                         </ion-grid>
                     </ion-item>
-                    <ion-row *ngIf="serviceIndex2 == serviceIndex && serviceTypeIndex2 == serviceTypeIndex">
+                    <ion-row
+                        *ngIf="serviceIndex2 == serviceIndex && serviceTypeIndex2 == serviceTypeIndex"
+                    >
                         <ion-col size="12">
                             <ion-item lines="none">
-                                <ion-text color="white" class=" ion-padding" *ngIf="slotPrice"><b>Price:</b> {{
-                                    slotPrice | currency:
+                                <ion-text
+                                    color="white"
+                                    class="ion-padding"
+                                    *ngIf="slotPrice"
+                                    ><b>Price:</b> {{ slotPrice | currency:
                                     token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'}}
                                 </ion-text>
 
-                                <ion-button size="small" slot="end" class="btn ion-align-right"
-                                    (click)="onBook(bServiceDtoList)">Book</ion-button>
+                                <ion-button
+                                    size="small"
+                                    slot="end"
+                                    class="btn ion-align-right"
+                                    (click)="onBook(bServiceDtoList)"
+                                    >Book</ion-button
+                                >
                             </ion-item>
                         </ion-col>
                         <ion-col size="12" *ngIf="this.isDateFound">
-                            <ion-text style="color:#333" class="check-in-out-text" style="font-size: 12px;">Select Date
-                            </ion-text>
-                            <ion-datetime style="color: #333;" [(ngModel)]="dateSelected" (ionChange)="getDate()" min= "2000-12-31"
+                            <ion-item>
+                                <ion-text
+                                    style="color: #333"
+                                    class="check-in-out-text"
+                                    style="font-size: 12px"
+                                    >Select Date:
+                                </ion-text>
+                                <!-- <ion-datetime style="color: #333;" [(ngModel)]="dateSelected" (ionChange)="getDate()" min= "2000-12-31"
                             max="2100-12-31" no-padding class="date" color="primary" displayFormat="DD-MM-YYYY"
-                                pickerFormat="DD-MM-YYYY" placeholder="DD-MM-YYYY"></ion-datetime>
+                                pickerFormat="DD-MM-YYYY" placeholder="DD-MM-YYYY"></ion-datetime> -->
+                                <ion-datetime-button
+                                    datetime="datePicker"
+                                    class="date"
+                                ></ion-datetime-button>
+
+                                <ion-modal [keepContentsMounted]="true">
+                                    <ng-template>
+                                        <ion-datetime
+                                            id="datePicker"
+                                            style="color: #333"
+                                            [(ngModel)]="dateSelected"
+                                            (ionChange)="getDate()"
+                                            min="2000-12-31"
+                                            max="2100-12-31"
+                                            [showDefaultButtons]="true"
+                                            presentation="date"
+                                            style="color: #000"
+                                            doneText="Done"
+                                            cancelText="Cancel"
+                                            presentation="date"
+                                            placeholder="DD-MM-YYYY"
+                                        >
+                                        </ion-datetime>
+                                    </ng-template>
+                                </ion-modal>
+                            </ion-item>
                         </ion-col>
 
-
                         <ion-col size="12" *ngIf="this.dateNotFound">
-                            <ion-text color="primary" class="input-text" style="color:red;font-size: 12px;">No Slot
-                                Found
+                            <ion-text
+                                color="primary"
+                                class="input-text"
+                                style="color: red; font-size: 12px"
+                                >No Slot Found
                             </ion-text>
                         </ion-col>
 
@@ -136,63 +229,103 @@
 
                             <!--  -->
                             <div *ngIf="isDateSelected && !loader">
-
-                                <ion-list *ngFor="let resource of slots.resourceList; let s = index"
-                                    class="bg-back list-date" no-margin no-padding>
-
-                                    <div color="primary" class="" no-padding no-margin>
-                                        <div no-padding no-margin (click)="onLocRec(s)">
+                                <ion-list
+                                    *ngFor="let resource of slots.resourceList; let s = index"
+                                    class="bg-back list-date"
+                                    no-margin
+                                    no-padding
+                                >
+                                    <div
+                                        color="primary"
+                                        class=""
+                                        no-padding
+                                        no-margin
+                                    >
+                                        <div
+                                            no-padding
+                                            no-margin
+                                            (click)="onLocRec(s)"
+                                        >
                                             <!-- <ion-grid no-padding no-margin> -->
                                             <ion-row>
                                                 <ion-col no-padding size="12">
                                                     <ion-item color="white">
                                                         <ion-avatar>
-                                                            <img *ngIf="resource.imageUrl" src="{{resource.imageUrl}}">
-                                                            <img *ngIf="!resource.imageUrl"
-                                                                src="../../../../assets/icon/raw-bookone-logo.png">
+                                                            <img
+                                                                *ngIf="resource.imageUrl"
+                                                                src="{{resource.imageUrl}}"
+                                                            />
+                                                            <img
+                                                                *ngIf="!resource.imageUrl"
+                                                                src="../../../../assets/icon/raw-bookone-logo.png"
+                                                            />
                                                         </ion-avatar>
                                                         <ion-text>
                                                             <b
-                                                                *ngIf="businessServiceDto.businessTermResource != null && businessServiceDto.businessTermResource != undefined">{{businessServiceDto.businessTermResource}}:</b>
+                                                                *ngIf="businessServiceDto.businessTermResource != null && businessServiceDto.businessTermResource != undefined"
+                                                                >{{businessServiceDto.businessTermResource}}:</b
+                                                            >
                                                             <b
-                                                                *ngIf="businessServiceDto.businessTermResource == null || businessServiceDto.businessTermResource == undefined">Resource:</b>
+                                                                *ngIf="businessServiceDto.businessTermResource == null || businessServiceDto.businessTermResource == undefined"
+                                                                >Resource:</b
+                                                            >
                                                             {{resource.name}}
                                                         </ion-text>
-                                                        <ion-icon *ngIf="reclocIndex === s && isRecLocClick"
-                                                            name="arrow-down" slot="end">
+                                                        <ion-icon
+                                                            *ngIf="reclocIndex === s && isRecLocClick"
+                                                            name="arrow-down"
+                                                            slot="end"
+                                                        >
                                                         </ion-icon>
-                                                        <ion-icon *ngIf="reclocIndex === s && !isRecLocClick"
-                                                            name="arrow-up" slot="end">
+                                                        <ion-icon
+                                                            *ngIf="reclocIndex === s && !isRecLocClick"
+                                                            name="arrow-up"
+                                                            slot="end"
+                                                        >
                                                         </ion-icon>
                                                     </ion-item>
-
                                                 </ion-col>
                                                 <!-- <ion-col no-padding size="1">
                                         
 
                                     </ion-col> -->
 
-                                                <div *ngIf="!resource.availableTimings?.length">
+                                                <div
+                                                    *ngIf="!resource.availableTimings?.length"
+                                                >
                                                     <b>No Slot Available</b>
                                                 </div>
                                             </ion-row>
                                             <!-- </ion-grid> -->
                                         </div>
-                                        <div *ngIf="reclocIndex === s && isRecLocClick">
-
-                                            <ion-list class=" list-locRec" no-margin no-padding>
+                                        <div
+                                            *ngIf="reclocIndex === s && isRecLocClick"
+                                        >
+                                            <ion-list
+                                                class="list-locRec"
+                                                no-margin
+                                                no-padding
+                                            >
                                                 <ion-item
-                                                    *ngFor="let slotsTime of resource.availableTimings; let j = index">
-                                                    <ion-label>{{'01/01/1900 ' + slotsTime.startTime | date: 'hh:mm aa'
-                                                        }}
-                                                        -
-                                                        {{'01/01/1900 ' + slotsTime.finishTime | date: 'hh:mm aa'}}
+                                                    *ngFor="let slotsTime of resource.availableTimings; let j = index"
+                                                >
+                                                    <ion-label
+                                                        >{{'01/01/1900 ' +
+                                                        slotsTime.startTime |
+                                                        date: 'hh:mm aa' }} -
+                                                        {{'01/01/1900 ' +
+                                                        slotsTime.finishTime |
+                                                        date: 'hh:mm aa'}}
                                                     </ion-label>
-                                                    <ion-checkbox slot="end" [(ngModel)]="slotsTime.ischecked"
-                                                        class="form-check-input d-none" ngbButton type="checkbox"
+                                                    <ion-checkbox
+                                                        slot="end"
+                                                        [(ngModel)]="slotsTime.ischecked"
+                                                        class="form-check-input d-none"
+                                                        ngbButton
+                                                        type="checkbox"
                                                         (click)="setSlotTime2(slotsTime, j, resource)"
-                                                        [value]="slotsTime"></ion-checkbox>
-
+                                                        [value]="slotsTime"
+                                                    ></ion-checkbox>
                                                 </ion-item>
                                             </ion-list>
                                         </div>
@@ -203,9 +336,7 @@
                     </ion-row>
                 </ion-list>
                 <!-- </ion-select> -->
-
             </ion-col>
-
         </ion-row>
     </ion-list>
 
@@ -222,12 +353,20 @@
     <ion-toolbar>
         <ion-row>
             <ion-col size="12">
-                <div *ngIf="this.resourceArrayList?.length" class="addAnother" (click)="onAddAnotherClick()">
+                <div
+                    *ngIf="this.resourceArrayList?.length"
+                    class="addAnother"
+                    (click)="onAddAnotherClick()"
+                >
                     <ion-text class="heading-medium font-14 text-primary">
                         <b>Add To Cart</b>
                     </ion-text>
                 </div>
-                <div *ngIf="slotReservation.businessServiceTypes?.length" class="cart" (click)="showReservationCart()">
+                <div
+                    *ngIf="slotReservation.businessServiceTypes?.length"
+                    class="cart"
+                    (click)="showReservationCart()"
+                >
                     <ion-text class="heading-medium font-14 text-primary">
                         <b>View Cart</b>
                     </ion-text>
@@ -238,9 +377,6 @@
         </ion-text>
     </div> -->
             </ion-col>
-
-
         </ion-row>
-
     </ion-toolbar>
 </ion-footer>

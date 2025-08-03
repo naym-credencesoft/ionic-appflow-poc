@@ -1,10 +1,8 @@
 :host {
     ion-content {
         background-color: #fff;
-        --padding-top : 10px;
+        --padding-top: 10px;
         --padding-bottom: 10px;
-
- 
     }
 
     // .custom-loader {
@@ -15,24 +13,21 @@
     //     justify-content: center;
     //     height: 50vh; /* You can adjust the height based on your layout requirements */
     //   }
-      
+
     //   .loader-image {
     //     width: 150px; /* Adjust the width of the image as needed */
     //     height: 150px; /* Adjust the height of the image as needed */
     //     z-index: 2;
     //   }
-      
+
     //   .spinner {
     //     position: absolute;
     //     z-index: 1;
-    //     width: 200px; 
-    //     height: 200px;      
+    //     width: 200px;
+    //     height: 200px;
     //   }
- 
 
-   
-
-    .cardheader{
+    .cardheader {
         --background: var(--ion-color-tm2-terciary2);
         color: white;
     }
@@ -42,32 +37,32 @@
     .HeaderTitle {
         color: white;
     }
-    .name-title-text{
+    .name-title-text {
         margin-left: 5px;
     }
 
-    .listcard{
+    .listcard {
         margin-top: 2px;
         margin-bottom: 2px;
         padding: 5px;
     }
-    .invoice-button{
+    .invoice-button {
         margin-top: 8px;
         margin-right: 5px;
     }
-    .rev{
+    .rev {
         color: white;
     }
-    .TextValue{
+    .TextValue {
         margin-left: 10px;
         color: black;
     }
 
-    .col{
-        border: 1px solid #E7E9EB;
-     }
+    .col {
+        border: 1px solid #e7e9eb;
+    }
 
-     .batch-expected {
+    .batch-expected {
         margin-left: 10px;
         color: white;
         padding-top: 1px;
@@ -78,10 +73,9 @@
         background: #221950;
         font-size: 10px;
         border-radius: 20px;
-      }
+    }
 
-
-      .headerColor {
+    .headerColor {
         background-color: #fff;
         min-height: 80px;
         border: none;
@@ -93,7 +87,7 @@
     }
 
     @media (min-width: 576px) {
-        .reportSect{
+        .reportSect {
             margin-left: 50px;
             margin-right: 50px;
         }
@@ -121,7 +115,7 @@
         }
 
         ion-toolbar {
-            --background: #1D174D;
+            --background: #1d174d;
             height: 80px;
             border: none;
         }
@@ -130,10 +124,9 @@
         ion-toolbar {
             position: absolute;
             top: 0px;
-            --background: #1D174D;
+            --background: #1d174d;
             border: none;
             height: 71px;
-            
         }
 
         .secdiv {
@@ -145,8 +138,6 @@
         .cardsrepo {
             height: 160px;
         }
-
-      
     }
 
     .left-image-header {
@@ -162,7 +153,6 @@
         margin-left: 10px;
         margin-right: 10px;
         margin-top: -17px;
-
     }
 
     .profile {
@@ -190,4 +180,39 @@
         margin-left: 10px;
         color: white;
     }
+}
+ion-datetime-button::part(native) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+ion-datetime-button.unselected::part(native) {
+    color: grey !important;
+}
+
+ion-datetime-button.selected::part(native) {
+    color: black !important;
+}
+.datetime-box {
+    position: relative;
+
+    display: flex;
+    width: 100%;
+    position: relative;
+    padding: 0px;
+}
+
+.date-btn {
+    font-size: 15px;
+    text-align: left;
+}
+
+.calendar-icon {
+    margin-left: 10px;
+    position: absolute;
+    right: 10px; /* adjust spacing */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
+    font-size: 20px;
+    cursor: pointer;
 }

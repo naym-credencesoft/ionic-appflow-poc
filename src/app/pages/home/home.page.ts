@@ -1915,6 +1915,6 @@ export class HomePage {
     }
 
     menuAction() {
-        this.menuCtrl.toggle();
+         this.menuCtrl.open('mainMenu');
     }
 }

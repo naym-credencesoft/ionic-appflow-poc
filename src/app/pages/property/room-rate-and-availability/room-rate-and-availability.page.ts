@@ -41,7 +41,11 @@ export class RoomRateAndAvailabilityPage implements OnInit {
     selectedIndexNumber: number;
     isListToggle: boolean = false;
     
+   isFromModalOpen = false;
+isToModalOpen = false;
 
+   isToDateSelected = false;
+   isFromDateSelected = false;
   constructor(private acRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -82,6 +86,22 @@ export class RoomRateAndAvailabilityPage implements OnInit {
 
     this.getRatesAndAvailability();
   }
+
+   setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
 
   ionViewWillEnter() {
     this.getRatesAndAvailability();
@@ -296,6 +316,7 @@ export class RoomRateAndAvailabilityPage implements OnInit {
   
   fromDateChange() {
     let toDate = new Date(this.ratesAndAvailability.fromDate);
+    this.isFromDateSelected = !!toDate;
 
     toDate.setDate(toDate.getDate() + 1);
     this.toMinDate = this.getDate(toDate);
@@ -303,6 +324,11 @@ export class RoomRateAndAvailabilityPage implements OnInit {
     toDate.setDate(toDate.getDate() + 15);
     this.toMaxDate = this.getDate(toDate);
  }
+ 
+ toDateChange() {
+  // toggle selected/unselected based on value
+  this.isToDateSelected = !!this.ratesAndAvailability.toDate;
+}
 
 getDate(date: Date) {
     

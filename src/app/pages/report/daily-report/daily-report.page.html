@@ -30,29 +30,60 @@
     <!-- <ion-progress-bar type="indeterminate" *ngIf="isProgressing" reversed="true"></ion-progress-bar> -->
     <ion-item class="sectionDaily">
         <ion-text style="color: black;">Start Date : </ion-text>
-        <ion-datetime
+        <!-- <ion-datetime
         style="color: black;"
             #startDatetime
-            (ionChange)="dateValue = formatDate(startDatetime.value);startdateChange()"
+           (ionChange)="handleStartDateChange(startDatetime.value)"
             presentation="date"
             showDefaultButtons="true"
             [(ngModel)]="startDate"
             min= "2000-12-31"
             max="2100-12-31"
-        ></ion-datetime>
+        ></ion-datetime> -->
+        <ion-datetime-button datetime="startDateTime" style="border-radius: 5px; border: 1px solid #aaa;"></ion-datetime-button>
+
+        <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+            <ion-datetime
+            id="startDateTime"
+            style="color: black;"
+            #startDatetime
+            (ionChange)="handleStartDateChange(startDatetime.value)"
+            presentation="date"
+            [(ngModel)]="startDate"
+            min="2000-12-31"
+            max="2100-12-31"
+            [showDefaultButtons]="true"
+            doneText="Done"
+            cancelText="Cancel"
+            ></ion-datetime>
+        </ng-template>
+        </ion-modal>
+
     </ion-item>
     <ion-item>
         <ion-text style="color: black;">End Date : </ion-text>
-        <ion-datetime
-        style="color: black;"
-            #endDatetime
-            (ionChange)="enddateValue = formatDate(endDatetime.value)"
-            presentation="date"
-            showDefaultButtons="true"
-            [(ngModel)]="endDate"
-            min= "{{startDate}}"
-            max="2100-12-31"
-        ></ion-datetime>
+<ion-datetime-button datetime="endDateTime"></ion-datetime-button>
+
+            <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+                <ion-datetime
+                id="endDateTime"
+                style="color: black;"
+                #endDatetime
+                (ionChange)="handleEndDateChange(endDatetime.value)"
+                presentation="date"
+                [(ngModel)]="endDate"
+                [min]="startDate"
+                max="2100-12-31"
+                [showDefaultButtons]="true"
+                doneText="Done"
+                cancelText="Cancel"
+                ></ion-datetime>
+            </ng-template>
+            </ion-modal>
+
+
     </ion-item>
     <!-- <ion-button expand="full" class="submit-button" (click)="submitData()"
         >Confirm</ion-button

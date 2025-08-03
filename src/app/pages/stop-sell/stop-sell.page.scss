@@ -117,8 +117,61 @@
         // border: 1px solid #ddd; 
         
     }
+    /* Grey by default */
+/* Default grey text */
+ion-datetime-button.unselected-btn::part(native) {
+  color: grey !important;
+}
+
+/* Black text when date selected */
+ion-datetime-button.selected-btn::part(native) {
+  color: #000 !important;
+}
+
+// .datetime-box {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   border-radius: 5px;
+//   border: 1px solid gray;
+//   color: #333;
+//   padding: 5px 5px;
+//   position: relative;
+// }
+
+// .date-btn {
+//   flex-grow: 1;
+//   text-align: left;
+//   justify-content: flex-start;
+//   display: flex;
+//   font-size: 15px;
+//   color: #333;
+//   border: none;
+//   background: transparent;
+// }
+
+.datetime-box::part(native) {
+  text-align: left;
+}
     
- 
+.datetime-item {
+
+  border-radius: 5px;
+  font-size: 13px;
+  border: 1px solid #000;
+  width: 100%;
+  padding: 0;
+  /* optional for inner spacing */
+}
+
+// .datetime-container ion-datetime-button {
+//   flex: 1; /* make button take available space */
+// }
+
+// .datetime-container ion-icon {
+//   margin-left: 20px; /* add space between button and icon */
+// }
+
     .table-responsive {
         max-height: 400px; 
         overflow-y: auto;
@@ -305,3 +358,16 @@ ion-select::part(icon) {
     font-size: 15px;
     color: #1D174D;
   }
+
+  ion-datetime-button::part(native) {
+  background: transparent !important;
+  box-shadow: none !important;
+
+}
+ion-datetime-button.unselected::part(native) {
+  color: #aaa !important;
+}
+
+ion-datetime-button.selected::part(native) {
+  color: black !important;
+}

@@ -1,19 +1,21 @@
 <ion-header>
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
-        src="{{this.property.logoUrl}}"
-        onerror="this.src='/assets/img/app-logo.png'"
-    />
+            style="object-fit: fill"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
     </ion-avatar>
 
-    <ion-text class="HeaderSubTitle"> Night Audit Report  </ion-text>
+    <ion-text class="HeaderSubTitle"> Night Audit Report </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon name="arrow-back-outline" (click)="navigateToPage()"  style="font-size: 20px; margin-top: -10px;"></ion-icon>
-            <ion-text color="light" class="HeaderTitle" 
-                >Accommodation</ion-text
-            >
+            <ion-icon
+                name="arrow-back-outline"
+                (click)="navigateToPage()"
+                style="font-size: 20px; margin-top: -10px"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle">Accommodation</ion-text>
             <!-- <ion-img
             style="height:50px; margin-top: -6px;"
                 src="/assets/img/icons/arrow-down-white.svg"
@@ -28,9 +30,43 @@
             <ion-row>
                 <ion-col size="12">
                     <ion-item>
-                        <ion-text style="color: #1D174D">Date : </ion-text>
+                        <ion-text style="color: #1d174d">Date : </ion-text>
+                        <ion-datetime-button
+                            datetime="fromDatePicker"
+                            [ngClass]="booking.fromDate ? 'selected' : 'unselected'"
+                            style="margin-left: 16px"
+                        ></ion-datetime-button>
 
-                        <ion-datetime
+                        <ion-icon
+                            name="calendar-clear"
+                            (click)="setFromDateOpen(true)"
+                            class="calendar-icon"
+                        ></ion-icon>
+                        
+                        <ion-modal
+                            [keepContentsMounted]="true"
+                            [isOpen]="isFromModalOpen"
+                            (ionModalDidDismiss)="dismissFromDateModal()"
+                        >
+                            <ng-template>
+                                <ion-datetime
+                                    id="fromDatePicker"
+                                    formControlName="FromDate"
+                                    value="{{ booking.fromDate }}"
+                                    (ionChange)="onFromDateChange($event)"
+                                    [(ngModel)]="booking.fromDate"
+                                    [min]="2000-12-31"
+                                    [max]="2100-12-31"
+                                    style="color: #000"
+                                    presentation="date"
+                                    [showDefaultButtons]="true"
+                                    doneText="Done"
+                                    cancelText="Cancel"
+                                    display-format="DD/MM/YYYY"
+                                ></ion-datetime>
+                            </ng-template>
+                        </ion-modal>
+                        <!-- <ion-datetime
                         style="color: #1D174D;margin-left: 16px;"
                             formControlName="FromDate"
                             [(ngModel)]="booking.fromDate"
@@ -41,7 +77,7 @@
                             placeholder="Select Date"
                             min= "2000-12-31"
                             max="2100-12-31"
-                        ></ion-datetime>
+                        ></ion-datetime> -->
                     </ion-item>
                 </ion-col>
                 <!-- <ion-col size="6">
@@ -102,9 +138,12 @@
             <form [formGroup]="onFilterForm">
                 <ion-row>
                     <ion-col size="12">
-                        <ion-item style="color:#1D174D" style="font-size: 13px" >
-                            <ion-checkbox                            
-                            (ionChange)="filterByDropdown()"
+                        <ion-item
+                            style="color: #1d174d"
+                            style="font-size: 13px"
+                        >
+                            <ion-checkbox
+                                (ionChange)="filterByDropdown()"
                                 style="height: 3vh; border-radius: 50%"
                                 formControlName="ShowCheckOut"
                                 [(ngModel)]="addCheckoutBooking"
@@ -114,18 +153,21 @@
                     </ion-col>
                     <ion-col size="12">
                         <ion-item>
-                            <ion-label style="color:#1D174D"> Room Type</ion-label>
+                            <ion-label style="color: #1d174d">
+                                Room Type</ion-label
+                            >
                             <ion-select
                                 multiple="true"
                                 cancelText="Cancel"
                                 okText="Apply"
-                                style="color:#1D174D"
+                                style="color: #1d174d"
                                 formControlName="roomType"
                                 [(ngModel)]="roomName"
                                 (ionChange)="filterByDropdown()"
                             >
                                 <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
-                                <ion-select-option (click)="filterModal()"
+                                <ion-select-option
+                                    (click)="filterModal()"
                                     *ngFor="let room of rooms; let i = index;"
                                 >
                                     <div>{{room.name}}</div>
@@ -136,18 +178,21 @@
 
                     <ion-col size="12">
                         <ion-item>
-                            <ion-label style="color:#1D174D"> Source</ion-label>
+                            <ion-label style="color: #1d174d">
+                                Source</ion-label
+                            >
                             <ion-select
                                 multiple="true"
                                 cancelText="Cancel"
                                 okText="Apply"
-                                style="color:#1D174D"
+                                style="color: #1d174d"
                                 formControlName="externalSite"
                                 [(ngModel)]="sourceOfBooking"
                                 (ionChange)="filterByDropdown()"
                             >
                                 <!-- <ion-select-option *ngFor="let filter of booking" [value]="filter.fromDate">{{ filter.name }}</ion-select-option> -->
-                                <ion-select-option (click)="filterModal()"
+                                <ion-select-option
+                                    (click)="filterModal()"
                                     *ngFor="let externalSite of this.externalSiteList.externalBookingSites"
                                     [value]="externalSite.value"
                                 >
@@ -165,8 +210,8 @@
                     </ion-col>
 
                     <ion-col size="12">
-                        <ion-item>
-                            <ion-datetime
+                        <ion-item class="datetime-box">
+                            <!-- <ion-datetime
                                 formControlName="bookingDateControll"
                                 [(ngModel)]="BookingDate"
                                 no-padding
@@ -175,11 +220,45 @@
                                 pickerFormat="DD/MM/YYYY"
                                 placeholder="Select Date"
                                 (ionChange)="filterByDropdown()"
-                            ></ion-datetime>
+                            ></ion-datetime> -->
+                            <ion-datetime-button
+                                datetime="bookingDatePicker"
+                                [ngClass]="BookingDate ? 'selected' : 'unselected'"
+                                class="date-btn"
+                            >
+                            </ion-datetime-button>
+
+                            <ion-icon
+                                name="calendar-clear"
+                                (click)="setFromDateOpen(true)"
+                                class="calendar-icon"
+                            ></ion-icon>
+
+                            <ion-modal
+                                [keepContentsMounted]="true"
+                                [isOpen]="isFromModalOpen"
+                                (ionModalDidDismiss)="dismissFromDateModal()"
+                            >
+                                <ng-template>
+                                    <ion-datetime
+                                        id="bookingDatePicker"
+                                        formControlName="bookingDateControll"
+                                        [value]="BookingDate"
+                                        (ionChange)="onBookingDateChange($event)"
+                                        style="color: #1d174d"
+                                        presentation="date"
+                                        [showDefaultButtons]="true"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                        placeholder="Select Date"
+                                    >
+                                    </ion-datetime>
+                                </ng-template>
+                            </ion-modal>
                         </ion-item>
                     </ion-col>
                     <ion-col size="12">
-                        <ion-item style="color:#1D174D">
+                        <ion-item style="color: #1d174d">
                             <ion-checkbox
                                 style="height: 3vh; border-radius: 50%"
                                 formControlName="DueFilter"
@@ -191,7 +270,7 @@
                     </ion-col>
 
                     <ion-col size="12">
-                        <ion-item style="color:#1D174D">
+                        <ion-item style="color: #1d174d">
                             <ion-checkbox
                                 style="height: 3vh; border-radius: 50%"
                                 formControlName="SameDayFilter"
@@ -204,7 +283,7 @@
                     </ion-col>
 
                     <ion-col size="12">
-                        <ion-item style="color:#1D174D">
+                        <ion-item style="color: #1d174d">
                             <ion-checkbox
                                 style="height: 3vh; border-radius: 50%"
                                 formControlName="CheckedINFilter"
@@ -244,11 +323,16 @@
       </div> -->
 
     <ion-list *ngIf="SearchSelection === '0'">
-        <ion-card style="border: 1px solid gray"
+        <ion-card
+            style="border: 1px solid gray"
             *ngFor="let row of bookings| paginate: { itemsPerPage: 5, currentPage: p }; let i = index"
             class="bg-white"
         >
-            <ion-card-header color="primary" class="cardnighthead" (click)="toggleCardVisibility(i)">
+            <ion-card-header
+                color="primary"
+                class="cardnighthead"
+                (click)="toggleCardVisibility(i)"
+            >
                 <ion-row>
                     <ion-col size="12">
                         <a class="rev"
@@ -261,22 +345,56 @@
                             <span
                                 *ngIf="row.fromDate != null && row.fromDate != undefined"
                                 >{{ row.fromDate | date:'MMM d, y' }} to
-                               
                                 {{row.toDate | date:'MMM d, y'}}
                             </span>
                         </ion-text>
-                        <ion-icon _ngcontent-rjc-c188="" *ngIf="!visibleCards[i]" name="caret-down-outline" style="position: absolute; top: 50%; font-size: 20px; right: 10px; transform: translateY(-50%); color: white;" ng-reflect-name="caret-down-outline" role="img" class="ios hydrated" aria-label="caret down outline"></ion-icon>
-                        <ion-icon _ngcontent-rjc-c188="" *ngIf="visibleCards[i]" name="caret-up-outline" style="position: absolute; top: 50%; font-size: 20px; right: 10px; transform: translateY(-50%); color: white;" ng-reflect-name="caret-up-outline" role="img" class="ios hydrated" aria-label="caret up outline"></ion-icon>
+                        <ion-icon
+                            _ngcontent-rjc-c188=""
+                            *ngIf="!visibleCards[i]"
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                font-size: 20px;
+                                right: 10px;
+                                transform: translateY(-50%);
+                                color: white;
+                            "
+                            ng-reflect-name="caret-down-outline"
+                            role="img"
+                            class="ios hydrated"
+                            aria-label="caret down outline"
+                        ></ion-icon>
+                        <ion-icon
+                            _ngcontent-rjc-c188=""
+                            *ngIf="visibleCards[i]"
+                            name="caret-up-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                font-size: 20px;
+                                right: 10px;
+                                transform: translateY(-50%);
+                                color: white;
+                            "
+                            ng-reflect-name="caret-up-outline"
+                            role="img"
+                            class="ios hydrated"
+                            aria-label="caret up outline"
+                        ></ion-icon>
                     </ion-col>
-
                 </ion-row>
             </ion-card-header>
             <ion-card-content *ngIf="visibleCards[i]">
                 <ion-grid>
-                    <ion-label style="font-size: 13px; font-size: 16px; color: black;">Booking:</ion-label>
+                    <ion-label
+                        style="font-size: 13px; font-size: 16px; color: black"
+                        >Booking:</ion-label
+                    >
                     <ion-row class="payment-row">
                         <ion-text style="font-size: 13px" color="primary"
-                            >Status :</ion-text>
+                            >Status :</ion-text
+                        >
                         <ion-text class="TextValue" style="font-size: 13px">
                             <span> {{ row.bookingStatus }} </span>
                             <span
@@ -290,8 +408,6 @@
                                 >Auto Extend</span
                             >
                         </ion-text>
-                        
-                        
                     </ion-row>
 
                     <ion-row class="payment-row">
@@ -418,7 +534,7 @@
                                 <a
                                     *ngIf="balanceRoomTarif(row) > 0"
                                     class="dueAmount"
-                                    >
+                                >
                                     <u
                                         >{{ balanceRoomTarif(row) | currency :
                                         currency : "symbol" : "1.2-2" }}</u
@@ -784,7 +900,7 @@
                                 <a
                                     *ngIf="getTotalRoomPriceTillToday() > 0"
                                     class="dueAmount"
-                                    >
+                                >
                                     <u
                                         >{{ getTotalRoomPriceTillToday() |
                                         currency : currency : "symbol" : "1.2-2"
@@ -1040,8 +1156,7 @@
                         </ion-text>
                     </ion-row>
                 </ion-grid>
-            </ion-card-content
-            ></ion-card
+            </ion-card-content></ion-card
         ></ion-list
     >
 

@@ -1,9 +1,5 @@
-import { AgmCoreModule } from "@agm/core";
-import {
-    HttpClient,
-    HttpClientModule,
-    HTTP_INTERCEPTORS,
-} from "@angular/common/http";
+// import { AgmCoreModule } from "@agm/core";
+import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -13,7 +9,7 @@ import { Camera } from "@ionic-native/camera/ngx";
 import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { IonicModule, IonicRouteStrategy } from "@ionic/angular";
-import { IonicStorageModule } from "@ionic/storage";
+// import { IonicStorageModule } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import {
@@ -32,6 +28,7 @@ import { EditItemComponent } from "./component/ratesAandAvailability/edit-item/e
 import { ImagePageModule } from "./pages/modal/image/image.module";
 import { LocationPageModule } from "./pages/modal/location/location.module";
 import { TranslateProvider } from "./providers";
+
 import { AuthGuard } from "./service/auth-guard.service";
 import { AuthService } from "./service/auth.service";
 import { FileService } from "./service/file.service";
@@ -65,8 +62,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     suppressScrollX: true,
 };
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent,
         ActionOrderMenuComponent,
         OrderCreationOptionMenuComponent,
@@ -74,7 +70,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         OtaRatesComponent,
         AuditReportComponent,
         AuditOrderReportComponent,
-
         OrderCreationOptionMenuComponent,
         PaymentListOptionMenuComponent,
         MenucardComponent,
@@ -90,35 +85,19 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         ItemReleaseComponent,
         OpenProductComponent,
         CancelOrderModalComponent
-        
     ],
-    entryComponents: [
-        ComponentListOptionMenuComponent,
-        OrderCreationOptionMenuComponent,
-        ActionOrderMenuComponent,
-        OrderCreationOptionMenuComponent,
-        PaymentListOptionMenuComponent,
-        EditItemComponent,
-        CheckRoomtypeComponent,
-        CollectPaymentModalComponent,
-        ItemReleaseComponent,
-        OpenProductComponent
-       
-    ],
-    imports: [
-        BrowserModule,
+    bootstrap: [AppComponent], imports: [BrowserModule,
         // BrowserAnimationsModule,
         IonicModule.forRoot(environment.config),
         AppRoutingModule,
-        HttpClientModule,
         ImagePageModule,
         LocationPageModule,
         FormsModule,
         ReactiveFormsModule,
-        IonicStorageModule.forRoot({
-            name: "__mydb",
-            driverOrder: ["indexeddb", "sqlite", "websql"],
-        }),
+        // IonicStorageModule.forRoot({
+        //     name: "__mydb",
+        //     driverOrder: ["indexeddb", "sqlite", "websql"],
+        // }),
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -126,17 +105,14 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
                 deps: [HttpClient],
             },
         }),
-        AgmCoreModule.forRoot({
-            apiKey: "AIzaSyD9BxeSvt3u--Oj-_GD-qG2nPr1uODrR0Y",
-        }),
+        // AgmCoreModule.forRoot({
+        //     apiKey: "AIzaSyD9BxeSvt3u--Oj-_GD-qG2nPr1uODrR0Y",
+        // }),
         ServiceWorkerModule.register("ngsw-worker.js", {
             enabled: environment.production,
-        }),
-    ],
-    providers: [
+        })], providers: [
         DatePipe,
         { provide: ErrorHandler, useClass: ErrorHandlerService },
-
         {
             provide: PERFECT_SCROLLBAR_CONFIG,
             useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
@@ -160,7 +136,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
         TranslateProvider,
         HTTPStatus,
         Device,
-    ],
-    bootstrap: [AppComponent],
-})
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule {}

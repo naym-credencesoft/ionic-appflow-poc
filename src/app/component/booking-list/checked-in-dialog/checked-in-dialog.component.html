@@ -57,11 +57,31 @@
                     
                     <ion-item>
                         <ion-label class="text-white" style="font-size: 14px;">Arriving Date</ion-label>
-                        <ion-datetime formControlName="checkedinTime" class="card-item" style="font-size: 14px;"  [(ngModel)]="booking.checkinTime" 
+                        <!-- <ion-datetime formControlName="checkedinTime" class="card-item" style="font-size: 14px;"  [(ngModel)]="booking.checkinTime" 
                         (ngModelChange)="dateCheck()"
                         min= "2000-12-31"
                         max="2100-12-31"
-                        displayFormat="D MMM YYYY H:mm"></ion-datetime>
+                        displayFormat="D MMM YYYY H:mm"></ion-datetime> -->
+
+                         <ion-datetime-button datetime="checkinDateTimePicker" class="card-item"></ion-datetime-button>
+
+                    <!-- Modal with datetime -->
+                    <ion-modal [keepContentsMounted]="true">
+                        <ion-datetime
+                        id="checkinDateTimePicker"
+                        formControlName="checkedinTime"
+                        
+                        style="font-size: 14px;"
+                        [(ngModel)]="booking.checkinTime"
+                        (ngModelChange)="dateCheck()"
+                        [showDefaultButtons]="true"
+                        presentation="date-time"
+                        min="2000-12-31"
+                        max="2100-12-31"
+                        doneText="Done"
+                        cancelText="Cancel">
+                        </ion-datetime>
+                    </ion-modal>
                     </ion-item>
                       
                 </ion-col>

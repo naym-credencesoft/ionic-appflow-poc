@@ -13,6 +13,7 @@ import { BookingService } from 'src/app/service/manage-booking/booking-service.s
 import { OTANames } from 'src/app/model/OTANames';
 import { ActivatedRoute } from '@angular/router';
 import { OTAPlan } from 'src/app/model/otaPlan/otaPlan';
+import { tr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-master-rates-update',
@@ -25,15 +26,16 @@ export class MasterRatesUpdatePage implements OnInit {
   rooms: Room[] = [];
   planToBeUpdated: Plan[];
   plan: Plan;
+//   fromDateToString: string = this.datepipe.transform(new Date(), 'yyyy-MM-dd')!;
   fromDateToString: string = '';
   toDateToString: string = '';
+
   decreaseRate: number = 0;
   increaseRate:number = 0;
   form: FormGroup;
   showCheckboxes = false;
   planNames:any[] = [];
   isProgressing: boolean = false
-  maxToDate: string = ""; 
 
   otaPlans :any;
  
@@ -87,7 +89,7 @@ export class MasterRatesUpdatePage implements OnInit {
     isBookoneChannelManager:boolean = false;
     roomName: any;
     roomnames: any;
-  singleDateToBeUpdate:string;
+    singleDateToBeUpdate:string;
 
     propertyId: number;
     propertydetails: OTAChannelPropertyDTO;
@@ -137,6 +139,16 @@ export class MasterRatesUpdatePage implements OnInit {
     showdiv: boolean = false;
     otaName: any;
     otaInventoryCount: any;
+
+  isFromDateSelected: boolean = false;
+  minToDate: string = '2000-12-31';  // Default to valid min date
+maxToDate: string = '2200-12-31';
+ isRoomsFDModalOpen = false;
+  isToDateSelected = false;
+ isPropertyTDModalOpen = false;
+
+
+
   constructor(public navCtrl: NavController,
     public token: TokenStorage,   private propertyService: PropertyService,
     private _location: Location,
@@ -311,6 +323,20 @@ export class MasterRatesUpdatePage implements OnInit {
       this.isViewOnly = false;
     }
   }
+
+  setFDOpen(isOpen: boolean) {
+    this.isRoomsFDModalOpen = isOpen;
+  }
+
+    setPropertyTDOpen(isOpen: boolean) {
+    this.isPropertyTDModalOpen = isOpen;
+  }
+  dismissPropertyTDModal() {
+    this.isPropertyTDModalOpen = false;
+  }
+  dismissFDModal() {
+    this.isRoomsFDModalOpen = false;
+  }
    onPlanChange(){
     this.loader = true;
 
@@ -401,28 +427,69 @@ export class MasterRatesUpdatePage implements OnInit {
       sunday: formatDate(sunday),
     };
   }
-  calculateDaysDifference() {
+  onFromDateSelected(event: any) {
+    // this.fromDateToString = this.datepipe.transform(event.detail.value, 'yyyy-MM-dd')!; 
+    // const selectedDate = new Date(event.detail.value);
+  // Convert to string format (yyyy-MM-dd)
+    this.fromDateToString = this.datepipe.transform(event.detail.value, 'yyyy-MM-dd')!;
+    
+    this.isFromDateSelected = true;
+    this.minToDate = this.fromDateToString; // Set minToDate to the selected fromDate
+// Set min & max for To Date
+  this.minToDate = this.fromDateToString;
+  const startDate = new Date(this.fromDateToString);
+  const maxDate = new Date(startDate);
+  maxDate.setMonth(maxDate.getMonth() + 3);
+  this.maxToDate = maxDate.toISOString().split('T')[0];
+
+  // Reset To Date if it becomes invalid
+  if (this.toDateToString && this.toDateToString < this.minToDate) {
+    this.toDateToString = null;
+  }  
+}
+  onToDateSelected(event: any) {
+    this.toDateToString = this.datepipe.transform(event.detail.value, 'yyyy-MM-dd')!;
+    this.calculateDaysDifference();
+  }
+    calculateDaysDifference() {
     if (this.fromDateToString) {
-        const startDate = new Date(this.fromDateToString);
-        const maxDate = new Date(startDate);
-        maxDate.setMonth(maxDate.getMonth() + 3); // Add 3 months
-        this.maxToDate = maxDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      const startDate = new Date(this.fromDateToString);
+      const maxDate = new Date(startDate);
+      maxDate.setMonth(maxDate.getMonth() + 3);
+      this.maxToDate = maxDate.toISOString().split('T')[0];
     }
 
     if (this.fromDateToString && this.toDateToString) {
-        const startDate = new Date(this.fromDateToString);
-        const endDate = new Date(this.toDateToString);
-
-        if (startDate && endDate) {
-            const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
-            this.noOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        } else {
-            this.noOfDays = 0;
-        }
+      const startDate = new Date(this.fromDateToString);
+      const endDate = new Date(this.toDateToString);
+      const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+      this.noOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     } else {
-        this.noOfDays = 0;
+      this.noOfDays = 0;
     }
-}
+  }
+//   calculateDaysDifference() {
+//     if (this.fromDateToString) {
+//         const startDate = new Date(this.fromDateToString);
+//         const maxDate = new Date(startDate);
+//         maxDate.setMonth(maxDate.getMonth() + 3); // Add 3 months
+//         this.maxToDate = maxDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+//     }
+
+//     if (this.fromDateToString && this.toDateToString) {
+//         const startDate = new Date(this.fromDateToString);
+//         const endDate = new Date(this.toDateToString);
+
+//         if (startDate && endDate) {
+//             const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+//             this.noOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+//         } else {
+//             this.noOfDays = 0;
+//         }
+//     } else {
+//         this.noOfDays = 0;
+//     }
+// }
 
 getCurrentWeekDates(): { fromDate: string; toDate: string } {
     const today = new Date();
@@ -738,12 +805,13 @@ getCurrentWeekDates(): { fromDate: string; toDate: string } {
     return style;
   }
 
-  
+
+
   onSubmit() {
     this.scrollToTop();
     this.planToBeUpdated = [];
     this.isProgressing = true;
-    this.shouldSetRoomId = false;
+    this.shouldSetRoomId = false; 
     
     for (let i = 0; i < this.plans.length; i++) {
       let planUpdate = new Plan();

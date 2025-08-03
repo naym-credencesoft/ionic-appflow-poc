@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Device } from '@ionic-native/device/ngx';
-import 'rxjs/add/operator/publish';
+// import 'rxjs/add/operator/publish';
 import { SESSION_APP_ID } from '../../app.component';
 import { PushNotificationToken } from '../../model/pushNotificationToken';
 import { TokenStorage } from '../../token.storage';

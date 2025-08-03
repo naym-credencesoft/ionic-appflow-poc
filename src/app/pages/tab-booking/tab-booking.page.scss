@@ -305,3 +305,15 @@
         color: white;
     }
 }
+ion-datetime-button::part(native) {
+background: transparent !important;
+ box-shadow: none !important;
+
+}
+  .datetime-box {
+        border-radius: 5px;
+        border: 1px solid #aaa;
+        width: 100%;
+        padding: 0px;
+
+        }

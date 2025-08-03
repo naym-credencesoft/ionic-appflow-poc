@@ -137,6 +137,7 @@ export class Booking {
     tdsFee: number;
     checkoutPeriod: number;
     operatorNotes: string;
+    checkinSequenceNumber: string;
 
     constructor() {}
 }

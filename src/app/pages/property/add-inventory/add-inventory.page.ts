@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { Availability } from 'src/app/model/Availbility/availability';
 import { Property } from 'src/app/model/property/Property';
 import { Room } from 'src/app/model/room';
 import { DateService } from 'src/app/service/DateService/date-service.service';
 import { PropertyService } from 'src/app/service/property/property.service';
 import { TokenStorage } from 'src/app/token.storage';
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { LoadDateService } from 'src/app/service/LoadDate/load-date.service';
 import { AvailabilityService } from 'src/app/service/AvailabilityService/availability.service';
 
@@ -40,7 +40,15 @@ export class AddInventoryPage implements OnInit {
     toMaxDate: string;
     isBackDateInventory: boolean = false;
     currentMonth: string;
-  currentDay: string;
+    currentDay: string;
+    isModalOpenfromDate: boolean = false;
+    isModalOpentoDate: boolean = false;
+    isFromSelected = false;
+    isToSelected = false;
+ isFromModalOpen = false;
+isToModalOpen = false;
+
+
     
 
   constructor(private acRoute: ActivatedRoute,
@@ -54,7 +62,10 @@ export class AddInventoryPage implements OnInit {
     public loadDateService : LoadDateService,
     public loadingCtrl: LoadingController,
     private toastController: ToastController,
-    private formBuilder: FormBuilder) 
+    private formBuilder: FormBuilder,
+    private modalController: ModalController,
+    private datePipe: DatePipe
+) 
   { 
       this.room = new Room();
       this.property = new Property();
@@ -94,8 +105,25 @@ export class AddInventoryPage implements OnInit {
   onInputChange() {
     this.currentDateFix(this.room.id);
   }
+  
+    setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
 
   fromDateChange(event) {
+    this.availability.fromDate = this.datePipe.transform(this.availability.fromDate,'yyyy-MM-dd');
     let toDate = new Date(this.availability.fromDate);
 
     toDate.setDate(toDate.getDate() + 1);
@@ -103,10 +131,16 @@ export class AddInventoryPage implements OnInit {
 
     toDate.setMonth(toDate.getMonth() + 12);
     this.toMaxDate = this.getDate(toDate);
-
+    
+ this.isFromSelected = true;
     //   Logger.log('date change :'+this.availability.fromDate+'--'+this.toMinDate+'--'+this.toMaxDate);
   }
 
+  toDateChange(event){
+    const selectedDate = event.detail.value;
+ this.availability.toDate = this.datePipe.transform(selectedDate, 'yyyy-MM-dd');
+ this.isToSelected = true;
+}
 
   currentDateFix(roomId) {
     if (this.isBackDateInventory === false) {
@@ -229,6 +263,24 @@ export class AddInventoryPage implements OnInit {
     });
     toast.present();
 }
+
+  closeDateTimePicker() {
+    this.isModalOpenfromDate = false;
+  }
+
+  async closeModalSeven() {
+    await this.modalController.dismiss();
+  }
+    openDateTimePicker() {
+    this.isModalOpenfromDate = true;
+  }
+   openDateTimePickerOne() {
+    this.isModalOpentoDate = true;
+  }
+
+   closeDateTimePickerOne() {
+    this.isModalOpentoDate = false;
+  }
 
 
 }

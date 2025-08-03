@@ -2765,9 +2765,9 @@ export class MenuActionBookingPage implements OnInit {
                                         .checkOutStandingAmountByBookingId(this.booking.id)
                                         .subscribe((response) => {
                                             if (response.status === 200) {
-                                                let data = response.body;
+                                                let data = response.body as any;
 
-                                                if (data < 0) {
+                                                if (data.value  < 0) {
 
                                                     this.token.saveBookingDetal(this.booking);
                                                     this.navCtrl.navigateForward(["checkout-detail"]);

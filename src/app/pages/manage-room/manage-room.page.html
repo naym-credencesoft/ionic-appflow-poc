@@ -101,13 +101,7 @@
                 <form [formGroup]="onRoomForm">
                     <ion-item lines="none" no-margin no-padding style="padding: 0px !important;" class="managDivi">
                         <ion-label style="color: #1D174D;">Select Date For Filter</ion-label>
-                        <ion-datetime style="color: #1D174D;"  min= "2000-12-31"
-                        max="2100-12-31" (ionChange)="DateChange()"
-                            formControlName="bookingFromDate" no-padding class="check-in-out-date"
-                            displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="rommAvailability.FromDate"
-                            placeholder="{{minDate}}"
-                            >
-                        </ion-datetime>
+                         <ion-datetime-button datetime="filterDate"></ion-datetime-button>
                     </ion-item>
                 </form>
 
@@ -115,6 +109,36 @@
             </ion-col>
         </ion-row>
     </ion-grid>
+    <ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime
+      id="filterDate"
+        style="color: #1D174D;"
+        min="2000-12-31"
+        max="2100-12-31"
+        [showDefaultButtons]="true"
+        presentation="date"
+        style="color: #000"
+        doneText="Done"
+        cancelText="Cancel"
+    [(ngModel)]="rommAvailability.FromDate"
+    (ionChange)="DateChange()"
+    ></ion-datetime>
+  </ng-template>
+</ion-modal>
+<!-- <ion-item>
+  <ion-label position="floating">From Date</ion-label>
+  <ion-datetime
+    style="color: #1D174D;"
+    min="2000-12-31"
+    max="2100-12-31"
+    presentation="date"
+    [(ngModel)]="rommAvailability.FromDate"
+    (ionChange)="DateChange()"
+    class="check-in-out-date">
+  </ion-datetime>
+</ion-item> -->
+
     
     <!-- </div> -->
     <!-- <ion-segment scrollable mode="md" value="0" class="cardStyle">

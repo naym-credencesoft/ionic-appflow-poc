@@ -8,6 +8,59 @@
     margin-top: 7px;
 }
 
+   .datetime-container {
+        --padding-start: 6px;
+        --padding-end: 4px;
+        --inner-padding-end: 0;
+        --inner-padding-start: 0;
+        border-radius: 5px;
+        font-size: 13px;
+        border: 1px solid gray;
+        display: inline-block;
+        width: 100%;
+      }
+          .datetime-box {
+        border-radius: 5px;
+        border: 1px solid grey;
+        display: inline-block;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+        padding: 0px;
+
+        }
+
+        .date-btn {
+            font-size: 13px;
+            text-align: left;
+            }
+
+        .calendar-icon {
+            margin-left: 10px;
+           position: absolute;
+            right: 10px;      /* adjust spacing */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+      ion-datetime-button::part(native) {
+        background: transparent !important;
+        box-shadow: none !important;
+
+        }
+
+        ion-datetime-button.unselected::part(native) {
+        color: grey !important;
+        }
+
+        ion-datetime-button.selected::part(native) {
+        color: black !important;
+        }
+
 
 .datepicker{
     background: #F1F3F4;

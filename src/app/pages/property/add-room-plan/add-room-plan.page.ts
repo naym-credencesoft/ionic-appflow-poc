@@ -186,6 +186,17 @@ getDate(date: Date) {
     );
 }
 
+ isFromModalOpen = false;
+ isToModalOpen = false;
+
+  setEffectiveDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+  
+  setExpiryDateOpen(isOpen: boolean) {
+  this.isToModalOpen = isOpen;
+  }
+
 fromDateChange() {
     let toDate = new Date(this.plan.effectiveDate);
 

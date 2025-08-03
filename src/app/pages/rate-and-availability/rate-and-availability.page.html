@@ -1,54 +1,106 @@
-
-
 <ion-header class="ion-no-border">
-
-
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
-        src="{{this.token.getProperty().logoUrl}}"
-        onerror="this.src='/assets/img/app-logo.png'"
-    />
+            style="object-fit: fill"
+            src="{{this.token.getProperty().logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
     </ion-avatar>
 
     <ion-text class="HeaderSubTitle"> Rates & Availability </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon name="arrow-back-outline" (click)="goBack()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
-            <ion-text color="light" class="HeaderTitle" 
-                >Accommodation</ion-text
-            >
-
+            <ion-icon
+                name="arrow-back-outline"
+                (click)="goBack()"
+                style="font-size: 20px; margin-top: -10px"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle">Accommodation</ion-text>
         </ion-buttons>
-
     </ion-toolbar>
 </ion-header>
- 
-<ion-content no-padding class="animated fadeIn fast" >
-    <div style="margin-bottom: 20px;">
+
+<ion-content no-padding class="animated fadeIn fast">
+    <div style="margin-bottom: 20px">
         <form [formGroup]="onRateAvailabilityForm">
+            <ion-row style="margin-top: 5px">
+                <ion-col size="6">
+                    <ion-label class="labels"
+                        >From Date:<b style="color: red">*</b></ion-label
+                    >
+                    <ion-item class="datetime-box">
 
+                        <ion-datetime-button datetime="fromDatePicker" class="date-btn"
+                           [ngClass]="isFromDateSelected ? 'selected' : 'unselected'"
+                        ></ion-datetime-button>
+                            
+                      <ion-icon
+                        name="calendar-clear"
+                        (click)="setFromDateOpen(true)"
+                        class="calendar-icon"
+                        ></ion-icon>
+                        <ion-modal [keepContentsMounted]="true"
+                        [isOpen]="isFromModalOpen" (ionModalDidDismiss)="dismissFromDateModal()"
+                        >
+                            <ng-template>
+                                <ion-datetime
+                                    id="fromDatePicker"
+                                    formControlName="rateAndAvailFromDate"
+                                    [(ngModel)]="ratesAndAvailabilitieOb.fromDate"
+                                    (ionChange)="fromDateChange()"
+                                    [min]="'2000-01-01'"
+                                    [max]="'2100-12-31'"
+                                    [value]="ratesAndAvailabilitieOb.fromDate"
+                                    style="color: #000"
+                                    presentation="date"
+                                    preferWheel="false"
+                                    showDefaultButtons="true"
+                                    color="dark"
+                                ></ion-datetime>
+                            </ng-template>
+                        </ion-modal>
+                    </ion-item>
+    
+                </ion-col>
+                <ion-col size="6">
+                    <ion-label class="labels"
+                        >To Date:<b style="color: red">*</b></ion-label
+                    >
+                        <ion-item class="datetime-box" [disabled]="!isFromDateSelected">
+                            <ion-datetime-button
+                                datetime="toDatePicker"
+                                class="date-btn"
+                                
+                                [ngClass]="isToDateSelected ? 'selected' : 'unselected'"
+                            ></ion-datetime-button>
+    
+                             <ion-icon
+                                            name="calendar-clear"
+                                            (click)="setToDateOpen(true)"
+                                            class="calendar-icon"
+                                        ></ion-icon>
+                            <ion-modal [keepContentsMounted]="true"
+                            [isOpen]="isToModalOpen" (ionModalDidDismiss)="dismissToDateModal()">
+                                <ng-template>
+                                    <ion-datetime
+                                        id="toDatePicker"
+                                        presentation="date"
+                                        formControlName="rateAndAvailToDate"
+                                        [(ngModel)]="ratesAndAvailabilitieOb.toDate"
+                                        [min]="toMinDate"
+                                        [max]="'2100-12-31'"
+                                        style="color: #000"
+                                        displayFormat="DD/MM/YYYY"
+                                        placeholder="DD/MM/YYYY"
+                                        [showDefaultButtons]="true"
+                                         (ionChange)="toDateChange()"
+                                    >
+                                    </ion-datetime>
+                                </ng-template>
+                            </ion-modal>
+                        </ion-item>
 
-        <ion-row style="margin-top: 5px;" >
-            <ion-col size="6">
-                <ion-label class="labels">From Date:<b style="color: red;">*</b></ion-label>
-                <ion-datetime
-                class="advSelect"
-                style="margin-top: 5px; color:#333;
-                    border: 1px solid #333;
-                    border-radius: 8px;"
-                formControlName="rateAndAvailFromDate"
-                (ionChange)="fromDateChange()"
-                displayFormat="DD/MM/YYYY"
-                [(ngModel)]="ratesAndAvailabilitieOb.fromDate"
-                min="2000-01-01"
-                max="2200-12-31"
-                placeholder="DD/MM/YYYY">
-                </ion-datetime>
-            </ion-col>
-            <ion-col size="6">
-                <ion-label class="labels">To Date:<b style="color: red;">*</b></ion-label>
-                <ion-datetime
+                    <!-- <ion-datetime
                 class="advSelect"
                 style="margin-top: 5px; color:#333;
                     border: 1px solid #333;
@@ -59,69 +111,153 @@
                 min="{{ratesAndAvailabilitieOb.fromDate}}"
                 max="2100-12-31"
                 placeholder="DD/MM/YYYY">
-                </ion-datetime>
-            </ion-col>
-            <ion-col size="6">
-                <ion-button style="color:#fff; width:100%" (click)="ResetOne()">
-                    Reset
-                </ion-button>
-            </ion-col>
-            <ion-col size="6">
-                <ion-button style="width:100%; color: #fff; --background: #259BBF" [disabled]="!onRateAvailabilityForm.valid"
-                (click)="getRatesAndAvailability()">
-                    Search
-                </ion-button>
-            </ion-col>
-            
-        </ion-row>
+                </ion-datetime> -->
+                </ion-col>
+                <ion-col size="6">
+                    <ion-button
+                        style="color: #fff; width: 100%"
+                        (click)="ResetOne()"
+                    >
+                        Reset
+                    </ion-button>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-button
+                        style="width: 100%; color: #fff; --background: #259bbf"
+                        [disabled]="!onRateAvailabilityForm.valid"
+                        (click)="getRatesAndAvailability()"
+                    >
+                        Search
+                    </ion-button>
+                </ion-col>
+            </ion-row>
         </form>
         <ion-row>
             <ion-col size="4">
-                <ion-button style="width:100%; color:#fff; --background: #259BBF; white-space: break-spaces;" (click)="masterrateupdatepage()">Master Rates</ion-button>
+                <ion-button
+                    style="
+                        width: 100%;
+                        color: #fff;
+                        --background: #259bbf;
+                        white-space: break-spaces;
+                    "
+                    (click)="masterrateupdatepage()"
+                    >Master Rates</ion-button
+                >
             </ion-col>
             <ion-col size="4">
-                <ion-button style="width:100%; color:#fff; --background: #259BBF; white-space: break-spaces;" (click)="navigatetonextpage()">Master Availability</ion-button>
+                <ion-button
+                    style="
+                        width: 100%;
+                        color: #fff;
+                        --background: #259bbf;
+                        white-space: break-spaces;
+                    "
+                    (click)="navigatetonextpage()"
+                    >Master Availability</ion-button
+                >
             </ion-col>
 
             <ion-col size="4" *ngIf="isChannelManager">
-                <ion-button style="width:100%; color:#fff; --background: #259BBF; white-space: break-spaces;" (click)="navigatetostopSell()">Stop Sell</ion-button>
-                </ion-col>  
-        </ion-row>
-        <div *ngFor="let room of roomsWithData; let i = index; trackBy: trackByRoomIdOne">
-            <!-- Collapsible Header -->
-            <div style="margin-top: 30px; margin-bottom: 15px; display: flex; justify-content: center;">
-                <div
-                    style="border: 1px solid #b8b2b2; width: 96%; padding: 13px; background-color: #CDEDE4; 
-                    display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
-                    (click)="toggleExpand(i, room)" 
+                <ion-button
+                    style="
+                        width: 100%;
+                        color: #fff;
+                        --background: #259bbf;
+                        white-space: break-spaces;
+                    "
+                    (click)="navigatetostopSell()"
+                    >Stop Sell</ion-button
                 >
-                    <ion-label style="color: #000 !important; font-size: 20px;">{{ room?.name }}</ion-label>
-                    <ion-icon *ngIf="expandedIndex === i" class="desiginIcon" name="caret-up-outline"></ion-icon>
-                    <ion-icon *ngIf="expandedIndex !== i" class="desiginIcon" name="caret-down-outline"></ion-icon>
+            </ion-col>
+        </ion-row>
+        <div
+            *ngFor="let room of roomsWithData; let i = index; trackBy: trackByRoomIdOne"
+        >
+            <!-- Collapsible Header -->
+            <div
+                style="
+                    margin-top: 30px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    justify-content: center;
+                "
+            >
+                <div
+                    style="
+                        border: 1px solid #b8b2b2;
+                        width: 96%;
+                        padding: 13px;
+                        background-color: #cdede4;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        cursor: pointer;
+                    "
+                    (click)="toggleExpand(i, room)"
+                >
+                    <ion-label style="color: #000 !important; font-size: 20px"
+                        >{{ room?.name }}</ion-label
+                    >
+                    <ion-icon
+                        *ngIf="expandedIndex === i"
+                        class="desiginIcon"
+                        name="caret-up-outline"
+                    ></ion-icon>
+                    <ion-icon
+                        *ngIf="expandedIndex !== i"
+                        class="desiginIcon"
+                        name="caret-down-outline"
+                    ></ion-icon>
                 </div>
             </div>
-        
+
             <!-- Collapsible Content -->
             <div *ngIf="expandedIndex === i">
                 <app-rate-update
-                    [roomData]="room" 
+                    [roomData]="room"
                     (roomItemEvent)="getResponceFromRoomRateComponent($event)"
                 ></app-rate-update>
             </div>
         </div>
-        
 
         <div>
-            <div style="margin-top: 30px; margin-bottom: 15px; display: flex; justify-content: center;">
-                <div  (click)="toggleRateUpdate()"
-                style="border: 1px solid #b8b2b2; width: 96%; padding: 13px; background-color: #CDEDE4; display: flex; justify-content: space-between; align-items: center; cursor: pointer;"
-                
+            <div
+                style="
+                    margin-top: 30px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    justify-content: center;
+                "
             >
-                <ion-label style="color: #000 !important; font-size: 20px;">{{ property.name }}</ion-label>
-                <ion-icon *ngIf="isOpen" class="desiginIcon" name="caret-up-outline"></ion-icon>
-                <ion-icon *ngIf="!isOpen"  class="desiginIcon" name="caret-down-outline"></ion-icon>
+                <div
+                    (click)="toggleRateUpdate()"
+                    style="
+                        border: 1px solid #b8b2b2;
+                        width: 96%;
+                        padding: 13px;
+                        background-color: #cdede4;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        cursor: pointer;
+                    "
+                >
+                    <ion-label style="color: #000 !important; font-size: 20px"
+                        >{{ property.name }}</ion-label
+                    >
+                    <ion-icon
+                        *ngIf="isOpen"
+                        class="desiginIcon"
+                        name="caret-up-outline"
+                    ></ion-icon>
+                    <ion-icon
+                        *ngIf="!isOpen"
+                        class="desiginIcon"
+                        name="caret-down-outline"
+                    ></ion-icon>
+                </div>
             </div>
-             </div>
         </div>
         <div *ngIf="isOpen">
             <app-rate-update
@@ -129,14 +265,8 @@
                 (roomItemEvent)="getResponceFromRoomRateComponent($event)"
             ></app-rate-update>
         </div>
-    
-       
     </div>
-   
-    
 
-
-    
     <div class="loader-everyOne" *ngIf="isProgressing">
         <ion-spinner name="crescent" class="spinner"></ion-spinner>
         <div class="loader-content">
@@ -149,5 +279,3 @@
         </div>
     </div>
 </ion-content>
-
-

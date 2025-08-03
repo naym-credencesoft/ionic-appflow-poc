@@ -95,19 +95,26 @@
                             size-md="12"
                             size-lg="12"
                         >
-                            <ion-datetime
-                                value="{{booking.fromDate}}"
-                                [(ngModel)]="booking.fromDate"
-                                (ionChange)="fromDateChange()"
-                                [formControl]="bookingFromDate"
-                                no-padding
-                                class="card-item"
-                                displayFormat="DD/MM/YYYY"
-                                pickerFormat="DD/MM/YYYY"
-                                placeholder="Select Date"
-                                min= "2000-12-31"
-                                max="2100-12-31"
-                            ></ion-datetime>
+                <ion-datetime-button datetime="fromDatePicker" class="card-item"></ion-datetime-button>
+
+                <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                    <ion-datetime
+                    id="fromDatePicker"
+                    [(ngModel)]="booking.fromDate"
+                    (ionChange)="fromDateChange()"
+                    [formControl]="bookingFromDate"
+                    [showDefaultButtons]="true"
+                    presentation="date"
+                    style="color: #000"
+                    doneText="Done"
+                    cancelText="Cancel"
+                    min="2000-12-31"
+                    max="2100-12-31">
+                    </ion-datetime>
+                </ng-template>
+                </ion-modal>
+
                             <!-- -->
                         </ion-col>
                     </ion-col>
@@ -133,7 +140,7 @@
                             size-md="12"
                             size-lg="12"
                         >
-                            <ion-datetime
+                            <!-- <ion-datetime
                                 value="{{booking.toDate}}"
                                 [(ngModel)]="booking.toDate"
                                 (ionChange)="PlanChangeBaseOnDate()"
@@ -146,7 +153,29 @@
                                 pickerFormat="DD/MM/YYYY"
                                 placeholder="Select Date"
                                
-                            ></ion-datetime>
+                            ></ion-datetime> -->
+                       <!-- DateTime Button -->
+                    <ion-datetime-button datetime="toDatePicker"  class="card-item"></ion-datetime-button>
+
+                    <!-- Modal -->
+                    <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                        <ion-datetime
+                        id="toDatePicker"
+                        [(ngModel)]="booking.toDate"
+                        (ionChange)="PlanChangeBaseOnDate()"
+                        [min]="booking.fromDate"
+                        max="2100-12-31"
+                        [formControl]="bookingToDate"
+                        [showDefaultButtons]="true"
+                        presentation="date"
+                        style="color: #000"
+                        doneText="Done"
+                        cancelText="Cancel">
+                        </ion-datetime>
+                    </ng-template>
+                    </ion-modal>
+
                         </ion-col>
                     </ion-col>
                 </ion-row>
@@ -168,18 +197,25 @@
                             size-md="12"
                             size-lg="12"
                         >
+                         <ion-datetime-button datetime="fromDateTime"></ion-datetime-button>
+
+                        <ion-modal [keepContentsMounted]="true">
+                        <ng-template>
                             <ion-datetime
-                                value="{{booking.fromDate}}"
-                                [(ngModel)]="booking.fromDate"
-                                (ionChange)="sameDayDateChange()"
-                                [formControl]="bookingFromDate"
-                                no-padding
-                                class="card-item"
-                                displayFormat="DD/MM/YYYY"
-                                pickerFormat="DD/MM/YYYY"
-                                placeholder="Select Date"
-                            ></ion-datetime>
-                            <!-- -->
+                            id="fromDateTime"
+                            [(ngModel)]="booking.fromDate"
+                            (ionChange)="sameDayDateChange()"
+                            [formControl]="bookingFromDate"
+                            presentation="date"
+                            placeholder="Select Date"
+                            [showDefaultButtons]="true"
+                            doneText="Done"
+                            cancelText="Cancel"
+                            class="card-item">
+                            </ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+
                         </ion-col>
                     </ion-col>
                 </ion-row>

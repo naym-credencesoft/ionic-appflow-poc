@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-import { CodeInputModule } from 'angular-code-input';
+// import { CodeInputModule } from 'angular-code-input';
 import { ForgotPasswordPageRoutingModule } from './forgot-password-routing.module';
 
 import { ForgotPasswordPage } from './forgot-password.page';
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CodeInputModule,
+    // CodeInputModule,
     IonicModule,
     TranslateModule.forChild(),
     ForgotPasswordPageRoutingModule

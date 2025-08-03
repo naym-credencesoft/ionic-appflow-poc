@@ -21,7 +21,33 @@
     }
 
 
+    .datetime-box {
+        border-radius: 10px;
+        border: 1px solid #000;
+        display: inline-block;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+        padding: 0px;
 
+        }
+
+        .date-btn {
+            font-size: 15px;
+            text-align: left;
+            }
+
+        .calendar-icon {
+            margin-left: 10px;
+           position: absolute;
+            right: 10px;      /* adjust spacing */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+        }
     @media (min-width: 576px) {
         .profile {
             z-index: 100;
@@ -49,6 +75,7 @@
             border: none;
         }
     }
+    
 
 
     .left-image-header {
@@ -114,5 +141,9 @@
         color: #fff;
     }
 
-  
+     ion-datetime-button::part(native) {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
 }
+ 

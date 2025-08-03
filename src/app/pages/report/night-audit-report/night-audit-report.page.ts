@@ -15,15 +15,14 @@ import { DateService } from "src/app/service/DateService/date-service.service";
 import { TokenStorage } from "src/app/token.storage";
 import { Property } from "src/app/model/property/Property";
 import { DatePipe } from "@angular/common";
-import { PropertyService } from 'src/app/service/property/property.service';
-import { ActionSheetController } from '@ionic/angular';
-import { Address } from 'src/app/model/address-checker/Address';
+import { PropertyService } from "src/app/service/property/property.service";
+import { ActionSheetController } from "@ionic/angular";
+import { Address } from "src/app/model/address-checker/Address";
 
-import { Room } from 'src/app/model/room';
+import { Room } from "src/app/model/room";
 import { OTAChannelPropertyDTO } from "src/app/model/otaPropertyDTO/ChannelManagerPropertyDTO";
 import { PropertiesOnlineTravelAgencies } from "src/app/model/Booking/propertiesOTA";
 import { ExternalSiteList } from "src/app/model/Booking/externalSiteList";
-
 
 @Component({
     selector: "app-night-audit-report",
@@ -52,7 +51,7 @@ export class NightAuditReportPage implements OnInit {
     isDueAmount: boolean = false;
     isSameDayBooking: boolean = false;
     addCheckoutBooking: boolean = false;
-    
+
     isRead: boolean = false;
 
     rooms: Room[];
@@ -73,6 +72,8 @@ export class NightAuditReportPage implements OnInit {
     currency: string;
     isFilterVisible: boolean = false;
     visibleCards: boolean[] = [];
+    isFromModalOpen = false;
+
     constructor(
         public token: TokenStorage,
         private toastController: ToastController,
@@ -87,8 +88,8 @@ export class NightAuditReportPage implements OnInit {
         public loadingCtrl: LoadingController,
         private modalController: ModalController,
         private availabilityService: AvailabilityService,
-        private propertyService : PropertyService,
-        private actionSheetController: ActionSheetController,
+        private propertyService: PropertyService,
+        private actionSheetController: ActionSheetController
     ) {
         this.booking = new Booking();
         this.property = new Property();
@@ -101,10 +102,16 @@ export class NightAuditReportPage implements OnInit {
             roomType: ["", Validators.compose([Validators.nullValidator])],
             ShowCheckOut: ["", Validators.compose([Validators.nullValidator])],
             externalSite: ["", Validators.compose([Validators.nullValidator])],
-            bookingDateControll: ["", Validators.compose([Validators.nullValidator])],
+            bookingDateControll: [
+                "",
+                Validators.compose([Validators.nullValidator]),
+            ],
             DueFilter: ["", Validators.compose([Validators.nullValidator])],
             SameDayFilter: ["", Validators.compose([Validators.nullValidator])],
-            CheckedINFilter: ["", Validators.compose([Validators.nullValidator])],
+            CheckedINFilter: [
+                "",
+                Validators.compose([Validators.nullValidator]),
+            ],
         });
 
         this.propertyOTADetails = new PropertiesOnlineTravelAgencies();
@@ -114,7 +121,6 @@ export class NightAuditReportPage implements OnInit {
     }
 
     ngOnInit() {
-
         this.getConfiguredPropertyDetailsByPropertyId(
             this.token.getProperty().id
         );
@@ -128,16 +134,26 @@ export class NightAuditReportPage implements OnInit {
         }
     }
 
+    onFromDateChange(event: any) {
+        this.booking.fromDate = event.detail.value;
+        // console.log('Selected From Date:', this.booking.fromDate);
+    }
     navigateToPage() {
-        this.navCtrl.navigateForward('/report-dashboard');
-      }
-    
-      toggleCardVisibility(index: number): void {
+        this.navCtrl.navigateForward("/report-dashboard");
+    }
+
+    toggleCardVisibility(index: number): void {
         // Toggle the visibility of the card at the given index
         this.visibleCards[index] = !this.visibleCards[index];
-      }
+    }
 
-   
+    setFromDateOpen(isOpen: boolean) {
+        this.isFromModalOpen = isOpen;
+    }
+
+    dismissFromDateModal() {
+        this.isFromModalOpen = false;
+    }
 
     onSearchDate() {
         this.onSearchReset();
@@ -146,8 +162,8 @@ export class NightAuditReportPage implements OnInit {
 
         this.reportfromDateString = this.datepipe.transform(
             this.booking.fromDate,
-                "yyyy-MM-dd"
-            ) 
+            "yyyy-MM-dd"
+        );
         this.nightAudit(this.propertyId, this.reportfromDateString);
     }
 
@@ -156,11 +172,11 @@ export class NightAuditReportPage implements OnInit {
         this.isRead = false;
 
         this.isFilterVisible = false;
-      
+
         this.bookings = [];
         this.bookingFilter = [];
         this.SearchSelection = "0";
-  
+
         this.roomName = [];
         this.BookingStatus = [];
         this.sourceOfBooking = [];
@@ -183,38 +199,44 @@ export class NightAuditReportPage implements OnInit {
         this.isSameDayBooking = false;
         this.isCheckedIn = false;
         this.isFilterVisible = false;
-      }
+    }
 
     ionViewWillEnter() {
         this.property = this.token.getProperty();
-  
-        if(this.property.address != undefined && this.property.address != null)
-        {
-          this.addressProperty =  this.property.address;
+
+        if (
+            this.property.address != undefined &&
+            this.property.address != null
+        ) {
+            this.addressProperty = this.property.address;
         }
-  
+
         this.getRoomDetailByPropertyId(this.property.id);
-      }
+    }
 
-
-      filterModal(){
+    filterModal() {
         this.isFilterVisible = false;
-      }
+    }
 
     getRoomDetailByPropertyId(PropertyId: number) {
-        this.propertyService.getRoomDetailsByPropertyId(PropertyId).subscribe(data => {
-          this.rooms = data;
+        this.propertyService.getRoomDetailsByPropertyId(PropertyId).subscribe(
+            (data) => {
+                this.rooms = data;
 
-          if( this.rooms != null &&  this.rooms != undefined &&  this.rooms .length >0)
-          {
-            this.rooms.sort(this.token.roomSequenceByRanking(true));
-          }
-     
-    
-          this.changeDetectorRefs.detectChanges();
-        }, error => {
-          //    this.loader = false;
-        });
+                if (
+                    this.rooms != null &&
+                    this.rooms != undefined &&
+                    this.rooms.length > 0
+                ) {
+                    this.rooms.sort(this.token.roomSequenceByRanking(true));
+                }
+
+                this.changeDetectorRefs.detectChanges();
+            },
+            (error) => {
+                //    this.loader = false;
+            }
+        );
     }
 
     getConfiguredPropertyDetailsByPropertyId(propertyId: number) {
@@ -228,7 +250,6 @@ export class NightAuditReportPage implements OnInit {
                         this.propertydetails.propertiesOnlineTravelAgencies;
                     this.loader = false;
 
-                
                     this.changeDetectorRefs.detectChanges();
                 },
                 (error) => {
@@ -238,86 +259,84 @@ export class NightAuditReportPage implements OnInit {
             );
     }
 
-    async roomOption(room)
-    {
+    async roomOption(room) {
         const actionSheet = await this.actionSheetController.create({
-            header: 'Room Option',
-            cssClass: 'action-sheets-basic-page',
+            header: "Room Option",
+            cssClass: "action-sheets-basic-page",
             mode: "md",
-            buttons:
-              [
+            buttons: [
                 {
-                  text: 'Close',
-                  role: 'cancel',
-                  icon: 'close',
-                  handler: () => {
-                    
-                    actionSheet.dismiss();
-                  }
-                },              
-                {
-                  text: 'Details',
-                  icon: 'create',
-                  handler: () => {
-
-                    let navigationExtras: NavigationExtras = {
-                        queryParams: {
-                            room: JSON.stringify(room),
-                        }
-                      };
-                  
-                    this.router.navigate(['room-details'], navigationExtras);
-                  
-                  }
+                    text: "Close",
+                    role: "cancel",
+                    icon: "close",
+                    handler: () => {
+                        actionSheet.dismiss();
+                    },
                 },
                 {
-                    text: 'Room List',
-                    icon: 'list-outline',
+                    text: "Details",
+                    icon: "create",
                     handler: () => {
-                    
                         let navigationExtras: NavigationExtras = {
                             queryParams: {
                                 room: JSON.stringify(room),
-                            }
-                          };
-                      
-                        this.router.navigate(['room-list'], navigationExtras);
+                            },
+                        };
 
-                    }
-                  },
-                  {
-                    text: 'Plan Details',
-                    icon: 'construct-outline',
+                        this.router.navigate(
+                            ["room-details"],
+                            navigationExtras
+                        );
+                    },
+                },
+                {
+                    text: "Room List",
+                    icon: "list-outline",
                     handler: () => {
-                    
                         let navigationExtras: NavigationExtras = {
                             queryParams: {
                                 room: JSON.stringify(room),
-                            }
-                          };
-                      
-                        this.router.navigate(['manage-room-plan'], navigationExtras);
+                            },
+                        };
 
-                    }
-                  },
-                  {
-                    text: 'Rate and Availability',
-                    icon: 'construct-outline',
+                        this.router.navigate(["room-list"], navigationExtras);
+                    },
+                },
+                {
+                    text: "Plan Details",
+                    icon: "construct-outline",
                     handler: () => {
-                    
                         let navigationExtras: NavigationExtras = {
                             queryParams: {
                                 room: JSON.stringify(room),
-                            }
-                          };
-                      
-                        this.router.navigate(['room-rate-and-availability'], navigationExtras);
+                            },
+                        };
 
-                    }
-                  },
-              ]
-          });
-          await actionSheet.present();
+                        this.router.navigate(
+                            ["manage-room-plan"],
+                            navigationExtras
+                        );
+                    },
+                },
+                {
+                    text: "Rate and Availability",
+                    icon: "construct-outline",
+                    handler: () => {
+                        let navigationExtras: NavigationExtras = {
+                            queryParams: {
+                                room: JSON.stringify(room),
+                            },
+                        };
+
+                        this.router.navigate(
+                            ["room-rate-and-availability"],
+                            navigationExtras
+                        );
+                    },
+                },
+            ],
+        });
+        await actionSheet.present();
     }
 
     getOTAPropertyDetails(otaChannelId) {
@@ -340,88 +359,79 @@ export class NightAuditReportPage implements OnInit {
         }
     }
 
-
-    getNoOfCheckedOuts()
-    {
-      let sum = 0;
-      if (this.bookings != null && this.bookings != undefined)
-      {
-        for (let i = 0; i < this.bookings.length; i++)
-        {
-          if (this.bookings[i].bookingStatus === "CHECKEDOUT" || this.sameDay(this.bookings[i]) === true )
-          {
-            sum = sum + 1;
-          }
-        }
-      }
-  
-      return sum;
-    }
-
-    getNoByStatus(status)
-    {
-      let sum = 0;
-      if (this.bookings != null && this.bookings != undefined)
-      {
-        for (let i = 0; i < this.bookings.length; i++)
-        {
-          if (this.bookings[i].bookingStatus === status)
-          {
-            sum = sum + 1;
-          }
-        }
-      }
-  
-      return sum;
-    }
-
-    getRoomSaleCount()
-    {
-      let sum = 0;
-      if (this.bookings != null && this.bookings != undefined)
-      {
-        for (let i = 0; i < this.bookings.length; i++)
-        {
-          if (!this.isCheckOutDay(this.bookings[i])
-          || this.sameDay(this.bookings[i]) === true)
-          {
-            if (this.bookings[i].noOfRooms != null)
-            {
-              sum = sum + this.bookings[i].noOfRooms;
+    getNoOfCheckedOuts() {
+        let sum = 0;
+        if (this.bookings != null && this.bookings != undefined) {
+            for (let i = 0; i < this.bookings.length; i++) {
+                if (
+                    this.bookings[i].bookingStatus === "CHECKEDOUT" ||
+                    this.sameDay(this.bookings[i]) === true
+                ) {
+                    sum = sum + 1;
+                }
             }
-          }
         }
-      }
-  
-      return sum;
+
+        return sum;
     }
 
-    getRoomSaleAmount()
-    {
-      let sum = 0;
-      if (this.bookings != null && this.bookings != undefined)
-      {
-        for (let i = 0; i < this.bookings.length; i++)
-        {
-          if (!this.isCheckOutDay(this.bookings[i])
-          || this.sameDay(this.bookings[i]) === true)
-          {
-            if (
-              this.bookings[i].payableAmount != null &&
-              this.bookings[i].payableAmount != undefined &&
-              this.getNoOfNight(this.bookings[i]) != null &&
-              this.getNoOfNight(this.bookings[i]) != undefined
-            ) {
-              sum =
-                sum + (this.bookings[i].payableAmount - this.getCommitionAmount(this.bookings[i])) / this.getNoOfNight(this.bookings[i]);
+    getNoByStatus(status) {
+        let sum = 0;
+        if (this.bookings != null && this.bookings != undefined) {
+            for (let i = 0; i < this.bookings.length; i++) {
+                if (this.bookings[i].bookingStatus === status) {
+                    sum = sum + 1;
+                }
             }
-          }
         }
-      }
-  
-      return sum;
+
+        return sum;
     }
-  
+
+    getRoomSaleCount() {
+        let sum = 0;
+        if (this.bookings != null && this.bookings != undefined) {
+            for (let i = 0; i < this.bookings.length; i++) {
+                if (
+                    !this.isCheckOutDay(this.bookings[i]) ||
+                    this.sameDay(this.bookings[i]) === true
+                ) {
+                    if (this.bookings[i].noOfRooms != null) {
+                        sum = sum + this.bookings[i].noOfRooms;
+                    }
+                }
+            }
+        }
+
+        return sum;
+    }
+
+    getRoomSaleAmount() {
+        let sum = 0;
+        if (this.bookings != null && this.bookings != undefined) {
+            for (let i = 0; i < this.bookings.length; i++) {
+                if (
+                    !this.isCheckOutDay(this.bookings[i]) ||
+                    this.sameDay(this.bookings[i]) === true
+                ) {
+                    if (
+                        this.bookings[i].payableAmount != null &&
+                        this.bookings[i].payableAmount != undefined &&
+                        this.getNoOfNight(this.bookings[i]) != null &&
+                        this.getNoOfNight(this.bookings[i]) != undefined
+                    ) {
+                        sum =
+                            sum +
+                            (this.bookings[i].payableAmount -
+                                this.getCommitionAmount(this.bookings[i])) /
+                                this.getNoOfNight(this.bookings[i]);
+                    }
+                }
+            }
+        }
+
+        return sum;
+    }
 
     nightAudit(propertyId: number, date: string) {
         this.loader = true;
@@ -434,357 +444,401 @@ export class NightAuditReportPage implements OnInit {
                 this.filterByDropdown();
                 this.loader = false;
                 this.isProgressing = false;
-                this.isRead = true
+                this.isRead = true;
                 this.changeDetectorRefs.detectChanges();
             },
             (error) => {
                 this.loader = false;
                 this.isProgressing = false;
-                this.isRead = true
+                this.isRead = true;
             }
         );
     }
 
+    onBookingDateChange(event: any) {
+        this.BookingDate = event.detail.value;
+        this.filterByDropdown();
+    }
+
     filterByDropdown() {
         let searchResult;
-        console.log( this.sourceOfBooking+'filter work1' + this.bookings.length);
-    
-        if (this.isDataFiltered() && this.isSameDayBooking === true)
-        {
-         this.bookings = this.bookingFilter;
-         this.bookings = this.bookings.filter((item) => {
-    
-           searchResult =
-           (this.isCheckedIn === false ||
-            (this.isCheckedIn === true &&
-              item.bookingStatus !== null &&
-              item.bookingStatus === "CHECKEDIN")) &&
-    
-              (this.isDueAmount === false ||
-                (this.isDueAmount === true &&
-                  item.outstandingAmount != null &&
-                  item.outstandingAmount != undefined &&
-                item.outstandingAmount < 0)) &&
-    
-              (this.addCheckoutBooking === true ||
-                  this.addCheckoutBooking === false &&
-                  ( (this.sameDay(item) === true) ||
-                (this.sameDay(item) === false &&
-                  item.toDate != null &&
-                  item.toDate != undefined &&
-                  (this.datepipe.transform(item.toDate, "yyyy-MM-dd") !=
-                  this.datepipe.transform(this.reportfromDateString, "yyyy-MM-dd"))))
-                ) &&
-    
-              (this.isSameDayBooking === false ||
-                (this.isSameDayBooking === true &&
-                  this.sameDay(item) === true)) ||
-              (this.CheckedInDate === undefined ||
-                (this.isCheckedInOrCheckedOut(item.bookingStatus) === false &&
-                  this.CheckedInDate != undefined &&
-                  item.fromTime != "" &&
-                  item.fromTime != null &&
-                  item.fromTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.fromTime) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedInDate
-                    )) ||
-                this.CheckedInDate === undefined ||
-                (this.isCheckedInOrCheckedOut(item.bookingStatus) === true &&
-                  this.CheckedInDate != undefined &&
-                  item.checkinTime != "" &&
-                  item.checkinTime != null &&
-                  item.checkinTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(
-                    item.checkinTime
-                  ) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedInDate
-                    ))) &&
-              (this.CheckedOutDate === undefined ||
-                (item.bookingStatus != "CHECKEDOUT" &&
-                  this.CheckedOutDate != undefined &&
-                  item.toTime != "" &&
-                  item.toTime != null &&
-                  item.toTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.toTime) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedOutDate
-                    )) ||
-                this.CheckedOutDate === undefined ||
-                (item.bookingStatus == "CHECKEDOUT" &&
-                  this.CheckedOutDate != undefined &&
-                  item.checkoutTime != "" &&
-                  item.checkoutTime != null &&
-                  item.checkoutTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(
-                    item.checkoutTime
-                  ) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedOutDate
-                ))) &&
-              (this.sourceOfBooking === null ||
-                this.sourceOfBooking === undefined ||
-                this.sourceOfBooking.length === 0 ||
-                (this.sourceOfBooking != undefined &&
-                  this.sourceOfBooking != null &&
-                  this.sourceOfBooking.length > 0 &&
-                  item.externalSite != null &&
-                  item.externalSite != undefined &&
-                  this.sourceOfBooking.some(
-                    (data) => data.toLowerCase() === item.externalSite.toLowerCase()
-                  ) === true &&
-                  this.sourceOfBooking.filter((m) =>
-                    this.checkSourceOfBooking(m)
-                  ))) &&
-              (this.roomName == null ||
-                this.roomName === undefined ||
-                this.roomName.length === 0 ||
-                (this.roomName != null &&
-                  this.roomName != undefined &&
-                  this.roomName.length > 0 &&
-                  item.roomName != null &&
-                  item.roomName != undefined &&
-                  this.roomName.some(
-                    (room) => room.toLowerCase() === item.roomName.toLowerCase()
-                  ) === true &&
-                  this.roomName.filter((m) => this.checkRoomName(m)))) &&
-              (this.BookingDate === undefined ||
-                (this.BookingDate != undefined &&
-                  item.fromDate != null &&
-                  item.fromDate != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.fromDate) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.BookingDate
-                    )) ||
-                this.BookingDate === undefined ||
-                (this.BookingDate != undefined &&
-                  item.toDate != null &&
-                  item.toDate != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.toDate) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.BookingDate
-                    ))) &&
-              (this.BookingStatus == null ||
-                this.BookingStatus === undefined ||
-                this.BookingStatus.length === 0 ||
-                (this.BookingStatus != null &&
-                  this.BookingStatus != undefined &&
-                  this.BookingStatus.length > 0 &&
-                  item.bookingStatus != null &&
-                  item.bookingStatus != undefined &&
-                  this.BookingStatus.some(
-                    (room) => room.toLowerCase() === item.bookingStatus.toLowerCase()
-                  ) === true &&
-                  this.BookingStatus.filter((m) => this.checkBookingStatus(m))));
-    
-            return searchResult;
-          });
+        console.log(
+            this.sourceOfBooking + "filter work1" + this.bookings.length
+        );
+
+        if (this.isDataFiltered() && this.isSameDayBooking === true) {
+            this.bookings = this.bookingFilter;
+            this.bookings = this.bookings.filter((item) => {
+                searchResult =
+                    ((this.isCheckedIn === false ||
+                        (this.isCheckedIn === true &&
+                            item.bookingStatus !== null &&
+                            item.bookingStatus === "CHECKEDIN")) &&
+                        (this.isDueAmount === false ||
+                            (this.isDueAmount === true &&
+                                item.outstandingAmount != null &&
+                                item.outstandingAmount != undefined &&
+                                item.outstandingAmount < 0)) &&
+                        (this.addCheckoutBooking === true ||
+                            (this.addCheckoutBooking === false &&
+                                (this.sameDay(item) === true ||
+                                    (this.sameDay(item) === false &&
+                                        item.toDate != null &&
+                                        item.toDate != undefined &&
+                                        this.datepipe.transform(
+                                            item.toDate,
+                                            "yyyy-MM-dd"
+                                        ) !=
+                                            this.datepipe.transform(
+                                                this.reportfromDateString,
+                                                "yyyy-MM-dd"
+                                            ))))) &&
+                        (this.isSameDayBooking === false ||
+                            (this.isSameDayBooking === true &&
+                                this.sameDay(item) === true))) ||
+                    ((this.CheckedInDate === undefined ||
+                        (this.isCheckedInOrCheckedOut(item.bookingStatus) ===
+                            false &&
+                            this.CheckedInDate != undefined &&
+                            item.fromTime != "" &&
+                            item.fromTime != null &&
+                            item.fromTime != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.fromTime
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.CheckedInDate
+                                )) ||
+                        this.CheckedInDate === undefined ||
+                        (this.isCheckedInOrCheckedOut(item.bookingStatus) ===
+                            true &&
+                            this.CheckedInDate != undefined &&
+                            item.checkinTime != "" &&
+                            item.checkinTime != null &&
+                            item.checkinTime != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.checkinTime
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.CheckedInDate
+                                ))) &&
+                        (this.CheckedOutDate === undefined ||
+                            (item.bookingStatus != "CHECKEDOUT" &&
+                                this.CheckedOutDate != undefined &&
+                                item.toTime != "" &&
+                                item.toTime != null &&
+                                item.toTime != undefined &&
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    item.toTime
+                                ) ===
+                                    this.dateService.convertMillisecondsToDateFormat(
+                                        this.CheckedOutDate
+                                    )) ||
+                            this.CheckedOutDate === undefined ||
+                            (item.bookingStatus == "CHECKEDOUT" &&
+                                this.CheckedOutDate != undefined &&
+                                item.checkoutTime != "" &&
+                                item.checkoutTime != null &&
+                                item.checkoutTime != undefined &&
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    item.checkoutTime
+                                ) ===
+                                    this.dateService.convertMillisecondsToDateFormat(
+                                        this.CheckedOutDate
+                                    ))) &&
+                        (this.sourceOfBooking === null ||
+                            this.sourceOfBooking === undefined ||
+                            this.sourceOfBooking.length === 0 ||
+                            (this.sourceOfBooking != undefined &&
+                                this.sourceOfBooking != null &&
+                                this.sourceOfBooking.length > 0 &&
+                                item.externalSite != null &&
+                                item.externalSite != undefined &&
+                                this.sourceOfBooking.some(
+                                    (data) =>
+                                        data.toLowerCase() ===
+                                        item.externalSite.toLowerCase()
+                                ) === true &&
+                                this.sourceOfBooking.filter((m) =>
+                                    this.checkSourceOfBooking(m)
+                                ))) &&
+                        (this.roomName == null ||
+                            this.roomName === undefined ||
+                            this.roomName.length === 0 ||
+                            (this.roomName != null &&
+                                this.roomName != undefined &&
+                                this.roomName.length > 0 &&
+                                item.roomName != null &&
+                                item.roomName != undefined &&
+                                this.roomName.some(
+                                    (room) =>
+                                        room.toLowerCase() ===
+                                        item.roomName.toLowerCase()
+                                ) === true &&
+                                this.roomName.filter((m) =>
+                                    this.checkRoomName(m)
+                                ))) &&
+                        (this.BookingDate === undefined ||
+                            (this.BookingDate != undefined &&
+                                item.fromDate != null &&
+                                item.fromDate != undefined &&
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    item.fromDate
+                                ) ===
+                                    this.dateService.convertMillisecondsToDateFormat(
+                                        this.BookingDate
+                                    )) ||
+                            this.BookingDate === undefined ||
+                            (this.BookingDate != undefined &&
+                                item.toDate != null &&
+                                item.toDate != undefined &&
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    item.toDate
+                                ) ===
+                                    this.dateService.convertMillisecondsToDateFormat(
+                                        this.BookingDate
+                                    ))) &&
+                        (this.BookingStatus == null ||
+                            this.BookingStatus === undefined ||
+                            this.BookingStatus.length === 0 ||
+                            (this.BookingStatus != null &&
+                                this.BookingStatus != undefined &&
+                                this.BookingStatus.length > 0 &&
+                                item.bookingStatus != null &&
+                                item.bookingStatus != undefined &&
+                                this.BookingStatus.some(
+                                    (room) =>
+                                        room.toLowerCase() ===
+                                        item.bookingStatus.toLowerCase()
+                                ) === true &&
+                                this.BookingStatus.filter((m) =>
+                                    this.checkBookingStatus(m)
+                                ))));
+
+                return searchResult;
+            });
+        } else {
+            this.bookings = this.bookingFilter;
+            this.bookings = this.bookings.filter((item) => {
+                searchResult =
+                    (this.isCheckedIn === false ||
+                        (this.isCheckedIn === true &&
+                            item.bookingStatus !== null &&
+                            item.bookingStatus === "CHECKEDIN")) &&
+                    (this.isDueAmount === false ||
+                        (this.isDueAmount === true &&
+                            item.outstandingAmount != null &&
+                            item.outstandingAmount != undefined &&
+                            item.outstandingAmount < 0)) &&
+                    (this.addCheckoutBooking === true ||
+                        (this.addCheckoutBooking === false &&
+                            (this.sameDay(item) === true ||
+                                (this.sameDay(item) === false &&
+                                    item.toDate != null &&
+                                    item.toDate != undefined &&
+                                    this.datepipe.transform(
+                                        item.toDate,
+                                        "yyyy-MM-dd"
+                                    ) !=
+                                        this.datepipe.transform(
+                                            this.reportfromDateString,
+                                            "yyyy-MM-dd"
+                                        ))))) &&
+                    (this.isSameDayBooking === false ||
+                        (this.isSameDayBooking === true &&
+                            this.sameDay(item) === true)) &&
+                    (this.CheckedInDate === undefined ||
+                        (this.isCheckedInOrCheckedOut(item.bookingStatus) ===
+                            false &&
+                            this.CheckedInDate != undefined &&
+                            item.fromTime != "" &&
+                            item.fromTime != null &&
+                            item.fromTime != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.fromTime
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.CheckedInDate
+                                )) ||
+                        this.CheckedInDate === undefined ||
+                        (this.isCheckedInOrCheckedOut(item.bookingStatus) ===
+                            true &&
+                            this.CheckedInDate != undefined &&
+                            item.checkinTime != "" &&
+                            item.checkinTime != null &&
+                            item.checkinTime != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.checkinTime
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.CheckedInDate
+                                ))) &&
+                    (this.CheckedOutDate === undefined ||
+                        (item.bookingStatus != "CHECKEDOUT" &&
+                            this.CheckedOutDate != undefined &&
+                            item.toTime != "" &&
+                            item.toTime != null &&
+                            item.toTime != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.toTime
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.CheckedOutDate
+                                )) ||
+                        this.CheckedOutDate === undefined ||
+                        (item.bookingStatus == "CHECKEDOUT" &&
+                            this.CheckedOutDate != undefined &&
+                            item.checkoutTime != "" &&
+                            item.checkoutTime != null &&
+                            item.checkoutTime != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.checkoutTime
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.CheckedOutDate
+                                ))) &&
+                    (this.sourceOfBooking === null ||
+                        this.sourceOfBooking === undefined ||
+                        this.sourceOfBooking.length === 0 ||
+                        (this.sourceOfBooking != undefined &&
+                            this.sourceOfBooking != null &&
+                            this.sourceOfBooking.length > 0 &&
+                            item.externalSite != null &&
+                            item.externalSite != undefined &&
+                            this.sourceOfBooking.some(
+                                (data) =>
+                                    data.toLowerCase() ===
+                                    item.externalSite.toLowerCase()
+                            ) === true &&
+                            this.sourceOfBooking.filter((m) =>
+                                this.checkSourceOfBooking(m)
+                            ))) &&
+                    (this.roomName == null ||
+                        this.roomName === undefined ||
+                        this.roomName.length === 0 ||
+                        (this.roomName != null &&
+                            this.roomName != undefined &&
+                            this.roomName.length > 0 &&
+                            item.roomName != null &&
+                            item.roomName != undefined &&
+                            this.roomName.some(
+                                (room) =>
+                                    room.toLowerCase() ===
+                                    item.roomName.toLowerCase()
+                            ) === true &&
+                            this.roomName.filter((m) =>
+                                this.checkRoomName(m)
+                            ))) &&
+                    (this.BookingDate === undefined ||
+                        (this.BookingDate != undefined &&
+                            item.fromDate != null &&
+                            item.fromDate != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.fromDate
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.BookingDate
+                                )) ||
+                        this.BookingDate === undefined ||
+                        (this.BookingDate != undefined &&
+                            item.toDate != null &&
+                            item.toDate != undefined &&
+                            this.dateService.convertMillisecondsToDateFormat(
+                                item.toDate
+                            ) ===
+                                this.dateService.convertMillisecondsToDateFormat(
+                                    this.BookingDate
+                                ))) &&
+                    (this.BookingStatus == null ||
+                        this.BookingStatus === undefined ||
+                        this.BookingStatus.length === 0 ||
+                        (this.BookingStatus != null &&
+                            this.BookingStatus != undefined &&
+                            this.BookingStatus.length > 0 &&
+                            item.bookingStatus != null &&
+                            item.bookingStatus != undefined &&
+                            this.BookingStatus.some(
+                                (room) =>
+                                    room.toLowerCase() ===
+                                    item.bookingStatus.toLowerCase()
+                            ) === true &&
+                            this.BookingStatus.filter((m) =>
+                                this.checkBookingStatus(m)
+                            )));
+
+                return searchResult;
+            });
         }
-        else
-        {
-          this.bookings = this.bookingFilter;
-          this.bookings = this.bookings.filter((item) => {
-    
-            searchResult =
-            (this.isCheckedIn === false ||
-              (this.isCheckedIn === true &&
-                item.bookingStatus !== null &&
-                item.bookingStatus === "CHECKEDIN")) &&
-              (this.isDueAmount === false ||
-                (this.isDueAmount === true &&
-                  item.outstandingAmount != null &&
-                  item.outstandingAmount != undefined &&
-                item.outstandingAmount < 0)) &&
-              (this.addCheckoutBooking === true ||
-                this.addCheckoutBooking === false &&
-                ( (this.sameDay(item) === true) ||
-              (this.sameDay(item) === false &&
-                item.toDate != null &&
-                item.toDate != undefined &&
-                (this.datepipe.transform(item.toDate, "yyyy-MM-dd") !=
-                this.datepipe.transform(this.reportfromDateString, "yyyy-MM-dd"))))
-              ) &&
-              (this.isSameDayBooking === false ||
-                (this.isSameDayBooking === true &&
-                  this.sameDay(item) === true)) &&
-              (this.CheckedInDate === undefined ||
-                (this.isCheckedInOrCheckedOut(item.bookingStatus) === false &&
-                  this.CheckedInDate != undefined &&
-                  item.fromTime != "" &&
-                  item.fromTime != null &&
-                  item.fromTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.fromTime) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedInDate
-                    )) ||
-                this.CheckedInDate === undefined ||
-                (this.isCheckedInOrCheckedOut(item.bookingStatus) === true &&
-                  this.CheckedInDate != undefined &&
-                  item.checkinTime != "" &&
-                  item.checkinTime != null &&
-                  item.checkinTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(
-                    item.checkinTime
-                  ) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedInDate
-                    ))) &&
-              (this.CheckedOutDate === undefined ||
-                (item.bookingStatus != "CHECKEDOUT" &&
-                  this.CheckedOutDate != undefined &&
-                  item.toTime != "" &&
-                  item.toTime != null &&
-                  item.toTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.toTime) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedOutDate
-                    )) ||
-                this.CheckedOutDate === undefined ||
-                (item.bookingStatus == "CHECKEDOUT" &&
-                  this.CheckedOutDate != undefined &&
-                  item.checkoutTime != "" &&
-                  item.checkoutTime != null &&
-                  item.checkoutTime != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(
-                    item.checkoutTime
-                  ) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.CheckedOutDate
-                    ))) &&
-              (this.sourceOfBooking === null ||
-                this.sourceOfBooking === undefined ||
-                this.sourceOfBooking.length === 0 ||
-                (this.sourceOfBooking != undefined &&
-                  this.sourceOfBooking != null &&
-                  this.sourceOfBooking.length > 0 &&
-                  item.externalSite != null &&
-                  item.externalSite != undefined &&
-                  this.sourceOfBooking.some(
-                    (data) => data.toLowerCase() === item.externalSite.toLowerCase()
-                  ) === true &&
-                  this.sourceOfBooking.filter((m) =>
-                    this.checkSourceOfBooking(m)
-                  ))) &&
-              (this.roomName == null ||
-                this.roomName === undefined ||
-                this.roomName.length === 0 ||
-                (this.roomName != null &&
-                  this.roomName != undefined &&
-                  this.roomName.length > 0 &&
-                  item.roomName != null &&
-                  item.roomName != undefined &&
-                  this.roomName.some(
-                    (room) => room.toLowerCase() === item.roomName.toLowerCase()
-                  ) === true &&
-                  this.roomName.filter((m) => this.checkRoomName(m)))) &&
-              (this.BookingDate === undefined ||
-                (this.BookingDate != undefined &&
-                  item.fromDate != null &&
-                  item.fromDate != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.fromDate) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.BookingDate
-                    )) ||
-                this.BookingDate === undefined ||
-                (this.BookingDate != undefined &&
-                  item.toDate != null &&
-                  item.toDate != undefined &&
-                  this.dateService.convertMillisecondsToDateFormat(item.toDate) ===
-                    this.dateService.convertMillisecondsToDateFormat(
-                      this.BookingDate
-                    ))) &&
-              (this.BookingStatus == null ||
-                this.BookingStatus === undefined ||
-                this.BookingStatus.length === 0 ||
-                (this.BookingStatus != null &&
-                  this.BookingStatus != undefined &&
-                  this.BookingStatus.length > 0 &&
-                  item.bookingStatus != null &&
-                  item.bookingStatus != undefined &&
-                  this.BookingStatus.some(
-                    (room) => room.toLowerCase() === item.bookingStatus.toLowerCase()
-                  ) === true &&
-                  this.BookingStatus.filter((m) => this.checkBookingStatus(m))));
-    
-            return searchResult;
-          });
-        }
-        console.log('filter work' + this.bookings.length);
+        console.log("filter work" + this.bookings.length);
         this.isFilterVisible = false;
         this.changeDetectorRefs.detectChanges();
-      }
-    
-      isDataFiltered()
-      {
-        if (this.BookingStatus != null &&
-          this.BookingStatus != undefined &&
-          this.BookingStatus.length > 0 ||
-          this.BookingDate != undefined ||
-          this.roomName != null &&
-          this.roomName != undefined &&
-          this.roomName.length > 0 ||
-          this.sourceOfBooking != null &&
-          this.sourceOfBooking != undefined &&
-          this.sourceOfBooking.length > 0 ||
-          this.CheckedOutDate != undefined ||
-          this.CheckedInDate != undefined
-          )
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-    
+    }
 
-      isCheckedInOrCheckedOut(row) {
+    isDataFiltered() {
         if (
-          row.bookingStatus === "CHECKEDOUT" ||
-          row.bookingStatus === "CHECKEDIN"
+            (this.BookingStatus != null &&
+                this.BookingStatus != undefined &&
+                this.BookingStatus.length > 0) ||
+            this.BookingDate != undefined ||
+            (this.roomName != null &&
+                this.roomName != undefined &&
+                this.roomName.length > 0) ||
+            (this.sourceOfBooking != null &&
+                this.sourceOfBooking != undefined &&
+                this.sourceOfBooking.length > 0) ||
+            this.CheckedOutDate != undefined ||
+            this.CheckedInDate != undefined
         ) {
-          return true;
+            return true;
         } else {
-          return false;
+            return false;
         }
-      }
+    }
 
-      checkBookingStatus(data) {
+    isCheckedInOrCheckedOut(row) {
+        if (
+            row.bookingStatus === "CHECKEDOUT" ||
+            row.bookingStatus === "CHECKEDIN"
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    checkBookingStatus(data) {
         return (
-          this.bookings.some(
-            (m) =>
-              m.bookingStatus != null &&
-              m.bookingStatus != undefined &&
-              m.bookingStatus.toLowerCase() === data.toLowerCase()
-          ) === true
+            this.bookings.some(
+                (m) =>
+                    m.bookingStatus != null &&
+                    m.bookingStatus != undefined &&
+                    m.bookingStatus.toLowerCase() === data.toLowerCase()
+            ) === true
         );
-      }
+    }
 
-      checkRoomName(data) {
+    checkRoomName(data) {
         return (
-          this.bookings.some(
-            (m) =>
-              m.roomName != null &&
-              m.roomName != undefined &&
-              m.roomName.toLowerCase() === data.toLowerCase()
-          ) === true
+            this.bookings.some(
+                (m) =>
+                    m.roomName != null &&
+                    m.roomName != undefined &&
+                    m.roomName.toLowerCase() === data.toLowerCase()
+            ) === true
         );
-      }
+    }
 
-
-      checkSourceOfBooking(data) {
+    checkSourceOfBooking(data) {
         return (
-          this.bookings.some(
-            (m) =>
-              m.externalSite != null &&
-              m.externalSite != undefined &&
-              m.externalSite.toLowerCase() === data.toLowerCase()
-          ) === true
+            this.bookings.some(
+                (m) =>
+                    m.externalSite != null &&
+                    m.externalSite != undefined &&
+                    m.externalSite.toLowerCase() === data.toLowerCase()
+            ) === true
         );
-      }
-    
+    }
+
     ratePerNight(row) {
         return (
             (row.payableAmount - this.getCommitionAmount(row)) /
@@ -1172,19 +1226,19 @@ export class NightAuditReportPage implements OnInit {
     getTotalRoomPriceTillToday() {
         let sum = 0;
         if (this.bookings.length > 0) {
-          for (let i = 0; i < this.bookings.length; i++) {
-            if (
-              this.getTillDateRoomPrice(this.bookings[i]) != null &&
-              this.getTillDateRoomPrice(this.bookings[i]) != undefined &&
-              this.balanceRoomTarif(this.bookings[i]) > 0
-            ) {
-              sum = sum +  this.balanceRoomTarif(this.bookings[i]);
+            for (let i = 0; i < this.bookings.length; i++) {
+                if (
+                    this.getTillDateRoomPrice(this.bookings[i]) != null &&
+                    this.getTillDateRoomPrice(this.bookings[i]) != undefined &&
+                    this.balanceRoomTarif(this.bookings[i]) > 0
+                ) {
+                    sum = sum + this.balanceRoomTarif(this.bookings[i]);
+                }
             }
-          }
         }
         return sum;
-      }
-      
+    }
+
     getTotalComission() {
         let sum = 0;
         if (this.bookings.length > 0) {
@@ -1376,7 +1430,8 @@ export class NightAuditReportPage implements OnInit {
                     item.status === "Paid" &&
                     item.paymentMode != null &&
                     item.paymentMode != "Credit" &&
-                    item.paymentMode != "BillToRoom" && item.paymentMode !="CreditIndividual";
+                    item.paymentMode != "BillToRoom" &&
+                    item.paymentMode != "CreditIndividual";
 
                 return searchResult;
             });
@@ -1406,7 +1461,8 @@ export class NightAuditReportPage implements OnInit {
                     item.status === "Paid" &&
                     item.paymentMode != null &&
                     item.paymentMode != "Credit" &&
-                    item.paymentMode != "BillToRoom" && item.paymentMode !="CreditIndividual";
+                    item.paymentMode != "BillToRoom" &&
+                    item.paymentMode != "CreditIndividual";
 
                 return searchResult;
             });

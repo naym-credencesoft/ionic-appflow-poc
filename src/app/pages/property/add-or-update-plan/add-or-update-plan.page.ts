@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { LoadingController, ToastController } from "@ionic/angular";
 import { RateBundle } from "src/app/model/Availbility/rate-bundle";
 import { Property } from "src/app/model/property/Property";
-import { Location } from "@angular/common";
+import { DatePipe, Location } from "@angular/common";
 import { Room } from "src/app/model/room";
 import { AvailabilityService } from "src/app/service/AvailabilityService/availability.service";
 import { DateService } from "src/app/service/DateService/date-service.service";
@@ -88,6 +88,8 @@ export class AddOrUpdatePlanPage implements OnInit {
     isDisabledDate: boolean = false;
     planCode: string;
     userData: ApplicationUser;
+isFromModalOpen = false;
+isToModalOpen = false;
 
     constructor(
         private acRoute: ActivatedRoute,
@@ -102,7 +104,8 @@ export class AddOrUpdatePlanPage implements OnInit {
         public loadingCtrl: LoadingController,
         private authService: AuthService,
         private toastController: ToastController,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private datePipe: DatePipe
     ) {
         this.property = new Property();
         this.room = new Room();
@@ -161,7 +164,6 @@ export class AddOrUpdatePlanPage implements OnInit {
                     this.dateToText = "To Date";
 
                     this.discountAmount = this.plan.deviationFromStandardPlan;
-
                     this.plan.effectiveDate =
                         this.dateService.convertMillisecondsToYYYMMDDFormat(
                             this.dateString
@@ -230,6 +232,21 @@ export class AddOrUpdatePlanPage implements OnInit {
           }, 500);
     }
 
+        setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
     dataInit() {
         this.roomStandardPrice = this.room.roomOnlyPrice;
         this.amountChange(this.plan.amount);
@@ -244,6 +261,22 @@ export class AddOrUpdatePlanPage implements OnInit {
         toDate.setDate(toDate.getDate() + 1);
         this.toMinDate = this.getDate(toDate);
     }
+    toDateChange(event: any) {
+  const selectedDate = new Date(event.detail.value);
+
+  const formattedDate = selectedDate.toISOString().split('T')[0];
+
+  const effectiveDate = new Date(this.plan.effectiveDate);
+
+  if (selectedDate >= effectiveDate) {
+    if (this.plan.expiryDate !== formattedDate) {
+      this.plan.expiryDate = formattedDate;
+    }
+  } else {
+    console.warn('Expiry date cannot be earlier than effective date');
+    this.plan.expiryDate = ''; 
+  }
+}
 
     setUpdateType(typeName) {
         if (this.plan.channelManagerUpdateType === "ROOM_RATE_PLAN") {

@@ -1,23 +1,21 @@
-
-
 <ion-header class="ion-no-border">
-
-
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
-        src="{{this.property.logoUrl}}"
-        onerror="this.src='/assets/img/app-logo.png'"
-    />
+            style="object-fit: fill"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
     </ion-avatar>
 
     <ion-text class="HeaderSubTitle"> Manage Payment </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon name="arrow-back-outline" (click)="navigateToPage()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
-            <ion-text color="light" class="HeaderTitle" 
-                >Accommodation</ion-text
-            >
+            <ion-icon
+                name="arrow-back-outline"
+                (click)="navigateToPage()"
+                style="font-size: 20px; margin-top: -10px"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle">Accommodation</ion-text>
             <!-- <ion-img
             style="height:50px; margin-top: -6px;"
                 src="/assets/img/icons/arrow-down-white.svg"
@@ -29,9 +27,12 @@
 </ion-header>
 
 <ion-content class="ion-no-margin ion-no-padding">
-
-    <ion-searchbar mode="md" (ionClear)="clear($event)" (ionInput)="getItems($event)"
-        class="ion-no-margin ion-no-padding marginup">
+    <ion-searchbar
+        mode="md"
+        (ionClear)="clear($event)"
+        (ionInput)="getItems($event)"
+        class="ion-no-margin ion-no-padding marginup"
+    >
     </ion-searchbar>
 
     <!-- <ion-row>
@@ -46,105 +47,169 @@
             </ion-segment>
     </ion-row> -->
 
-
-
     <ion-grid class="ion-no-margin ion-no-padding">
-
-        <div >
+        <div>
             <form [formGroup]="onFindPaymentForm">
-    
                 <ion-row>
-                    <ion-col size="5.6" style="margin: 5px;">
-    
-                        <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">From
+                    <ion-col size="5.6" style="margin: 5px">
+                        <ion-text
+                            color="primary"
+                            class="check-in-out-text"
+                            style="font-size: 12px"
+                            >From
                         </ion-text>
                         <ion-row>
                             <ion-col no-padding size="12">
-                                <div class="datetime-container">
-                                  <ion-datetime 
-                                    [(ngModel)]="fromDateString" 
-                                    style="border: 1px solid gray" 
-                                    (ionChange)="fromDateChange()" 
-                                    formControlName="bookingFromDate" 
-                                    class="datepicker" 
-                                    color="primary" 
-                                    displayFormat="DD/MM/YYYY" 
-                                    pickerFormat="DD/MM/YYYY" 
-                                    placeholder="DD/MM/YYYY"
-                                    min= "2000-12-31"
-                                    max="2100-12-31"
+                                <ion-item class="datetime-box">
+
+                                    <ion-datetime-button
+                                    datetime="paymentListFromDate"
+                                    class="date-btn"
                                     >
-                                  </ion-datetime>
-                                  <ion-icon name="calendar-outline" class="datetime-icon" style="color: #F89A34"></ion-icon>
-                                </div>
-                              </ion-col>
+                                
+                                </ion-datetime-button>
+                              
+                                    <ion-icon
+                                            name="calendar-clear"
+                                            (click)="setFromDateOpen(true)"
+                                            class="calendar-icon"
+                                        ></ion-icon>
+                                <!-- Modal -->
+                                <ion-modal 
+                                    [keepContentsMounted]="true" 
+                                       [isOpen]="isFromModalOpen"
+                                    (ionModalDidDismiss)="dismissFromDateModal()">
+                                    <ng-template>
+                                    <ion-datetime
+                                        id="paymentListFromDate"
+                                        formControlName="bookingFromDate"
+                                        (ionChange)="fromDateChange()"
+                                        [(ngModel)]="fromDateString"
+                                        [showDefaultButtons]="true"
+                                        presentation="date"
+                                        style="color: #000"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                        displayFormat="DD/MM/YYYY"
+                                        pickerFormat="DD/MM/YYYY"
+                                        [min]="'2000-12-31'"
+                                        [max]="'2100-12-31'"
+                                    >
+                                    </ion-datetime>
+                                    </ng-template>
+                                </ion-modal>
+                                </ion-item>
+            
+
+                            </ion-col>
                         </ion-row>
                     </ion-col>
-    
-                    <ion-col size="5.6" style="margin: 5px;">
-                        <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">To
+
+                    <ion-col size="5.6" style="margin: 5px">
+                        <ion-text
+                            color="primary"
+                            class="check-in-out-text"
+                            style="font-size: 12px"
+                            >To
                         </ion-text>
-                    
+
                         <ion-row>
                             <ion-col no-padding size="12">
-                                <div class="datetime-container">
-                                  <ion-datetime 
-                                  style="border: 1px solid gray" 
-                                    [(ngModel)]="toDateString" 
-                                    min= "{{fromDateString}}"
-                                    max="2100-12-31"
-                                    formControlName="bookingToDate" 
-                                    class="datepicker" 
-                                    color="primary" 
-                                    displayFormat="DD/MM/YYYY" 
-                                    pickerFormat="DD/MM/YYYY" 
-                                    placeholder="Select Date">
-                                  </ion-datetime>
-                                  <ion-icon name="calendar-outline" style="color: #F89A34" class="datetime-icon"></ion-icon>
-                                </div>
-                              </ion-col>
+                                <ion-item class="datetime-box">
+
+                                    <ion-datetime-button
+                                        datetime="toDatePicker"
+                                        class="date-btn"
+                                    ></ion-datetime-button>
+    
+                                    <ion-icon
+                                        name="calendar-clear"
+                                        (click)="setToDateOpen(true)"
+                                        class="calendar-icon"
+                                    ></ion-icon>
+    
+                                    <ion-modal [keepContentsMounted]="true" [isOpen]="isToModalOpen" (ionModalDidDismiss)="dismissToDateModal()">
+                                        <ng-template>
+                                            <ion-datetime
+                                                id="toDatePicker"
+                                                 [(ngModel)]="toDateString" 
+                                                formControlName="bookingToDate"
+                                                displayFormat="DD/MM/YYYY"
+                                                pickerFormat="DD/MM/YYYY"
+                                                presentation="date"
+                                                style="color: #000"
+                                                [showDefaultButtons]="true"
+                                                doneText="Done"
+                                                cancelText="Cancel"
+                                                [min]="toMinDate"
+                                                [max]="toMaxDate || '2100-12-31'"
+                                            >
+                                            </ion-datetime>
+                                        </ng-template>
+                                    </ion-modal>
+                                </ion-item>
+
+                            </ion-col>
                         </ion-row>
-    
                     </ion-col>
-    
                 </ion-row>
-    
-    
-    
+
                 <ion-row class="action-button">
                     <ion-col size="6">
-                        <ion-button expand="block" class="btn-reset" (click)="ResetAllField()">Reset</ion-button>
+                        <ion-button
+                            expand="block"
+                            class="btn-reset"
+                            (click)="ResetAllField()"
+                            >Reset</ion-button
+                        >
                     </ion-col>
-                    <ion-col size="6" >
-                        <ion-button expand="block" color="primary" (click)="findPayment()" [disabled]="!onFindPaymentForm.valid|| isProgressing">
-                            Find</ion-button>
+                    <ion-col size="6">
+                        <ion-button
+                            expand="block"
+                            color="primary"
+                            (click)="findPayment()"
+                            [disabled]="!onFindPaymentForm.valid|| isProgressing"
+                        >
+                            Find</ion-button
+                        >
                     </ion-col>
                 </ion-row>
-    
-        
             </form>
         </div>
 
         <ion-list>
-            <div *ngFor="let payment of paymentListData | paginate: { itemsPerPage: 5, currentPage: p }; let i = index">
-                <ion-card >
+            <div
+                *ngFor="let payment of paymentListData | paginate: { itemsPerPage: 5, currentPage: p }; let i = index"
+            >
+                <ion-card>
                     <!-- <ion-card > -->
-                    <ion-card-header  (click)="toggleCardBody(i)" [ngStyle]="{'background-color': i % 2 === 0 ? '#D3EBF2' : '#FEEBD6'}">
+                    <ion-card-header
+                        (click)="toggleCardBody(i)"
+                        [ngStyle]="{'background-color': i % 2 === 0 ? '#D3EBF2' : '#FEEBD6'}"
+                    >
                         <ion-row>
                             <ion-col size="5" style="color: #333">
                                 <ion-text>Id:</ion-text>
-                                <ion-text class="TextValue">{{payment.id}}</ion-text>
+                                <ion-text class="TextValue"
+                                    >{{payment.id}}</ion-text
+                                >
                             </ion-col>
 
                             <ion-col size="5" style="color: #333">
-                                <ion-text >Date:</ion-text>
+                                <ion-text>Date:</ion-text>
                                 <ion-text class="TextValue">
                                     {{payment.date | date:'MMM d, y'}}
                                 </ion-text>
                             </ion-col>
-                            <ion-col size="2" (click)="onPaymentOption(payment)" style="    display: flex; color: #333;
-                                justify-content: end;
-                            ">
+                            <ion-col
+                                size="2"
+                                (click)="onPaymentOption(payment)"
+                                style="
+                                    display: flex;
+                                    color: #333;
+                                    justify-content: end;
+                                "
+                            >
                                 <ion-icon name="ellipsis-vertical"></ion-icon>
                             </ion-col>
                             <!-- <ion-col size="1">
@@ -155,11 +220,18 @@
                             </ion-col> -->
                         </ion-row>
                     </ion-card-header>
-                    <ion-card-content  *ngIf="openedCardIndex === i" style="    border: 1px solid gray; padding: 12px;">
-                        <ion-row >
+                    <ion-card-content
+                        *ngIf="openedCardIndex === i"
+                        style="border: 1px solid gray; padding: 12px"
+                    >
+                        <ion-row>
                             <ion-col size="12">
-                                <ion-text color="primary">Payment Reference No:</ion-text>
-                                <ion-text class="TextValue">{{payment.referenceNumber}}</ion-text>
+                                <ion-text color="primary"
+                                    >Payment Reference No:</ion-text
+                                >
+                                <ion-text class="TextValue"
+                                    >{{payment.referenceNumber}}</ion-text
+                                >
                             </ion-col>
 
                             <!-- <ion-col size="12">
@@ -167,40 +239,43 @@
                             </ion-col> -->
 
                             <ion-col size="12">
-                                <ion-text color="primary">Description:</ion-text>
-                                <ion-text class="TextValue">{{payment.description}}</ion-text>
+                                <ion-text color="primary"
+                                    >Description:</ion-text
+                                >
+                                <ion-text class="TextValue"
+                                    >{{payment.description}}</ion-text
+                                >
                             </ion-col>
 
                             <ion-col size="12">
                                 <ion-text color="primary">Amount:</ion-text>
                                 <ion-text class="TextValue">
-                                    {{payment.transactionAmount| currency: token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2' }}
+                                    {{payment.transactionAmount| currency:
+                                    token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
+                                    }}
                                 </ion-text>
                             </ion-col>
 
                             <ion-col size="12">
                                 <ion-text color="primary">Status:</ion-text>
-                                <ion-text class="TextValue">{{payment.status}}</ion-text>
+                                <ion-text class="TextValue"
+                                    >{{payment.status}}</ion-text
+                                >
                             </ion-col>
 
                             <ion-col size="12">
                                 <ion-text color="primary">Mode:</ion-text>
-                                <ion-text class="TextValue">{{payment.paymentMode}}</ion-text>
+                                <ion-text class="TextValue"
+                                    >{{payment.paymentMode}}</ion-text
+                                >
                             </ion-col>
-
                         </ion-row>
                     </ion-card-content>
-
                 </ion-card>
-
             </div>
-
         </ion-list>
 
         <pagination-controls (pageChange)="p = $event"></pagination-controls>
-
-
-
     </ion-grid>
 
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -212,21 +287,18 @@
     <div class="loader-everyOne" *ngIf="isProgressing">
         <ion-spinner name="crescent" class="spinner"></ion-spinner>
         <div class="loader-content">
-          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
-          <div class="loader-text">Please wait...</div>
+            <img
+                src="/assets/img/loader-logo.png"
+                alt="Loader Image"
+                class="loader-image"
+            />
+            <div class="loader-text">Please wait...</div>
         </div>
-      </div>
- 
-
-    
-   
-       
-  
-      
+    </div>
 </ion-content>
 
 <ion-footer>
-<ion-toolbar>
-    <app-footer></app-footer>
-</ion-toolbar>
+    <ion-toolbar>
+        <app-footer></app-footer>
+    </ion-toolbar>
 </ion-footer>

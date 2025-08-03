@@ -466,10 +466,10 @@ export class ActionBookingMenuComponent implements OnInit {
         .checkOutStandingAmountByBookingId(this.booking.id)
         .subscribe((response) => {
           if (response.status === 200) {
-            let data = response.body;
+            let data = response.body as any;
             this.isProgressing = false;
   
-              if (response.body < 0) {
+              if (data.value < 0) {
                 this.isProgressing = false;
                 this.successDialogClose();
                 this.token.saveBookingDetal(this.booking);
@@ -490,9 +490,9 @@ export class ActionBookingMenuComponent implements OnInit {
         .checkOutStandingAmountByBookingId(this.booking.id)
         .subscribe((response) => {
           if (response.status === 200) {
-            let data = response.body;
+            let data = response.body as any;
   
-            if (data < 0) {
+            if (data.value < 0) {
                // this.close();
              //   this.successDialogClose()
                 this.token.saveBookingDetal(this.booking);

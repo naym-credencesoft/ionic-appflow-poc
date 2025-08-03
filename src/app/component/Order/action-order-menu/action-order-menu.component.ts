@@ -18,6 +18,7 @@ import { PropertyService } from "src/app/service/property/property.service";
 import { Audit } from "src/app/service/audit";
 import { CancelOrderModalComponent } from "../../cancel-order-modal/cancel-order-modal.component";
 import { OrderEventsService } from "src/app/service/order-events.service";
+import { CheckUserType } from "src/app/model/checkUserType";
 
 @Component({
     selector: "app-action-order-menu",
@@ -29,7 +30,9 @@ export class ActionOrderMenuComponent implements OnInit {
     order: Order;
     role: any[];
      audit: Audit;
-
+roleArray: any;
+isFrontOfficeOperator: boolean = false;
+checkUserType: CheckUserType;
     constructor(
         public modalController: ModalController,
         private router: Router,
@@ -47,11 +50,29 @@ export class ActionOrderMenuComponent implements OnInit {
           private orderEvents: OrderEventsService
     ) {
         this.order = new Order();
+        this.checkUserType = new CheckUserType();
         this.audit = new Audit();
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+       
+    }
 
+    ionViewDidEnter(){
+        
+this.role = [];
+                JSON.parse(this.token.getRole()).forEach((item) => {
+            this.role.push(item);
+        });
+        const filters = {
+            roles: (roles) =>
+                roles.find((x) => this.roleArray.includes(x.toUpperCase())),
+        };
+  if (this.checkUserType.isFbOperator(this.role[0]) == true) {
+        this.isFrontOfficeOperator = true;
+      }
+     
+    }
     close() {
         this.modalController.dismiss();
     }
@@ -63,7 +84,7 @@ export class ActionOrderMenuComponent implements OnInit {
     onDetails() {
         this.close();
         const navigationExtras: NavigationExtras = {
-            queryParams: {
+            queryParams: { 
                 order: JSON.stringify(this.order),
             },
         };

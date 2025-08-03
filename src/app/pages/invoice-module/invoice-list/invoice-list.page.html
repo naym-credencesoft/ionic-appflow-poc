@@ -36,7 +36,7 @@
             padding-left
             padding-right
         >
-        </ion-searchbar>
+        </ion-searchbar>    
             <ion-row>
                 <ion-col size="5.6" style="margin: 5px;">
 
@@ -44,24 +44,36 @@
                     </ion-text>
                     <ion-row>
                         <ion-col no-padding size="12">
-                            <div class="datetime-container">
-                              
-                              <ion-datetime 
-                                style="border: 1px solid gray;color: #333; font-size: 14px;" 
-                                (ionChange)="fromDateChange()"
-                                formControlName="rateAndAvailFromDate"
-                                [(ngModel)]="fromDate"
-                                no-padding
-                                color="primary"
-                                displayFormat="DD/MM/YYYY"
-                                pickerFormat="DD/MM/YYYY"
-                                placeholder="DD/MM/YYYY"
-                                min= "2000-12-31"
-                                max="2100-12-31"
-                                >
-                              </ion-datetime>
-                              <ion-icon name="calendar-outline" class="datetime-icon" style="color: #F89A34"></ion-icon>
-                            </div>
+                            <ion-item class="datetime-box">
+
+                                <ion-datetime-button datetime="invoiceListFromDate" class="date-btn"></ion-datetime-button>
+    
+                                <ion-icon name="calendar-clear"  class="calendar-icon"
+                               (click)="setFromDateOpen(true)" ></ion-icon>
+    
+                                <ion-modal [keepContentsMounted]="true"   [isOpen]="isFromModalOpen"
+                                    (ionModalDidDismiss)="dismissFromDateModal()">
+                                    <ng-template>
+                                    <ion-datetime
+                                        id="invoiceListFromDate"
+                                        formControlName="rateAndAvailFromDate"
+                                        (ionChange)="fromDateChange()" 
+                                        [showDefaultButtons]="true"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                        (ionCancel)="onCancel()"
+                                        displayFormat="DD/MM/YYYY"
+                                        pickerFormat="DD/MM/YYYY"
+                                        placeholder="DD/MM/YYYY"
+                                        presentation="date"
+                                        min="2000-12-31"
+                                        max="2100-12-31"
+                                        style="color: #000"
+                                    ></ion-datetime>
+                                    </ng-template>
+                                </ion-modal>
+                            </ion-item>
+
                           </ion-col>
                     </ion-row>
                 </ion-col>
@@ -72,24 +84,50 @@
                 
                     <ion-row>
                         <ion-col no-padding size="12">
-                            <div class="datetime-container">
-                              <ion-datetime 
+                           
+                                <ion-item class="datetime-box"> 
+
+                                    <ion-datetime-button datetime="invoiceListToDate" class="date-btn"></ion-datetime-button>
+  
+                                  <ion-icon name="calendar-clear"  class="calendar-icon"
+                                 (click)="setToDateOpen(true)"></ion-icon>
+  
+                                  <ion-modal [keepContentsMounted]="true"  [isOpen]="isToModalOpen" (ionModalDidDismiss)="dismissToDateModal()">
+                                      <ng-template>
+                                      <ion-datetime
+                                          id="invoiceListToDate"
+                                          formControlName="rateAndAvailToDate"
+                                          (ionChange)="toDateChange()"
+                                          style="color: #000;"
+                                          displayFormat="DD/MM/YYYY"
+                                          pickerFormat="DD/MM/YYYY"
+                                          placeholder="Select Date"
+                                          [showDefaultButtons]="true"
+                                          doneText="Done"
+                                          cancelText="Cancel"
+                                          [min]="toMinDate"
+                                          max="2100-12-31"
+                                          presentation="date"
+                                      ></ion-datetime>
+                                      </ng-template>
+                                  </ion-modal>
+                                </ion-item>
+
+                              <!-- <ion-datetime 
                               style="border: 1px solid gray; color: #333; font-size: 14px;" 
                               formControlName="rateAndAvailToDate"
                               [(ngModel)]="toDate"
                               min= "2000-12-31"
-                                max="2100-12-31"
+                              max="2100-12-31"
                               no-padding
                               class="check-in-out-date"
                               color="primary"
                               displayFormat="DD/MM/YYYY"
                               pickerFormat="DD/MM/YYYY"
                               placeholder="Select Date">
-                              </ion-datetime>
+                              </ion-datetime> -->
 
-                       
-                              <ion-icon name="calendar-outline" style="color: #F89A34" class="datetime-icon"></ion-icon>
-                            </div>
+
                           </ion-col>
                     </ion-row>
 

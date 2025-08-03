@@ -428,7 +428,6 @@ toggleDropdown(outerIndex: number, innerIndex: number): void {
               code: ratesAndAvailabilities[i].roomRatePlans[j].code,
             };
             planList.push(planData);
-            console.log("planData",planData)
             
           }
         }

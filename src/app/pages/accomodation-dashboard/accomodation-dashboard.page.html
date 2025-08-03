@@ -38,7 +38,32 @@
                 <ion-item lines="none" style="border: 1px solid gray;border-radius: 10px;">
                   <!-- Date Picker Section -->
                   <ion-text class="headsec" style=" margin-right: 10px; color:black">Date:</ion-text>
-                  <ion-datetime
+
+                  <!-- Date button trigger -->
+                    <ion-datetime-button datetime="fromDatePicker" style="margin-left: -10px;" class="headsec"></ion-datetime-button>
+
+                    <!-- Modal with ion-datetime -->
+                    <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                        <ion-datetime
+                        id="fromDatePicker"
+                        [(ngModel)]="rommAvailability.FromDate"
+                        (ionChange)="dateChnageOp()"
+                        formControlName="bookingFromDate"
+                        presentation="date"
+                        displayFormat="DD/MM/YYYY"
+                        min="2000-01-01"
+                        max="2100-12-31"
+                        [showDefaultButtons]="true"
+                        doneText="Done"
+                        cancelText="Cancel"
+                       
+                        style=" color:black"
+                        ></ion-datetime>
+                    </ng-template>
+                    </ion-modal>
+
+                  <!-- <ion-datetime
                     [(ngModel)]="rommAvailability.FromDate"
                     (ionChange)="dateChnageOp()"
                     formControlName="bookingFromDate"
@@ -49,7 +74,7 @@
                     placeholder="Select Date"
                     class="headsec"
                     style="margin-right: 10px; color:black"
-                  ></ion-datetime>
+                  ></ion-datetime> -->
           
                   <!-- Filter By Section -->
                   <ion-text class="headsec" style="margin-right: 10px;color:black;">Type:</ion-text>

@@ -44,16 +44,26 @@
                     margin-bottom: 10px;
                     margin-top: 10px;"> 
                         <ion-label class="text-white" style="font-size: 14px;">Departure Date</ion-label>
-                        <ion-datetime
-                        style="font-size: 14px;"
+            <!-- Datetime Button -->
+                        <ion-datetime-button datetime="checkoutDateTimePicker" class="card-item"></ion-datetime-button>
+
+                        <!-- Modal with datetime -->
+                        <ion-modal [keepContentsMounted]="true">
+                            <ion-datetime
+                            id="checkoutDateTimePicker"
+                            style="font-size: 14px;"
                             (ionChange)="dateCheck()"
                             formControlName="checkedOutTime"
-                            class="card-item"
+                            
                             [(ngModel)]="booking.checkoutTime"
-                            displayFormat="D MMM YYYY H:mm"
-                            min= "2000-12-31"
-                             max="2100-12-31"
-                        ></ion-datetime>
+                            [showDefaultButtons]="true"
+                            presentation="date-time"
+                            min="2000-12-31"
+                            max="2100-12-31"
+                            doneText="Done"
+                            cancelText="Cancel">
+                            </ion-datetime>
+                        </ion-modal>
                     </ion-item>
                 </ion-col>
             </ion-row>

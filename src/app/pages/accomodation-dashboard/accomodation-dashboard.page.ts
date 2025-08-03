@@ -486,7 +486,7 @@ export class AccomodationDashboardPage implements OnInit {
     }
 
     getBookingdetailsById(bookingId: number) {
-        console.log("bookingId " + bookingId);
+        // console.log("bookingId " + bookingId);
         if (bookingId != null && bookingId != undefined) {
             this.bookingService.findBooking(bookingId).subscribe(
                 (response1) => {
@@ -519,7 +519,7 @@ export class AccomodationDashboardPage implements OnInit {
         });
 
         modal.onDidDismiss().then((data) => {
-            console.log("list  modal dismissed", data);
+            // console.log("list  modal dismissed", data);
             if (data != undefined && data != null && data.data === "done") {
                 this.filterDataByMenu();
             } else if (

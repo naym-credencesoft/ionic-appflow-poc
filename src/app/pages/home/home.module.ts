@@ -5,7 +5,7 @@ import { IonicModule } from "@ionic/angular";
 import { RouterModule } from "@angular/router";
 import { NgCircleProgressModule } from "ng-circle-progress";
 import { TranslateModule } from "@ngx-translate/core";
-import { AgmCoreModule } from "@agm/core";
+// import { AgmCoreModule } from "@agm/core";
 import { HomePage } from "./home.page";
 import { from } from "rxjs";
 import { CompModuleModule } from "../../../app/component/comp-module/comp-module.module";
@@ -17,7 +17,7 @@ import { CompModuleModule } from "../../../app/component/comp-module/comp-module
         IonicModule,
         CompModuleModule,
         NgCircleProgressModule.forRoot({
-            // set defaults here
+          
             radius: 30,
             outerStrokeWidth: 8,
             outerStrokeColor: "#78C000",
@@ -34,9 +34,9 @@ import { CompModuleModule } from "../../../app/component/comp-module/comp-module
             },
         ]),
         TranslateModule.forChild(),
-        AgmCoreModule.forRoot({
-            apiKey: "AIzaSyD9BxeSvt3u--Oj-_GD-qG2nPr1uODrR0Y",
-        }),
+        // AgmCoreModule.forRoot({
+        //     apiKey: "AIzaSyD9BxeSvt3u--Oj-_GD-qG2nPr1uODrR0Y",
+        // }),
     ],
     declarations: [HomePage],
 })

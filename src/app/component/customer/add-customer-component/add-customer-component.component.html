@@ -175,8 +175,29 @@
                                 </ion-row>
                                 <ion-row >
                                         <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
-                                            <ion-datetime  [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="check-in-out-date" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                                            placeholder="Select Date"></ion-datetime>
+                                            <!-- <ion-datetime  [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="check-in-out-date" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                            placeholder="Select Date"></ion-datetime> -->
+                                            <!-- DateTime Button -->
+<ion-datetime-button datetime="birthdayPicker" class="datetime-box"></ion-datetime-button>
+
+<!-- Modal -->
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime
+      id="birthdayPicker"
+      [(ngModel)]="customer.birthday"
+      formControlName="birthday"
+      class="check-in-out-date"
+      color="primary"
+      presentation="date"
+      [showDefaultButtons]="true"
+      doneText="Done"
+      cancelText="Cancel"
+      style="color: #000">
+    </ion-datetime>
+  </ng-template>
+</ion-modal>
+
                                             <!-- -->
                                         </ion-col>
                                 </ion-row>
@@ -192,8 +213,26 @@
                                     </ion-row>
                                     <ion-row >
                                             <ion-col no-padding size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
-                                                <ion-datetime  [(ngModel)]="customer.anniversaryDate"  formControlName="anniversaryDate" no-padding class="check-in-out-date" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                                                placeholder="Select Date"></ion-datetime>
+                                           <ion-item>
+  <!-- Datetime Button -->
+  <ion-datetime-button datetime="anniversaryDatePicker" class="datetime-box"></ion-datetime-button>
+
+  <!-- Modal with datetime -->
+  <ion-modal [keepContentsMounted]="true">
+    <ion-datetime
+      id="anniversaryDatePicker"
+      formControlName="anniversaryDate"
+      [(ngModel)]="customer.anniversaryDate"
+      [showDefaultButtons]="true"
+      presentation="date"
+      style="color: #000"
+      doneText="Done"
+      cancelText="Cancel"
+      placeholder="Select Date">
+    </ion-datetime>
+  </ion-modal>
+</ion-item>
+
                             
                                             </ion-col>
                                     </ion-row>

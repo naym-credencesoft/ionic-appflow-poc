@@ -392,6 +392,7 @@ export class CheckoutPage implements OnInit {
     customerAddress: Address;
     isOrderIdAvailable: boolean = true;
     kotList: KOT[] = [];
+    kotNo: string;
     setCustomServiceCharge: boolean = false;
     paymentsNotPaid: Payment[];
     customerExist: boolean;
@@ -639,6 +640,7 @@ export class CheckoutPage implements OnInit {
             this.kotList = [];
             if (this.order.kotDtoList != null && this.order.kotDtoList.length > 0) {
                 this.kotList = this.order.kotDtoList;
+                 this.kotNo = this.kotList[0]?.kotNo;
             }
 
             if (this.order.serviceChargeName != null && this.order.serviceChargePercentage != null) {
@@ -4994,7 +4996,7 @@ showproducts(){
 
         this.order.requiredDate = this.getDeliveryDate(afterDate);
         this.order.requiredTime = this.getOrderTimeformatAMPM(afterDate);
-
+        this.order.orderedTime = this.getOrderTimeformatAMPM(afterDate);
         // this.changeDetectorRefs.detectChanges();
     }
 
@@ -5521,7 +5523,6 @@ showproducts(){
     }
 
     submitOrder() {
-
         this.calculateTaxSlab();
 
         this.getPosInfo();
@@ -6062,7 +6063,6 @@ showproducts(){
                 }
 
 
-
                 this.orderComplete(this.order?.id);
   
             },
@@ -6075,7 +6075,6 @@ showproducts(){
     }
 
     async createOrder() {
-
         this.loader = true;
         this.order.noOfPerson = this.noOfPax;
         try {
@@ -6092,19 +6091,18 @@ showproducts(){
             if (data.status == 200) {
                 this.loader = false;
                 this.balanceCalculate(data.body.id);
+                /*
                 if (
                 this.order.deliveryMethod === "Dine In" ||
                 this.isConfirmOrder
             ) {
-                setTimeout(() => {
-                    this.confirmOtherOrder(data.body.id);
-                }, 1000);
-            } if (this.order.deliveryMethod === "Room Order") {
+                
+                this.confirmOtherOrder(data.body.id);
+                
+            } if (this.order.deliveryMethod === "Room Order" || this.order.deliveryMethod === "Take Away") {
                 this.confirmRoomOrder(data.body.id)
             }
-              if (this.order.deliveryMethod === "Take Away") {
-                this.confirmRoomOrder(data.body.id)
-            } 
+             */
                
             }
 
@@ -6163,18 +6161,91 @@ showproducts(){
         }
     }
 
-    generateKot(orderLines) {
-        // Filter orderLines for those with groupKot set to true
-        const orderLinesToGroup = orderLines.filter(line => line.groupKot);
-    
-        // Group those orderLines by productGroupId
-        this.groupedOrderLines = this.groupByProductGroupId(orderLinesToGroup);
-        this.createKot(this.groupedOrderLines, orderLines.filter(line => !line.groupKot));
+      generateKot(orderLines) {
+    // Filter orderLines for those with groupKot set to true
+    const orderLinesToGroup = orderLines.filter((line) => line.groupKot);
+
+    // Group those orderLines by productGroupId
+    this.groupedOrderLines = this.groupByProductGroupId(orderLinesToGroup);
+    this.createKot(
+      this.groupedOrderLines,
+      orderLines.filter((line) => !line.groupKot)
+    );
+  }
+
+  async createKot(groupedOrderLines, individualOrderLines) {
+  const order = this.order;
+  const currentDate = this.datepipe.transform(new Date(), "yyyy-MM-dd");
+
+  let kotListToBeCreate: KOT[] = [];
+
+  let baseVersion = (this.kotList?.length && this.kotList[this.kotList.length - 1]?.version)
+    ? parseInt(this.kotList[this.kotList.length - 1].version.split('-')[1])
+    : 0;
+
+  
+  if (individualOrderLines.length > 0) {
+    const printerName = this.getPrinterName(individualOrderLines[0].productGroupName);
+    const kot = new KOT();
+    kot.date = currentDate;
+    kot.operatorName = order.operatorName;
+    kot.propertyId = order.propertyId;
+    kot.tableNo = order.resourceName;
+    kot.time = order.requiredTime;
+    kot.orderLines = individualOrderLines;
+    kot.orderNo = order.bookOneOrderId;
+    kot.orderType = order.deliveryMethod;
+    kot.priority = ++baseVersion;
+    kot.version = 'V-' + baseVersion;
+    kot.printerName = printerName;
+    kotListToBeCreate.push(kot);
+  }
+
+  // Grouped KOTs
+  for (const productGroupId in groupedOrderLines) {
+    if (groupedOrderLines.hasOwnProperty(productGroupId)) {
+      const orderLineDtoList = groupedOrderLines[productGroupId];
+      const printerName = this.getPrinterName(orderLineDtoList[0].productGroupName);
+      const kot = new KOT();
+      kot.date = currentDate;
+      kot.operatorName = order.operatorName;
+      kot.propertyId = order.propertyId;
+      kot.tableNo = order.resourceName;
+      kot.time = order.requiredTime;
+      kot.productGroupName = orderLineDtoList[0].productGroupName;
+      kot.orderLines = orderLineDtoList;
+      kot.orderNo = order.bookOneOrderId;
+      kot.orderType = order.deliveryMethod;
+      kot.priority = ++baseVersion;
+      kot.version = 'V-' + baseVersion;
+      kot.printerName = printerName;
+      kotListToBeCreate.push(kot);
+    }
+  }
+
+  // Step 2: Call backend once — backend will assign a single kotNo to all
+  this.orderService.createKots(kotListToBeCreate).subscribe(
+    (data) => {
+      if (data?.body?.length > 0) {
+        this.kotNo = data.body[0].kotNo; // Assign shared kotNo to local reference
       }
-    
-      createKot(groupedOrderLines, individualOrderLines) {
+    },
+    (error) => {
+      this.loader = false;
+      console.error("Error creating KOTs:", error);
+    }
+  );
+}
+    getPrinterName(productGroupName: string): string {
+  return this.productGroupsList[0].productGroup.find(
+    (group) => group.name === productGroupName
+  )?.printerName;
+}
+      /*
+     async createKot(groupedOrderLines, individualOrderLines) {
+         let order = this.order;
         const currentDate = this.datepipe.transform(new Date(), "yyyy-MM-dd");
-        // Create KOTs for grouped orderLines
+         await this.delay(1000);
         let kotListToBeCreate = [];
         for (const productGroupId in groupedOrderLines) {
          
@@ -6189,6 +6260,8 @@ showproducts(){
             kot.time = this.order.requiredTime;
             kot.productGroupName = orderLineDtoList[0].productGroupName;
             kot.orderLines = orderLineDtoList;
+            kot.kotNo = this.kotNo;
+            kot.version = "V-" + (this.kotList.length + 1);
             kot.orderNo = this.order.bookOneOrderId;
             kot.orderType = this.order.deliveryMethod;
             kot.priority = this.kotList.length + 1;
@@ -6200,6 +6273,7 @@ showproducts(){
     
         this.orderService.createKots(kotListToBeCreate).subscribe(
           (data) => {
+             this.kotNo = data.body[0].kotNo;
             // Handle success
           },
           (error) => {
@@ -6216,7 +6290,10 @@ showproducts(){
         
       
       }
-    
+    private delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+  */
       groupByProductGroupId(orderLines: any[]): any {
         return orderLines.reduce((groupedOrderLines, orderLine) => {
           const groupId = orderLine.productGroupId;
@@ -6228,6 +6305,7 @@ showproducts(){
         }, {});
       }
     
+      /*
       createOrderKot(orderLineDtoList) {
         let printerName = this.productGroupsList[0].productGroup.find((group)=>group.name == orderLineDtoList[0].productGroupName).printerName;
         this.kot.date = this.datepipe.transform(new Date(), "yyyy-MM-dd");
@@ -6239,17 +6317,19 @@ showproducts(){
         this.kot.orderNo = this.order.bookOneOrderId;
         this.kot.orderType = this.order.deliveryMethod;
         this.kot.priority = this.kotList.length +1;
+         this.kot.kotNo = this.kotNo;
         this.kot.printerName = printerName;
         this.kot.version = "V-" + (this.kotList.length + 1);
         this.orderService.createKot(this.kot).subscribe(
           (data) => {
+                    this.kotNo = data.body.kotNo;
           },
           (error) => {
             this.loader = false;
           }
         );
       }
-    
+    */
       checkKotUnitInOrder(item) {
         let UnitInOrder = 0;
         for (let i = 0; i < this.kotList.length; i++) {
@@ -6377,7 +6457,8 @@ showproducts(){
             }
             this.payment.description = row.bookOneOrderId;
 
-            this.paymentService.savePayment(this.payment).subscribe((res) => { });
+            this.paymentService.savePayment(this.payment).subscribe((res) => {
+             });
         }
 
         // let navigationExtras: NavigationExtras = {
@@ -9180,7 +9261,6 @@ showproducts(){
             this.token.getBusinessProperties() != undefined
         ) {
             this.propertiesDto = this.token.getBusinessProperties();
-
             this.businessServiceSetup();
         } else {
             this.getAllBusinessService(String(this.property.id));
@@ -9346,8 +9426,8 @@ showproducts(){
             }
         };
         this.navCtrl.navigateForward(["kot-generate/" + orderId], navigationExtras);
-    }
-
+    }    
+    
     menuAction() {
         this.menuCtrl.toggle();
     }

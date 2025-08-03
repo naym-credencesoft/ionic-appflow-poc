@@ -22,6 +22,5 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [ImagePage],
-  entryComponents: [ImagePage]
 })
 export class ImagePageModule {}

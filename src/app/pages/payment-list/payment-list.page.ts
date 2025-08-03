@@ -1,13 +1,13 @@
 import { DateService } from "./../../service/DateService/date-service.service";
 import { Logger } from "../../service/logger.service";
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { Payment } from "../../model/manage-booking/Payment/Payment";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { TranslateProvider } from "../../providers";
 import { TokenStorage } from "./../../token.storage";
 import { AuthService } from "./../../service/auth.service";
 import { BookingService } from "../../service/manage-booking/booking-service.service";
-import { AlertController, ToastController } from "@ionic/angular";
+import { AlertController, IonModal, ToastController } from "@ionic/angular";
 import { NavController, LoadingController } from "@ionic/angular";
 import { PaymentService } from "../../service/payment/payment.service";
 import { ActionSheetController } from "@ionic/angular";
@@ -46,6 +46,10 @@ export class PaymentListPage implements OnInit {
     checkUserType: CheckUserType;
     role: any[];
     openedCardIndex: number | null = null;
+
+    isFromModalOpen = false;
+    isToModalOpen = false;
+
 
     constructor(
         private navCtrl: NavController,
@@ -190,14 +194,41 @@ export class PaymentListPage implements OnInit {
         }
     }
 
+
+    setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
+
+  @ViewChild('dateTimeModal', { static: true }) dateTimeModal!: IonModal;
+  openDateTimeModal() {
+    // manually open the same modal used by ion-datetime-button
+    this.dateTimeModal.present();
+  }
     fromDateChange() {
-        let toDate = new Date(this.fromDateString);
+        const fromDateValue = this.onFindPaymentForm.get("bookingFromDate")?.value;
+        if (fromDateValue) {
+        const fromDate = new Date(fromDateValue);
 
-        toDate.setDate(toDate.getDate() + 1);
-        this.toMinDate = this.getDate(toDate);
+        // Set min for To Date
+        this.toMinDate = this.getDate(fromDate);
 
-        toDate.setDate(toDate.getDate() + 30);
-        this.toMaxDate = this.getDate(toDate);
+        // Set max (optional: +30 days)
+        const maxDate = new Date(fromDate);
+        maxDate.setDate(maxDate.getDate() + 30);
+        this.toMaxDate = this.getDate(maxDate);
+    }
     }
 
     getDate(date: Date) {

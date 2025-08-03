@@ -74,3 +74,60 @@ ion-toolbar {
     color: var(--ion-color-tm2-primary);
     font-size: 11px;
 }
+ion-datetime-button::part(native) {
+  background: transparent !important;
+  box-shadow: none !important;
+
+}
+.datetime-item {
+
+border-radius: 10px;
+font-size: 11px;
+border: 1px solid #000;
+width: 100%;
+padding: 0;
+}
+   .datetime-container {
+        border-radius: 10px;
+        border: 1px solid #000;
+        
+        display: inline-block;
+        width: 100%;
+      }
+
+      ion-datetime-button.unselected::part(native) {
+        color: #aaa;
+
+        }
+
+    ion-datetime-button.selected::part(native) {
+    color: #000;
+    
+    
+    }
+// .date-field {
+//   display: flex;
+//   flex-direction: column;
+//   margin: 5px;
+// }
+// .date-input::part(native) {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   width: 160px;   /* adjust as needed */
+//   padding: 8px 10px;
+//   border: 1px solid #999;
+//   border-radius: 6px;
+//   background: #fff;
+//   font-size: 14px;
+//   color: #000;
+// }
+// .calendar-icon {
+//   position: absolute;
+//   top: 50%;
+//   right: 10px;
+//   transform: translateY(-50%);
+//   font-size: 20px;
+//   color: black;
+//   pointer-events: none; /* So click passes through to button */
+// }

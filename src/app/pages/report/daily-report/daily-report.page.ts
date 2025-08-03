@@ -216,6 +216,19 @@ export class DailyReportPage implements OnInit {
     startdateChange() {
         this.endDate = this.startDate;
     }
+handleEndDateChange(value: string | string[]) {
+  if (Array.isArray(value)) {
+    value = value[0]; // or however you want to handle arrays
+  }
+  this.enddateValue = this.formatDate(value);
+}
+handleStartDateChange(value: string | string[]) {
+  if (Array.isArray(value)) {
+    value = value[0]; // Or handle multiple dates if needed
+  }
+  this.dateValue = this.formatDate(value);
+  this.startdateChange(); // call the original method
+}
 
     Reset() {
         this.startDate = null;

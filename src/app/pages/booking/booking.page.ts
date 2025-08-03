@@ -2,7 +2,7 @@ import { PropertyService } from "src/app/service/property/property.service";
 import { ReservationService } from "./../../service/ReservationService/reservation-service.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { addDays } from 'date-fns';
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import {
     FormBuilder,
     FormControl,
@@ -11,6 +11,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
+    IonModal,
     LoadingController,
     NavController,
     ToastController,
@@ -64,6 +65,8 @@ import { PropertySequence } from "./propertySequence";
 import { PropertyServiceDTO } from "src/app/model/property/PropertyServices";
 import { Service } from "src/app/model/manage-booking/Service/Service";
 import { Audit } from "src/app/service/audit";
+import { IonDatetime } from '@ionic/angular';
+
 
 export interface SplitTaxDTO {
     name: string;
@@ -77,6 +80,10 @@ export interface SplitTaxDTO {
     styleUrls: ["./booking.page.scss"],
 })
 export class BookingPage implements OnInit {
+    @ViewChild('checkOutModal', { static: false }) checkOutModal: IonModal;
+    @ViewChild('checkInModal', { static: false }) checkInModal: IonModal;
+    @ViewChild('dateTime') ionDatetime: IonDatetime;
+    checkInSelected: boolean = false;
     onCardBookForm: FormGroup;
     onTRForm: FormGroup;
     onSaveForm: FormGroup;
@@ -306,6 +313,9 @@ export class BookingPage implements OnInit {
     PosUserName: string;
     maxDiscountPercentage: any;
     discountDisabled: boolean = false;
+    isModalOpen = false;
+    isModalOpen2 = false;
+    ExpectArrivaingDateContent: FormControl = new FormControl(new Date().toISOString()); // Initialize it
 
     constructor(
         private paymentService: PaymentService,
@@ -641,6 +651,22 @@ export class BookingPage implements OnInit {
             this.token.getProperty().id
         );
     }
+  
+
+    setOpen(isOpen: boolean) {
+        this.isModalOpen = isOpen;
+    }
+    dismissModal() {
+    this.isModalOpen = false;
+    }
+
+    
+    setOpen2(isOpen: boolean) {
+        this.isModalOpen2 = isOpen;
+    }
+    dismissModal2() {
+    this.isModalOpen2 = false;
+    }
 
     ionViewWillEnter(){
         this.acRoute.queryParams.subscribe((params) => {
@@ -824,7 +850,7 @@ export class BookingPage implements OnInit {
                     this.getOTAPropertyDetails(this.otaChannelId);
                 }
 
-                this.fromDateChange();
+                // this.fromDateChange();
                 this.bookingStatus = this.bookingRoom.bookingStatus;
                 this.selectRoomDetail = this.bookingRoom.roomDetails[0];
             } else if (params["bookingId"] != undefined) {
@@ -840,7 +866,7 @@ export class BookingPage implements OnInit {
                     this.isEnquieryBooking = true;
                 }
             }  
-            console.log("this.isEnquieryBooking", this.isEnquieryBooking)
+            // console.log("this.isEnquieryBooking", this.isEnquieryBooking)
         });
         this.getPOSInformation(this.property.id);
         this.getConfiguredPropertyDetailsByPropertyId(
@@ -2407,36 +2433,8 @@ export class BookingPage implements OnInit {
         }
     }
 
-    PlanChangeBaseOnDate() {
-        this.isDateSelected = true;
-        this.plans = this.plans2;
-        this.roomPlanSelectByDate();
+ 
 
-        let todatetime = new Date(this.booking.toDate);
-
-        if (this.businessService.twentyFourHoursCheckOut === false) {
-            if (
-                this.businessService.checkOutTime != null &&
-                this.businessService.checkOutTime != undefined
-            ) {
-                todatetime.setHours(
-                    Number(this.businessService.checkOutTime.split(":")[0])
-                );
-                todatetime.setMinutes(
-                    Number(this.businessService.checkOutTime.split(":")[1])
-                );
-            }
-        } else {
-            this.booking.twentyFourHoursCheckOut = true;
-            todatetime.setHours(Number(this.currentDateTime.split(":")[0]));
-            todatetime.setMinutes(Number(this.currentDateTime.split(":")[1]));
-        }
-
-        this.booking.toTime = this.datepipe.transform(
-            todatetime,
-            "yyyy-MM-ddTHH:mm"
-        );
-    }
 
     roomPlanSelectByDate() {
         if (
@@ -2743,7 +2741,22 @@ export class BookingPage implements OnInit {
         return this.PlanRoomPrice;
     }
 
-    fromDateChange() {
+
+    fromDateChange(event) {
+        const selectedDateStr = event.detail?.value;
+        
+        if (selectedDateStr) {
+            const selectedDate = new Date(selectedDateStr);
+            const formattedDate = selectedDate.toISOString().split('T')[0];
+            
+            this.booking.fromDate = formattedDate;
+            this.checkInSelected = true;
+            this.ExpectArrivaingDate.setValue(selectedDate);
+            
+        } else {
+            this.checkInSelected = false;
+        }
+
         let toDate = new Date(this.booking.fromDate);
 
         toDate.setDate(toDate.getDate());
@@ -2778,7 +2791,52 @@ export class BookingPage implements OnInit {
             fromDateTime,
             "yyyy-MM-ddTHH:mm"
         );
+
+  setTimeout(() => {
+      this.checkInModal?.dismiss();
+    }, 100);
+
     }
+
+    PlanChangeBaseOnDate(event) {
+         const selectedDate = new Date(event.detail.value);
+        const formattedDate = selectedDate.toISOString().split('T')[0];
+
+        this.booking.toDate = formattedDate;
+        this.ExpectDepartingDate.setValue(selectedDate);
+        this.isDateSelected = true;
+        this.plans = this.plans2;
+        this.roomPlanSelectByDate();
+
+        let todatetime = new Date(this.booking.toDate);
+
+        if (this.businessService.twentyFourHoursCheckOut === false) {
+            if (
+                this.businessService.checkOutTime != null &&
+                this.businessService.checkOutTime != undefined
+            ) {
+                todatetime.setHours(
+                    Number(this.businessService.checkOutTime.split(":")[0])
+                );
+                todatetime.setMinutes(
+                    Number(this.businessService.checkOutTime.split(":")[1])
+                );
+            }
+        } else {
+            this.booking.twentyFourHoursCheckOut = true;
+            todatetime.setHours(Number(this.currentDateTime.split(":")[0]));
+            todatetime.setMinutes(Number(this.currentDateTime.split(":")[1]));
+        }
+
+        this.booking.toTime = this.datepipe.transform(
+            todatetime,
+            "yyyy-MM-ddTHH:mm"
+        );
+          setTimeout(() => {
+      this.checkOutModal?.dismiss();
+    }, 100);
+    }
+
     setCalenderDateLimit() {
         let date: Date = new Date();
         this.minDate = this.getDate(date);
@@ -4290,7 +4348,10 @@ export class BookingPage implements OnInit {
         this.changeDetectorRefs.detectChanges();
     }
 
-    fromTimeChange() {
+    fromTimeChange(event) {
+
+         const selectedFromTime = event.detail?.value;
+         this.booking.fromTime = selectedFromTime;
         if (
             this.booking.checkoutPeriod != null &&
             this.booking.checkoutPeriod != undefined

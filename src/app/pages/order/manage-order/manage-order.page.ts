@@ -1,8 +1,20 @@
-import { ChangeDetectorRef, Component, OnInit, ViewRef } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import {
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+    ViewChild,
+    ViewRef,
+} from "@angular/core";
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators,
+} from "@angular/forms";
 import { NavigationExtras } from "@angular/router";
 import {
     ActionSheetController,
+    IonModal,
     IonRouterOutlet,
     LoadingController,
     MenuController,
@@ -32,6 +44,9 @@ import { BusinessServiceDtoList } from "src/app/model/business-service/businessS
     styleUrls: ["./manage-order.page.scss"],
 })
 export class ManageOrderPage implements OnInit {
+    @ViewChild("checkInModal", { static: false }) checkInModal: IonModal;
+    @ViewChild("checkOutModal", { static: false }) checkOutModal: IonModal;
+    checkInSelected: boolean = false;
     loader = false;
     property: Property;
 
@@ -81,7 +96,6 @@ export class ManageOrderPage implements OnInit {
     serviceSelected = false;
     BusinesService: FormControl = new FormControl();
     orderSequenceList: any[] = [];
-    
 
     constructor(
         private orderService: OrderService,
@@ -91,7 +105,7 @@ export class ManageOrderPage implements OnInit {
         public token: TokenStorage,
         private modalController: ModalController,
         private toastController: ToastController,
-        private reservationService : ReservationService,
+        private reservationService: ReservationService,
         public menuCtrl: MenuController,
         private navCtrl: NavController,
         private authService: AuthService,
@@ -104,18 +118,26 @@ export class ManageOrderPage implements OnInit {
         this.property = new Property();
 
         this.onFindOrderForm = this.formBuilder.group({
-            bookingFromDate: ["", Validators.compose([Validators.required])],
-            bookingToDate: ["", Validators.compose([Validators.required])],
+            bookingFromDate: [
+               "",
+                Validators.compose([Validators.required]),
+            ],
+            bookingToDate: [
+               "",
+                Validators.compose([Validators.required]),
+            ],
         });
 
         this.onFilterForm = this.formBuilder.group({
             OrderStatusFilter: ["", Validators.compose([Validators.required])],
-            DeliveryMethodFilter: ["", Validators.compose([Validators.required])],
+            DeliveryMethodFilter: [
+                "",
+                Validators.compose([Validators.required]),
+            ],
             BusinesService: ["", Validators.compose([Validators.required])],
             LocationController: ["", Validators.compose([Validators.required])],
             ResourceController: ["", Validators.compose([Validators.required])],
         });
-
 
         this.onFindOrderIdForm = this.formBuilder.group({
             PropertyReservationNumberFirstPart: [
@@ -130,6 +152,7 @@ export class ManageOrderPage implements OnInit {
     }
 
     ngOnInit() {
+        
         this.property = this.token.getProperty();
         this.setOrderSearchReservationId();
         this.fetchSequenceOrder();
@@ -139,108 +162,107 @@ export class ManageOrderPage implements OnInit {
             this.token.getBusinessProperties() === undefined
         ) {
             this.getAllBusinessService(this.token.getPropertyId());
-        }
-        else
-        { 
+        } else {
             this.propertiesDto = this.token.getBusinessProperties();
 
             this.businessServiceList = [];
-            
-  
+
             if (this.propertiesDto.businessServiceDtoList.length > 0) {
-              this.businessServiceList =
-                this.propertiesDto.businessServiceDtoList;
+                this.businessServiceList =
+                    this.propertiesDto.businessServiceDtoList;
             }
         }
 
         this.getUserData();
     }
 
-    ionViewWillEnter(){
-      
+    ionViewWillEnter() {
         this.refresh();
-        if(this.onFindOrderForm){
+        if (this.onFindOrderForm) {
             this.findOrder();
-        } else if (this.onFindOrderIdForm){
+        } else if (this.onFindOrderIdForm) {
             this.getReservationOrderData();
         }
     }
 
     setService(bserviceid) {
         this.businessService = this.businessServiceList.find(
-          (data) => data.id === bserviceid
+            (data) => data.id === bserviceid
         );
-        console.log("services",JSON.stringify(this.businessService) )
         this.serviceName = this.businessService.name;
         this.filterByDropdown();
         this.serviceSelected = !!bserviceid;
-      }
+    }
     onGetResourceAndLocationByService() {
         if (this.bserviceid != null && this.bserviceid != undefined) {
-          this.getAllLocation(String(this.bserviceid));
-          this.getAllResource(String(this.bserviceid));
+            this.getAllLocation(String(this.bserviceid));
+            this.getAllResource(String(this.bserviceid));
         }
         this.filterByDropdown();
     }
 
-    resetReservation(){
+    resetReservation() {
         // this.onFindOrderIdForm.reset();
-        this.reservationNumber= "";
+        this.reservationNumber = "";
     }
 
-    getBalance(value)
-    {
-      return Math.abs(value);
+    getBalance(value) {
+        return Math.abs(value);
     }
 
     getAllResource(businessServiceId: string) {
         this.loader = true;
         this.resources = [];
         this.reservationService.getResources(businessServiceId).subscribe(
-          (data) => {
-            this.resources = data.body;
-    
-            //   Logger.log(' this.locations: '+JSON.stringify( this.resources));
-            this.loader = false;
-            this.UIDetectChange();
-          },
-          (error) => {
-            this.loader = false;
-            //   Logger.log(JSON.stringify(error));
-          }
+            (data) => {
+                this.resources = data.body;
+
+                //   Logger.log(' this.locations: '+JSON.stringify( this.resources));
+                this.loader = false;
+                this.UIDetectChange();
+            },
+            (error) => {
+                this.loader = false;
+                //   Logger.log(JSON.stringify(error));
+            }
         );
-      }
-    
-    
+    }
+
     getAllLocation(businessServiceId: string) {
         this.loader = true;
         this.locations = [];
         this.reservationService.getLocations(businessServiceId).subscribe(
-          (data) => {
-            this.locations = data.body;
-    
-            this.loader = false;
-            this.UIDetectChange();
-          },
-          (error) => {
-            this.loader = false;
-            //  Logger.log(JSON.stringify(error));
-          }
-        );
-      }
-      fetchSequenceOrder() {
-        this.orderService.getOrderSequence(Number(this.token.getPropertyId())).subscribe(
-          (data) => {
-            if (data.body != null && data.body.length > 0) {
-              for (let i = 0; i < data.body.length; i++) {
-                if (data.body[i].propertyShortName != null && data.body[i].propertyShortName != undefined && data.body[i].propertyShortName.trim() != "") {
-                  data.body[i].propertyShortName = data.body[i].propertyShortName + "-O-";
-                  this.orderSequenceList.push(data.body[i]);
-                }
-              }
+            (data) => {
+                this.locations = data.body;
+
+                this.loader = false;
+                this.UIDetectChange();
+            },
+            (error) => {
+                this.loader = false;
+                //  Logger.log(JSON.stringify(error));
             }
-          });
-      }
+        );
+    }
+    fetchSequenceOrder() {
+        this.orderService
+            .getOrderSequence(Number(this.token.getPropertyId()))
+            .subscribe((data) => {
+                if (data.body != null && data.body.length > 0) {
+                    for (let i = 0; i < data.body.length; i++) {
+                        if (
+                            data.body[i].propertyShortName != null &&
+                            data.body[i].propertyShortName != undefined &&
+                            data.body[i].propertyShortName.trim() != ""
+                        ) {
+                            data.body[i].propertyShortName =
+                                data.body[i].propertyShortName + "-O-";
+                            this.orderSequenceList.push(data.body[i]);
+                        }
+                    }
+                }
+            });
+    }
 
     setOrderSearchReservationId() {
         if (
@@ -251,15 +273,20 @@ export class ManageOrderPage implements OnInit {
                 this.property.shortName + "-O-";
         }
 
-        if(this.orderSequenceList != null && this.orderSequenceList.length > 0){
-          
+        if (
+            this.orderSequenceList != null &&
+            this.orderSequenceList.length > 0
+        ) {
             for (let i = 0; i < this.orderSequenceList.length; i++) {
-              if (this.propertyReservationNumberFirstPart != this.orderSequenceList[i].propertyShortName) {
-                this.propertyReservationNumberFirstPart =  this.orderSequenceList[0].propertyShortName;
-              }
-              
+                if (
+                    this.propertyReservationNumberFirstPart !=
+                    this.orderSequenceList[i].propertyShortName
+                ) {
+                    this.propertyReservationNumberFirstPart =
+                        this.orderSequenceList[0].propertyShortName;
+                }
             }
-          }
+        }
     }
 
     getUserData() {
@@ -268,7 +295,6 @@ export class ManageOrderPage implements OnInit {
         this.authService.getUserByUserId(UserId).subscribe(
             (data) => {
                 this.userData = data.body;
-                console.log("user data", this.userData);
                 this.loader = false;
                 this.changeDetectorRefs.detectChanges();
             },
@@ -341,8 +367,6 @@ export class ManageOrderPage implements OnInit {
         this.refresh();
     }
 
-  
-
     async getAllBusinessService(PropertyId: string) {
         this.loader = true;
         // const loader = await this.loadingCtrl.create({});
@@ -354,12 +378,12 @@ export class ManageOrderPage implements OnInit {
                 this.propertiesDto = data.body;
 
                 this.businessServiceList = [];
-      
+
                 if (this.propertiesDto.businessServiceDtoList.length > 0) {
-                  this.businessServiceList =
-                    this.propertiesDto.businessServiceDtoList;
+                    this.businessServiceList =
+                        this.propertiesDto.businessServiceDtoList;
                 }
-      
+
                 // loader.dismiss();
                 this.changeDetectorRefs.detectChanges();
             },
@@ -373,87 +397,105 @@ export class ManageOrderPage implements OnInit {
     getAllBusinessServiceOne(PropertyId: string) {
         this.loader = true;
         this.orderService.findByPropertyId(PropertyId).subscribe(
-          (data) => {
-            this.propertiesDto = data.body;
-    
-            this.loader = false;
-    
-            this.businessServiceList = [];
-    
-            if (this.propertiesDto.businessServiceDtoList.length > 0) {
-              this.businessServiceList = this.propertiesDto.businessServiceDtoList;
-              // this.bserviceid =  this.businessServiceList[0].id;
-              // this.businessService = this.businessServiceList[0];
-              let businessServiceRestaurant = [];
-              let searchResult;
-    
-              businessServiceRestaurant = this.businessServiceList;
-              businessServiceRestaurant = businessServiceRestaurant.filter(
-                (item) => {
-                  searchResult =
-                    item.name != null &&
-                    item.name != undefined &&
-                    item.name.toLowerCase() === "restaurants" &&
-                    item.active != null &&
-                    item.active != undefined &&
-                    item.active === true;
-    
-                  return searchResult;
+            (data) => {
+                this.propertiesDto = data.body;
+
+                this.loader = false;
+
+                this.businessServiceList = [];
+
+                if (this.propertiesDto.businessServiceDtoList.length > 0) {
+                    this.businessServiceList =
+                        this.propertiesDto.businessServiceDtoList;
+                    // this.bserviceid =  this.businessServiceList[0].id;
+                    // this.businessService = this.businessServiceList[0];
+                    let businessServiceRestaurant = [];
+                    let searchResult;
+
+                    businessServiceRestaurant = this.businessServiceList;
+                    businessServiceRestaurant =
+                        businessServiceRestaurant.filter((item) => {
+                            searchResult =
+                                item.name != null &&
+                                item.name != undefined &&
+                                item.name.toLowerCase() === "restaurants" &&
+                                item.active != null &&
+                                item.active != undefined &&
+                                item.active === true;
+
+                            return searchResult;
+                        });
+
+                    if (
+                        businessServiceRestaurant != null &&
+                        businessServiceRestaurant != undefined &&
+                        businessServiceRestaurant.length > 0
+                    ) {
+                        this.bserviceid = businessServiceRestaurant[0].id;
+                        this.setService(businessServiceRestaurant[0].id);
+                    } else {
+                        this.bserviceid =
+                            this.propertiesDto.businessServiceDtoList[0].id;
+                        this.setService(
+                            this.propertiesDto.businessServiceDtoList[0].id
+                        );
+                    }
                 }
-              );
-    
-              if (
-                businessServiceRestaurant != null &&
-                businessServiceRestaurant != undefined &&
-                businessServiceRestaurant.length > 0
-              ) {
-                this.bserviceid = businessServiceRestaurant[0].id;
-                this.setService(businessServiceRestaurant[0].id);
-              } else {
-                this.bserviceid = this.propertiesDto.businessServiceDtoList[0].id;
-                this.setService(this.propertiesDto.businessServiceDtoList[0].id);
-              }
+
+                this.UIDetectChange();
+
+                this.todaysOrder();
+            },
+            (error) => {
+                this.loader = false;
+                this.UIDetectChange();
             }
-
-            this.UIDetectChange();
-    
-    
-            this.todaysOrder();
-          },
-          (error) => {
-            this.loader = false;
-            this.UIDetectChange();
-          }
-        );
-      }
-
-    fromDateChange() {
-        let toDate = new Date(this.fromDateString);
-
-        toDate.setDate(toDate.getDate());
-        this.toMinDate = this.getDate(toDate);
-
-        toDate.setMonth(toDate.getMonth() + 1);
-        this.toMaxDate = this.getDate(toDate);
-    }
-
-    getDate(date: Date) {
-        if (date.getDate().toString().length == 1) {
-            this.currentDay = "0" + date.getDate();
-        } else {
-            this.currentDay = "" + date.getDate();
-        }
-
-        if ((date.getMonth() + 1).toString().length == 1) {
-            this.currentMonth = "0" + (date.getMonth() + 1);
-        } else {
-            this.currentMonth = "" + (date.getMonth() + 1);
-        }
-
-        return (
-            date.getFullYear() + "-" + this.currentMonth + "-" + this.currentDay
         );
     }
+
+ fromDateChange(event: any) {
+  const selectedDateStr = event.detail?.value;
+
+  if (selectedDateStr) {
+    // Update fromDateString
+    this.fromDateString = selectedDateStr;
+
+    // Set form control
+    this.onFindOrderForm.get('bookingFromDate')?.setValue(selectedDateStr);
+    this.checkInSelected = true;
+  } else {
+    this.checkInSelected = false;
+    return;
+  }
+
+  // Set min date for To Date = selected From Date
+  const toDate = new Date(this.fromDateString);
+  this.toMinDate = this.getDate(toDate);
+
+  // Set max date = +1 month from From Date
+  toDate.setMonth(toDate.getMonth() + 1);
+  this.toMaxDate = this.getDate(toDate);
+}
+
+toDateChange(event: any) {
+  const selectedDateStr = event.detail?.value;
+
+  if (selectedDateStr) {
+    const selectedDate = new Date(selectedDateStr);
+    this.toDateString = selectedDate.toISOString().split("T")[0];
+  } else {
+    this.toDateString = null;
+  }
+
+  setTimeout(() => this.checkOutModal?.dismiss(), 100);
+}
+
+getDate(date: Date) {
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
 
     refresh() {
         this.propertyId = Number(this.token.getPropertyId());
@@ -467,6 +509,16 @@ export class ManageOrderPage implements OnInit {
             this.next7DaysOrder();
         } else if (this.OrderFilterName === "last7days") {
             this.last7DaysOrder();
+        } else if (this.OrderFilterName === "AllOrder") {
+            this.onFindOrderForm
+                .get("bookingFromDate")
+                .setValue(new Date().toISOString().split("T")[0]);
+            this.onFindOrderForm
+                .get("bookingToDate")
+                .setValue(new Date().toISOString().split("T")[0]);
+            this.fromDateString =
+                this.onFindOrderForm.get("bookingFromDate").value;
+            this.toDateString = this.onFindOrderForm.get("bookingToDate").value;
         }
 
         // this.getAllBusinessService(String( this.propertyId));
@@ -522,7 +574,7 @@ export class ManageOrderPage implements OnInit {
         this.loader = true;
         this.orders = [];
         this.OrderSearchObject = [];
-       
+
         if (
             this.fromDateString != null &&
             this.fromDateString != undefined &&
@@ -533,19 +585,17 @@ export class ManageOrderPage implements OnInit {
                 this.dateService.convertMillisecondsToYYYMMDDFormat(
                     this.fromDateString
                 );
-                console.log('from date is',this.fromDateString);
             this.toDateString =
                 this.dateService.convertMillisecondsToYYYMMDDFormat(
                     this.toDateString
                 );
-                console.log('from date is',this.toDateString);
-                this.findTotalCountOfOrders(
-                    this.token.getPropertyId(),
-                    this.fromDateString,
-                    this.toDateString,
-                    this.PageNo,
-                    this.PageSize
-                );
+            this.findTotalCountOfOrders(
+                this.token.getPropertyId(),
+                this.fromDateString,
+                this.toDateString,
+                this.PageNo,
+                this.PageSize
+            );
 
             this.orderService
                 .getOrderByPropertyIdAndDateRange(
@@ -823,6 +873,13 @@ export class ManageOrderPage implements OnInit {
                         this.navCtrl.navigateRoot("checkout");
                     },
                 },
+                 {
+                    text: "KOT",
+                    icon: "apps-outline",
+                    handler: () => {
+                        this.navCtrl.navigateRoot("kot-list");
+                    },
+                },
                 {
                     text: "Order Dashboard",
                     icon: "apps-outline",
@@ -834,68 +891,72 @@ export class ManageOrderPage implements OnInit {
         });
         await actionSheet.present();
     }
+    goToKotPage(){
+        this.navCtrl.navigateRoot("kot-list");
+    }
 
     filterByDropdown() {
         // Logger.log('sddd'+this.OrderStatus+'All '+ this.ModeOfPayment +' All ' + this.DeliveryMethod);
         let searchResult;
-    
-        if (
-          this.OrderStatus === "All" &&
-          this.ModeOfPayment === "All" &&
-          this.DeliveryMethod === "All" &&
-          this.bserviceid === "0" &&
-          this.ResourceName === "All" &&
-          this.LocationName === "All"
-        ) {
-          this.orders = this.OrderSearchObject;
-          this.UIDetectChange();
-        } else {
-          this.orders = this.OrderSearchObject;
-          this.orders = this.orders.filter((item) => {
-            searchResult =
-              (this.OrderStatus === "All" ||
-                (this.OrderStatus != "All" &&
-                  item.orderStatus != null &&
-                  item.orderStatus != undefined &&
-                  item.orderStatus.toLowerCase() ===
-                    this.OrderStatus.toLowerCase())) &&
-              (this.ModeOfPayment === "All" ||
-                (item.modeOfPayment != null &&
-                  item.modeOfPayment != undefined &&
-                  this.ModeOfPayment != "All" &&
-                  item.modeOfPayment.toLowerCase() ===
-                    this.ModeOfPayment.toLowerCase())) &&
-              (this.ResourceName === "All" ||
-                (item.resourceName != null &&
-                  item.resourceName != undefined &&
-                  this.ResourceName != "All" &&
-                  item.resourceName.split(",").includes(this.ResourceName) ===
-                    true)) &&
-              (this.LocationName === "All" ||
-                (item.locationName != null &&
-                  item.locationName != undefined &&
-                  this.LocationName != "All" &&
-                  item.locationName.split(",").includes(this.LocationName) ===
-                    true)) &&
-              (this.bserviceid === "0" ||
-                (item.businessServiceId != null &&
-                  item.businessServiceId != undefined &&
-                  this.bserviceid != "0" &&
-                  item.businessServiceId === this.bserviceid)) &&
-              (this.DeliveryMethod === "All" ||
-                (this.DeliveryMethod != "All" &&
-                  item.deliveryMethod != null &&
-                  item.deliveryMethod != undefined &&
-                  item.deliveryMethod.toLowerCase() ===
-                    this.DeliveryMethod.toLowerCase()));
-    
-            return searchResult;
-          });
-    
 
-          // this.dataSource.paginator = this.paginator;
-          // this.dataSource.sort = this.sort;
-          this.UIDetectChange();
+        if (
+            this.OrderStatus === "All" &&
+            this.ModeOfPayment === "All" &&
+            this.DeliveryMethod === "All" &&
+            this.bserviceid === "0" &&
+            this.ResourceName === "All" &&
+            this.LocationName === "All"
+        ) {
+            this.orders = this.OrderSearchObject;
+            this.UIDetectChange();
+        } else {
+            this.orders = this.OrderSearchObject;
+            this.orders = this.orders.filter((item) => {
+                searchResult =
+                    (this.OrderStatus === "All" ||
+                        (this.OrderStatus != "All" &&
+                            item.orderStatus != null &&
+                            item.orderStatus != undefined &&
+                            item.orderStatus.toLowerCase() ===
+                                this.OrderStatus.toLowerCase())) &&
+                    (this.ModeOfPayment === "All" ||
+                        (item.modeOfPayment != null &&
+                            item.modeOfPayment != undefined &&
+                            this.ModeOfPayment != "All" &&
+                            item.modeOfPayment.toLowerCase() ===
+                                this.ModeOfPayment.toLowerCase())) &&
+                    (this.ResourceName === "All" ||
+                        (item.resourceName != null &&
+                            item.resourceName != undefined &&
+                            this.ResourceName != "All" &&
+                            item.resourceName
+                                .split(",")
+                                .includes(this.ResourceName) === true)) &&
+                    (this.LocationName === "All" ||
+                        (item.locationName != null &&
+                            item.locationName != undefined &&
+                            this.LocationName != "All" &&
+                            item.locationName
+                                .split(",")
+                                .includes(this.LocationName) === true)) &&
+                    (this.bserviceid === "0" ||
+                        (item.businessServiceId != null &&
+                            item.businessServiceId != undefined &&
+                            this.bserviceid != "0" &&
+                            item.businessServiceId === this.bserviceid)) &&
+                    (this.DeliveryMethod === "All" ||
+                        (this.DeliveryMethod != "All" &&
+                            item.deliveryMethod != null &&
+                            item.deliveryMethod != undefined &&
+                            item.deliveryMethod.toLowerCase() ===
+                                this.DeliveryMethod.toLowerCase()));
+
+                return searchResult;
+            });
+
+            // this.dataSource.paginator = this.paginator;
+            // this.dataSource.sort = this.sort;
+            this.UIDetectChange();
         }
-      }
+    }
 }

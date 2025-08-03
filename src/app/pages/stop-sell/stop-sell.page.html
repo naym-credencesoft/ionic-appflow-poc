@@ -1,160 +1,234 @@
-
-
 <ion-header class="ion-no-border">
-   <ion-text class="HeaderSubTitle"> Stop Sell </ion-text>
+    <ion-text class="HeaderSubTitle"> Stop Sell </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon name="arrow-back-outline" (click)="goback()" style="font-size: 20px;"></ion-icon>
-            <ion-text color="light" class="HeaderTitle" >Accommodation</ion-text>
-
+            <ion-icon
+                name="arrow-back-outline"
+                (click)="goback()"
+                style="font-size: 20px"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle">Accommodation</ion-text>
         </ion-buttons>
-
     </ion-toolbar>
 </ion-header>
 
 <ion-content no-padding class="animated fadeIn fast" #content>
-  <ion-card class="card-layout text-white">
-      <ion-grid no-padding>
-        <ion-row style="margin-top: 10px; margin-left: 10px;">
-            <div class="tab-label">Select an Option: <b style="color:red">*</b></div>
-            <div class="tab-container">
-              <div class="tab" [class.active]="selectedOption === 'custom-checked'" (click)="selectTab('custom-checked')">
-                Property
-              </div>
-              <div class="tab" [class.active]="selectedOption === 'custom'" (click)="selectTab('custom')">
-                Rooms
-              </div>
-            </div>
-          </ion-row>
-          <form [formGroup]="addOrUpdateOTAAvailability" *ngIf="selectedOption === 'custom'">
-            
-              
-              <ion-row style="margin-top:13px;" *ngIf="selectedOption === 'custom'">
-                <ion-text style="font-size: 15px;color:#1D174D;margin: 0 0 5px 10px;">Choose Room <b style="color:red">*</b></ion-text>
-                <ion-col size="12">
-                    
-                    <ion-select
-                        placeholder="Select Room Type"
-                        [value]="RoomName"
-                        value="hjj"
-                        name="Room"
-                        okText="Done"
-                        [formControl]="RoomName"
-                        [(ngModel)]="roomId"
-                        (ionChange)="setRoomId(roomId)"
-                        class="card-item"
-                        name="Room"
-                        okText="Done"
-                        cancelText="Dismiss"
-                        style="font-size: 15px;text-align: left;color: #1D174D;"
+    <ion-card class="card-layout text-white">
+        <ion-grid no-padding>
+            <ion-row style="margin-top: 10px; margin-left: 10px">
+                <div class="tab-label">
+                    Select an Option: <b style="color: red">*</b>
+                </div>
+                <div class="tab-container">
+                    <div
+                        class="tab"
+                        [class.active]="selectedOption === 'custom-checked'"
+                        (click)="selectTab('custom-checked')"
                     >
-                        <ion-row>
-                            <ion-select-option
-                                [value]="item.id"
-                                *ngFor="let item of  this.rooms"
-                            >
-                                {{item.name}}
-                            </ion-select-option>
-                        </ion-row>
-                    </ion-select>
-                    <ion-icon name="caret-down-outline" style="position: absolute; top: 50%; font-size: 20px;right: 20px; transform: translateY(-50%);"></ion-icon>
-                </ion-col>
-              </ion-row>
-            
-              <ion-row *ngIf="roomId">
-                <ion-col size="12" style="padding: 2px 0px; margin-top: 12px;" class="ion-padding" >
-                    <ion-label class="labels" style="margin-left: 10px;font-size: 15px;">Select Preferences:</ion-label>
-                    <ion-radio-group 
-                      [formControl]="DayChangeType"
-                      [(ngModel)]="dayChange"
-                      (ionChange)="dayTypeChange()" 
-                      style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                      <ion-row style="margin-top: 10px;gap:10px">
-                        <!-- <ion-col 
+                        Property
+                    </div>
+                    <div
+                        class="tab"
+                        [class.active]="selectedOption === 'custom'"
+                        (click)="selectTab('custom')"
+                    >
+                        Rooms
+                    </div>
+                </div>
+            </ion-row>
+            <form
+                [formGroup]="addOrUpdateOTAAvailability"
+                *ngIf="selectedOption === 'custom'"
+            >
+                <ion-row
+                    style="margin-top: 13px"
+                    *ngIf="selectedOption === 'custom'"
+                >
+                    <ion-text
+                        style="
+                            font-size: 15px;
+                            color: #1d174d;
+                            margin: 0 0 5px 10px;
+                        "
+                        >Choose Room <b style="color: red">*</b></ion-text
+                    >
+                    <ion-col size="12">
+                        <ion-select
+                            placeholder="Select Room Type"
+                            [value]="RoomName"
+                            value="hjj"
+                            name="Room"
+                            okText="Done"
+                            [formControl]="RoomName"
+                            [(ngModel)]="roomId"
+                            (ionChange)="setRoomId(roomId)"
+                            class="card-item"
+                            name="Room"
+                            okText="Done"
+                            cancelText="Dismiss"
+                            style="
+                                font-size: 15px;
+                                text-align: left;
+                                color: #1d174d;
+                            "
+                        >
+                            <ion-row>
+                                <ion-select-option
+                                    [value]="item.id"
+                                    *ngFor="let item of  this.rooms"
+                                >
+                                    {{item.name}}
+                                </ion-select-option>
+                            </ion-row>
+                        </ion-select>
+                        <ion-icon
+                            name="caret-down-outline"
+                            style="
+                                position: absolute;
+                                top: 50%;
+                                font-size: 20px;
+                                right: 20px;
+                                transform: translateY(-50%);
+                            "
+                        ></ion-icon>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row *ngIf="roomId">
+                    <ion-col
+                        size="12"
+                        style="padding: 2px 0px; margin-top: 12px"
+                        class="ion-padding"
+                    >
+                        <ion-label
+                            class="labels"
+                            style="margin-left: 10px; font-size: 15px"
+                            >Select Preferences:</ion-label
+                        >
+                        <ion-radio-group
+                            [formControl]="DayChangeType"
+                            [(ngModel)]="dayChange"
+                            (ionChange)="dayTypeChange()"
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                flex-wrap: wrap;
+                            "
+                        >
+                            <ion-row style="margin-top: 10px; gap: 10px">
+                                <!-- <ion-col 
                         class="radio-option">
                         <ion-item lines="none" class="radio-item">
                           <ion-label class="radio-label">Today</ion-label>
                           <ion-radio slot="start" value="toDay" class="radio-button"></ion-radio>
                         </ion-item>
                       </ion-col> -->
-                  
-                      <ion-col 
-              
-                        class="radio-option" >
-                        <div lines="none" class="radio-item" style="display: flex;
-                            justify-content: center;
-                            gap: 10px;
-                            align-items: center;">
-                            <ion-radio slot="start" value="weekDays" class="radio-button"></ion-radio>
-                          <ion-label class="radio-label">WeekDays</ion-label>
-                          
-                        </div>
-                      </ion-col>
-                  
-                      <ion-col 
-                        class="radio-option">
-                        <div lines="none" class="radio-item" style="display: flex;
-                        justify-content: center;
-                        gap: 10px;
-                        align-items: center;">
-                        <ion-radio slot="start" value="weekend" class="radio-button"></ion-radio>
-                          <ion-label class="radio-label">Weekend</ion-label>
-                          
-                        </div>
-                      </ion-col>
-                  
-                      <ion-col 
-              
-                        class="radio-option">
-                        <div lines="none" class="radio-item" style="display: flex;
-                        justify-content: center;
-                        gap: 10px;
-                        align-items: center;">
-                            <ion-radio slot="start" value="customO" class="radio-button"></ion-radio>
-                          <ion-label class="radio-label">Custom</ion-label>
-                          
-                        </div>
-                      </ion-col>
-                      </ion-row>
-                  
-                      
-                  
-                    </ion-radio-group>
-                  </ion-col>
-                  <ion-col size="12" style="margin-left: -10px;">
-                    <section class="example-section"  >
-                        <ion-row>
-                            <ion-col size="4" *ngFor="let day of daysList"  style="padding: 0px; margin: 0px;">
-                                <ion-button
-                                style="color:#333"
-                                  class="customixedO"
-                                  (click)="daySelection(day)"
-                                  fill="clear"
+
+                                <ion-col class="radio-option">
+                                    <div
+                                        lines="none"
+                                        class="radio-item"
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            gap: 10px;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <ion-radio
+                                            slot="start"
+                                            value="weekDays"
+                                            class="radio-button"
+                                        ></ion-radio>
+                                        <ion-label class="radio-label"
+                                            >WeekDays</ion-label
+                                        >
+                                    </div>
+                                </ion-col>
+
+                                <ion-col class="radio-option">
+                                    <div
+                                        lines="none"
+                                        class="radio-item"
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            gap: 10px;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <ion-radio
+                                            slot="start"
+                                            value="weekend"
+                                            class="radio-button"
+                                        ></ion-radio>
+                                        <ion-label class="radio-label"
+                                            >Weekend</ion-label
+                                        >
+                                    </div>
+                                </ion-col>
+
+                                <ion-col class="radio-option">
+                                    <div
+                                        lines="none"
+                                        class="radio-item"
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            gap: 10px;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <ion-radio
+                                            slot="start"
+                                            value="customO"
+                                            class="radio-button"
+                                        ></ion-radio>
+                                        <ion-label class="radio-label"
+                                            >Custom</ion-label
+                                        >
+                                    </div>
+                                </ion-col>
+                            </ion-row>
+                        </ion-radio-group>
+                    </ion-col>
+                    <ion-col size="12" style="margin-left: -10px">
+                        <section class="example-section">
+                            <ion-row>
+                                <ion-col
+                                    size="4"
+                                    *ngFor="let day of daysList"
+                                    style="padding: 0px; margin: 0px"
                                 >
-                                  <ion-icon
-                                    *ngIf="checkWeekDays(day)"
-                                    name="checkbox"
-                                    color="primary"
-                                    slot="start"
-                                  ></ion-icon>
-                                  <ion-icon
-                                    *ngIf="!checkWeekDays(day)"
-                                    name="square-outline"
-                                    color="primary"
-                                    slot="start"
-                                  ></ion-icon>
-                                  {{ day }}
-                                </ion-button>
-                              </ion-col>
-                        </ion-row>
-                     
-                    </section>
-                  </ion-col>
-            </ion-row>
-                     
-             
-              <ion-row *ngIf="roomId">
-                      <ion-col size="6">
+                                    <ion-button
+                                        style="color: #333"
+                                        class="customixedO"
+                                        (click)="daySelection(day)"
+                                        fill="clear"
+                                    >
+                                        <ion-icon
+                                            *ngIf="checkWeekDays(day)"
+                                            name="checkbox"
+                                            color="primary"
+                                            slot="start"
+                                        ></ion-icon>
+                                        <ion-icon
+                                            *ngIf="!checkWeekDays(day)"
+                                            name="square-outline"
+                                            color="primary"
+                                            slot="start"
+                                        ></ion-icon>
+                                        {{ day }}
+                                    </ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </section>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row *ngIf="roomId">
+                    <!-- <ion-col size="6">
                         <ion-text style="font-size: 15px;color:#1D174D;margin: 0 0 5px 10px;">From Date: <b style="color:red">*</b></ion-text>
                           <ion-datetime
                               value="2"
@@ -172,8 +246,52 @@
                           
                           </ion-datetime>
                           <ion-icon name="calendar" style="position: absolute; top: 67%; font-size: 20px;right: 13px; transform: translateY(-50%);"></ion-icon>
-                      </ion-col>
-                      <ion-col size="6">
+                      </ion-col> -->
+
+                    <ion-col size="6">
+                        <ion-text style="font-size: 15px"
+                            >From Date: <b style="color: red">*</b></ion-text
+                        >
+                        <ion-item class="datetime-item">
+                            <!-- Datetime Button -->
+                            <ion-datetime-button
+                                datetime="stopSellfromDatePicker"
+                                [ngClass]="isFromDateSelected? 'selected' : 'unselected'"
+                            ></ion-datetime-button>
+
+                            <ion-icon
+                                name="calendar-clear"
+                                slot="end"
+                                (click)="setFDOpen(true)"
+                                style="color: #333; font-size: 20px"
+                            ></ion-icon>
+                        </ion-item>
+
+                        <!-- Modal for Datetime -->
+                        <ion-modal
+                            [isOpen]="isRoomsFDModalOpen"
+                            (ionModalDidDismiss)="dismissFDModal()"
+                            [keepContentsMounted]="true"
+                        >
+                            <ng-template>
+                                <ion-datetime
+                                    id="stopSellfromDatePicker"
+                                    [(ngModel)]="fromDate"
+                                    min="2000-12-31"
+                                    max="2100-12-31"
+                                    formControlName="rateAndAvailFromDate"
+                                    [showDefaultButtons]="true"
+                                    presentation="date"
+                                    style="color: #000"
+                                    doneText="Done"
+                                    cancelText="Cancel"
+                                    (ionChange)="updateToDateLimit()"
+                                >
+                                </ion-datetime>
+                            </ng-template>
+                        </ion-modal>
+                    </ion-col>
+                    <!-- <ion-col size="6">
                         <ion-text style="font-size: 15px;color:#1D174D;margin: 0 0 5px 10px;">To Date: <b style="color:red">*</b></ion-text>
                         <ion-datetime
                             value="2"
@@ -192,11 +310,53 @@
                         
                         </ion-datetime>
                         <ion-icon name="calendar" style="position: absolute; top: 67%; font-size: 20px;right: 13px; transform: translateY(-50%);"></ion-icon>
-                    </ion-col>
-              </ion-row>
+                    </ion-col> -->
 
-             
-        <!-- <ion-row >
+                    <ion-col size="6">
+                        <ion-text style="font-size: 15px"
+                            >To Date: <b style="color: red">*</b></ion-text
+                        >
+                        <ion-item [disabled]="!fromDate" class="datetime-item">
+                            <!-- Datetime Button -->
+                            <ion-datetime-button
+                                datetime="stopSellToDatePicker"
+                                [ngClass]="isToDateSelected? 'selected' : 'unselected'"
+                            ></ion-datetime-button>
+                            <ion-icon
+                                name="calendar-clear"
+                                slot="end"
+                                (click)="setTDOpen(true)"
+                                style="color: #333; font-size: 20px"
+                            >
+                            </ion-icon>
+                        </ion-item>
+                        <!-- Modal for Datetime -->
+                        <ion-modal
+                            [keepContentsMounted]="true"
+                            [isOpen]="isRoomsTDModalOpen"
+                            (ionModalDidDismiss)="dismissTDModal()"
+                        >
+                            <ng-template>
+                                <ion-datetime
+                                    id="stopSellToDatePicker"
+                                    [(ngModel)]="toDate"
+                                    [min]="fromDate"
+                                    [max]="maxToDate"
+                                    formControlName="rateAndAvailToDate"
+                                    [showDefaultButtons]="true"
+                                    presentation="date"
+                                    style="color: #000"
+                                    doneText="Done"
+                                    cancelText="Cancel"
+                                    (ionChange)="calculateDaysDifference()"
+                                >
+                                </ion-datetime>
+                            </ng-template>
+                        </ion-modal>
+                    </ion-col>
+                </ion-row>
+
+                <!-- <ion-row >
           <ion-col size="12">
         <ion-chip *ngFor="let value of model">
           {{ value | date }}
@@ -204,130 +364,166 @@
         </ion-chip>
         </ion-col>
         </ion-row> -->
-                    
-   
-              
-              <ion-row style="margin-bottom: 10px" *ngIf="toDate">
-                <table class="" style="width:100%; margin-top: 20px;">
-                    <tr>
-                        <th style="padding-left: 52px;">OTA</th>
-                        <th style="padding-left: 52px;">OBE</th>
-                    </tr>
-                    <tr>
-                        <td> 
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                    style="margin-right: 10px;"
-                                    [(ngModel)]="stopSellOTA"
-                                    [disabled]="stopSellOTARelease"
-                                    (ionChange)="updateStopSellOTA(stopSellOTA)"
-                                    [formControl]="StopSellOTA"
-                                ></ion-checkbox>
-                            <ion-text style="font-size: 15px;">
-                                Block
-                            </ion-text>
-                            </div>
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                    style="margin-right: 10px;"
-                                    [(ngModel)]="stopSellOTARelease"
-                                    [disabled]="stopSellOTA"
-                                    (ionChange)="updateStopSellOTAOne(stopSellOTARelease)"
-                                    [formControl]="StopSellOTARelease"
-                                ></ion-checkbox>
-                            <ion-text style="font-size: 15px;">
-                                Release
-                            </ion-text>
-                            </div>
-                                
-                       </td>
-                        <td>
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                style="margin-right: 10px;"
-                                [disabled]="stopSellOBERelease"
-                                    [(ngModel)]="stopSellOBE"
-                                    [formControl]="StopSellOBE"
-                                    (ionChange)="updateStopSellOBE(stopSellOBE)"
-                                ></ion-checkbox>
-                          
-                            <ion-text
-                                class="check-in-out-text"
-                                style="font-size: 15px;"
-                            >
-                               Block
-                            </ion-text>
-                            </div>
 
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                style="margin-right: 10px;"
-                                [disabled]="stopSellOBE"
-                                    [(ngModel)]="stopSellOBERelease"
-                                    [formControl]="StopSellOBERelease"
-                                    (ionChange)="updateStopSellOBEOne(stopSellOBERelease)"
-                                ></ion-checkbox>
-                          
-                            <ion-text
-                                class="check-in-out-text"
-                                style="font-size: 15px;"
+                <ion-row style="margin-bottom: 10px" *ngIf="toDate">
+                    <table class="" style="width: 100%; margin-top: 20px">
+                        <tr>
+                            <th style="padding-left: 52px">OTA</th>
+                            <th style="padding-left: 52px">OBE</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [(ngModel)]="stopSellOTA"
+                                        [disabled]="stopSellOTARelease"
+                                        (ionChange)="updateStopSellOTA(stopSellOTA)"
+                                        [formControl]="StopSellOTA"
+                                    ></ion-checkbox>
+                                    <ion-text style="font-size: 15px">
+                                        Block
+                                    </ion-text>
+                                </div>
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [(ngModel)]="stopSellOTARelease"
+                                        [disabled]="stopSellOTA"
+                                        (ionChange)="updateStopSellOTAOne(stopSellOTARelease)"
+                                        [formControl]="StopSellOTARelease"
+                                    ></ion-checkbox>
+                                    <ion-text style="font-size: 15px">
+                                        Release
+                                    </ion-text>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [disabled]="stopSellOBERelease"
+                                        [(ngModel)]="stopSellOBE"
+                                        [formControl]="StopSellOBE"
+                                        (ionChange)="updateStopSellOBE(stopSellOBE)"
+                                    ></ion-checkbox>
+
+                                    <ion-text
+                                        class="check-in-out-text"
+                                        style="font-size: 15px"
+                                    >
+                                        Block
+                                    </ion-text>
+                                </div>
+
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [disabled]="stopSellOBE"
+                                        [(ngModel)]="stopSellOBERelease"
+                                        [formControl]="StopSellOBERelease"
+                                        (ionChange)="updateStopSellOBEOne(stopSellOBERelease)"
+                                    ></ion-checkbox>
+
+                                    <ion-text
+                                        class="check-in-out-text"
+                                        style="font-size: 15px"
+                                    >
+                                        Release
+                                    </ion-text>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </ion-row>
+                <div
+                    *ngIf="showdiv === true && toDate && isBookoneChannelManager && !paramsData?.otaName"
+                    style="
+                        display: flex;
+                        margin-top: 10px;
+                        flex-wrap: wrap;
+                        background-color: #fff;
+                        border-radius: 10px;
+                        gap: 10px;
+                        margin-left: 10px;
+                    "
+                >
+                    <div
+                        *ngFor="let externalSite of propertyOTA ;let i = index;"
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                gap: 5px;
+                                margin-top: 5px;
+                                align-items: center;
+                            "
+                            *ngIf="stopSellOTA || updateStopSellOTAOne"
+                        >
+                            <ion-checkbox
+                                [formControl]="OtaControll"
+                                (ionChange)="otaselected(externalSite?.onlineTravelAgencyName, $event)"
+                            ></ion-checkbox>
+
+                            <span
+                                *ngIf="!externalSite?.onlineTravelAgencyLogoUrl && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"
+                                >{{ externalSite?.onlineTravelAgencyName
+                                }}</span
                             >
-                               Release
-                            </ion-text>
-                            </div>
-                                   
-                        
-                        </td>
-                    </tr>
-                </table>
-                 
-                  
-              </ion-row>
-              <div  *ngIf="showdiv === true && toDate && isBookoneChannelManager && !paramsData?.otaName"  style="display: flex;
-              margin-top: 10px;
-              flex-wrap: wrap;
-              background-color: #fff;
-              border-radius: 10px;
-              gap: 10px;margin-left: 10px;">
-             
-             <div *ngFor="let externalSite of propertyOTA ;let i = index;" >
-                 <div style="display: flex; gap: 5px; margin-top: 5px; align-items: center;" *ngIf="stopSellOTA || updateStopSellOTAOne">
-                     <ion-checkbox
-                     [formControl]="OtaControll"
-                     (ionChange)="otaselected(externalSite?.onlineTravelAgencyName, $event)"
-                 ></ion-checkbox>
-                    
-                     <span
-                         *ngIf="!externalSite?.onlineTravelAgencyLogoUrl && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'">{{
-                         externalSite?.onlineTravelAgencyName }}</span>
-                     <span
-                         *ngIf="externalSite?.onlineTravelAgencyLogoUrl != null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"><img
-                             src="{{ externalSite?.onlineTravelAgencyLogoUrl }}" class="otaimages" ></span> 
-                             
-                     <span
-                         *ngIf="externalSite?.onlineTravelAgencyName != null && (externalSite?.onlineTravelAgencyName == 'BookingJini' || externalSite?.onlineTravelAgencyName == 'Channex')">
-                         <img *ngIf="getExternalOtaUrl()"
-                             src="{{getExternalOtaUrl()}}" class="otaimages">
-                             <div *ngIf="!getExternalOtaUrl()" class="otaimages" style="color:#000 !important">{{externalSite?.onlineTravelAgencyName}}</div>
+                            <span
+                                *ngIf="externalSite?.onlineTravelAgencyLogoUrl != null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"
+                                ><img
+                                    src="{{ externalSite?.onlineTravelAgencyLogoUrl }}"
+                                    class="otaimages"
+                            /></span>
+
+                            <span
+                                *ngIf="externalSite?.onlineTravelAgencyName != null && (externalSite?.onlineTravelAgencyName == 'BookingJini' || externalSite?.onlineTravelAgencyName == 'Channex')"
+                            >
+                                <img
+                                    *ngIf="getExternalOtaUrl()"
+                                    src="{{getExternalOtaUrl()}}"
+                                    class="otaimages"
+                                />
+                                <div
+                                    *ngIf="!getExternalOtaUrl()"
+                                    class="otaimages"
+                                    style="color: #000 !important"
+                                >
+                                    {{externalSite?.onlineTravelAgencyName}}
+                                </div>
                             </span>
-                     </div>
-             </div>
-           </div>
-           <div  *ngIf="showdiv === true && toDate && paramsData?.otaName"  style="display: flex;
-           margin-top: 10px;
-           flex-wrap: wrap;
-           background-color: #fff;
-           border-radius: 10px;
-           gap: 10px;margin-left: 10px;">
-          
-          <div  >
-              <div style="display: flex; gap: 5px; margin-top: 5px; align-items: center;" *ngIf="stopSellOTA || updateStopSellOTAOne">
-                  <ion-checkbox
-                [checked]="true"
-                  (ionChange)="otaselected(paramsData?.otaName, $event)"
-              ></ion-checkbox>
-              <span>{{paramsData?.otaName}}</span>
-                  <!-- <span
+                        </div>
+                    </div>
+                </div>
+                <div
+                    *ngIf="showdiv === true && toDate && paramsData?.otaName"
+                    style="
+                        display: flex;
+                        margin-top: 10px;
+                        flex-wrap: wrap;
+                        background-color: #fff;
+                        border-radius: 10px;
+                        gap: 10px;
+                        margin-left: 10px;
+                    "
+                >
+                    <div>
+                        <div
+                            style="
+                                display: flex;
+                                gap: 5px;
+                                margin-top: 5px;
+                                align-items: center;
+                            "
+                            *ngIf="stopSellOTA || updateStopSellOTAOne"
+                        >
+                            <ion-checkbox
+                                [checked]="true"
+                                (ionChange)="otaselected(paramsData?.otaName, $event)"
+                            ></ion-checkbox>
+                            <span>{{paramsData?.otaName}}</span>
+                            <!-- <span
                       *ngIf="!externalSite?.onlineTravelAgencyLogoUrl && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'">{{
                       externalSite?.onlineTravelAgencyName }}</span>
                   <span
@@ -341,151 +537,200 @@
                           <div *ngIf="!getExternalOtaUrl()" class="otaimages" style="color:#000 !important">{{externalSite?.onlineTravelAgencyName}}</div>
                          </span>
                   </div> -->
-          </div>
-        </div>
-        </div>
-              <ion-row  
-              *ngIf="toDate"
-              style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-bottom: 20px;
-          ">
-                  <ion-col
-                  style="margin-bottom: 10px"
-                  size="6"
-                  size-xl="6"
-                  size-sm="6"
-                  size-md="6"
-                  size-lg="6"
-              >
-              
-                  <ion-button
-                      style="font-size: 16px;--background: transparant!important;color: white;border: 1px solid #1D174D; background-color: #1D174D; border-radius: 10px;"
-                      size="small"
-                      expand="block"
-                      (click)="onCancel()"
-                      >Cancel</ion-button
-                  >
-              </ion-col>
-                  <ion-col
-                      style="margin-bottom: 10px"
-                      size="6"
-                  size-xl="6"
-                  size-sm="6"
-                  size-md="6"
-                  size-lg="6"
-                  >
-                  
-                      <ion-button
-                          style="font-size: 16px;"
-                          size="small"
-                          expand="block"
-                          class="button-submit"
-                          [disabled]="isDisabled() == true"
-                          (click)="onSubmit()"
-                          >Update</ion-button
-                      >
-                  </ion-col>
-              </ion-row>
-          </form>
-          <form [formGroup]="addorupdateForm" *ngIf="selectedOption === 'custom-checked'">
-                      
-              <ion-row >
-                <ion-col size="12" style="padding: 2px 0px; margin-top: 12px;" class="ion-padding" >
-                    <ion-label class="labels" style="margin-left: 10px;font-size: 15px;">Select Preferences:</ion-label>
-                    <ion-radio-group 
-                      [formControl]="DayChangeType"
-                      [(ngModel)]="dayChange"
-                      (ionChange)="dayTypeChange()" 
-                      style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                      <ion-row style="margin-top: 10px;gap:10px">
-                        <!-- <ion-col 
+                        </div>
+                    </div>
+                </div>
+                <ion-row
+                    *ngIf="toDate"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                    "
+                >
+                    <ion-col
+                        style="margin-bottom: 10px"
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            style="
+                                font-size: 16px;
+                                --background: transparant !important;
+                                color: white;
+                                border: 1px solid #1d174d;
+                                background-color: #1d174d;
+                                border-radius: 10px;
+                            "
+                            size="small"
+                            expand="block"
+                            (click)="onCancel()"
+                            >Cancel</ion-button
+                        >
+                    </ion-col>
+                    <ion-col
+                        style="margin-bottom: 10px"
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            style="font-size: 16px"
+                            size="small"
+                            expand="block"
+                            class="button-submit"
+                            [disabled]="isDisabled() == true"
+                            (click)="onSubmit()"
+                            >Update</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </form>
+            <form
+                [formGroup]="addorupdateForm"
+                *ngIf="selectedOption === 'custom-checked'"
+            >
+                <ion-row>
+                    <ion-col
+                        size="12"
+                        style="padding: 2px 0px; margin-top: 12px"
+                        class="ion-padding"
+                    >
+                        <ion-label
+                            class="labels"
+                            style="margin-left: 10px; font-size: 15px"
+                            >Select Preferences:</ion-label
+                        >
+                        <ion-radio-group
+                            [formControl]="DayChangeType"
+                            [(ngModel)]="dayChange"
+                            (ionChange)="dayTypeChange()"
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 15px;
+                                flex-wrap: wrap;
+                            "
+                        >
+                            <ion-row style="margin-top: 10px; gap: 10px">
+                                <!-- <ion-col 
                         class="radio-option">
                         <ion-item lines="none" class="radio-item">
                           <ion-label class="radio-label">Today</ion-label>
                           <ion-radio slot="start" value="toDay" class="radio-button"></ion-radio>
                         </ion-item>
                       </ion-col> -->
-                  
-                      <ion-col 
-              
-                        class="radio-option" >
-                        <div lines="none" class="radio-item" style="display: flex;
-                            justify-content: center;
-                            gap: 10px;
-                            align-items: center;">
-                            <ion-radio slot="start" value="weekDays" class="radio-button"></ion-radio>
-                          <ion-label class="radio-label">WeekDays</ion-label>
-                          
-                        </div>
-                      </ion-col>
-                  
-                      <ion-col 
-                        class="radio-option">
-                        <div lines="none" class="radio-item" style="display: flex;
-                        justify-content: center;
-                        gap: 10px;
-                        align-items: center;">
-                        <ion-radio slot="start" value="weekend" class="radio-button"></ion-radio>
-                          <ion-label class="radio-label">Weekend</ion-label>
-                          
-                        </div>
-                      </ion-col>
-                  
-                      <ion-col 
-              
-                        class="radio-option">
-                        <div lines="none" class="radio-item" style="display: flex;
-                        justify-content: center;
-                        gap: 10px;
-                        align-items: center;">
-                            <ion-radio slot="start" value="customO" class="radio-button"></ion-radio>
-                          <ion-label class="radio-label">Custom</ion-label>
-                          
-                        </div>
-                      </ion-col>
-                      </ion-row>
-                  
-                      
-                  
-                    </ion-radio-group>
-                  </ion-col>
-                  <ion-col size="12" style="margin-left: -10px;">
-                    <section class="example-section"  >
-                        <ion-row>
-                            <ion-col size="4" *ngFor="let day of daysList"  style="padding: 0px; margin: 0px;">
-                                <ion-button
-                                style="color:#333"
-                                  class="customixedO"
-                                  (click)="daySelection(day)"
-                                  fill="clear"
+
+                                <ion-col class="radio-option">
+                                    <div
+                                        lines="none"
+                                        class="radio-item"
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            gap: 10px;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <ion-radio
+                                            slot="start"
+                                            value="weekDays"
+                                            class="radio-button"
+                                        ></ion-radio>
+                                        <ion-label class="radio-label"
+                                            >WeekDays</ion-label
+                                        >
+                                    </div>
+                                </ion-col>
+
+                                <ion-col class="radio-option">
+                                    <div
+                                        lines="none"
+                                        class="radio-item"
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            gap: 10px;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <ion-radio
+                                            slot="start"
+                                            value="weekend"
+                                            class="radio-button"
+                                        ></ion-radio>
+                                        <ion-label class="radio-label"
+                                            >Weekend</ion-label
+                                        >
+                                    </div>
+                                </ion-col>
+
+                                <ion-col class="radio-option">
+                                    <div
+                                        lines="none"
+                                        class="radio-item"
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            gap: 10px;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <ion-radio
+                                            slot="start"
+                                            value="customO"
+                                            class="radio-button"
+                                        ></ion-radio>
+                                        <ion-label class="radio-label"
+                                            >Custom</ion-label
+                                        >
+                                    </div>
+                                </ion-col>
+                            </ion-row>
+                        </ion-radio-group>
+                    </ion-col>
+                    <ion-col size="12" style="margin-left: -10px">
+                        <section class="example-section">
+                            <ion-row>
+                                <ion-col
+                                    size="4"
+                                    *ngFor="let day of daysList"
+                                    style="padding: 0px; margin: 0px"
                                 >
-                                  <ion-icon
-                                    *ngIf="checkWeekDays(day)"
-                                    name="checkbox"
-                                    color="primary"
-                                    slot="start"
-                                  ></ion-icon>
-                                  <ion-icon
-                                    *ngIf="!checkWeekDays(day)"
-                                    name="square-outline"
-                                    color="primary"
-                                    slot="start"
-                                  ></ion-icon>
-                                  {{ day }}
-                                </ion-button>
-                              </ion-col>
-                        </ion-row>
-                     
-                    </section>
-                  </ion-col>
-            </ion-row>
-                     
-             
-              <ion-row >
-                      <ion-col size="6">
+                                    <ion-button
+                                        style="color: #333"
+                                        class="customixedO"
+                                        (click)="daySelection(day)"
+                                        fill="clear"
+                                    >
+                                        <ion-icon
+                                            *ngIf="checkWeekDays(day)"
+                                            name="checkbox"
+                                            color="primary"
+                                            slot="start"
+                                        ></ion-icon>
+                                        <ion-icon
+                                            *ngIf="!checkWeekDays(day)"
+                                            name="square-outline"
+                                            color="primary"
+                                            slot="start"
+                                        ></ion-icon>
+                                        {{ day }}
+                                    </ion-button>
+                                </ion-col>
+                            </ion-row>
+                        </section>
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <!-- <ion-col size="6">
                         <ion-text style="font-size: 15px;color:#1D174D;margin: 0 0 5px 10px;">From Date: <b style="color:red">*</b></ion-text>
                           <ion-datetime
                               value="2"
@@ -503,8 +748,67 @@
                           
                           </ion-datetime>
                           <ion-icon name="calendar" style="position: absolute; top: 67%; font-size: 20px;right: 13px; transform: translateY(-50%);"></ion-icon>
-                      </ion-col>
-                      <ion-col size="6">
+                      </ion-col> -->
+                    <ion-col size="6">
+                        <ion-text
+                            style="
+                                font-size: 15px;
+                                color: #1d174d;
+                                margin: 0 0 5px 10px;
+                            "
+                            >From Date: <b style="color: red">*</b></ion-text
+                        >
+
+                        <!-- <img (click)="openDateTimePicker()" src="/assets/img/calender-acco.png" alt="Ionic logo" style="margin-right: 2%" />
+            {{this.fromDate}}
+            <ion-modal [isOpen]="isModalOpenfromDate" (ionModalDidDismiss)="closeDateTimePicker()">
+              <ng-template>
+                <div class="modal-content">
+                <ion-datetime (ionChange)="updateToDateLimit()" (ionChange)="closeModalSeven()" [(ngModel)]="fromDate"  
+                min= "2000-12-31" max="2100-12-31" formControlName="rateAndAvailFromDate" show-default-buttons presentation="date"></ion-datetime>
+                </div>
+              </ng-template>
+            </ion-modal> -->
+
+                        <ion-item class="datetime-item">
+                            <!-- Datetime Button -->
+                            <ion-datetime-button
+                                datetime="propertyFromDatePicker"
+                                 [ngClass]="isFromDateSelected? 'selected' : 'unselected'"
+
+                            ></ion-datetime-button>
+                            <ion-icon
+                                name="calendar-clear"
+                                slot="end"
+                                (click)="setPropertyFDOpen(true)"
+                                style="color: #333; font-size: 20px"
+                            ></ion-icon>
+                            <!-- Modal for Datetime -->
+                            <ion-modal
+                                [isOpen]="isPropertyFDModalOpen"
+                                (ionModalDidDismiss)="dismissPropertyFDModal()"
+                                [keepContentsMounted]="true"
+                            >
+                                <ng-template>
+                                    <ion-datetime
+                                        id="propertyFromDatePicker"
+                                        [(ngModel)]="fromDate"
+                                        min="2000-12-31"
+                                        max="2100-12-31"
+                                        formControlName="rateAndAvailFromDate"
+                                        [showDefaultButtons]="true"
+                                        presentation="date"
+                                        style="color: #000"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                        (ionChange)="updateToDateLimit();"
+                                    >
+                                    </ion-datetime>
+                                </ng-template>
+                            </ion-modal>
+                          </ion-item>
+                    </ion-col>
+                    <!-- <ion-col size="6">
                         <ion-text style="font-size: 15px;color:#1D174D;margin: 0 0 5px 10px;">To Date: <b style="color:red">*</b></ion-text>
                         <ion-datetime
                             value="2"
@@ -523,11 +827,65 @@
                         
                         </ion-datetime>
                         <ion-icon name="calendar" style="position: absolute; top: 67%; font-size: 20px;right: 13px; transform: translateY(-50%);"></ion-icon>
-                    </ion-col>
-              </ion-row>
+                    </ion-col> -->
 
-             
-        <!-- <ion-row >
+                    <ion-col size="6">
+                        <ion-text style="font-size: 15px"
+                            >To Date: <b style="color: red">*</b>
+                        </ion-text>
+                        <!-- <img (click)="openDateTimePickerOne()" src="/assets/img/calender-acco.png" alt="Ionic logo" style="margin-right: 2%" />
+            {{this.toDate}}
+            <ion-modal [isOpen]="isModalOpentoDate" (ionModalDidDismiss)="closeDateTimePickerOne()">
+              <ng-template >
+                <div class="modal-content">
+                <ion-datetime [(ngModel)]="toDate" [min]="fromDate" [max]="maxToDate"
+                formControlName="rateAndAvailToDate" (ionChange)="calculateDaysDifference()" (ionChange)="closeModalSeven()" show-default-buttons presentation="date"></ion-datetime>
+              </div>
+              </ng-template>
+
+            </ion-modal> -->
+
+                        <ion-item class="datetime-item" [disabled]="!fromDate">
+                            <ion-datetime-button
+                            [ngClass]="isToDateSelected? 'selected' : 'unselected'"
+                                datetime="propertyToDatePicker"
+                            ></ion-datetime-button>
+                            <ion-icon
+                                name="calendar-clear"
+                                slot="end"
+                                 (click)="setPropertyTDOpen(true)"
+
+                                style="color: #333; font-size: 20px"
+                            >
+                            </ion-icon>
+                          </ion-item>
+                        <!-- Modal for Datetime -->
+                        <ion-modal
+                            [keepContentsMounted]="true"
+                            [isOpen]="isPropertyTDModalOpen"
+                            (ionModalDidDismiss)="dismissPropertyTDModal()"
+                        >
+                            <ng-template>
+                                <ion-datetime
+                                    id="propertyToDatePicker"
+                                    [(ngModel)]="toDate"
+                                    [min]="fromDate"
+                                    [max]="maxToDate"
+                                    formControlName="rateAndAvailToDate"
+                                    [showDefaultButtons]="true"
+                                    presentation="date"
+                                    style="color: #000"
+                                    doneText="Done"
+                                    cancelText="Cancel"
+                                    (ionChange)="calculateDaysDifference()"
+                                >
+                                </ion-datetime>
+                            </ng-template>
+                        </ion-modal>
+                    </ion-col>
+                </ion-row>
+
+                <!-- <ion-row >
           <ion-col size="12">
         <ion-chip *ngFor="let value of model">
           {{ value | date }}
@@ -535,172 +893,201 @@
         </ion-chip>
         </ion-col>
         </ion-row> -->
-                    
-   
-              
-              <ion-row style="margin-bottom: 10px" *ngIf="toDate">
-                <table class="" style="width:100%; margin-top: 20px;">
-                    <tr>
-                        <th style="text-align: center;">OTA</th>
-                        <th style="text-align: center;">OBE</th>
-                    </tr>
-                    <tr>
-                        <td> 
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                    style="margin-right: 10px;"
-                                    [disabled]="stopSellOBERelease || stopSellOTARelease"
-                                    [(ngModel)]="stopSellOTA"
-                                    (ionChange)="updateStopSellOTA(stopSellOTA)"
-                                    [formControl]="StopSellOTA"
-                                ></ion-checkbox>
-                            <ion-text style="font-size: 15px;">
-                                Block
-                            </ion-text>
-                            </div>
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                    style="margin-right: 10px;"
-                                    [disabled]="stopSellOTA || stopSellOBE"
-                                    [(ngModel)]="stopSellOTARelease"
-                                    (ionChange)="updateStopSellOTAOne(stopSellOTARelease)"
-                                    [formControl]="StopSellOTARelease"
-                                ></ion-checkbox>
-                            <ion-text style="font-size: 15px;">
-                                Release
-                            </ion-text>
-                            </div>
-                                
-                       </td>
-                        <td>
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                style="margin-right: 10px;"
-                                [disabled]="stopSellOBERelease || stopSellOTARelease"
-                                    [(ngModel)]="stopSellOBE"
-                                    [formControl]="StopSellOBE"
-                                    (ionChange)="updateStopSellOBE(stopSellOBE)"
-                                ></ion-checkbox>
-                          
-                            <ion-text
-                                class="check-in-out-text"
-                                style="font-size: 15px;"
-                            >
-                               Block
-                            </ion-text>
-                            </div>
 
-                            <div class="sectiontd">
-                                <ion-checkbox
-                                style="margin-right: 10px;"
-                                [disabled]="stopSellOTA || stopSellOBE"
-                                    [(ngModel)]="stopSellOBERelease"
-                                    [formControl]="StopSellOBERelease"
-                                    (ionChange)="updateStopSellOBEOne(stopSellOBERelease)"
-                                ></ion-checkbox>
-                          
-                            <ion-text
-                                class="check-in-out-text"
-                                style="font-size: 15px;"
+                <ion-row style="margin-bottom: 10px" *ngIf="toDate">
+                    <table class="" style="width: 100%; margin-top: 20px">
+                        <tr>
+                            <th style="text-align: center">OTA</th>
+                            <th style="text-align: center">OBE</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [disabled]="stopSellOBERelease || stopSellOTARelease"
+                                        [(ngModel)]="stopSellOTA"
+                                        (ionChange)="updateStopSellOTA(stopSellOTA)"
+                                        [formControl]="StopSellOTA"
+                                    ></ion-checkbox>
+                                    <ion-text style="font-size: 15px">
+                                        Block
+                                    </ion-text>
+                                </div>
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [disabled]="stopSellOTA || stopSellOBE"
+                                        [(ngModel)]="stopSellOTARelease"
+                                        (ionChange)="updateStopSellOTAOne(stopSellOTARelease)"
+                                        [formControl]="StopSellOTARelease"
+                                    ></ion-checkbox>
+                                    <ion-text style="font-size: 15px">
+                                        Release
+                                    </ion-text>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [disabled]="stopSellOBERelease || stopSellOTARelease"
+                                        [(ngModel)]="stopSellOBE"
+                                        [formControl]="StopSellOBE"
+                                        (ionChange)="updateStopSellOBE(stopSellOBE)"
+                                    ></ion-checkbox>
+
+                                    <ion-text
+                                        class="check-in-out-text"
+                                        style="font-size: 15px"
+                                    >
+                                        Block
+                                    </ion-text>
+                                </div>
+
+                                <div class="sectiontd">
+                                    <ion-checkbox
+                                        style="margin-right: 10px"
+                                        [disabled]="stopSellOTA || stopSellOBE"
+                                        [(ngModel)]="stopSellOBERelease"
+                                        [formControl]="StopSellOBERelease"
+                                        (ionChange)="updateStopSellOBEOne(stopSellOBERelease)"
+                                    ></ion-checkbox>
+
+                                    <ion-text
+                                        class="check-in-out-text"
+                                        style="font-size: 15px"
+                                    >
+                                        Release
+                                    </ion-text>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </ion-row>
+                <div
+                    *ngIf="showdiv === true && toDate"
+                    style="
+                        display: flex;
+                        margin-top: 10px;
+                        flex-wrap: wrap;
+                        background-color: #fff;
+                        border-radius: 10px;
+                        gap: 10px;
+                        margin-left: 10px;
+                    "
+                >
+                    <div
+                        *ngFor="let externalSite of propertyOTA ;let i = index;"
+                    >
+                        <div
+                            style="
+                                display: flex;
+                                gap: 5px;
+                                margin-top: 5px;
+                                align-items: center;
+                            "
+                            *ngIf="stopSellOTA || updateStopSellOTAOne"
+                        >
+                            <ion-checkbox
+                                [formControl]="OtaControll"
+                                (ionChange)="otaselected(externalSite?.onlineTravelAgencyName, $event)"
+                            ></ion-checkbox>
+
+                            <span
+                                *ngIf="!externalSite?.onlineTravelAgencyLogoUrl && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"
+                                >{{ externalSite?.onlineTravelAgencyName
+                                }}</span
                             >
-                               Release
-                            </ion-text>
-                            </div>
-                                   
-                        
-                        </td>
-                    </tr>
-                </table>
-                 
-                  
-              </ion-row>
-              <div  *ngIf="showdiv === true && toDate"  style="display: flex;
-              margin-top: 10px;
-              flex-wrap: wrap;
-              background-color: #fff;
-              border-radius: 10px;
-              gap: 10px;margin-left: 10px;">
-     
-             <div *ngFor="let externalSite of propertyOTA ;let i = index;" >
-                 <div style="display: flex; gap: 5px; margin-top: 5px; align-items: center;" *ngIf="stopSellOTA || updateStopSellOTAOne">
-                     <ion-checkbox
-                     [formControl]="OtaControll"
-                     (ionChange)="otaselected(externalSite?.onlineTravelAgencyName, $event)"
-                 ></ion-checkbox>
-                    
-                     <span
-                         *ngIf="!externalSite?.onlineTravelAgencyLogoUrl && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'">{{
-                         externalSite?.onlineTravelAgencyName }}</span>
-                     <span
-                         *ngIf="externalSite?.onlineTravelAgencyLogoUrl != null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"><img
-                             src="{{ externalSite?.onlineTravelAgencyLogoUrl }}" class="otaimages" ></span> 
-                             
-                     <span
-                         *ngIf="externalSite?.onlineTravelAgencyName != null && (externalSite?.onlineTravelAgencyName == 'BookingJini' || externalSite?.onlineTravelAgencyName == 'Channex')">
-                         <img *ngIf="getExternalOtaUrl()"
-                             src="{{getExternalOtaUrl()}}" class="otaimages">
-                             <div *ngIf="!getExternalOtaUrl()" class="otaimages" style="color:#000 !important">{{externalSite?.onlineTravelAgencyName}}</div>
+                            <span
+                                *ngIf="externalSite?.onlineTravelAgencyLogoUrl != null && externalSite?.onlineTravelAgencyName != 'BookingJini' && externalSite?.onlineTravelAgencyName != 'Channex'"
+                                ><img
+                                    src="{{ externalSite?.onlineTravelAgencyLogoUrl }}"
+                                    class="otaimages"
+                            /></span>
+
+                            <span
+                                *ngIf="externalSite?.onlineTravelAgencyName != null && (externalSite?.onlineTravelAgencyName == 'BookingJini' || externalSite?.onlineTravelAgencyName == 'Channex')"
+                            >
+                                <img
+                                    *ngIf="getExternalOtaUrl()"
+                                    src="{{getExternalOtaUrl()}}"
+                                    class="otaimages"
+                                />
+                                <div
+                                    *ngIf="!getExternalOtaUrl()"
+                                    class="otaimages"
+                                    style="color: #000 !important"
+                                >
+                                    {{externalSite?.onlineTravelAgencyName}}
+                                </div>
                             </span>
-                     </div>
-             </div>
-           </div>
-              <ion-row  
-              *ngIf="toDate"
-              style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              margin-bottom: 20px;
-          ">
-                  <ion-col
-                  style="margin-bottom: 10px"
-                  size="6"
-                  size-xl="6"
-                  size-sm="6"
-                  size-md="6"
-                  size-lg="6"
-              >
-              
-                  <ion-button
-                      style="font-size: 16px;--background: transparant!important;color: white;border: 1px solid #1D174D; background-color: #1D174D; border-radius: 10px;"
-                      size="small"
-                      expand="block"
-                      (click)="onCancel()"
-                      >Cancel</ion-button
-                  >
-              </ion-col>
-                  <ion-col
-                      style="margin-bottom: 10px"
-                      size="6"
-                  size-xl="6"
-                  size-sm="6"
-                  size-md="6"
-                  size-lg="6"
-                  >
-                  
-                      <ion-button
-                          style="font-size: 16px;"
-                          size="small"
-                          expand="block"
-                          class="button-submit"
-                          [disabled]="isDisabledOne() == true"
-                          (click)="onSubmitOne()"
-                          >Update</ion-button
-                      >
-                  </ion-col>
-              </ion-row>
-          </form>
-      </ion-grid>
-  </ion-card>
-  <div class="loader-everyOne" *ngIf="isProgressing">
-      <ion-spinner name="crescent" class="spinner"></ion-spinner>
-      <div class="loader-content">
-          <img
-              src="/assets/img/loader-logo.png"
-              alt="Loader Image"
-              class="loader-image"
-          />
-          <div class="loader-text">Please wait...</div>
-      </div>
-  </div>
+                        </div>
+                    </div>
+                </div>
+                <ion-row
+                    *ngIf="toDate"
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                    "
+                >
+                    <ion-col
+                        style="margin-bottom: 10px"
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            style="
+                                font-size: 16px;
+                                --background: transparant !important;
+                                color: white;
+                                border: 1px solid #1d174d;
+                                background-color: #1d174d;
+                                border-radius: 10px;
+                            "
+                            size="small"
+                            expand="block"
+                            (click)="onCancel()"
+                            >Cancel</ion-button
+                        >
+                    </ion-col>
+                    <ion-col
+                        style="margin-bottom: 10px"
+                        size="6"
+                        size-xl="6"
+                        size-sm="6"
+                        size-md="6"
+                        size-lg="6"
+                    >
+                        <ion-button
+                            style="font-size: 16px"
+                            size="small"
+                            expand="block"
+                            class="button-submit"
+                            [disabled]="isDisabledOne() == true"
+                            (click)="onSubmitOne()"
+                            >Update</ion-button
+                        >
+                    </ion-col>
+                </ion-row>
+            </form>
+        </ion-grid>
+    </ion-card>
+    <div class="loader-everyOne" *ngIf="isProgressing">
+        <ion-spinner name="crescent" class="spinner"></ion-spinner>
+        <div class="loader-content">
+            <img
+                src="/assets/img/loader-logo.png"
+                alt="Loader Image"
+                class="loader-image"
+            />
+            <div class="loader-text">Please wait...</div>
+        </div>
+    </div>
 </ion-content>

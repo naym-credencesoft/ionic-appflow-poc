@@ -135,8 +135,15 @@
         --padding-start: 10px;
         border-radius: 5px;
         margin-top: 6px;
+        
     }
     .cancelD {
         --background:#E84424;
         color:white;
+    }
+
+    ion-datetime-button::part(native) {
+      background: transparent !important;
+      box-shadow: none !important;
+      color: #259abe;
     }

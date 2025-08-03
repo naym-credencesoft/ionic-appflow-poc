@@ -217,7 +217,6 @@ export class LoginPage implements OnInit {
         // const loader = await this.loadingCtrl.create({});
 
         // loader.present();
-
         this.authService.login(this.model).subscribe(
             (resp) => {
                 if (
@@ -316,7 +315,7 @@ export class LoginPage implements OnInit {
                                             ]);
                                             this.updatePushNotificationToken();
                                         }
-                                    } else if(this.token.getRole() === '["PROP_SERVICE"]' || this.token.getRole() === '["PROP_SERVICE_EXECUTIVE"]'){
+                                    } else if(this.token.getRole() === '["PROP_SERVICE"]' || this.token.getRole() === '["PROP_SERVICE_EXECUTIVE"]' || this.token.getRole() === '["FB_OPERATOR"]'){
                                         this.router.navigate([
                                             returnUrl ||
                                                 "service-dashboard",

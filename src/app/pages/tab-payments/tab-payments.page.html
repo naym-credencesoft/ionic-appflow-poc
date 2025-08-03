@@ -321,7 +321,7 @@
                     <ion-text  style="font-size: 12px"
                         >Date*
                     </ion-text>
-                    <ion-datetime
+                    <!-- <ion-datetime
                         [(ngModel)]="data.date"
                         formControlName="PaymentDate"
                         class="card-item"
@@ -329,7 +329,25 @@
                         displayFormat="DD/MM/YYYY"
                         pickerFormat="DD/MM/YYYY"
                         placeholder="Select Date"
-                    ></ion-datetime>
+                    ></ion-datetime> -->
+                    <ion-datetime-button datetime="paymentDateTime" style="border-radius: 5px; border: 1px solid #aaa;"></ion-datetime-button>
+
+                    <ion-modal [keepContentsMounted]="true">
+                    <ng-template>
+                        <ion-datetime
+                        id="paymentDateTime"
+                        class="card-item"
+                        [(ngModel)]="data.date"
+                        formControlName="PaymentDate"
+                        presentation="date"
+                        placeholder="Select Date"
+                        [showDefaultButtons]="true"
+                        doneText="Done"
+                        cancelText="Cancel"
+                        ></ion-datetime>
+                    </ng-template>
+                    </ion-modal>
+
                 </ion-col>
             </ion-row>
 

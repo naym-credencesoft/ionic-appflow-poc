@@ -281,11 +281,20 @@
     justify-content: center;
 }
 
+ion-datetime-button::part(native) {
+  background: transparent !important;
+   margin-left: -10px;   /* adjust this value as needed */
+  padding-left: 0;  
+  
+}
+
+
 .card-item {
-    font-size: 13px;
+    text-align: left;
+    font-size: 15px;
     border-radius: 17px;
     border: 2px solid gray;
-    color: #333;
+    color: #000;
     text-align: center;
     // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16);
     

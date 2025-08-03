@@ -21,12 +21,12 @@
 
                     <ion-row>
                         <ion-text color="primary" style="font-size: 12px;" >Transection Reference </ion-text>
+                        
                             <ion-col size="12" size-xl="12" size-sm="12" size-md="12" size-lg="12">
                                 <ion-col no-padding size="12">
                                     <ion-input value ="{{ data.referenceNumber}}" disabled [(ngModel)]="data.referenceNumber" formControlName ="referenceNumber" placeholder="#" inputmode="text"></ion-input>
                                 </ion-col>  
-                            </ion-col>
-            
+                            </ion-col>           
                     </ion-row>
 
                     <ion-row>
@@ -34,11 +34,25 @@
     
                             <ion-text color="primary" style="font-size: 12px;">Date
                             </ion-text>
-                            <ion-datetime [(ngModel)]="data.date"
-                               
-                            formControlName="PaymentDate" no-padding class="datepicker"
-                            color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                            placeholder="Select Date"></ion-datetime>
+                       <ion-datetime-button datetime="paymentDateTime" style="border-radius: 5px; border: 1px solid #aaa;"></ion-datetime-button>
+
+                        <ion-modal [keepContentsMounted]="true">
+                        <ng-template>
+                            <ion-datetime 
+                            id="paymentDateTime"
+                            [(ngModel)]="data.date"
+                            formControlName="PaymentDate"
+                            color="primary"
+                            presentation="date"
+                            placeholder="Select Date"
+                            [showDefaultButtons]="true"
+                            doneText="Done"
+                            cancelText="Cancel"
+                            class="datepicker">
+                            </ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+
                         </ion-col>
                     </ion-row>
 

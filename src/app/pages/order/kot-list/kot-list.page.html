@@ -1,0 +1,153 @@
+<ion-content class="ion-no-border">
+  <ion-header>
+      <ion-avatar class="profile">
+        <img
+        style="object-fit: fill;"
+        src="{{this.token.getProperty().logoUrl}}"
+        onerror="this.src='/assets/img/app-logo.png'"
+    />
+    </ion-avatar>
+
+    <ion-text class="HeaderSubTitle" style="color: white;"> KOT List</ion-text>
+    <ion-toolbar>
+         <ion-buttons slot="start" class="back">
+          <ion-icon name="arrow-back-outline" (click)="onBack()" style="font-size: 20px; margin-top: -10px;color: white;"></ion-icon>
+      <ion-text style="color: white;" class="HeaderTitle" >Kitchen order Tickets</ion-text>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card class="header-card" style="background-color:#259bbf">
+    <ion-card-content class="ion-no-padding">
+     <ion-row class="ion-align-items-center ion-justify-content-between">
+  <ion-col size="auto">
+    <ion-item lines="none" >
+      <ion-label style="color: white;">Kitchen Order Tickets</ion-label>
+      <ion-select
+        placeholder="Select service" style="color: white;"
+        [(ngModel)]="serviceId"
+        (ionChange)="filterByDropdown()"
+      >
+        <ion-select-option value="0">All</ion-select-option>
+
+        <ion-select-option
+          *ngFor="let service of businessServices"
+          [value]="service.id"
+        >
+          {{ service.name }}
+          <ng-container *ngIf="service.name === 'Restaurants' && service.brandName">
+            - {{ service.brandName }}
+          </ng-container>
+          <ng-container *ngIf="service.otherInfo">
+            - {{ service.otherInfo }}
+          </ng-container>
+        </ion-select-option>
+
+      </ion-select>
+    </ion-item>
+  </ion-col>
+</ion-row>
+
+      <!-- <ion-row class="status-buttons">
+        <ion-col class="status-title"><ion-button shape="round" fill="solid" color="primary" size="small">CONFIRMED</ion-button></ion-col>
+        <ion-col class="status-title"><ion-button shape="round" fill="solid" color="primary" size="small">COOKING</ion-button></ion-col>
+        <ion-col class="status-title"><ion-button shape="round" fill="solid" color="primary" size="small">READY TO SERVE</ion-button></ion-col>
+      </ion-row> -->
+    </ion-card-content>
+  </ion-card>
+
+  <div *ngFor="let item of orders">
+    <ion-card class="order-card">
+      <ion-card-content>
+        <div class="order-header">
+  <!-- Top row: Order ID and Served button -->
+  <div class="order-header-top">
+    <div>
+      <b style="color: #4c4c4c;">{{ item.bookOneOrderId }}</b>
+    </div>
+    <div *ngIf="getOrderPositionIndex(item) === 2">
+      <ion-button size="small" color="primary" (click)="orderServed(item)">Served</ion-button>
+    </div>
+  </div>
+
+  <!-- Rest of the order details -->
+  <div style="color: #4c4c4c;" *ngIf="item.propertyName"><b>{{ item.propertyName }}</b></div>
+  <div style="color: #4c4c4c;">Customer: <b>{{ item.firstName }} {{ item.lastName }}</b></div>
+  <div *ngIf="item.locationName" style="color: #4c4c4c;">Location: <b>{{ item.locationName }}</b></div>
+  <div *ngIf="item.deliveryMethod !== 'Take Away'" style="color: #4c4c4c;">
+    Resource:
+    <b *ngIf="item.resourceName">{{ item.resourceName }}</b>
+    <b *ngIf="item.roomNo">{{ item.roomNo }}</b>
+  </div>
+  <div style="color: #4c4c4c;">Order Date: <b>{{ item.orderedDate | date: 'MMM d, y' }}</b></div>
+  <div style="color: #4c4c4c;">Delivery Date & Time: 
+    <b>{{ item.requiredDate | date: 'MMM d, y' }}</b> &nbsp;
+    <b>{{ item.requiredTime }}</b>
+  </div>
+  <div style="color: #4c4c4c;">Delivery Method: <b>{{ item.deliveryMethod }}</b></div>
+</div>
+
+
+        <!-- Horizontal scrollable kot columns -->
+        <div class="kot-columns-scroll">
+          <div class="kot-columns"style="color: #4c4c4c;">
+            <div *ngFor="let statusIndex of [0, 1, 2]" class="kot-status-box" 
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event, statusIndex, item)">
+               <div class="kot-status-header">
+    <span class="status-label"  [ngStyle]="{ 'background-color': getStatusColor(statusIndex) ,'color': 'white'}">
+      {{ getStatusLabel(statusIndex) }}
+    </span>
+  </div>
+ 
+              <div *ngFor="let kot of getKotList(item.kotDtoList, statusIndex)"
+                  class="kot-box"
+                  draggable="true"
+                  (dragstart)="onDragStart($event, kot, item, statusIndex)">
+                
+                <div class="kot-header">
+                  <div><b>{{ kot.kotNo }}</b></div>
+                  <div class="priority">Priority: {{ kot.priority }}</div>
+                  <ion-icon *ngIf="statusIndex !== 2"
+                            name="arrow-forward-outline"
+                            class="next-icon highlight-next"  [ngStyle]="{ 'background-color': getStatusColor(statusIndex) ,'color': 'white'}"
+                            (click)="updateKOT_Tolevel(kot, item, statusIndex + 1)">
+                  </ion-icon>
+                   <ion-icon *ngIf="statusIndex > 0"
+            name="arrow-back-outline"
+            class="next-icon highlight-next"
+            style="margin-left: 8px;"  [ngStyle]="{ 'background-color': getStatusColor(statusIndex) ,'color': 'white'}"
+            (click)="moveKOTBack(kot, item, statusIndex - 1)">
+  </ion-icon>
+                </div>
+
+                <div class="kot-line-header">
+                  <span>No</span>
+                  <span>Name</span><span>Status</span><span>Code</span><span>Q.T</span><span>Note</span><span>Act</span>
+                </div>
+
+                <div *ngFor="let product of getKotOrderLinebyStatus(kot.orderLines, statusIndex); let i = index"
+                    class="kot-line-row">
+                  <span>{{ i + 1 }}</span>
+                  <span>{{ product.name }} {{ checkTypes(product) }}</span>
+                  <span>{{ checkStatus(product) }}</span>
+                  <span>{{ product.productCode }}</span>
+                  <span>{{ product.unitsInOrder }}</span>
+                  <span>{{ product.notes }}</span>
+                  <span>
+                    <ion-icon *ngIf="statusIndex !== 2"
+                              name="play-forward" class="highlight-next"   [ngStyle]="{ 'background-color': getStatusColor(statusIndex) ,'color': 'white'}" 
+                              (click)="updateKotToProductNextLevel(product, kot, item, statusIndex + 1)">
+                    </ion-icon>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

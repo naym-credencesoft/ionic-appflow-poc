@@ -1,10 +1,10 @@
 import { Logger } from '../../service/logger.service';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Customer } from '../../model/Customer/customer';
 import { TranslateProvider } from '../../providers';
 import { TokenStorage } from './../../token.storage';
-import { NavController } from '@ionic/angular';
+import { IonModal, NavController } from '@ionic/angular';
 import { CustomerService } from '../../service/Customer/customer.service';
 import { ToastController } from '@ionic/angular';
 import { ActivatedRoute } from "@angular/router";
@@ -20,7 +20,11 @@ import {DatePipe, Location} from '@angular/common';
   styleUrls: ['./add-customer-details.page.scss'],
 })
 export class AddCustomerDetailsPage implements OnInit {
-    property: Property;
+  @ViewChild("birthdayModal", { static: false }) birthdayModal!: IonModal;
+  @ViewChild("anniversaryDateModal", { static: false }) anniversaryDateModal!: IonModal;
+  previousBirthday: string | null = null;
+  previousAnniversaryDate: string | null = null;
+  property: Property;
   componentModel: string;
   isCustomerDisable: boolean = false;
   isAddressDisable: boolean = true;
@@ -52,6 +56,8 @@ export class AddCustomerDetailsPage implements OnInit {
   birthday: FormControl = new FormControl();
   anniversaryDate: FormControl = new FormControl();
   TaxIdNumber: FormControl = new FormControl();
+  isBirthDateSelected: boolean = false;
+  isAnniversaryDateSelected : boolean = false;
 
   constructor(private formBuilder: FormBuilder,
     private changeDetectorRefs: ChangeDetectorRef,
@@ -150,10 +156,16 @@ export class AddCustomerDetailsPage implements OnInit {
   }
 
   ngOnInit() {
-    
+      if (this.customer.birthday) {
+        this.previousBirthday = this.customer.birthday;
+      }
+
+      if (this.customer.anniversaryDate) {
+        this.previousAnniversaryDate = this.customer.anniversaryDate;
+      }
     this.countryCode = new CountryCode();
     this.property = this.token.getProperty();
-        console.log("property details", this.property)
+        // console.log("property details", this.property)
     this.acRoute.queryParams.subscribe(params => {
 
       if (params["customerOb"] != undefined) {
@@ -187,6 +199,70 @@ export class AddCustomerDetailsPage implements OnInit {
 
     });
   }
+
+  // onBirthdayChange(event) {
+  //   const selectedDate = event.detail.value;
+  //   console.log('Selected birthday:', selectedDate);
+
+  //   this.customer.birthday = selectedDate;
+
+  //   if (this.previousBirthday !== selectedDate) {
+  //     console.log('Birthday changed.');
+  //   } else {
+  //     console.log('Same birthday re-selected.');
+  //   }
+
+  //   this.previousBirthday = selectedDate;
+
+  //         setTimeout(() => {
+  //            this.birthdayModal?.dismiss();
+  //          }, 100);
+  // }
+  onBirthdayChange(event: any): void {
+    const selectedDate: string = event.detail?.value;
+    // console.log('Selected birthday:', selectedDate);
+    this.isBirthDateSelected = true;
+
+    const isFullDate = /^\d{4}-\d{2}-\d{2}$/.test(selectedDate);
+
+    if (!isFullDate) {
+      // console.log('Partial date selected. Modal will not dismiss.');
+      return;
+    }
+
+    this.customer.birthday = selectedDate;
+
+    if (this.previousBirthday !== selectedDate) {
+      // console.log('Birthday changed.');
+    } else {
+      // console.log('Same birthday re-selected.');
+    }
+
+    this.previousBirthday = selectedDate;
+
+  }
+
+onAnniversaryConfirm(event: any) {
+  const selectedDate = event.detail.value;
+  // console.log('Selected anniversary date:', selectedDate);
+
+  // Update model
+  this.customer.anniversaryDate = selectedDate;
+
+  // Check if the date changed
+  if (this.previousAnniversaryDate !== selectedDate) {
+    // console.log('Anniversary date changed');
+  } else {
+    // console.log('Same anniversary date selected');
+  }
+
+  // Update selection flag for ngClass
+  this.isAnniversaryDateSelected = !!selectedDate;
+
+  // Save the selected date for future comparison
+  this.previousAnniversaryDate = selectedDate;
+}
+
 
   customerDetail(event) {
     Logger.log('customer : ' + JSON.stringify(event));

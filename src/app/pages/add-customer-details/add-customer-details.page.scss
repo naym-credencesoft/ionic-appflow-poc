@@ -180,3 +180,34 @@ ion-content {
     border: 1px solid gray;
     border-radius: 10px;
 }
+
+ion-datetime-button {
+  display: block;
+  width: 100%;
+}
+.card-item {
+    text-align: left;
+    background: #e9ecef !important; 
+    font-size: 15px;
+    border: 1px solid #e9ecef;
+    color: #000;
+    text-align: center;
+}
+ion-datetime-button::part(native) {
+  background: #e9ecef !important; 
+  border-radius: 8px !important;   
+  padding: 6px 12px !important;    
+  box-shadow: none !important; 
+}
+  ion-datetime-button::part(native) {
+  background: transparent !important;
+  box-shadow: none !important;
+
+}
+ion-datetime-button.unselected::part(native) {
+  color: #aaa !important;
+}
+
+ion-datetime-button.selected::part(native) {
+  color: black !important;
+}

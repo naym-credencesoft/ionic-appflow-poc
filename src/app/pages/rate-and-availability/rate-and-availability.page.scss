@@ -418,6 +418,43 @@
         color: white;
     }
 }
+
+.datetime-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  border: 1px solid gray;
+  color: #333;
+  padding: 5px 5px;
+  position: relative;
+}
+
+.date-btn {
+  flex-grow: 1;
+  text-align: left;
+  justify-content: flex-start;
+  display: flex;
+  font-size: 15px;
+  color: #333;
+  border: none;
+  background: transparent;
+}
+
+.datetime-box::part(native) {
+  text-align: left;
+}
+
+ion-datetime-button.unselected::part(native) {
+  color: #aaa; /* grey text */
+
+}
+
+ion-datetime-button.selected::part(native) {
+  color: #000; /* black text */
+
+}
+
 .card-layout{
     background: linear-gradient(0deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%) !important;
     -webkit-backdrop-filter: blur(34px);
@@ -467,3 +504,35 @@ ion-footer {
     border-radius: 10px;
     color: white;
 }
+ion-datetime-button::part(native) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+  .datetime-box {
+        border-radius: 10px;
+        border: 1px solid #000;
+        display: inline-block;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+        padding: 0px;
+
+        }
+
+        .date-btn {
+            font-size: 15px;
+            text-align: left;
+            }
+
+        .calendar-icon {
+            margin-left: 10px;
+           position: absolute;
+            right: 10px;      /* adjust spacing */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+        }

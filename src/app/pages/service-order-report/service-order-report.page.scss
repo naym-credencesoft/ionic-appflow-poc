@@ -261,12 +261,45 @@
     justify-content: center;
 }
 
+.datetime-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  border: 2px solid gray;
+  color: #333;
+  padding: 5px 8px;
+  font-size: 15px;
+  position: relative;
+}
+
+.date-btn {
+  flex-grow: 1;
+  text-align: left;
+  justify-content: flex-start;
+  display: flex;
+  font-size: 15px;
+  color: #333;
+  border: none;
+  background: transparent;
+}
+
+.datetime-box::part(native) {
+  text-align: left;
+}
+
+.calendar-icon {
+  font-size: 20px;
+  color: #333;
+  margin-left: 10px;
+}
+
+
 .card-item {
-    font-size: 13px;
+    font-size: 15px;
     border-radius: 10px;
     border: 2px solid gray;
     color: #333;
-    text-align: center;
 }
 
 .table-head-design {
@@ -399,4 +432,10 @@ ion-segment-button {
 
 .white-card {
     background-color: white !important;
+}
+
+ion-datetime-button::part(native) {
+  background: transparent !important;
+  
+  
 }

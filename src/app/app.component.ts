@@ -763,7 +763,6 @@ export class AppComponent {
         private changeDetectorRefs: ChangeDetectorRef,
         private token: TokenStorage,
         private translate: TranslateProvider,
-        private menu: MenuController,
         private translateService: TranslateService,
         public navCtrl: NavController,
         private events: EventService,
@@ -820,7 +819,6 @@ export class AppComponent {
 
     ngOnInit() {
 
-    
         if (this.token.getUserId() != null && this.token.getUserId() != undefined) {
           this.getUserInfoById(this.token.getUserId());
         }
@@ -1274,12 +1272,12 @@ export class AppComponent {
         }, this.timeIntevalSeconds * 10);
     }
 
-    menuClosed() {
-        this.menuController.close();
+     menuClosed() {
+        this.menuController.close('mainMenu');
     }
 
     childMenu() {
-        this.menu.open("first");
+        this.menuController.open("first");
     }
 }
 

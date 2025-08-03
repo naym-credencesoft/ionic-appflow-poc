@@ -94,6 +94,11 @@ export class RateAndAvailabilityPage implements OnInit {
     selectedRoomData: any = null;
     propertyShown: boolean;
 
+    isFromDateSelected = false;
+    isToDateSelected = false;
+
+ isFromModalOpen = false;
+isToModalOpen = false;
     constructor(
         public token: TokenStorage,
         private toastController: ToastController,
@@ -184,6 +189,22 @@ this.roomnames =[]
         });
         await actionSheet.present();
     }
+    
+       setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
 
     toggleRateUpdate() {
         this.isOpen = !this.isOpen;
@@ -201,7 +222,6 @@ this.roomnames =[]
             this.selectedRoomData = room;
         }
     
-        console.log(this.selectedRoomData, "hello");
         this.propertyShown = false;
         this.isOpen = false;
     }
@@ -435,16 +455,65 @@ this.roomnames =[]
         
     }
 
-    fromDateChange() {
-        Logger.log("date change :" + this.ratesAndAvailabilitieOb.fromDate);
-        let toDate = new Date(this.ratesAndAvailabilitieOb.fromDate);
 
-        toDate.setDate(toDate.getDate() + 1);
-        this.toMinDate = this.getDate(toDate);
+fromDateChange() {
+  const fromDate = this.onRateAvailabilityForm.get('rateAndAvailFromDate')?.value;
 
-        toDate.setDate(toDate.getDate() + 15);
-        this.toMaxDate = this.getDate(toDate);
-    }
+  if (!fromDate) {
+    console.warn('fromDate is undefined or empty.');
+    return;
+  }
+ this.isFromDateSelected = !!fromDate;
+  // Calculate min and max dates
+  const from = new Date(fromDate);
+
+  // Disable all dates before the selected fromDate
+  this.toMinDate = this.formatDate(from);
+
+  // Example: limit to 16 days after fromDate
+//   const max = new Date(from);
+//   max.setDate(max.getDate() + 16);
+//   this.toMaxDate = this.formatDate(max);
+
+  // Clear toDate if it's invalid (before min)
+  const toDate = this.onRateAvailabilityForm.get('rateAndAvailToDate')?.value;
+  if (toDate && new Date(toDate) < new Date(this.toMinDate)) {
+    this.onRateAvailabilityForm.patchValue({ rateAndAvailToDate: '' });
+  }
+}
+
+toDateChange() {
+  const toDate = this.onRateAvailabilityForm.get('rateAndAvailToDate')?.value;
+  this.isToDateSelected = !!toDate;
+}
+formatDate(date: Date): string {
+  return date.toISOString().split('T')[0]; // yyyy-MM-dd
+}
+
+    // fromDateChange() {
+    // const fromDate =  this.onRateAvailabilityForm.get('rateAndAvailFromDate')?.value;
+
+    // if (!fromDate) {
+    //     Logger.warn('fromDate is undefined or empty.');
+    //     return;
+    // }
+
+    // Logger.log('From date changed:', fromDate);
+
+    // const from = new Date(fromDate);
+
+    // const minToDate = new Date(from);
+    // minToDate.setDate(minToDate.getDate() + 1);
+    // this.toMinDate = this.getDate(minToDate); 
+
+    // const maxToDate = new Date(from);
+    // maxToDate.setDate(maxToDate.getDate() + 16);
+    // this.toMaxDate = this.getDate(maxToDate);
+
+    // Logger.log(`toMinDate set to: ${this.toMinDate}`);
+    // Logger.log(`toMaxDate set to: ${this.toMaxDate}`);
+    // }
+
     getDate(date: Date) {
         if (date.getDate().toString().length == 1) {
             this.currentDay = "0" + date.getDate();
@@ -595,7 +664,6 @@ this.roomnames =[]
             } else {
               this.propertyData = resp.body;
               this.isProgressing = false;
-              console.log("this.propertyData", this.propertyData)
               this.changeDetectorRefs.detectChanges();
             }
           });

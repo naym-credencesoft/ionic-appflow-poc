@@ -36,6 +36,8 @@ export class ExpenceListPage implements OnInit {
     currentMonth: string;
 
     loader: boolean = false;
+           isFromModalOpen = false;
+             isToModalOpen = false;
 
     constructor(
         private navCtrl: NavController,
@@ -70,6 +72,24 @@ export class ExpenceListPage implements OnInit {
         this.expenseChanged();
     }
 
+ 
+
+    setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
+    
     fromDateChange() {
         let toDate = new Date(this.fromDateString);
 

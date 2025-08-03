@@ -1,23 +1,21 @@
-
-
 <ion-header class="ion-no-border">
-
-
     <ion-avatar class="profile">
         <img
-        style="object-fit: fill;"
-        src="{{this.property.logoUrl}}"
-        onerror="this.src='/assets/img/app-logo.png'"
-    />
+            style="object-fit: fill"
+            src="{{this.property.logoUrl}}"
+            onerror="this.src='/assets/img/app-logo.png'"
+        />
     </ion-avatar>
 
-    <ion-text class="HeaderSubTitle"> New Booking  </ion-text>
+    <ion-text class="HeaderSubTitle"> New Booking </ion-text>
     <ion-toolbar>
         <ion-buttons slot="start" class="back">
-            <ion-icon name="arrow-back-outline" (click)="back()" style="font-size: 20px; margin-top: -10px;"></ion-icon>
-            <ion-text color="light" class="HeaderTitle" 
-                >Accommodation</ion-text
-            >
+            <ion-icon
+                name="arrow-back-outline"
+                (click)="back()"
+                style="font-size: 20px; margin-top: -10px"
+            ></ion-icon>
+            <ion-text color="light" class="HeaderTitle">Accommodation</ion-text>
             <!-- <ion-img
             style="height:50px; margin-top: -6px;"
                 src="/assets/img/icons/arrow-down-white.svg"
@@ -62,8 +60,8 @@
                 class="todoNotes"
             >
                 "Thanks for the booking .Please note the Reservation No:
-                #{{this.booking.propertyReservationNumber}} and an email is sent with the booking
-                details."
+                #{{this.booking.propertyReservationNumber}} and an email is sent
+                with the booking details."
             </ion-text>
         </p>
     </ion-grid>
@@ -90,20 +88,20 @@
                         </li>
                     </ul>
                 </div>
-                
             </div>
         </div>
     </ion-card>
 
     <ion-card class="card-layout">
         <ion-grid no-padding *ngIf="currentIndex === 0">
-          
             <ion-row class="content-header-style">
-                <ion-text class="content-header-titleone">Room Details</ion-text>  
-                <ion-text class="right-header-title"> Next Rsvn =
-                    {{ propertySequence?.propertyShortName }}
-                    -
-                    {{ propertySequence?.nextVal }}</ion-text>
+                <ion-text class="content-header-titleone"
+                    >Room Details</ion-text
+                >
+                <ion-text class="right-header-title">
+                    Next Rsvn = {{ propertySequence?.propertyShortName }} - {{
+                    propertySequence?.nextVal }}</ion-text
+                >
                 <!-- <img
                     *ngIf="onAvailabilityForm.valid || currentIndex > 0"
                     class="status-check"
@@ -150,28 +148,53 @@
                         <ion-text
                             color="primary"
                             class="check-in-out-text"
-                            style="font-size: 12px; "
+                            style="font-size: 12px"
                             >Check-in
                         </ion-text>
                         <ion-col size="12">
-                            <ion-item lines="none" class="card-item mt-05" style="border: 1px solid gray; font-family: 14px;">
-                                <ion-icon name="calendar" style="color:#F89A34; margin-left: -2px;"></ion-icon>
-                                <ion-datetime
-                                    [disabled]="roomBooking"
-                                    [(ngModel)]="booking.fromDate"
-                                    (ionChange)="fromDateChange()"
-                                    formControlName="bookingFromDate"
-                                    color="primary"
-                                    displayFormat="DD/MM/YYYY"
-                                    pickerFormat="DD/MM/YYYY"
-                                    min= "2000-12-31"
-                                    max="2100-12-31"
-                                    style="margin-left: 10px;"
-                                    placeholder="From Date"
-                                ></ion-datetime>
+                            <ion-item
+                                lines="none"
+                                class="card-item mt-05"
+                                style="
+                                    border: 1px solid gray;
+                                    display: inline-block;
+                                    align-items: center;
+                                "
+                            >
+                                <ion-icon
+                                    name="calendar-clear"
+                                    style="color:#333"
+                                    (click)="setOpen(true)"
+                                    style=" margin-left: -2px"
+                                ></ion-icon>
+                                <ion-datetime-button
+                                    datetime="datetime"
+                                ></ion-datetime-button>
+
+                                <ion-modal
+                                    [keepContentsMounted]="true"
+                                    [isOpen]="isModalOpen"
+                                    (ionModalDidDismiss)="dismissModal()"
+                                    #checkInModal
+                                >
+                                    <ng-template>
+                                        <ion-datetime
+                                            id="datetime"
+                                            [showDefaultButtons]="true"
+                                            presentation="date"
+                                            style="color: #000"
+                                            doneText="Done"
+                                            cancelText="Cancel"
+                                            formControlName="bookingFromDate"
+                                            min="2000-12-31"
+                                            max="2100-12-31"
+                                            style="color: #000"
+                                            (ionChange)="fromDateChange($event)"
+                                        ></ion-datetime>
+                                    </ng-template>
+                                </ion-modal>
                             </ion-item>
                         </ion-col>
-                        
                     </ion-col>
 
                     <ion-col size="6">
@@ -183,24 +206,115 @@
                         </ion-text>
 
                         <ion-col size="12">
-                            <ion-item lines="none" class="card-item mt-05" style="border: 1px solid gray">
-                                <ion-icon name="calendar" style="color:#F89A34; margin-left: -2px;"></ion-icon>
-                            <ion-datetime
-                                [(ngModel)]="booking.toDate"
-                                min= "{{booking.fromDate}}"
-                                max="2100-12-31"
-                                (ionChange)="PlanChangeBaseOnDate()"
-                                formControlName="bookingToDate"
-                                no-padding
-                                color="primary"
-                                displayFormat="DD/MM/YYYY"
-                                pickerFormat="DD/MM/YYYY"
-                                placeholder="To Date"
-                                style="margin-left: 10px;"
-                            ></ion-datetime>
-                        </ion-item>
+                            <ion-item
+                                lines="none"
+                                [disabled]="!checkInSelected" 
+                                class="card-item mt-05"
+                                style="border: 1px solid gray"
+                            >
+                                <ion-icon
+                                    name="calendar-clear"
+                                     style="color:#333"
+                                    (click)="setOpen2(true)"
+                                    style=" margin-left: -2px"
+                                ></ion-icon>
+                                <ion-datetime-button
+                                    datetime="datetime1"
+                                    style="font-size: 12px; color: #000"
+                                ></ion-datetime-button>
+
+                                <ion-modal
+                                    [keepContentsMounted]="true"
+                                    [isOpen]="isModalOpen2"
+                                    (ionModalDidDismiss)="dismissModal2()"
+                                    #checkOutModal
+                                >
+                                    <ng-template>
+                                        <ion-datetime
+                                            id="datetime1"
+                                            [showDefaultButtons]="true"
+                                            presentation="date"
+                                            style="color: #000"
+                                            doneText="Done"
+                                            cancelText="Cancel"
+                                            formControlName="bookingToDate"
+                                            [min]="booking.fromDate"
+                                            max="2100-12-31"
+                                            style="color: #000"
+                                            (ionChange)="PlanChangeBaseOnDate($event)"
+                                        ></ion-datetime>
+                                    </ng-template>
+                                </ion-modal>
+                            </ion-item>
                         </ion-col>
                     </ion-col>
+
+                    <!-- <ion-col size="6">
+    <ion-text
+        color="primary"
+        class="check-in-out-text"
+        style="font-size: 12px; "
+    >Check-in
+    </ion-text>
+    <ion-col size="12">
+        <ion-item lines="none" class="card-item mt-05" sstyle="border: 1px solid gray; display: inline-block; align-items: center;">
+            <ion-icon name="calendar" style="color:#F89A34;  margin-left: -2px;"></ion-icon>
+
+            <ion-datetime-button datetime="datetime"
+                                 style="font-size: 11px; background: transparent; color: #000;"
+            ></ion-datetime-button>
+
+            <ion-modal [keepContentsMounted]="true" #dateModal>
+                <ng-template>
+                    <ion-datetime
+                        id="datetime"
+                        [(ngModel)]="booking.fromDate"
+                        min="2000-12-31"
+                        max="2100-12-31"
+                        style="color: #000"
+                        placeholder="From Date"
+                        presentation="date"
+                        (ionChange)="fromDateChange($event)">
+                    </ion-datetime>
+                </ng-template>
+            </ion-modal>
+        </ion-item>
+    </ion-col>
+</ion-col>
+
+<ion-col size="6">
+    <ion-text
+        color="primary"
+        class="check-in-out-text"
+        style="font-size: 12px"
+    >Check-Out
+    </ion-text>
+
+    <ion-col size="12">
+        <ion-item lines="none" class="card-item mt-05" style="border: 1px solid gray">
+            <ion-icon name="calendar" style="color:#F89A34; margin-left: -2px;"></ion-icon>
+
+            <ion-datetime-button id="open-checkout-modal-button" datetime="datetime2"
+                                 style="font-size: 11px; background: transparent; color: #000;">
+            </ion-datetime-button>
+
+            <ion-modal trigger="open-checkout-modal-button" [keepContentsMounted]="true">
+                <ng-template>
+                    <ion-datetime
+                        id="datetime2"
+                        [(ngModel)]="booking.toDate"
+                        min="2000-12-31"
+                        max="2100-12-31"
+                        style="color: #000"
+                        placeholder="To Date"
+                        presentation="date"
+                        (ionChange)="PlanChangeBaseOnDate($event)">
+                    </ion-datetime>
+                </ng-template>
+            </ion-modal>
+        </ion-item>
+    </ion-col>
+</ion-col> -->
                 </ion-row>
 
                 <ion-row
@@ -214,19 +328,24 @@
                             >Date
                         </ion-text>
                         <ion-col size="12">
-                            <ion-datetime
-                                [(ngModel)]="booking.fromDate"
-                                (ionChange)="setCheckOutDateForSameDay()"
-                                formControlName="bookingFromDate"
-                                no-padding
-                                class="card-item mt-05"
-                                color="primary"
-                                displayFormat="DD/MM/YYYY"
-                                pickerFormat="DD/MM/YYYY"
-                                min= "2000-12-31"
-                                max="2100-12-31"
-                                placeholder="Select Date"
-                            ></ion-datetime>
+                            <ion-datetime-button
+                                datetime="fromDate"
+                            ></ion-datetime-button>
+
+                            <ion-modal [keepContentsMounted]="true">
+                                <ion-datetime
+                                    id="fromDate"
+                                    [(ngModel)]="booking.fromDate"
+                                    (ionChange)="setCheckOutDateForSameDay()"
+                                    formControlName="bookingFromDate"
+                                    color="primary"
+                                    displayFormat="DD/MM/YYYY"
+                                    pickerFormat="DD/MM/YYYY"
+                                    min="2000-12-31"
+                                    max="2100-12-31"
+                                    [showDefaultButtons]="true"                                   presentation="date"                                         style="color: #000;"                                        doneText="Done"                                        cancelText="Cancel"
+                                ></ion-datetime>
+                            </ion-modal>
                         </ion-col>
                     </ion-col>
                 </ion-row>
@@ -292,33 +411,35 @@
                                 no-padding
                                 size="12"
                             >
-                            <ion-item lines="none" class="card-item mt-05" style="border: 1px solid gray">
-                                <!-- Cancel icon on the left side -->
-                               
-                               
-                                
-                                <ion-input
-                                formControlName="RoomNo"
-                                name="RoomNo"
-                                no-padding
-                                placeholder="0"
-                                no-margin
-                                type="number"
-                                min="1"
-                                [disabled]="roomDetailsReceived"
-                                [(ngModel)]="booking.noOfRooms"
-                                (change)="onRoomQuantityChange(room.noOfRooms)"
+                                <ion-item
+                                    lines="none"
+                                    class="card-item mt-05"
+                                    style="border: 1px solid gray"
                                 >
-                                </ion-input>
-                                <ion-icon
-                                *ngIf="booking.noOfRooms"
-                                name="close-circle-outline"
-                                slot="end"
-                                style="color:#F89A34; cursor: pointer"
-                                (click)="clearInput()">
-                            </ion-icon>
-                            </ion-item>
-                       
+                                    <!-- Cancel icon on the left side -->
+
+                                    <ion-input
+                                        formControlName="RoomNo"
+                                        name="RoomNo"
+                                        no-padding
+                                        placeholder="0"
+                                        no-margin
+                                        type="number"
+                                        min="1"
+                                        [disabled]="roomDetailsReceived"
+                                        [(ngModel)]="booking.noOfRooms"
+                                        (change)="onRoomQuantityChange(room.noOfRooms)"
+                                    >
+                                    </ion-input>
+                                    <ion-icon
+                                        *ngIf="booking.noOfRooms"
+                                        name="close-circle-outline"
+                                        slot="end"
+                                        style="color: #f89a34; cursor: pointer"
+                                        (click)="clearInput()"
+                                    >
+                                    </ion-icon>
+                                </ion-item>
                             </div>
                         </ion-col>
 
@@ -359,27 +480,36 @@
                                 no-padding
                                 size="12"
                             >
-                            <ion-item lines="none" class="card-item mt-05" style="border: 1px solid gray">
-                                <!-- Cancel icon on the left side -->
-                               
-                                <ion-icon *ngIf="booking.noOfPersons" name="close-circle-outline" slot="end" style="color:#F89A34; cursor: pointer" (click)="clearInputOne()" ></ion-icon>
-                                
-                                <ion-input
-                                    formControlName="PersonNo"
-                                    name="PersonNo"
-                                    no-padding
-                                    placeholder="0"
-                                    no-margin
-                                    type="number"
-                                    [(ngModel)]="booking.noOfPersons"
-                                    min="1"
-                                    [max]="(plan.maximumOccupancy + plan.noOfChildren) * booking.noOfRooms"
-                                    (change)="onPersonQuantityChange((plan.maximumOccupancy + plan.noOfChildren) * booking.noOfRooms)"
-                                    (ngModelChange)="onPersonQuantityChange((plan.maximumOccupancy + plan.noOfChildren) * booking.noOfRooms)"
+                                <ion-item
+                                    lines="none"
+                                    class="card-item mt-05"
+                                    style="border: 1px solid gray"
                                 >
-                                </ion-input>
-                            </ion-item>
-                            
+                                    <!-- Cancel icon on the left side -->
+
+                                    <ion-icon
+                                        *ngIf="booking.noOfPersons"
+                                        name="close-circle-outline"
+                                        slot="end"
+                                        style="color: #f89a34; cursor: pointer"
+                                        (click)="clearInputOne()"
+                                    ></ion-icon>
+
+                                    <ion-input
+                                        formControlName="PersonNo"
+                                        name="PersonNo"
+                                        no-padding
+                                        placeholder="0"
+                                        no-margin
+                                        type="number"
+                                        [(ngModel)]="booking.noOfPersons"
+                                        min="1"
+                                        [max]="(plan.maximumOccupancy + plan.noOfChildren) * booking.noOfRooms"
+                                        (change)="onPersonQuantityChange((plan.maximumOccupancy + plan.noOfChildren) * booking.noOfRooms)"
+                                        (ngModelChange)="onPersonQuantityChange((plan.maximumOccupancy + plan.noOfChildren) * booking.noOfRooms)"
+                                    >
+                                    </ion-input>
+                                </ion-item>
                             </div>
                         </ion-col>
                         <p
@@ -415,10 +545,20 @@
                             >Children</ion-text
                         >
                         <ion-col size="12">
-                            <ion-item lines="none" class="card-item mt-05" style="border: 1px solid gray">
+                            <ion-item
+                                lines="none"
+                                class="card-item mt-05"
+                                style="border: 1px solid gray"
+                            >
                                 <!-- Cancel icon on the left side -->
-                                
-                                <ion-icon name="close-circle-outline" slot="end" *ngIf="booking.noOfChildren" style="color:#F89A34; cursor: pointer" (click)="clearInputTwo()"></ion-icon>
+
+                                <ion-icon
+                                    name="close-circle-outline"
+                                    slot="end"
+                                    *ngIf="booking.noOfChildren"
+                                    style="color: #f89a34; cursor: pointer"
+                                    (click)="clearInputTwo()"
+                                ></ion-icon>
 
                                 <ion-input
                                     formControlName="ChildrenNo"
@@ -426,7 +566,7 @@
                                     placeholder="0"
                                     no-margin
                                     type="number"
-                                    [(ngModel)]="booking.noOfChildren"             
+                                    [(ngModel)]="booking.noOfChildren"
                                     min="0"
                                     max="{{ ((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)- this.booking.noOfPersons}}"
                                     (change)="onPersonQuantityChange((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)"
@@ -435,28 +575,28 @@
                             </ion-item>
                         </ion-col>
                         <p
-                        ion-text
-                        color="danger"
-                        class="roomexceederror"
-                        name="roomexceederror"
-                    >
-                        <ion-text
+                            ion-text
                             color="danger"
-                            *ngIf="onAvailabilityForm.get('ChildrenNo').dirty"
+                            class="roomexceederror"
+                            name="roomexceederror"
                         >
-                            <ion-grid
-                                no-padding
-                                *ngIf="((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)- this.booking.noOfPersons < booking.noOfChildren
-                                "
+                            <ion-text
+                                color="danger"
+                                *ngIf="onAvailabilityForm.get('ChildrenNo').dirty"
                             >
-                                <ion-col size="12" no-margin>
-                                    <ion-row style="font-size: 13px">
-                                        No Of Child Required!
-                                    </ion-row>
-                                </ion-col>
-                            </ion-grid>
-                        </ion-text>
-                    </p>
+                                <ion-grid
+                                    no-padding
+                                    *ngIf="((plan.maximumOccupancy + plan.noOfChildren) *booking.noOfRooms)- this.booking.noOfPersons < booking.noOfChildren
+                                "
+                                >
+                                    <ion-col size="12" no-margin>
+                                        <ion-row style="font-size: 13px">
+                                            No Of Child Required!
+                                        </ion-row>
+                                    </ion-col>
+                                </ion-grid>
+                            </ion-text>
+                        </p>
                     </ion-col>
                 </ion-row>
 
@@ -517,7 +657,7 @@
 
                 <ion-row *ngIf="this.booking.planCode != undefined">
                     <ion-col size="6">
-                        <ion-text  style="font-size: 12px;color: #1D174D;"
+                        <ion-text style="font-size: 12px; color: #1d174d"
                             >External Booking Number</ion-text
                         >
                         <ion-input
@@ -530,7 +670,7 @@
                     </ion-col>
 
                     <ion-col size="6">
-                        <ion-text  style="font-size: 12px; color: #1D174D;"
+                        <ion-text style="font-size: 12px; color: #1d174d"
                             >Source Of Booking*</ion-text
                         >
 
@@ -573,16 +713,20 @@
                         size-lg="6"
                     >
                         <button
-                        style="background-color: #259BBf !important;    border-radius: 7px;
-                        color: #fff;
-                        width: 100%;
-                        padding: 10px;"
+                            style="
+                                background-color: #259bbf !important;
+                                border-radius: 7px;
+                                color: #fff;
+                                width: 100%;
+                                padding: 10px;
+                            "
                             expand="full"
                             size="small"
                             shape="round"
                             (click)="Reset()"
-                            >Reset</button
                         >
+                            Reset
+                        </button>
                     </ion-col>
 
                     <ion-col
@@ -593,26 +737,33 @@
                         size-lg="6"
                     >
                         <button
-                        style="background-color: #1D174D !important;    border-radius: 7px;
-                        color: #fff;
-                        width: 100%;
-                        padding: 10px;"
+                            style="
+                                background-color: #1d174d !important;
+                                border-radius: 7px;
+                                color: #fff;
+                                width: 100%;
+                                padding: 10px;
+                            "
                             expand="full"
                             size="small"
                             shape="round"
                             (click)="CheckAvailability()"
                             [disabled]="!onAvailabilityForm.valid || !this.isRoomAvailable || !this.isPersonAvailable
                         || booking.noOfRooms ===0 || booking.noOfPersons ===0"
-                        [ngStyle]="{
+                            [ngStyle]="{
                             'background-color': (!onAvailabilityForm.valid || !this.isRoomAvailable || !this.isPersonAvailable
                             || booking.noOfRooms ===0 || booking.noOfPersons ===0) ? '#D3D3D3' : '#1D174D',
                             'color': (!onAvailabilityForm.valid || !this.isRoomAvailable || !this.isPersonAvailable
                             || booking.noOfRooms ===0 || booking.noOfPersons ===0) ? '#A9A9A9' : '#fff'
                           }"
-                          style="border-radius: 7px; width: 100%; padding: 10px;"
+                            style="
+                                border-radius: 7px;
+                                width: 100%;
+                                padding: 10px;
+                            "
                         >
-                            Next</button
-                        >
+                            Next
+                        </button>
                     </ion-col>
                 </ion-row>
             </form>
@@ -632,7 +783,13 @@
         </ion-grid>
 
         <ion-grid no-padding *ngIf="currentIndex === 1">
-            <ion-row style="display: flex; justify-content: space-between; padding: 10px;">
+            <ion-row
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px;
+                "
+            >
                 <ion-text class="content-header-title"
                     >Pricing Details</ion-text
                 >
@@ -643,14 +800,21 @@
                 />
             </ion-row>
             <form [formGroup]="onPriceForm" class="priceing-details">
-                <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px">
                     <div>
-                      <ion-text class="price-room-title" style="font-size: 14px;">Room Price</ion-text>
+                        <ion-text
+                            class="price-room-title"
+                            style="font-size: 14px"
+                            >Room Price</ion-text
+                        >
                     </div>
-                    <div class="price-room-value" style="display: flex; align-items: center; gap: 5px;">
-                      <span
-                        class="plan-default-price"
-                        *ngIf="
+                    <div
+                        class="price-room-value"
+                        style="display: flex; align-items: center; gap: 5px"
+                    >
+                        <span
+                            class="plan-default-price"
+                            *ngIf="
                           this.plan != null &&
                           this.plan != undefined &&
                           this.plan.amount != null &&
@@ -658,75 +822,89 @@
                           this.totalPlanAmount != undefined &&
                           this.totalPlanAmount != this.plan.amount
                         "
-                        (click)="setDefaultPlanAmount()"
-                      >
-                        {{ plan.amount | currency : currency : "symbol" : "1.2-2" }}
-                      </span>
-                  
-                      <span
-                        class="gap-planamount"
-                        *ngIf="
+                            (click)="setDefaultPlanAmount()"
+                        >
+                            {{ plan.amount | currency : currency : "symbol" :
+                            "1.2-2" }}
+                        </span>
+
+                        <span
+                            class="gap-planamount"
+                            *ngIf="
                           this.totalPlanAmount != null &&
                           this.totalPlanAmount != undefined &&
                           isPlanAmountEditMode === false
                         "
-                      >
-                        {{ this.totalPlanAmount | currency : currency : "symbol" : "1.2-2" }}
-                      </span>
-                  
-                      <ion-input
-                        class="card-item"
-                        *ngIf="isPlanAmountEditMode"
-                        formControlName="PlanAmountChange"
-                        [(ngModel)]="totalPlanAmount"
-                        no-padding
-                        placeholder="0"
-                        no-margin
-                        type="number"
-                        clearInput="true"
-                        min="0"
-                        style="border: 1px solid gray"
-                      ></ion-input>
-                  
-                      <img
-                        *ngIf="
+                        >
+                            {{ this.totalPlanAmount | currency : currency :
+                            "symbol" : "1.2-2" }}
+                        </span>
+
+                        <ion-input
+                            class="card-item"
+                            *ngIf="isPlanAmountEditMode"
+                            formControlName="PlanAmountChange"
+                            [(ngModel)]="totalPlanAmount"
+                            no-padding
+                            placeholder="0"
+                            no-margin
+                            type="number"
+                            clearInput="true"
+                            min="0"
+                            style="border: 1px solid gray"
+                        ></ion-input>
+
+                        <img
+                            *ngIf="
                           isPlanAmountEditMode === false &&
                           bookingRoomPriceChangeAccess() === true &&
                           checkAmountEditAccess()
                         "
-                        (click)="planAmountEditButtonClick()"
-                        class="room-edit"
-                        src="assets/img/icons/room-price-edit.svg"
-                      />
-                  
-                      <ion-icon
-                        *ngIf="isPlanAmountEditMode === true"
-                        (click)="planAmountButtonClick()"
-                        class="room-edit"
-                        style="color: #1D174D;"
-                        name="checkmark-done-outline"
-                      ></ion-icon>
+                            (click)="planAmountEditButtonClick()"
+                            class="room-edit"
+                            src="assets/img/icons/room-price-edit.svg"
+                        />
+
+                        <ion-icon
+                            *ngIf="isPlanAmountEditMode === true"
+                            (click)="planAmountButtonClick()"
+                            class="room-edit"
+                            style="color: #1d174d"
+                            name="checkmark-done-outline"
+                        ></ion-icon>
                     </div>
-                  </div>
-                  
-                
+                </div>
+
                 <ion-row class="mt-1">
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;">Plan</ion-text>
+                        <ion-text style="font-size: 14px; color: #1d174d"
+                            >Plan</ion-text
+                        >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >{{this.booking.roomRatePlanName }}</ion-text
                         >
                     </ion-col>
                 </ion-row>
                 <ion-row>
-                    <ion-col size="4" style="text-align: center;">
-                        <ion-text style="font-size: 14px; color: #1D174D; font-weight: bold;">Night(s)</ion-text>
+                    <ion-col size="4" style="text-align: center">
+                        <ion-text
+                            style="
+                                font-size: 14px;
+                                color: #1d174d;
+                                font-weight: bold;
+                            "
+                            >Night(s)</ion-text
+                        >
                         <ion-row>
                             <ion-col no-padding size="12">
                                 <ion-text
-                                    style="font-size: 14px; margin-left: 10px; color: #1D174D;"
+                                    style="
+                                        font-size: 14px;
+                                        margin-left: 10px;
+                                        color: #1d174d;
+                                    "
                                 >
                                     {{ differenceDay }}</ion-text
                                 >
@@ -734,14 +912,23 @@
                         </ion-row>
                     </ion-col>
 
-                    <ion-col size="4"  style="text-align: center;">
-                        <ion-text style="font-size: 14px; color: #1D174D; font-weight: bold;"
+                    <ion-col size="4" style="text-align: center">
+                        <ion-text
+                            style="
+                                font-size: 14px;
+                                color: #1d174d;
+                                font-weight: bold;
+                            "
                             >Room Quantity</ion-text
                         >
                         <ion-row>
-                            <ion-col no-padding size="12" >
+                            <ion-col no-padding size="12">
                                 <ion-text
-                                    style="font-size: 14px; margin-left: 15px; color: #1D174D;"
+                                    style="
+                                        font-size: 14px;
+                                        margin-left: 15px;
+                                        color: #1d174d;
+                                    "
                                 >
                                     {{ booking.noOfRooms }}</ion-text
                                 >
@@ -749,12 +936,23 @@
                         </ion-row>
                     </ion-col>
 
-                    <ion-col size="4"  style="text-align: center;">
-                        <ion-text style="font-size: 14px; color: #1D174D; font-weight: bold;">Guest(s)</ion-text>
+                    <ion-col size="4" style="text-align: center">
+                        <ion-text
+                            style="
+                                font-size: 14px;
+                                color: #1d174d;
+                                font-weight: bold;
+                            "
+                            >Guest(s)</ion-text
+                        >
                         <ion-row>
                             <ion-col no-padding size="12">
                                 <ion-text
-                                    style="font-size: 14px; margin-left: 10px; color: #1D174D;"
+                                    style="
+                                        font-size: 14px;
+                                        margin-left: 10px;
+                                        color: #1d174d;
+                                    "
                                 >
                                     {{ booking.noOfPersons }}</ion-text
                                 >
@@ -763,25 +961,42 @@
                     </ion-col>
                 </ion-row>
 
-                <hr style="flex-grow: 1; border: none; border-top: 1px solid #259BBf; margin: 0 10px;" />
+                <hr
+                    style="
+                        flex-grow: 1;
+                        border: none;
+                        border-top: 1px solid #259bbf;
+                        margin: 0 10px;
+                    "
+                />
 
-                <ion-row style="background-color: #259BBf; padding: 7px; margin-top: 10px;">
+                <ion-row
+                    style="
+                        background-color: #259bbf;
+                        padding: 7px;
+                        margin-top: 10px;
+                    "
+                >
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #fff;">Description</ion-text>
+                        <ion-text style="font-size: 14px; color: #fff"
+                            >Description</ion-text
+                        >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #fff;">Amount</ion-text>
+                        <ion-text style="font-size: 14px; color: #fff"
+                            >Amount</ion-text
+                        >
                     </ion-col>
                 </ion-row>
 
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >Total Booking Amount</ion-text
                         >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             {{ calculateRoomPrice() | currency : currency :
                             "symbol" : "1.2-2" }}</ion-text
                         >
@@ -790,27 +1005,26 @@
 
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >Extra Guest(s) Charge ({{
                             this.booking.noOfExtraPerson }})</ion-text
                         >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             {{ this.booking.extraPersonCharge | currency :
                             currency : "symbol" : "1.2-2" }}</ion-text
-                        >       <ion-icon
-                        style="font-size: 18px; color: #1D174D;"
-                        name="create"
-                        class="editicon"
-                        *ngIf="!isExtraPersonCharge"
-                        (click)="
+                        >
+                        <ion-icon
+                            style="font-size: 18px; color: #1d174d"
+                            name="create"
+                            class="editicon"
+                            *ngIf="!isExtraPersonCharge"
+                            (click)="
                             onchangePersonCharge(this.booking.extraPersonCharge)
                           "
-                    ></ion-icon>
+                        ></ion-icon>
                     </ion-col>
-
-             
                 </ion-row>
 
                 <ion-row *ngIf="isExtraPersonCharge">
@@ -829,38 +1043,36 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="onchangeExtraPerson()"
                         ></ion-icon>
-                        
                     </ion-col>
                 </ion-row>
 
-
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >Extra Child(ren) Charge ({{
                             this.booking.noOfExtraChild }})</ion-text
                         >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >{{ this.booking.extraChildCharge | currency :
                             currency : "symbol" : "1.2-2" }}</ion-text
                         >
 
                         <ion-icon
-                        style="font-size: 18px; color: #1D174D;"
-                        name="create"
-                        class="editicon"
-                        *ngIf="!isExtraChildCharge"
-                        (click)="
+                            style="font-size: 18px; color: #1d174d"
+                            name="create"
+                            class="editicon"
+                            *ngIf="!isExtraChildCharge"
+                            (click)="
                             onchangeChildCharge(this.booking.extraChildCharge)
                           "
-                    ></ion-icon>
+                        ></ion-icon>
                     </ion-col>
                 </ion-row>
 
@@ -880,44 +1092,46 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="onchangeExtraChild()"
                         ></ion-icon>
-                        
                     </ion-col>
                 </ion-row>
 
                 <ion-row>
                     <ion-col size="8">
                         <div>
-                            <ion-text style="font-size: 14px; color: #1D174D;">
+                            <ion-text style="font-size: 14px; color: #1d174d">
                                 Discount (-)({{ booking.discountPercentage |
-                                number: "1.2-2" }}%)
-                            </ion-text><br>
+                                number: "1.2-2" }}%) </ion-text
+                            ><br />
 
-                            <ion-text style="font-size: 10px; color: red;" *ngIf="isDiscountEditMode">
-                               Maximum discount {{maxDiscountPercentage}} %
+                            <ion-text
+                                style="font-size: 10px; color: red"
+                                *ngIf="isDiscountEditMode"
+                            >
+                                Maximum discount {{maxDiscountPercentage}} %
                             </ion-text>
                         </div>
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             {{ this.booking.discountAmount | currency : currency
                             : "symbol" : "1.2-2" }}</ion-text
                         >
                         <ion-icon
-                        style="font-size: 18px;color: #1D174D;"
-                        *ngIf="!isDiscountEditMode"
-                        name="create"
-                        class="editicon"
-                        (click)="
+                            style="font-size: 18px; color: #1d174d"
+                            *ngIf="!isDiscountEditMode"
+                            name="create"
+                            class="editicon"
+                            (click)="
                         discountEditButtonClick(
                           booking.discountPercentage
                         )
                       "
-                    ></ion-icon>
+                        ></ion-icon>
                     </ion-col>
                 </ion-row>
                 <ion-row *ngIf="isDiscountEditMode">
@@ -938,14 +1152,14 @@
 
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             *ngIf="isDiscountEditMode"
                             (click)="discountButtonClick()"
                         ></ion-icon>
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="close"
                             *ngIf="isDiscountEditMode"
@@ -955,17 +1169,17 @@
                 </ion-row>
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             Net Amount
                         </ion-text>
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >{{afterDiscountAmount | currency :currency :
                             "symbol" : "1.2-2" }}</ion-text
                         >
                         <ion-icon
-                            style="font-size: 18px; color: #1D174D;"
+                            style="font-size: 18px; color: #1d174d"
                             name="create"
                             class="editicon"
                             *ngIf="!isPriceEditMode"
@@ -993,13 +1207,13 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="onchangePrice()"
                         ></ion-icon>
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="close"
                             (click)="onchangeClosedPrice()"
@@ -1009,32 +1223,31 @@
 
                 <ion-row>
                     <ion-col size="12">
-                       
-
-                        <ion-row style="display: flex; align-items: center;">
-                            <ion-col >
-                                <ion-text style="font-size: 13px; color: #1D174D;"> Tax Type </ion-text>
+                        <ion-row style="display: flex; align-items: center">
+                            <ion-col>
+                                <ion-text
+                                    style="font-size: 13px; color: #1d174d"
+                                >
+                                    Tax Type
+                                </ion-text>
                             </ion-col>
-                            <ion-col
-                                
-                                *ngFor="let tax of propertyTaxDetails"
-                            >
+                            <ion-col *ngFor="let tax of propertyTaxDetails">
                                 <ion-item
                                     (click)="taxSelection(tax)"
                                     class="text-white"
                                 >
                                     <ion-icon
-                                        style="font-size: 16px; color: #1D174D;"
+                                        style="font-size: 16px; color: #1d174d"
                                         *ngIf="checkTaxType(tax)"
                                         name="checkbox-outline"
                                     ></ion-icon>
                                     <ion-icon
-                                        style="font-size: 16px; color: #1D174D;"
+                                        style="font-size: 16px; color: #1d174d"
                                         *ngIf="!checkTaxType(tax)"
                                         name="stop-outline"
                                     ></ion-icon
                                     ><span
-                                        style="font-size: 13px; color: #1D174D;"
+                                        style="font-size: 13px; color: #1d174d"
                                         class="taxName-selection"
                                         >{{tax.name}}</span
                                     >
@@ -1045,14 +1258,14 @@
                 </ion-row>
 
                 <ion-row *ngFor="let spliteTax of totalSplitTax">
-                    <ion-col size="8" >
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                    <ion-col size="8">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             {{spliteTax.name}} ({{ spliteTax.percentage |
                             number: "1.2-2"}}%)
                         </ion-text>
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             {{ spliteTax.taxAmount | currency :property
                             .localCurrency.toUpperCase() : "symbol" : "1.2-2" }}
                         </ion-text>
@@ -1061,10 +1274,12 @@
 
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;">Tax Amount</ion-text>
+                        <ion-text style="font-size: 14px; color: #1d174d"
+                            >Tax Amount</ion-text
+                        >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             {{ this.booking.taxAmount | currency : currency :
                             "symbol" : "1.2-2" }}</ion-text
                         >
@@ -1072,16 +1287,16 @@
                 </ion-row>
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >Total Payable Amount</ion-text
                         >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >{{ booking.payableAmount | currency : currency :
                             "symbol" : "1.2-2" }}
                             <ion-icon
-                                style="font-size: 18px; color: #1D174D;"
+                                style="font-size: 18px; color: #1d174d"
                                 name="create"
                                 class="editicon"
                                 (click)="onchangeEditTotalPrice(booking.payableAmount)"
@@ -1108,13 +1323,13 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px;color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="onchangeTotalPrice()"
                         ></ion-icon>
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="close"
                             (click)="onchangeClosedTotalPrice()"
@@ -1126,20 +1341,20 @@
                     *ngIf="this.propertyOTADetails != null && this.propertyOTADetails!= undefined"
                 >
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             Convenience Fee
                         </ion-text>
                     </ion-col>
                     <ion-col size="4">
                         <div *ngIf="!isConveninceFeeChangeRq">
                             <ion-text
-                                style="font-size: 14px; color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 *ngIf="isPaymentConveninceFee"
                             >
                                 {{ booking.convenienceFee | currency :currency :
                                 "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="convinenceFeeEdit()"
@@ -1147,7 +1362,7 @@
                             </ion-text>
 
                             <ion-text
-                                style="font-size: 14px; color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 *ngIf="!isPaymentConveninceFee"
                             >
                                 {{ convenienceFeeCalculate(
@@ -1155,7 +1370,7 @@
                                 this.booking.beforeTaxAmount ) | currency :
                                 currency : "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="convinenceFeeEdit()"
@@ -1181,13 +1396,13 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="convinenceFeeCheck()"
                         ></ion-icon>
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="close"
                             (click)="convinenceFeeClosed()"
@@ -1199,20 +1414,20 @@
                     *ngIf="this.propertyOTADetails != null && this.propertyOTADetails!= undefined"
                 >
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             Booking Commission Fee
                         </ion-text>
                     </ion-col>
                     <ion-col size="4">
                         <div *ngIf="!isBConveninceFeeChangeRq">
                             <ion-text
-                                style="font-size: 14px; color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 *ngIf="isPaymentBConveninceFee"
                             >
                                 {{ this.booking.bookingCommissionAmount |
                                 currency :currency : "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="bConvinenceFeeEdit()"
@@ -1220,7 +1435,7 @@
                             </ion-text>
 
                             <ion-text
-                                style="font-size: 14px;color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 n
                                 *ngIf="!isPaymentBConveninceFee"
                             >
@@ -1229,7 +1444,7 @@
                                 this.booking.beforeTaxAmount ) | currency :
                                 currency : "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="bConvinenceFeeEdit()"
@@ -1255,13 +1470,13 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="bConvinenceFeeCheck()"
                         ></ion-icon>
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="close"
                             (click)="bConvinenceFeeClosed()"
@@ -1279,18 +1494,20 @@
                     "
                 >
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;"> TCS Fee </ion-text>
+                        <ion-text style="font-size: 14px; color: #1d174d">
+                            TCS Fee
+                        </ion-text>
                     </ion-col>
                     <ion-col size="4">
                         <div *ngIf="!isTCSFeeChangeRq">
                             <ion-text
-                                style="font-size: 14px; color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 *ngIf="isPaymentTCSFee"
                             >
                                 {{ this.booking.tcsFee | currency :currency :
                                 "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="tcsFeeEdit()"
@@ -1298,7 +1515,7 @@
                             </ion-text>
 
                             <ion-text
-                                style="font-size: 14px; color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 n
                                 *ngIf="!isPaymentTCSFee"
                             >
@@ -1306,7 +1523,7 @@
                                 this.booking.beforeTaxAmount ) | currency :
                                 currency : "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="tcsFeeEdit()"
@@ -1332,13 +1549,13 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="tcsCheck()"
                         ></ion-icon>
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="close"
                             (click)="tcsClosed()"
@@ -1357,18 +1574,20 @@
                          "
                 >
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;"> TDS Fee </ion-text>
+                        <ion-text style="font-size: 14px; color: #1d174d">
+                            TDS Fee
+                        </ion-text>
                     </ion-col>
                     <ion-col size="4">
                         <div *ngIf="!isTDSFeeChangeRq">
                             <ion-text
-                                style="font-size: 14px; color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 *ngIf="isPaymentTDSFee"
                             >
                                 {{ this.booking.tdsFee | currency :currency :
                                 "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="tdsFeeEdit()"
@@ -1376,7 +1595,7 @@
                             </ion-text>
 
                             <ion-text
-                                style="font-size: 14px; color: #1D174D;"
+                                style="font-size: 14px; color: #1d174d"
                                 n
                                 *ngIf="!isPaymentTDSFee"
                             >
@@ -1384,7 +1603,7 @@
                                 this.booking.beforeTaxAmount ) | currency :
                                 currency : "symbol" : "1.2-2" }}
                                 <ion-icon
-                                    style="font-size: 18px; color: #1D174D;"
+                                    style="font-size: 18px; color: #1d174d"
                                     name="create"
                                     class="editicon"
                                     (click)="tcsFeeEdit()"
@@ -1410,13 +1629,13 @@
                     </ion-col>
                     <ion-col size="4">
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="checkmark"
                             (click)="tdsCheck()"
                         ></ion-icon>
                         <ion-icon
-                            style="font-size: 19px; color: #1D174D;"
+                            style="font-size: 19px; color: #1d174d"
                             class="discount-icon"
                             name="close"
                             (click)="tdsClosed()"
@@ -1428,12 +1647,12 @@
                 <!-- Hotel Collect AMount -->
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             Hotel Collect Amount
                         </ion-text>
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             <span
                                 >{{ getAmount(booking.payableAmount) -
                                 getCommitionAmount() | currency : currency :
@@ -1446,12 +1665,12 @@
 
                 <ion-row>
                     <ion-col size="8">
-                        <ion-text style="font-size: 14px; color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >Advance Amount</ion-text
                         >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px;color: #1D174D;"
+                        <ion-text style="font-size: 14px; color: #1d174d"
                             >{{ advancePaidAmount | currency :currency :
                             "symbol" : "1.2-2" }}</ion-text
                         >
@@ -1460,18 +1679,18 @@
                 <ion-row>
                     <ion-col size="8">
                         <ion-text
-                            style="font-size: 14px; color: #1D174D;"
+                            style="font-size: 14px; color: #1d174d"
                             *ngIf="booking.payableAmount - advancePaidAmount >= 0"
                             >Due Amount</ion-text
                         >
                         <ion-text
-                            style="font-size: 14px; color: #1D174D;"
+                            style="font-size: 14px; color: #1d174d"
                             *ngIf="booking.payableAmount - advancePaidAmount < 0"
                             >Surplus Amount</ion-text
                         >
                     </ion-col>
                     <ion-col size="4">
-                        <ion-text style="font-size: 14px; color: #1D174D;">
+                        <ion-text style="font-size: 14px; color: #1d174d">
                             {{ booking.payableAmount - advancePaidAmount |
                             currency :currency : "symbol" : "1.2-2" }}</ion-text
                         >
@@ -1479,168 +1698,115 @@
                 </ion-row>
                 <p class="line"></p>
                 <ion-row class="mt-15">
-                    <ion-col size="12" style="text-align: center; font-size: 13px;">
-                        <ion-text class="price-room-title" 
-                        >Plan Service List</ion-text>
+                    <ion-col
+                        size="12"
+                        style="text-align: center; font-size: 13px"
+                    >
+                        <ion-text class="price-room-title"
+                            >Plan Service List</ion-text
+                        >
                     </ion-col>
-    
+
                     <div
-                    *ngIf="
+                        *ngIf="
                       planPropertyServicesList != null &&
                       planPropertyServicesList != undefined &&
                       planPropertyServicesList.length > 0
                     "
-                    style="overflow-x:auto;"
-                  >
-    
-                    <table cellspacing="0" cellpadding="0" style="color:#333">
-                      <thead>
-                        <th >
-                        Service
-                        Name
-                        </th>
-                        <th >
-                        Service
-                           Type
-                        </th>
-                        <th >
-                          Price
-                        </th>
-                        <th >
-                          Quantity
-                        </th>
-                        <th >
-                          Net Amount
-                        </th>
-                        <th >
-                          Tax Percentage
-                        </th>
-                        <th>
-                          Tax Amount
-                        </th>
-                        <th>Total</th>
-                      </thead>
-                      <tbody>
-                        <tr
-                          *ngFor="let service of planPropertyServicesList"
+                        style="overflow-x: auto"
+                    >
+                        <table
+                            cellspacing="0"
+                            cellpadding="0"
+                            style="color: #333"
                         >
-                          <td >
-                            {{ service.name }}
-                          </td>
-                          <td >
-                            {{ service.serviceType }}
-                          </td>
-                          <td >
-                            {{ getServiceValue(service.servicePrice) | currency
-                              : currency
-                              : "symbol"
-                              : "1.2-2" }}
-                          </td>
-                          <td >
-                            {{ service.count }}
-                          </td>
-                          <td >
-                            {{
-                              getServiceValue(service.beforeTaxAmount)
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </td>
-                          <td >
-                            {{ getServiceValue(service.taxPercentage) }}%
-                          </td>
-                          <td>
-                            {{
-                              getServiceValue(service.taxAmount)
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </td>
-                          <td>
-                            {{
-                              getServiceValue(service.afterTaxAmount)
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </td>
-                        </tr>
-                        <hr />
-    
-                        <tr>
-                          <th ></th>
-                          <th >Total</th>
-                          <th >
-                            {{
-                              getServicePrice()
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </th>
-                          <th >
-                            {{  getServiceCount() }}
-                          </th>
-                          <th >
-                            {{
-                              getServiceBeforeAmount()
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </th>
-                          <th ></th>
-                          <th>
-                            {{
-                              getServiceTaxAmount()
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </th>
-                          <th>
-                            {{
-                              getServiceAfterTaxAmount()
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </th>
-                        </tr>
-    
-                        <tr>
-                          <th ></th>
-                          <th ></th>
-                          <th ></th>
-                          <th ></th>
-                          <th ></th>
-                          <th ></th>
-                          <th>
-                            Total Booking Amount
-                          </th>
-                          <th>
-                            {{
-                              getServiceAfterTaxAmount() +
-                                booking.payableAmount
-                                | currency
-                                  : currency
-                                  : "symbol"
-                                  : "1.2-2"
-                            }}
-                          </th>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                            <thead>
+                                <th>Service Name</th>
+                                <th>Service Type</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Net Amount</th>
+                                <th>Tax Percentage</th>
+                                <th>Tax Amount</th>
+                                <th>Total</th>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    *ngFor="let service of planPropertyServicesList"
+                                >
+                                    <td>{{ service.name }}</td>
+                                    <td>{{ service.serviceType }}</td>
+                                    <td>
+                                        {{ getServiceValue(service.servicePrice)
+                                        | currency : currency : "symbol" :
+                                        "1.2-2" }}
+                                    </td>
+                                    <td>{{ service.count }}</td>
+                                    <td>
+                                        {{
+                                        getServiceValue(service.beforeTaxAmount)
+                                        | currency : currency : "symbol" :
+                                        "1.2-2" }}
+                                    </td>
+                                    <td>
+                                        {{
+                                        getServiceValue(service.taxPercentage)
+                                        }}%
+                                    </td>
+                                    <td>
+                                        {{ getServiceValue(service.taxAmount) |
+                                        currency : currency : "symbol" : "1.2-2"
+                                        }}
+                                    </td>
+                                    <td>
+                                        {{
+                                        getServiceValue(service.afterTaxAmount)
+                                        | currency : currency : "symbol" :
+                                        "1.2-2" }}
+                                    </td>
+                                </tr>
+                                <hr />
+
+                                <tr>
+                                    <th></th>
+                                    <th>Total</th>
+                                    <th>
+                                        {{ getServicePrice() | currency :
+                                        currency : "symbol" : "1.2-2" }}
+                                    </th>
+                                    <th>{{ getServiceCount() }}</th>
+                                    <th>
+                                        {{ getServiceBeforeAmount() | currency :
+                                        currency : "symbol" : "1.2-2" }}
+                                    </th>
+                                    <th></th>
+                                    <th>
+                                        {{ getServiceTaxAmount() | currency :
+                                        currency : "symbol" : "1.2-2" }}
+                                    </th>
+                                    <th>
+                                        {{ getServiceAfterTaxAmount() | currency
+                                        : currency : "symbol" : "1.2-2" }}
+                                    </th>
+                                </tr>
+
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Total Booking Amount</th>
+                                    <th>
+                                        {{ getServiceAfterTaxAmount() +
+                                        booking.payableAmount | currency :
+                                        currency : "symbol" : "1.2-2" }}
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </ion-row>
 
                 <ion-row>
@@ -1650,12 +1816,16 @@
                             expand="full"
                             size="small"
                             (click)="onSetIndex(0)"
-                            style="background-color: #259BBf !important;    border-radius: 7px;
-                            color: #fff;
-                            width: 100%;
-                            padding: 10px;"
-                            >Back</button
+                            style="
+                                background-color: #259bbf !important;
+                                border-radius: 7px;
+                                color: #fff;
+                                width: 100%;
+                                padding: 10px;
+                            "
                         >
+                            Back
+                        </button>
                     </ion-col>
 
                     <ion-col
@@ -1676,22 +1846,24 @@
                                 'background-color': (discountDisabled || !onPriceForm.valid) ? '#D3D3D3' : '#1D174D',
                                 'color': (discountDisabled || !onPriceForm.valid) ? '#A9A9A9' : '#fff'
                               }"
-                              style="border-radius: 7px; width: 100%; padding: 10px;"
+                            style="
+                                border-radius: 7px;
+                                width: 100%;
+                                padding: 10px;
+                            "
                         >
-                            Next</button
-                        >
+                            Next
+                        </button>
                     </ion-col>
                 </ion-row>
             </form>
-
-        
-
-
         </ion-grid>
 
         <ion-grid no-padding *ngIf="currentIndex === 2">
             <ion-row>
-                <ion-text class="content-header-title" style="padding: 6px;">Payment Method</ion-text>
+                <ion-text class="content-header-title" style="padding: 6px"
+                    >Payment Method</ion-text
+                >
                 <!-- <img
                     *ngIf="onPaymentForm.valid || currentIndex > 2"
                     class="status-check"
@@ -1701,11 +1873,12 @@
             <form [formGroup]="onPaymentForm" class="fromback">
                 <ion-row>
                     <ion-col size="12">
-                        <ion-text style="font-size: 13px; color: #1D174D;"
-                            >Payment Method</ion-text>
+                        <ion-text style="font-size: 13px; color: #1d174d"
+                            >Payment Method</ion-text
+                        >
 
                         <ion-select
-                        style="border: 1px solid gray;"
+                            style="border: 1px solid gray"
                             formControlName="paymentMode"
                             [(ngModel)]="booking.modeOfPayment"
                             class="card-item"
@@ -1738,12 +1911,12 @@
                 </ion-row>
                 <ion-row>
                     <ion-col size="12">
-                        <ion-text style="font-size: 13px; color: #1D174D;"
+                        <ion-text style="font-size: 13px; color: #1d174d"
                             >Advance Amount</ion-text
                         >
                         <ion-row>
                             <ion-input
-                            style="border: 1px solid gray;"
+                                style="border: 1px solid gray"
                                 formControlName="advanceAmount"
                                 [(ngModel)]="advancePaidAmount"
                                 (ngModelChange)="advancedAmountChange()"
@@ -1774,15 +1947,15 @@
 
                 <ion-row>
                     <ion-col size="12">
-                        <ion-text style="font-size: 13px;color: #1D174D;"
+                        <ion-text style="font-size: 13px; color: #1d174d"
                             >Booking Mode of Payment</ion-text
                         >
 
                         <ion-select
-                        style="border: 1px solid gray;"
+                            style="border: 1px solid gray"
                             formControlName="bookingPaymentMode"
                             [(ngModel)]="booking.paymentStatus"
-                            disabled=true
+                            disabled="true"
                             class="card-item"
                             placeholder="Select"
                         >
@@ -1817,7 +1990,8 @@
                                 size-md="12"
                                 size-lg="12"
                             >
-                                <ion-text style="font-size: 12px; color:#1D174D"
+                                <ion-text
+                                    style="font-size: 12px; color: #1d174d"
                                     >Transaction Reference Number*
                                 </ion-text>
                                 <ion-input
@@ -1832,7 +2006,7 @@
                     </form>
                 </div>
 
-                <ion-row *ngIf="booking.modeOfPayment === 'PettyCash'"> 
+                <ion-row *ngIf="booking.modeOfPayment === 'PettyCash'">
                     <ion-col
                         size="12"
                         size-xl="12"
@@ -1840,7 +2014,7 @@
                         size-md="12"
                         size-lg="12"
                     >
-                        <ion-text style="font-size: 12px; color:#1D174D"
+                        <ion-text style="font-size: 12px; color: #1d174d"
                             >Transaction Reference Number*
                         </ion-text>
                         <ion-input
@@ -1986,7 +2160,8 @@
                                 size-md="12"
                                 size-lg="12"
                             >
-                                <ion-text style="font-size: 12px;color:#1D174D"
+                                <ion-text
+                                    style="font-size: 12px; color: #1d174d"
                                     >Transaction Reference Number*
                                 </ion-text>
                                 <ion-input
@@ -2118,7 +2293,7 @@
                         </ion-row>
 
                         <ion-row>
-                            <p class="mb-5" style="color:#333">
+                            <p class="mb-5" style="color: #333">
                                 Please pay {{ payment.transactionAmount |
                                 currency:
                                 token.getProperty().localCurrency.toUpperCase():'symbol':'1.2-2'
@@ -2134,7 +2309,8 @@
                                 size-md="12"
                                 size-lg="12"
                             >
-                                <ion-text style="font-size: 12px; color:#1D174D"
+                                <ion-text
+                                    style="font-size: 12px; color: #1d174d"
                                     >Transaction Reference Number*
                                 </ion-text>
                                 <ion-input
@@ -2332,15 +2508,19 @@
                     <ion-col size="6">
                         <button
                             shape="round"
-                            style="background-color: #259BBf !important;    border-radius: 7px;
-                            color: #fff;
-                            width: 100%;
-                            padding: 10px;"
+                            style="
+                                background-color: #259bbf !important;
+                                border-radius: 7px;
+                                color: #fff;
+                                width: 100%;
+                                padding: 10px;
+                            "
                             expand="full"
                             size="small"
                             (click)="onSetIndex(1)"
-                            >Back</button
                         >
+                            Back
+                        </button>
                     </ion-col>
 
                     <ion-col
@@ -2359,7 +2539,7 @@
                             this.booking.payableAmount || (isCard && !onCardBookForm.valid) || (booking.modeOfPayment==='BankTransfer' && !onbankForm.valid)
                                 || (booking.modeOfPayment==='Wallet' && !onWalletForm.valid) ||
                                 isPaidPayment(booking.modeOfPayment) && !onTRForm.valid"
-                                  [ngStyle]="{
+                            [ngStyle]="{
                                     'background-color': (!onPaymentForm.valid || advancePaidAmount >
                             this.booking.payableAmount || (isCard && !onCardBookForm.valid) || (booking.modeOfPayment==='BankTransfer' && !onbankForm.valid)
                                 || (booking.modeOfPayment==='Wallet' && !onWalletForm.valid) ||
@@ -2369,10 +2549,14 @@
                                 || (booking.modeOfPayment==='Wallet' && !onWalletForm.valid) ||
                                 isPaidPayment(booking.modeOfPayment) && !onTRForm.valid) ? '#A9A9A9' : '#fff'
                                   }"
-                                  style="border-radius: 7px; width: 100%; padding: 10px;"
+                            style="
+                                border-radius: 7px;
+                                width: 100%;
+                                padding: 10px;
+                            "
                         >
-                            Next</button
-                        >
+                            Next
+                        </button>
                     </ion-col>
                 </ion-row>
             </form>
@@ -2380,7 +2564,9 @@
 
         <ion-grid no-padding *ngIf="currentIndex === 3">
             <ion-row>
-                <ion-text class="content-header-title" style="padding: 6px;">Fill Details</ion-text>
+                <ion-text class="content-header-title" style="padding: 6px"
+                    >Fill Details</ion-text
+                >
                 <!-- <img
                     *ngIf="onSaveForm.valid || currentIndex > 3"
                     class="status-check"
@@ -2391,13 +2577,13 @@
                 <div class="detail-sec">
                     <ion-row>
                         <ion-col size="12">
-                            <ion-text style="font-size: 16px; color: #1D174D;"
+                            <ion-text style="font-size: 16px; color: #1d174d"
                                 >Choose Counter</ion-text
                             >
 
                             <ion-col no-padding size="12">
                                 <ion-select
-                                    style="border:1px solid gray"
+                                    style="border: 1px solid gray"
                                     formControlName="CounterNumber"
                                     [(ngModel)]="booking.counterNumber"
                                     class="card-item"
@@ -2425,12 +2611,12 @@
                         *ngIf="pointOfSale != undefined && pointOfSale != null"
                     >
                         <ion-col size="12">
-                            <ion-text style="font-size: 12px; color: #1D174D;"
+                            <ion-text style="font-size: 12px; color: #1d174d"
                                 >Choose Operator</ion-text
                             >
 
                             <ion-select
-                            style="border:1px solid gray"
+                                style="border: 1px solid gray"
                                 formControlName="OperatorName"
                                 [(ngModel)]="booking.operatorName"
                                 class="card-item"
@@ -2450,54 +2636,142 @@
                 </div>
 
                 <div *ngIf="isAvailable">
-                    <ion-row >
-                        <ion-col size="6">
-                            <ion-text style="font-size: 12px;color: #1D174D;"
-                                >Expected Time Arriving</ion-text
-                            >
+                    <ion-row>
+                       <ion-col size="6">
+                        <ion-text style="font-size: 12px; color: #1d174d">
+                            Expected Time Arriving
+                        </ion-text>
+
                             <ion-row>
                                 <ion-col no-padding size="12">
-                                    <ion-icon name="calendar" style="    color: #F89A34;
+                                <ion-icon
+                                    name="calendar-clear"
+                                    style="
+                                    color: #333;
                                     position: absolute;
                                     top: 17px;
-                                    left: 8px;
-                                    font-size: 20px;"></ion-icon>
+                                    left: 15px;
+                                    font-size: 20px;
+                                    "
+                                ></ion-icon>
+
+      <!-- <ion-button id="open-modal" class="card-item" expand="block" fill="clear">
+        {{ ExpectArrivaingDateContent?.value ? 
+           (ExpectArrivaingDateContent?.value | date:'dd-MM-yyyy hh:mm') : 'Select Date & Time' }}
+      </ion-button>
+
+      <ion-modal trigger="open-modal" [keepContentsMounted]="true">
+        <ion-content>
+          <ion-datetime
+            id="fromDate"
+            color="primary"
+            presentation="date"
+            min="2000-12-31"
+            max="2100-12-31"
+          ></ion-datetime>
+        </ion-content>
+      </ion-modal> -->
+                                <ion-button id="open-modal" class="card-item" expand="block" fill="clear">
+                                {{ ExpectArrivaingDate?.value ? 
+                                    (ExpectArrivaingDate?.value | date:'dd-MM-yyyy hh:mm') : 'Select Date & Time' }}
+                                </ion-button>
+
+                                <ion-modal trigger="open-modal" [keepContentsMounted]="true">
+                                <ng-template>
+                                    <ion-content>
                                     <ion-datetime
-                                    style="border:1px solid gray"
-                                        class="card-item"
-                                        displayFormat="DD/MM/YYYY HH:mm"
-                                        [formControl]="ExpectArrivaingDate"
-                                        [(ngModel)]="booking.fromTime"
-                                        [value]="booking.fromDate"
-                                        (ngModelChange)="fromTimeChange()"
-                                        min= "2000-12-31"
+                                        size="cover"
+                                        id="fromDate"
+                                        min="2000-12-31"
                                         max="2100-12-31"
-                                    ></ion-datetime>
+                                        [showDefaultButtons]="true" 
+                                        presentation="date" 
+                                        style="color: #000;"                                       
+                                        doneText="Done" 
+                                        cancelText="Cancel"
+                                        (ionChange)="fromDateChange($event)"
+                                        >
+                                    </ion-datetime>
+                                    </ion-content>
+                                </ng-template>
+                                </ion-modal>
+
+                                    </ion-col>
+                                </ion-row>
                                 </ion-col>
-                            </ion-row>
-                        </ion-col>
+
 
                         <ion-col size="6">
-                            <ion-text style="font-size: 12px; color: #1D174D;"
+                            <ion-text style="font-size: 12px; color: #1d174d"
                                 >Expected Time Departing</ion-text
                             >
                             <ion-row>
                                 <ion-col no-padding size="12">
-                                    <ion-icon name="calendar" style="    color: #F89A34;
-                                    position: absolute;
-                                    top: 17px;
-                                    left: 8px;
-                                    font-size: 20px;"></ion-icon>
-                                    <ion-datetime
-                                    style="border:1px solid gray"
+                                    <ion-icon
+                                        name="calendar-clear"
+                                        style="
+                                            color: #333;
+                                            position: absolute;
+                                            top: 17px;
+                                            left: 15px;
+                                            font-size: 20px;
+                                        "
+                                    >
+                                    </ion-icon>
+
+                                    <!-- <ion-button
+                                        id="open-datetime-departure"
+                                        expand="block"
+                                        fill="clear"
                                         class="card-item"
-                                        displayFormat="DD/MM/YYYY HH:mm"
-                                        [formControl]="ExpectDepartingDate"
-                                        [(ngModel)]="booking.toTime"
-                                        [value]="booking.toTime"
-                                        min= "{{booking.fromDate}}"
+                                    >
+                                        {{ ExpectDepartingDate.value ?
+                                        (ExpectDepartingDate.value |
+                                        date:'dd-MM-yyyy hh:mm') : 'Select Date
+                                        & Time' }}
+                                    </ion-button>
+
+                                    <ion-modal
+                                        [keepContentsMounted]="true"
+                                        trigger="open-datetime-departure"
+                                    >
+                                        <ion-datetime
+                                            id="datetime4"
+                                            presentation="date-time"
+                                            class="card-item"
+                                            style="color: #000"
+                                            [formControl]="ExpectDepartingDate"
+                                            [value]="booking?.toTime || ''"
+                                            [min]="booking?.fromDate || '2000-01-01'"
+                                            max="2100-12-31"
+                                        >
+                                        </ion-datetime>
+                                    </ion-modal> -->
+
+                                    <ion-button id="open-modal-departure" class="card-item" expand="block" fill="clear">
+                                    {{ ExpectDepartingDate?.value ?
+                                        (ExpectDepartingDate?.value | date:'dd-MM-yyyy hh:mm') : 'Select Date & Time' }}
+                                    </ion-button>
+
+                                <ion-modal trigger="open-modal-departure" [keepContentsMounted]="true">
+                                <ng-template>
+                                    <ion-content>
+                                    <ion-datetime
+                                        id="departureDate"
+                                        size="cover"
+                                         min="2000-12-31"
                                         max="2100-12-31"
-                                    ></ion-datetime>
+                                        [showDefaultButtons]="true"
+                                        presentation="date"
+                                        style="color: #000;"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                       
+                                        (ionChange)="PlanChangeBaseOnDate($event)">
+                                    </ion-datetime>
+                                    </ion-content>
+                                </ng-template>
+                                </ion-modal>
                                 </ion-col>
                             </ion-row>
                         </ion-col>
@@ -2505,15 +2779,16 @@
 
                     <ion-row class="detail-sec">
                         <ion-col size="12">
-                            <ion-text style="font-size: 16px; color: #1D174D;"
+                            <ion-text style="font-size: 16px; color: #1d174d"
                                 >Booking Notes</ion-text
                             >
                             <ion-textarea
-                            style="border:1px solid gray"
+                                style="border: 1px solid gray"
                                 formControlName="notes"
                                 [(ngModel)]="booking.notes"
                                 name="Comments"
                                 class="card-item"
+                                style="text-align: left;"
                                 clearOnEdit="true"
                                 placeholder="Notes"
                                 rows="3"
@@ -2551,16 +2826,28 @@
                         class="card-item"
                         value="fn"
                     >
-                        <ion-segment-button value="fn" style="    border-right: 1px solid gray;">
+                        <ion-segment-button
+                            value="fn"
+                            style="border-right: 1px solid gray"
+                        >
                             <ion-label>First Name</ion-label>
                         </ion-segment-button>
-                        <ion-segment-button value="ln" style="    border-right: 1px solid gray;">
+                        <ion-segment-button
+                            value="ln"
+                            style="border-right: 1px solid gray"
+                        >
                             <ion-label>Last Name</ion-label>
                         </ion-segment-button>
-                        <ion-segment-button value="Phone" style="    border-right: 1px solid gray;">
+                        <ion-segment-button
+                            value="Phone"
+                            style="border-right: 1px solid gray"
+                        >
                             <ion-label>Phone</ion-label>
                         </ion-segment-button>
-                        <ion-segment-button value="Email" style="    border-right: 1px solid gray;">
+                        <ion-segment-button
+                            value="Email"
+                            style="border-right: 1px solid gray"
+                        >
                             <ion-label>Email</ion-label>
                         </ion-segment-button>
                     </ion-segment>
@@ -2575,16 +2862,21 @@
                             (ionInput)="applyFilterName($event)"
                             no-margin
                             no-padding
-                            style="color: #1D174D;"
+                            style="color: #1d174d"
                         >
                         </ion-searchbar>
-                        <ion-row *ngIf="isShowNameList && this.customers.length === 0" class="right">
-                            <ion-text 
-                            class="check-in-out-text"
-                            ><a (click)="addNewOne()" style="font-size: 12px; color: red;" target="_blank"
-                            ><u>ADD NEW CUSTOMER</u></a
-                          >
-                        </ion-text>
+                        <ion-row
+                            *ngIf="isShowNameList && this.customers.length === 0"
+                            class="right"
+                        >
+                            <ion-text class="check-in-out-text"
+                                ><a
+                                    (click)="addNewOne()"
+                                    style="font-size: 12px; color: red"
+                                    target="_blank"
+                                    ><u>ADD NEW CUSTOMER</u></a
+                                >
+                            </ion-text>
                         </ion-row>
 
                         <ion-row *ngIf="selecion === 'fn' || selecion === 'ln'">
@@ -2653,9 +2945,11 @@
                         >
                             <ion-row>
                                 <ion-col size="12">
-                                    <ion-label style="color: #1D174D;">Email*</ion-label>
+                                    <ion-label style="color: #1d174d"
+                                        >Email*</ion-label
+                                    >
                                     <ion-input
-                                    style="    border: 1px solid gray;"
+                                        style="border: 1px solid gray"
                                         formControlName="EmailCheck"
                                         [(ngModel)]="booking.email"
                                         placeholder="Email"
@@ -2703,7 +2997,7 @@
                                     <ion-row>
                                         <ion-col size="3">
                                             <ion-select
-                                            style="    border: 1px solid gray;"
+                                                style="border: 1px solid gray"
                                                 [(ngModel)]="CodeNumber"
                                                 placeholder="Select Country Code"
                                                 formControlName="countryCodeC"
@@ -2724,7 +3018,7 @@
                                                 style="font-size: 12px"
                                             ></ion-text>
                                             <ion-input
-                                            style="    border: 1px solid gray;"
+                                                style="border: 1px solid gray"
                                                 formControlName="CodeNumberControll"
                                                 readonly
                                                 [(ngModel)]="CodeNumber"
@@ -2739,7 +3033,7 @@
                                                 style="font-size: 12px"
                                             ></ion-text>
                                             <ion-input
-                                            style="    border: 1px solid gray;"
+                                                style="border: 1px solid gray"
                                                 formControlName="PhoneC"
                                                 class="card-item"
                                                 [disabled]="CodeNumber=== undefined "
@@ -2802,20 +3096,20 @@
                         <ion-row *ngIf="booking.customerId === undefined">
                             <ion-col width-50 style="text-align: center">
                                 <ion-text
-                                   
                                     class="check-in-out-text"
-                                    style="font-size: 12px; color: red;"
+                                    style="font-size: 12px; color: red"
                                     >Customer Not Found
                                 </ion-text>
                             </ion-col>
                         </ion-row>
                         <ion-row>
                             <ion-col size="6">
-                                <ion-text style="font-size: 12px; color: #1D174D;"
+                                <ion-text
+                                    style="font-size: 12px; color: #1d174d"
                                     >First Name</ion-text
                                 >
                                 <ion-input
-                                style="    border: 1px solid gray;"
+                                    style="border: 1px solid gray"
                                     class="card-item"
                                     formControlName="firstName"
                                     [(ngModel)]="booking.firstName"
@@ -2831,11 +3125,12 @@
                                 size-md="6"
                                 size-lg="6"
                             >
-                                <ion-text style="font-size: 12px; color: #1D174D;"
+                                <ion-text
+                                    style="font-size: 12px; color: #1d174d"
                                     >Last Name</ion-text
                                 >
                                 <ion-input
-                                style="    border: 1px solid gray;"
+                                    style="border: 1px solid gray"
                                     formControlName="lastName"
                                     class="card-item"
                                     [(ngModel)]="booking.lastName"
@@ -2854,11 +3149,12 @@
                                 size-md="12"
                                 size-lg="12"
                             >
-                                <ion-text style="font-size: 12px; color: #1D174D;"
+                                <ion-text
+                                    style="font-size: 12px; color: #1d174d"
                                     >Email</ion-text
                                 >
                                 <ion-input
-                                style="    border: 1px solid gray;"
+                                    style="border: 1px solid gray"
                                     formControlName="email"
                                     [(ngModel)]="booking.email"
                                     readonly="{{isCustomerInfoViewOnly || isEmailReadOnly}}"
@@ -2902,7 +3198,7 @@
                                     >Phone</ion-text
                                 >
                                 <ion-input
-                                style="    border: 1px solid gray;"
+                                    style="border: 1px solid gray"
                                     formControlName="mobile"
                                     [(ngModel)]="booking.mobile"
                                     class="card-item"
@@ -2921,7 +3217,7 @@
                                 <ion-row>
                                     <ion-col size="3">
                                         <ion-select
-                                        style="    border: 1px solid gray;"
+                                            style="border: 1px solid gray"
                                             [(ngModel)]="CodeNumber"
                                             placeholder="Select Country Code"
                                             class="card-item"
@@ -2929,7 +3225,6 @@
                                             (ionChange)="countryCodePicker($event)"
                                         >
                                             <ion-select-option
-                                            
                                                 *ngFor="let country of countryCode.countries"
                                                 [value]="country.code"
                                             >
@@ -2943,7 +3238,7 @@
                                             style="font-size: 12px"
                                         ></ion-text>
                                         <ion-input
-                                        style="    border: 1px solid gray;"
+                                            style="border: 1px solid gray"
                                             formControlName="CodeNumberControll"
                                             readonly
                                             class="card-item"
@@ -2958,7 +3253,7 @@
                                             style="font-size: 12px"
                                         ></ion-text>
                                         <ion-input
-                                        style="    border: 1px solid gray;"
+                                            style="border: 1px solid gray"
                                             formControlName="PhoneC"
                                             [disabled]="CodeNumber=== undefined "
                                             [(ngModel)]="CustomerMobileNumber"
@@ -3011,51 +3306,51 @@
                 </div>
 
                 <ion-row>
-     
-                    <ion-col
-                    size="4">
-                    <button
-                    style="background-color: #259BBf !important;    border-radius: 7px;
-                    color: #fff;
-                    width: 100%;
-                    padding: 10px;"
-                        expand="full"
-                        size="small"
-                        (click)="onSetIndex(2)"
-                        >Back</button
-                    >
-                </ion-col>
+                    <ion-col size="4">
+                        <button
+                            style="
+                                background-color: #259bbf !important;
+                                border-radius: 7px;
+                                color: #fff;
+                                width: 100%;
+                                padding: 10px;
+                            "
+                            expand="full"
+                            size="small"
+                            (click)="onSetIndex(2)"
+                        >
+                            Back
+                        </button>
+                    </ion-col>
 
+                    <ion-col size="4">
+                        <button
+                            style="
+                                background-color: red !important;
+                                border-radius: 7px;
+                                color: #fff;
+                                width: 100%;
+                                padding: 10px;
+                            "
+                            expand="full"
+                            size="small"
+                            (click)="ResetAllField()"
+                        >
+                            Reset
+                        </button>
+                    </ion-col>
 
-                <ion-col
-                size="4"
-            >
-                <button
-                style="background-color: red !important;    border-radius: 7px;
-                color: #fff;
-                width: 100%;
-                padding: 10px;"
-                    expand="full"
-                    size="small"
-                    (click)="ResetAllField()"
-                    >Reset</button
-                >
-            </ion-col>
-
-
-                    <ion-col
-                    size="4"
-                >
-                    <button
-                        expand="full"
-                        size="small"
-                        (click)="FormSubMit()"
-                        [disabled]="!isAvailable || advancePaidAmount >
+                    <ion-col size="4">
+                        <button
+                            expand="full"
+                            size="small"
+                            (click)="FormSubMit()"
+                            [disabled]="!isAvailable || advancePaidAmount >
                             this.booking.payableAmount ||!onSaveForm.valid|| (isCard && !onCardBookForm.valid) || (booking.modeOfPayment==='BankTransfer' && !onbankForm.valid)
                             || (booking.modeOfPayment==='Wallet' && !onWalletForm.valid) ||booking.firstName === null ||booking.firstName === undefined
                             ||booking.lastName === null ||booking.lastName === undefined ||
                             isPaidPayment(booking.modeOfPayment) && !onTRForm.valid"
-                              [ngStyle]="{
+                            [ngStyle]="{
                                 'background-color': (!isAvailable || advancePaidAmount >
                             this.booking.payableAmount ||!onSaveForm.valid|| (isCard && !onCardBookForm.valid) || (booking.modeOfPayment==='BankTransfer' && !onbankForm.valid)
                             || (booking.modeOfPayment==='Wallet' && !onWalletForm.valid) ||booking.firstName === null ||booking.firstName === undefined
@@ -3067,42 +3362,48 @@
                             ||booking.lastName === null ||booking.lastName === undefined ||
                             isPaidPayment(booking.modeOfPayment) && !onTRForm.valid) ? '#A9A9A9' : '#fff'
                               }"
-                              style="border-radius: 7px; width: 100%; padding: 10px;"
-                    >
-                        {{ bookingButtonLabel }}</button
-                    >
-                </ion-col>
-
-             
-
-                    
+                            style="
+                                border-radius: 7px;
+                                width: 100%;
+                                padding: 10px;
+                            "
+                        >
+                            {{ bookingButtonLabel }}
+                        </button>
+                    </ion-col>
                 </ion-row>
             </form>
         </ion-grid>
 
-        <ion-grid no-padding  *ngIf="currentIndex === 4">
+        <ion-grid no-padding *ngIf="currentIndex === 4">
             <ion-row>
-                <ion-col size="12" class="centerCol" style="font-size: 16px; color:#1D174D" (click)="goToList()">
+                <ion-col
+                    size="12"
+                    class="centerCol"
+                    style="font-size: 16px; color: #1d174d"
+                    (click)="goToList()"
+                >
                     <ion-text> Booking Created!</ion-text>
-                  
                 </ion-col>
                 <ion-col size="12" class="centerCol" (click)="goToList()">
-                    <ion-img style="width: 200px; height: 200px;"
-                    src="/assets/img/icons/created-booking.svg"
-                ></ion-img>
+                    <ion-img
+                        style="width: 200px; height: 200px"
+                        src="/assets/img/icons/created-booking.svg"
+                    ></ion-img>
                 </ion-col>
             </ion-row>
 
             <ion-row>
-               
-                <ion-col size="12" class="centerCol mt-1 text-white" style="font-size: 12px;">
-
+                <ion-col
+                    size="12"
+                    class="centerCol mt-1 text-white"
+                    style="font-size: 12px"
+                >
                     <a (click)="goToList()" target="_blank"
-                    ><u class="propertyReservcation">
-                        Go to booking list
-                    </u>
-                   
-                  </a>
+                        ><u class="propertyReservcation">
+                            Go to booking list
+                        </u>
+                    </a>
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -3110,8 +3411,12 @@
     <div class="loader-everyOne" *ngIf="loader">
         <ion-spinner name="crescent" class="spinner"></ion-spinner>
         <div class="loader-content">
-          <img src="/assets/img/loader-logo.png" alt="Loader Image" class="loader-image">
-          <div class="loader-text">Please wait...</div>
+            <img
+                src="/assets/img/loader-logo.png"
+                alt="Loader Image"
+                class="loader-image"
+            />
+            <div class="loader-text">Please wait...</div>
         </div>
-      </div>
+    </div>
 </ion-content>

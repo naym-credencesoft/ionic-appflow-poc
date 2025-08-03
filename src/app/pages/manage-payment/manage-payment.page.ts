@@ -101,7 +101,8 @@ export class ManagePaymentPage implements OnInit {
     onTRForm: FormGroup;
     orderStatus: any;
     orderpaymentstatus: any;
-    
+    isModalOpen = false;
+
     constructor(
         private paymentService: PaymentService,
         private bookingService: BookingService,
@@ -118,7 +119,7 @@ export class ManagePaymentPage implements OnInit {
         public loadingCtrl: LoadingController,
         private toastController: ToastController,
         private formBuilder: FormBuilder,
-           private orderService: OrderService,
+        private orderService: OrderService
     ) {
         this.booking = new Booking();
         this.data = new Payment();
@@ -141,15 +142,13 @@ export class ManagePaymentPage implements OnInit {
         this.data.date = this.dateService.convertMillisecondsToYYYMMDDFormat(
             new Date().getTime()
         );
-        
-        
+
         this.onTRForm = this.formBuilder.group({
             TransactionReferenceNumber: [
                 "",
                 Validators.compose([Validators.required]),
             ],
         });
-
 
         this.onPaymentUserForm = this.formBuilder.group({
             referenceNumber: ["", Validators.compose([Validators.required])],
@@ -260,7 +259,7 @@ export class ManagePaymentPage implements OnInit {
                 .getProperty()
                 .localCurrency.toUpperCase();
             if (this.data.currency != null && this.data.currency != undefined) {
-                this.data.currency = "inr"
+                this.data.currency = "inr";
             }
         }
 
@@ -287,7 +286,7 @@ export class ManagePaymentPage implements OnInit {
 
             if (params["paymentOb"] != undefined) {
                 this.data = JSON.parse(params["paymentOb"]);
-                this.data.currency = 'inr'
+                this.data.currency = "inr";
                 this.data.amount = this.data.transactionAmount;
                 this.data.date =
                     this.dateService.convertMillisecondsToYYYMMDDFormat(
@@ -297,21 +296,21 @@ export class ManagePaymentPage implements OnInit {
             if (params["oderStatus"] != undefined) {
                 this.orderStatus = params["oderStatus"];
                 console.log("order status " + this.orderStatus);
-              
             }
             if (params["status"] != undefined) {
                 this.orderpaymentstatus = params["status"];
-               
-              
             }
         });
 
         this.userInfo();
     }
 
+    setOpen(isOpen: boolean) {
+        this.isModalOpen = isOpen;
+    }
     navigateToPage() {
-        this.locationBack.back()
-      }
+        this.locationBack.back();
+    }
 
     getAllPropertyPayment(propertyId: number) {
         this.paymentService.getAllPaymentBypropertyId(propertyId).subscribe(
@@ -323,27 +322,29 @@ export class ManagePaymentPage implements OnInit {
             (error) => {}
         );
     }
-    IsActive(mode)
-    {
-      if (mode === 'Wallet' &&
-        this.token.getProperty().mobileWallet != undefined &&
-        this.token.getProperty().mobileWallet != null)
-      {
-        return true;
-      }
-      else if ((mode === 'Cheque' || mode === 'DemandDraft' || mode === 'Credit') &&
-      this.businessType === 'Accommodation')
-      {
-        return true;
-      }
-      else if (mode != 'Wallet' &&  mode != 'Cheque' && mode != 'DemandDraft')
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+    IsActive(mode) {
+        if (
+            mode === "Wallet" &&
+            this.token.getProperty().mobileWallet != undefined &&
+            this.token.getProperty().mobileWallet != null
+        ) {
+            return true;
+        } else if (
+            (mode === "Cheque" ||
+                mode === "DemandDraft" ||
+                mode === "Credit") &&
+            this.businessType === "Accommodation"
+        ) {
+            return true;
+        } else if (
+            mode != "Wallet" &&
+            mode != "Cheque" &&
+            mode != "DemandDraft"
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     isRoomOrder() {
@@ -404,17 +405,16 @@ export class ManagePaymentPage implements OnInit {
         this.data.netReceivableAmount = this.data.amount;
         this.data.transactionAmount = this.data.amount;
         this.data.transactionChargeAmount = this.data.amount;
-      this.data.cardNumber = this.data.cardNumber
+        this.data.cardNumber = this.data.cardNumber;
         Logger.log("ss " + JSON.stringify(this.data));
 
         // if (this.data.paymentMode != null && this.data.paymentMode === "Card") {
         //     Logger.log("onsubmit-credit card");
         //     this.chargeCreditCard();
         // }
-      
-            Logger.log("onsubmit-process payment");
-            this.savePayment(this.data);
-        
+
+        Logger.log("onsubmit-process payment");
+        this.savePayment(this.data);
     }
 
     onEdit() {
@@ -455,39 +455,34 @@ export class ManagePaymentPage implements OnInit {
         // }
         this.data.receiptNumber = undefined;
         if (
-          this.data.paymentMode == "BankTransfer" ||
-          this.data.paymentMode == "Wallet" ||
-          this.data.paymentMode == "Card" ||
-          this.isPaidPayment(this.data.paymentMode)
+            this.data.paymentMode == "BankTransfer" ||
+            this.data.paymentMode == "Wallet" ||
+            this.data.paymentMode == "Card" ||
+            this.isPaidPayment(this.data.paymentMode)
         ) {
-          this.data.status = "Paid";
-          this.status.disable();
-        }
-        else {
-          this.status.enable();
-          this.status.reset();
+            this.data.status = "Paid";
+            this.status.disable();
+        } else {
+            this.status.enable();
+            this.status.reset();
         }
     }
 
-    isPaidPayment(mode)
-    {
-      if (this.propertyPaymentList.some(data => data.paymentMode === mode))
-      {
-        let propertyPayment = this.propertyPaymentList.find(data => data.paymentMode === mode);
-        if (propertyPayment != undefined)
-        {
-          return propertyPayment.isPaid;
+    isPaidPayment(mode) {
+        if (
+            this.propertyPaymentList.some((data) => data.paymentMode === mode)
+        ) {
+            let propertyPayment = this.propertyPaymentList.find(
+                (data) => data.paymentMode === mode
+            );
+            if (propertyPayment != undefined) {
+                return propertyPayment.isPaid;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
-        else
-        {
-          return false;
-        }
-  
-      }
-      else
-      {
-        return false;
-      }
     }
 
     paymentList() {
@@ -546,7 +541,7 @@ export class ManagePaymentPage implements OnInit {
         Logger.log("before Data: " + JSON.stringify(payment));
         this.paymentService.processPayment(payment).subscribe((data) => {
             this.data = payment;
-            this.data.currency = 'inr'
+            this.data.currency = "inr";
             loader.dismiss();
 
             this.savePayment(this.data);
@@ -570,8 +565,8 @@ export class ManagePaymentPage implements OnInit {
                     "payment detail Save-in card and paid" +
                         JSON.stringify(res.body)
                 );
-             
-                    this.calculateOrderAmount();
+
+                this.calculateOrderAmount();
 
                 if (payment.id != undefined && payment.id != null) {
                     this.presentToast("Payment details  updated");
@@ -599,16 +594,17 @@ export class ManagePaymentPage implements OnInit {
     }
 
     calculateOrderAmount() {
-        this.orderService.calculateOutstandingAmount(this.data.orderId).subscribe(
-          (data) => {
-
-            this.changeDetectorRefs.detectChanges();
-          },
-          (error) => {
-            // this.loader = false;
-          }
-        );
-      }
+        this.orderService
+            .calculateOutstandingAmount(this.data.orderId)
+            .subscribe(
+                (data) => {
+                    this.changeDetectorRefs.detectChanges();
+                },
+                (error) => {
+                    // this.loader = false;
+                }
+            );
+    }
 
     async presentToast(Message: string) {
         const toast = await this.toastController.create({

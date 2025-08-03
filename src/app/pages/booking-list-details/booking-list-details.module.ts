@@ -23,18 +23,19 @@ const routes: Routes = [
         // pathMatch:'full',
         // loadChildren: '../../pages/tab-booking/tab-booking.module#TabBookingPageModule'
         // },
-        {
-        path: 'paymentsTab',
-        loadChildren: '../../pages/tab-payments/tab-payments.module#TabPaymentsPageModule'
-        },
-        {
-        path: 'servicesTab',
-        loadChildren: '../../pages/tab-service/tab-service.module#TabServicePageModule'
-        },
-        {
-        path: 'expenseTab',
-        loadChildren: '../../pages/tab-expence/tab-expence.module#TabExpencePageModule'
-        },
+      {
+  path: 'paymentsTab',
+  loadChildren: () => import('../../pages/tab-payments/tab-payments.module').then(m => m.TabPaymentsPageModule)
+},
+{
+  path: 'servicesTab',
+  loadChildren: () => import('../../pages/tab-service/tab-service.module').then(m => m.TabServicePageModule)
+},
+{
+  path: 'expenseTab',
+  loadChildren: () => import('../../pages/tab-expence/tab-expence.module').then(m => m.TabExpencePageModule)
+}
+
         // {
         // path: 'customerTab',
         // loadChildren: '../../pages/customer-details/customer-details.module#CustomerDetailsPageModule'

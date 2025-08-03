@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild } from '@angula
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DatePipe, JsonPipe, Location } from "@angular/common";
 import { AvailabilityService } from 'src/app/service/AvailabilityService/availability.service';
-import { IonContent, NavController, ToastController } from '@ionic/angular';
+import { IonContent, ModalController, NavController, ToastController } from '@ionic/angular';
 import { Room } from 'src/app/model/room';
 import { TokenStorage } from 'src/app/token.storage';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -113,10 +113,16 @@ export class StopSellPage implements OnInit {
     selectedotaname: any;
     today: string;
     paramsData: any;
+    isModalOpenfromDate: boolean = false;
+    isModalOpentoDate: boolean = false;
+
   constructor(public navCtrl: NavController,private cdr: ChangeDetectorRef,private route:ActivatedRoute,private checkSubscription: CheckSubscription, private token: TokenStorage, private propertyService: PropertyService,private subcriptionService: AddSubscriptionService,
     private changeDetectorRefs: ChangeDetectorRef,private fb: FormBuilder,private zone: NgZone,
     private acRoute: ActivatedRoute, private router: Router,
-    private _location: Location, private toastController: ToastController, public datepipe: DatePipe, private availabilityService: AvailabilityService,) {
+    private _location: Location, private toastController: ToastController, public datepipe: DatePipe, private availabilityService: AvailabilityService,
+    private modalController: ModalController,
+    private datePipe: DatePipe
+) {
         this.plans = [];
 this.travelAgencyName = [];
 this.otaNames = new OTANames();
@@ -167,6 +173,45 @@ const now = new Date();
       this.travelAgencyName = this.travelAgencyName.filter(agency => agency !== item);
     }
   }
+
+ isRoomsFDModalOpen = false;
+ isRoomsTDModalOpen = false;
+ isPropertyFDModalOpen = false;
+ isPropertyTDModalOpen = false;
+ isFromDateSelected = false;
+ isToDateSelected = false;
+
+isRoomsFromDateSelected = false;
+ isRoomsToDateSelected = false;
+ 
+  setFDOpen(isOpen: boolean) {
+    this.isRoomsFDModalOpen = isOpen;
+  }
+  dismissFDModal() {
+    this.isRoomsFDModalOpen = false;
+  }
+    setTDOpen(isOpen: boolean) {
+    this.isRoomsTDModalOpen = isOpen;
+  }
+  dismissTDModal() {
+    this.isRoomsTDModalOpen = false;
+  }
+  
+  setPropertyFDOpen(isOpen: boolean) {
+    this.isPropertyFDModalOpen = isOpen;
+  }
+
+  dismissPropertyFDModal() {
+    this.isPropertyFDModalOpen = false;
+  }
+    setPropertyTDOpen(isOpen: boolean) {
+    this.isPropertyTDModalOpen = isOpen;
+  }
+
+  dismissPropertyTDModal() {
+    this.isPropertyTDModalOpen = false;
+  }
+
   fromDateChange(){
     // this.fromDate = this.today;
     if(this.fromDate && this.toDate) {
@@ -182,27 +227,34 @@ const now = new Date();
     }
     
   }
-  updateToDateLimit() {
+updateToDateLimit() {
+  if (this.fromDate) {
+    const startDate = new Date(this.fromDate);
+    const maxDate = new Date(startDate);
+    maxDate.setDate(startDate.getDate() + 90); // Add 90 days
 
-    if (this.fromDate) {
-      let startDate = new Date(this.fromDate);
-      let maxDate = new Date(startDate);
-      maxDate.setDate(startDate.getDate() + 90); // Add 90 days
-  
-      // Convert date to 'YYYY-MM-DD' format for ion-datetime
-      this.maxToDate = maxDate.toISOString().split('T')[0];
-      this.model = [];
-      // Reset toDate if it exceeds the new maxToDate
-      if (this.toDate && new Date(this.toDate) > maxDate) {
-        this.toDate = this.maxToDate;
-      }
+    // Keep fromDate in ISO format so ion-datetime works correctly
+    this.fromDate = startDate.toISOString().split('T')[0];
+
+    // Set maxToDate limit
+    this.maxToDate = maxDate.toISOString().split('T')[0];
+
+    // Reset toDate if it exceeds the new maxToDate
+    if (this.toDate && new Date(this.toDate) > maxDate) {
+      this.toDate = this.maxToDate;
     }
+
+    // Show selected style on button
   }
+  this.isFromDateSelected = true;
+}
+
   calculateDaysDifference() {
     if (this.fromDate && this.toDate) {
       const startDate = new Date(this.fromDate);
+      this.toDate = this.datePipe.transform(this.toDate, 'yyyy-MM-dd');
       const endDate = new Date(this.toDate);
-  
+   this.isToDateSelected = true;
       if (startDate && endDate) {
         const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
         this.noOfDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -220,6 +272,7 @@ const now = new Date();
       this.noOfDays = 0;
       this.model = [];
     }
+   
   }
   
   toDateChange(){
@@ -943,4 +996,23 @@ getCurrentWeekDates(): { fromDate: string; toDate: string } {
     return dates;
   };
 
+    openDateTimePicker() {
+    this.isModalOpenfromDate = true;
+  }
+
+  closeDateTimePicker() {
+    this.isModalOpenfromDate = false;
+  }
+
+  async closeModalSeven() {
+    await this.modalController.dismiss();
+  }
+
+   openDateTimePickerOne() {
+    this.isModalOpentoDate = true;
+  }
+
+   closeDateTimePickerOne() {
+    this.isModalOpentoDate = false;
+  }
 }

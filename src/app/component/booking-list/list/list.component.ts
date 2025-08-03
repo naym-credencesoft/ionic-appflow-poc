@@ -150,6 +150,7 @@ export class ListComponent implements OnInit {
     lastNameString: string;
     emailString: string;
     externalBookingId: string;
+    checkinSequenceNumber: string;
     toDateString: string;
     currentDay: string;
     currentMonth: string;
@@ -203,6 +204,7 @@ export class ListComponent implements OnInit {
             emailFilter: ["", Validators.compose([Validators.nullValidator])],
             mobileFilter: ["", Validators.compose([Validators.nullValidator])],
             externalBookingIdFilter: ["", Validators.compose([Validators.nullValidator])],
+            checkinSequenceNumber: ["", Validators.compose([Validators.nullValidator])],
             // PropertyReservationNumberFirstPart: [
             //     "",
             //     Validators.compose([Validators.nullValidator]),

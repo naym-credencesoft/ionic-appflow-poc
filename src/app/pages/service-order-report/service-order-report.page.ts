@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MenuController, NavController } from '@ionic/angular';
+import { IonModal, MenuController, NavController } from '@ionic/angular';
 import { BusinessServiceDtoList } from 'src/app/model/business-service/businessServiceDtoList';
 import { BusinessUser } from 'src/app/model/businessUser';
 import { Booking } from 'src/app/model/manage-booking/Booking/Booking';
@@ -25,6 +25,7 @@ import { ReservationService } from 'src/app/service/ReservationService/reservati
 })
 export class ServiceOrderReportPage implements OnInit {
   // @ViewChild('circleCanvas') circleCanvas;
+  @ViewChild("fromModal", { static: false }) fromModal: IonModal;
   @ViewChild("circleCanvas", { static: false }) circleCanvas: ElementRef;
   property: Property;
   businessServiceList: BusinessServiceDtoList[] = [];
@@ -59,6 +60,7 @@ export class ServiceOrderReportPage implements OnInit {
   bookingFilter: any[] = [];
   allBusinessDetails: any[] ;
 
+   isModalOpen = false;
 
   constructor(
     public token: TokenStorage,
@@ -90,6 +92,17 @@ export class ServiceOrderReportPage implements OnInit {
     this.getAllBusinessService(String(this.propertyId));
     this.getPOSInformation(this.propertyId);
     this.createPieChart();
+  }
+
+
+ 
+
+  setOpen(isOpen: boolean) {
+    this.isModalOpen = isOpen;
+  }
+
+  dismissModal() {
+    this.isModalOpen = false;
   }
 
   ngAfterViewInit() {
@@ -165,6 +178,7 @@ export class ServiceOrderReportPage implements OnInit {
 
     let fromdate = this.datepipe.transform(new Date(this.selectedDateString).getTime(), "yyyy-MM-dd");
     let todate = this.datepipe.transform(date.getTime(), "yyyy-MM-dd");
+    
 
     this.getOrderByPropertyIdAndDateRange(
       String(this.propertyId),
@@ -180,6 +194,9 @@ export class ServiceOrderReportPage implements OnInit {
     );
     this.getBookingExpense(this.propertyId.toString(), fromdate, todate);
 
+      setTimeout(() => {
+            this.fromModal?.dismiss();
+        }, 100);
   }
 
   totalOrder() {

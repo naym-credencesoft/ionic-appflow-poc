@@ -175,6 +175,10 @@
     border: 1px solid gray;
     
     }
+     .date-btn {
+    display: flex;
+    margin-top: -6px;  /* move the button slightly up */
+}
     .btn-reset{
         --background: #E84424;
         color:#fff;
@@ -185,4 +189,10 @@
         color:#fff;
     }
 
+    ion-datetime-button::part(native) {
+        background: transparent !important;
+        box-shadow: none !important;
+
+    }
+ 
 }

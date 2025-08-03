@@ -67,10 +67,27 @@
                     <ion-col size="6">
                         <ion-text class="check-in-out-text" style="font-size: 10px">Check-In</ion-text>
                         <ion-col size="12">
-                            <ion-datetime [(ngModel)]="booking.fromDate" formControlName="bookingFromDate" no-padding
-                                class="card-item" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                                placeholder="Select Date" [disabled]="true">
+                    <!-- DateTime Button -->
+                        <ion-datetime-button datetime="fromDatePicker" class="datetime-box" [disabled]="true"></ion-datetime-button>
+
+                        <!-- Modal -->
+                        <ion-modal [keepContentsMounted]="true">
+                        <ng-template>
+                            <ion-datetime
+                            id="fromDatePicker"
+                            [(ngModel)]="booking.fromDate"
+                            formControlName="bookingFromDate"
+                            class="card-item"
+                            [showDefaultButtons]="true"
+                                presentation="date"
+                                style="color: #000"
+                                doneText="Done"
+                                cancelText="Cancel"
+                            [disabled]="true">
                             </ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+
                         </ion-col>
 
                         <!-- </ion-card> -->
@@ -81,10 +98,27 @@
                         <ion-text class="check-in-out-text" style="font-size: 10px">Check-Out
                         </ion-text>
                         <ion-col size="12">
-                            <ion-datetime [(ngModel)]="booking.toDate" formControlName="bookingToDate" no-padding
-                                class="card-item" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                                placeholder="Select Date" [disabled]="true">
+                         <!-- DateTime Button -->
+                        <ion-datetime-button datetime="toDatePicker" class="datetime-box" [disabled]="true"></ion-datetime-button>
+
+                        <!-- Modal -->
+                        <ion-modal [keepContentsMounted]="true">
+                        <ng-template>
+                            <ion-datetime
+                            id="toDatePicker"
+                            [(ngModel)]="booking.toDate"
+                            formControlName="bookingToDate"
+                            class="card-item"
+                            [showDefaultButtons]="true"
+                            presentation="date"
+                            style="color: #000"
+                            doneText="Done"
+                            cancelText="Cancel"
+                            [disabled]="true">
                             </ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+
                         </ion-col>
 
                         <!-- </ion-card> -->
@@ -94,10 +128,30 @@
                     <ion-col size="6">
                         <ion-text class="check-in-out-text" style="font-size: 10px">Arrival</ion-text>
                         <ion-col size="12">
-                            <ion-datetime value="{{ booking.fromTime | date: 'EEE, MMM d, yyyy hh:mm aa' }}"
+                            <!-- <ion-datetime value="{{ booking.fromTime | date: 'EEE, MMM d, yyyy hh:mm aa' }}"
                                 [(ngModel)]="booking.fromTime" formControlName="bookingFromDate" no-padding
                                 class="card-item" displayFormat="DD/MM/YYYY HH:mm" placeholder="Select Date">
+                            </ion-datetime> -->
+                            <!-- DateTime Button -->
+                        <ion-datetime-button datetime="fromTimePicker" class="datetime-box"> </ion-datetime-button>
+
+                        <!-- Modal -->
+                        <ion-modal [keepContentsMounted]="true">
+                        <ng-template>
+                            <ion-datetime
+                            id="fromTimePicker"
+                            [(ngModel)]="booking.fromTime"
+                            formControlName="bookingFromDate"
+                            class="card-item"
+                            presentation="date-time"
+                            [showDefaultButtons]="true"
+                            style="color: #000"
+                            doneText="Done"
+                            cancelText="Cancel">
                             </ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+
                         </ion-col>
 
 
@@ -109,10 +163,26 @@
                         <ion-text class="check-in-out-text" style="font-size: 10px">Departure
                         </ion-text>
                         <ion-col size="12">
-                            <ion-datetime value="{{booking.toTime | date: 'EEE, MMM d, yyyy hh:mm aa' }}"
-                                [(ngModel)]="booking.toTime" formControlName="bookingToDate" no-padding
-                                class="card-item" displayFormat="DD/MM/YYYY HH:mm " placeholder="Select Date">
+              <!-- DateTime Button -->
+                        <ion-datetime-button datetime="toTimePicker" class="datetime-box"></ion-datetime-button>
+
+                        <!-- Modal -->
+                        <ion-modal [keepContentsMounted]="true">
+                        <ng-template>
+                            <ion-datetime
+                            id="toTimePicker"
+                            [(ngModel)]="booking.toTime"
+                            formControlName="bookingToDate"
+                            class="card-item"
+                            presentation="date-time"
+                            [showDefaultButtons]="true"
+                            style="color: #000"
+                            doneText="Done"
+                            cancelText="Cancel">
                             </ion-datetime>
+                        </ng-template>
+                        </ion-modal>
+
                         </ion-col>
 
                         <!-- </ion-card> -->
@@ -907,7 +977,7 @@
     <ion-tabs>
         <ion-tab-bar class="footer" slot="bottom">
             <ion-tab-button class="text-whitess sctionedDev" (click)="bookingTab()">
-                <ion-icon name="calendar"></ion-icon>
+                <ion-icon name="calendar-clear"></ion-icon>
                 <ion-label>Booking</ion-label>
             </ion-tab-button>
 

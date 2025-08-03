@@ -1,22 +1,22 @@
-<ion-header> 
+<ion-header>
     <ion-toolbar class="animated fadeIn shadeCol">
-    
-    <ion-buttons slot="start">
-        <ion-back-button mode ="md" icon="arrow-back" style="color: #fff;"></ion-back-button>
-    </ion-buttons>
-      <ion-text color="light" class="HeaderTitle" >Create Rate</ion-text>
+        <ion-buttons slot="start">
+            <ion-back-button
+                mode="md"
+                icon="arrow-back"
+                style="color: #fff"
+            ></ion-back-button>
+        </ion-buttons>
+        <ion-text color="light" class="HeaderTitle">Create Rate</ion-text>
     </ion-toolbar>
-
-  </ion-header>
+</ion-header>
 
 <ion-content>
-
     <ion-card>
         <ion-grid no-padding>
             <form [formGroup]="onAddInventoryForm">
-
                 <ion-row>
-                    <ion-col size="6">
+                    <!-- <ion-col size="6">
                         <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">From Date*
                         </ion-text>
                         <ion-datetime [(ngModel)]="availability.fromDate" (ionChange)="fromDateChange($event)"
@@ -24,11 +24,73 @@
                         formControlName="rateAndAvailFromDate" no-padding class="dropdown"
                         color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
                         placeholder="From Date"></ion-datetime>
-
-                       
-                    </ion-col>
+                    </ion-col> -->
 
                     <ion-col size="6">
+                        <ion-text
+                            style="
+                                font-size: 12px;
+                                color: #1d174d;
+                                margin: 0 0 5px 10px;
+                            "
+                        >
+                            From Date: <b style="color: red">*</b></ion-text
+                        >
+                        <ion-item class="datetime-box">
+                            <!-- <img (click)="openDateTimePicker()" src="/assets/img/calender-acco.png" alt="Ionic logo" style="margin-right: 2%" />
+                          {{this.availability.fromDate}}
+                          <ion-modal [isOpen]="isModalOpenfromDate" (ionModalDidDismiss)="closeDateTimePicker()">
+                            <ng-template>
+                              <div class="modal-content">
+                              <ion-datetime (ionChange)="fromDateChange($event)" (ionChange)="closeModalSeven()" 
+                              class="advSelect"
+                              style="margin-top: 5px; color:#333; border-radius: 8px;"
+                              placeholder="DD/MM/YYYY"
+                              [(ngModel)]="availability.fromDate"  
+                              min= "2000-01-01" max="2100-12-31" formControlName="rateAndAvailFromDate" show-default-buttons presentation="date"></ion-datetime>
+                              </div>
+                            </ng-template>
+                          </ion-modal> -->
+
+                            <ion-datetime-button
+                                datetime="fromDatePicker"
+                                [ngClass]="isFromSelected ? 'selected' : 'unselected'"
+                                class="date-btn"
+                            ></ion-datetime-button>
+
+                            <ion-icon
+                                name="calendar-clear"
+                                (click)="setFromDateOpen(true)"
+                                class="calendar-icon"
+                            ></ion-icon>
+                            <!-- Modal Wrapper -->
+                            <ion-modal
+                                [keepContentsMounted]="true"
+                                [isOpen]="isFromModalOpen"
+                                (ionModalDidDismiss)="dismissFromDateModal()"
+                            >
+                                <ng-template>
+                                    <ion-datetime
+                                        id="fromDatePicker"
+                                        (ionChange)="fromDateChange($event)"
+                                        [(ngModel)]="availability.fromDate"
+                                        formControlName="rateAndAvailFromDate"
+                                        placeholder="DD/MM/YYYY"
+                                        min="2000-01-01"
+                                        max="2100-12-31"
+                                        [showDefaultButtons]="true"
+                                        style="color: #000"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                        presentation="date"
+                                    >
+                                    </ion-datetime>
+                                </ng-template>
+                            </ion-modal>
+                        </ion-item>
+                    </ion-col>
+
+                    <!-- <ion-col size="6">
                         <ion-text color="primary" class="check-in-out-text" style="font-size: 12px;">To Date*
                         </ion-text>
 
@@ -37,49 +99,137 @@
                         formControlName="rateAndAvailToDate" no-padding class="dropdown"
                         color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
                         placeholder="To Date"></ion-datetime>
+                    </ion-col> -->
 
+                    <ion-col size="6">
+                        <ion-text
+                            style="
+                                font-size: 12px;
+                                color: #1d174d;
+                                margin: 0 0 5px 10px;
+                            "
+                        >
+                            To Date: <b style="color: red">*</b>
+                        </ion-text>
+                        <ion-item
+                            class="datetime-box"
+                            [disabled]="!availability.fromDate"
+                        >
+                            <!-- <img (click)="openDateTimePickerOne()" src="/assets/img/calender-acco.png" alt="Ionic logo" style="margin-right: 2%" />
+                      {{ availability.toDate | date: 'yyyy-MM-dd'}}
+                      <ion-modal [isOpen]="isModalOpentoDate" (ionModalDidDismiss)="closeDateTimePickerOne()">
+                        <ng-template >
+                          <div class="modal-content">
+                          <ion-datetime [(ngModel)]="availability.toDate" 
+                          min="{{availability.fromDate}}"
+                          max="2100-12-31"
+                          placeholder="DD/MM/YYYY"
+                          formControlName="rateAndAvailToDate" (ionChange)="toDateChange($event)" (ionChange)="closeModalSeven()" show-default-buttons presentation="date"></ion-datetime>
+                        </div>
+                        </ng-template>
+
+                      </ion-modal> -->
+
+                            <!-- DateTime Button -->
+                            <ion-datetime-button
+                                datetime="toDatePicker"
+                                [ngClass]="isToSelected ? 'selected' : 'unselected'"
+                                class="date-btn"
+                            ></ion-datetime-button>
+                            <ion-icon
+                                name="calendar-clear"
+                                (click)="setToDateOpen(true)"
+                                class="calendar-icon"
+                            ></ion-icon>
+                            <!-- Modal Wrapper -->
+                            <ion-modal
+                                [keepContentsMounted]="true"
+                                [isOpen]="isToModalOpen"
+                                (ionModalDidDismiss)="dismissToDateModal()"
+                            >
+                                <ng-template>
+                                    <div class="modal-content">
+                                        <ion-datetime
+                                            id="toDatePicker"
+                                            [(ngModel)]="availability.toDate"
+                                            [min]="availability.fromDate"
+                                            max="2100-12-31"
+                                            formControlName="rateAndAvailToDate"
+                                            (ionChange)="toDateChange($event)"
+                                            placeholder="DD/MM/YYYY"
+                                            [showDefaultButtons]="true"
+                                            presentation="date"
+                                            style="color: #000"
+                                            doneText="Done"
+                                            cancelText="Cancel"
+                                        >
+                                        </ion-datetime>
+                                    </div>
+                                </ng-template>
+                            </ion-modal>
+                        </ion-item>
                     </ion-col>
-
                 </ion-row>
-
 
                 <ion-row>
                     <ion-col size="6">
-
-                        <ion-text class="title-text" color="primary" style="font-size: 12px;">No Of Rooms*</ion-text>
-                        <ion-input formControlName="noOfRooms" [(ngModel)]="availability.noOfRooms"
-                        placeholder="0" inputmode="number" type ="number" min="0" class="input-background"></ion-input>
-                    
+                        <ion-text
+                            class="title-text"
+                            color="primary"
+                            style="font-size: 12px"
+                            >No Of Rooms*</ion-text
+                        >
+                        <ion-input
+                            formControlName="noOfRooms"
+                            [(ngModel)]="availability.noOfRooms"
+                            placeholder="0"
+                            inputmode="number"
+                            type="number"
+                            min="0"
+                            class="input-background"
+                        ></ion-input>
                     </ion-col>
 
                     <ion-col size="6">
-
-                        <ion-text class="title-text" color="primary" style="font-size: 12px;">Price*</ion-text>
-                        <ion-input formControlName="price" [(ngModel)]="availability.price"
-                        placeholder="0" inputmode="number" type="number"  class="input-background"></ion-input>
-                    
-                        
+                        <ion-text
+                            class="title-text"
+                            color="primary"
+                            style="font-size: 12px"
+                            >Price*</ion-text
+                        >
+                        <ion-input
+                            formControlName="price"
+                            [(ngModel)]="availability.price"
+                            placeholder="0"
+                            inputmode="number"
+                            type="number"
+                            class="input-background"
+                        ></ion-input>
                     </ion-col>
                 </ion-row>
 
                 <ion-row>
-
-                    <ion-col size="6" >
-                        <ion-button expand="block" color="primary" (click)="submit()" [disabled]="!onAddInventoryForm.valid|| loader">
-                            Create</ion-button>
+                    <ion-col size="6">
+                        <ion-button
+                            expand="block"
+                            color="primary"
+                            (click)="submit()"
+                            [disabled]="!onAddInventoryForm.valid|| loader"
+                        >
+                            Create</ion-button
+                        >
                     </ion-col>
-    
-                
 
-                    <ion-col size="6" >
-                        <ion-button expand="block"  class="btn-cancel" (click)="cancel()">Cancel</ion-button>
+                    <ion-col size="6">
+                        <ion-button
+                            expand="block"
+                            class="btn-cancel"
+                            (click)="cancel()"
+                            >Cancel</ion-button
+                        >
                     </ion-col>
-
-                    
-            </ion-row>
-
+                </ion-row>
             </form>
         </ion-grid>
     </ion-card>
-
 </ion-content>

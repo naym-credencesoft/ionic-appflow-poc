@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { IonDatetime, IonModal, LoadingController, ToastController } from '@ionic/angular';
 import { Availability } from 'src/app/model/Availbility/availability';
 import { Property } from 'src/app/model/property/Property';
 import { Room } from 'src/app/model/room';
@@ -19,6 +19,13 @@ import { RateBundle } from 'src/app/model/Availbility/rate-bundle';
   styleUrls: ['./update-inventory.page.scss'],
 })
 export class UpdateInventoryPage implements OnInit {
+  @ViewChild('fromDateModal', { static: false }) fromDateModal!: IonDatetime;
+ @ViewChild('fromDateBtn', { static: false, read: ElementRef }) fromDateBtn!: ElementRef;
+ @ViewChild('fromModal', { static: false }) fromModal!: IonModal;
+  @ViewChild('toModal', { static: false }) toModal!: IonModal;
+
+
+
 
   
     rateAndAvailFromDate: FormControl = new FormControl();
@@ -44,7 +51,11 @@ export class UpdateInventoryPage implements OnInit {
     toMaxDate: string;
 
     isInventoryCreated : boolean = true;
-    
+    isFromSelected = false;
+    isToSelected = false;
+ isFromModalOpen = false;
+isToModalOpen = false;
+
 
   constructor(private acRoute: ActivatedRoute,
     private router: Router,
@@ -94,8 +105,32 @@ export class UpdateInventoryPage implements OnInit {
         Available: ["", Validators.compose([Validators.required])],
         Hold: ["", Validators.compose([Validators.nullValidator])],
     });
+    const selectedDate = new Date();
+  const formattedFromDate = selectedDate.toISOString().split('T')[0];
+  this.rateBundle.fromDate = formattedFromDate;
+
+
+  // Calculate toDate = fromDate + 1 day
+  const toDate = new Date(selectedDate);
+  toDate.setDate(toDate.getDate() + 1);
+  this.rateBundle.toDate = toDate.toISOString().split('T')[0]; // (optional if needed)
   }
 
+   setFromDateOpen(isOpen: boolean) {
+    this.isFromModalOpen = isOpen;
+  }
+
+  dismissFromDateModal() {
+    this.isFromModalOpen = false;
+  }
+
+      setToDateOpen(isOpen: boolean) {
+    this.isToModalOpen = isOpen;
+  }
+
+      dismissToDateModal() {
+    this.isToModalOpen = false;
+    }
   currentDateFix(roomId) {
     this.loader = true;
     this.loadDateService.maxLoadDate(roomId).subscribe(res => {
@@ -124,16 +159,64 @@ export class UpdateInventoryPage implements OnInit {
     });
 
   }
+  openFromDatePicker() {
+     this.fromDateBtn?.nativeElement?.click();
+  }
 
-  fromDateChange() {
-    let toDate = new Date(this.rateBundle.fromDate);
 
-    toDate.setDate(toDate.getDate() + 1);
-    this.toMinDate = this.getDate(toDate);
+//   fromDateChange(event:any) {
+//      const selectedDate = new Date(event.detail.value);
+//      const formattedDate = selectedDate.toISOString().split('T')[0];
+//      this.rateBundle.fromDate = formattedDate;
+//     let toDate = new Date(this.rateBundle.fromDate);
+//     console.log('todate is',toDate);
 
-    toDate.setDate(toDate.getDate() + 90);
-    this.toMaxDate = this.getDate(toDate);
+//     toDate.setDate(toDate.getDate() + 1);
+//     this.toMinDate = this.getDate(toDate);
+//      console.log('toMinDate is',this.toMinDate);
+
+//     toDate.setDate(toDate.getDate() + 90);
+//     this.toMaxDate = this.getDate(toDate);
+//        console.log('toMaxDate is',this.toMaxDate);
+// //         if (this.fromModal) {
+// //     this.fromModal.dismiss();
+// //   }
+
+// }
+
+
+// toDateChange(event:any){
+//   if (this.toModal) {
+//     this.toModal.dismiss();
+//   }
+// }
+
+isFromDateSelected: boolean = false;
+isToDateSelected: boolean = false;
+
+fromDateChange(event: any) {
+  const selectedDate = new Date(event.detail.value);
+  this.rateBundle.fromDate = selectedDate.toISOString().split('T')[0];
+  this.isFromSelected = true;
+this.isFromDateSelected = true;
+  // Optional: Clear or adjust toDate if it's now before fromDate
+  if (new Date(this.rateBundle.toDate) < new Date(this.rateBundle.fromDate)) {
+    this.rateBundle.toDate = '';
+  }
 }
+
+toDateChange(event: any) {
+  const selectedDate = new Date(event.detail.value);
+  const formattedDate = selectedDate.toISOString().split('T')[0];
+  this.isToSelected = true;
+this.isToDateSelected = true;
+  // Optional: prevent unnecessary update
+  if (this.rateBundle.toDate !== formattedDate) {
+    this.rateBundle.toDate = formattedDate;
+  }
+}
+
+
 
   getDate(date: Date) {
      

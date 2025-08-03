@@ -64,7 +64,41 @@
                         </ion-text>
                         <ion-row>
                             <ion-col no-padding size="12">
-                                <ion-datetime
+                        
+                                <ion-item  class="datetime-box">
+                                    <ion-datetime-button datetime="expenceListFromDate" class="date-btn"></ion-datetime-button>
+    
+                                    <ion-icon
+                                        name="calendar-clear"
+                                        (click)="setFromDateOpen(true)"
+                                        
+                                        class="calendar-icon"
+                                    ></ion-icon>
+                                    <ion-modal [keepContentsMounted]="true"
+                                     [isOpen]="isFromModalOpen"
+                                (ionModalDidDismiss)="dismissFromDateModal()">
+                                    <ng-template>
+                                        <ion-datetime
+                                        id="expenceListFromDate"
+                                        style="border: 1px solid gray; border-radius: 5px; color: #333;"
+                                        [(ngModel)]="fromDateString"
+                                        (ionChange)="fromDateChange()"
+                                        formControlName="bookingFromDate"
+                                        display-format="DD/MM/YYYY"
+                                        presentation="date"
+                                        placeholder="DD/MM/YYYY"
+                                        min="2000-12-31"
+                                        max="2100-12-31"
+                                        [showDefaultButtons]="true"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                        ></ion-datetime>
+                                    </ng-template>
+                                    </ion-modal>
+                                </ion-item>
+
+
+                                <!-- <ion-datetime
                                 style="border: 1px solid gray;border-radius: 5px;color: #333;"
                                     [(ngModel)]="fromDateString"
                                     (ionChange)="fromDateChange()"
@@ -77,8 +111,8 @@
                                     placeholder="DD/MM/YYYY"
                                     min= "2000-12-31"
                                     max="2100-12-31"
-                                ></ion-datetime>
-                                <!-- -->
+                                ></ion-datetime> -->
+                                
                             </ion-col>
                         </ion-row>
                     </ion-col>
@@ -93,7 +127,39 @@
 
                         <ion-row>
                             <ion-col no-padding size="12">
-                                <ion-datetime
+
+                                <ion-item class="datetime-box">
+
+                                    <ion-datetime-button datetime="expenceListToDate" class="date-btn"></ion-datetime-button>
+                                     <ion-icon
+                                        name="calendar-clear"
+                                        (click)="setToDateOpen(true)"
+                                        class="calendar-icon"
+                                    ></ion-icon>
+                                    <ion-modal [keepContentsMounted]="true"
+                                    [isOpen]="isToModalOpen" (ionModalDidDismiss)="dismissToDateModal()">
+                                    <ng-template>
+                                        <ion-datetime
+                                        id="expenceListToDate"
+                                        style="border: 1px solid gray; border-radius: 5px; color: #333;"
+                                        [(ngModel)]="toDateString"
+                                        [min]="fromDateString"
+                                        max="2100-12-31"
+                                        formControlName="bookingToDate"
+                                        color="primary"
+                                        display-format="DD/MM/YYYY"
+                                        presentation="date"
+                                        placeholder="Select Date"
+                                        [showDefaultButtons]="true"
+                                        doneText="Done"
+                                        cancelText="Cancel"
+                                        >
+                                        </ion-datetime>
+                                    </ng-template>
+                                    </ion-modal>
+                                </ion-item>
+
+                                <!-- <ion-datetime
                                 style="border: 1px solid gray;border-radius: 5px;color: #333;"
                                     [(ngModel)]="toDateString"
                                     min= {{fromDateString}}
@@ -105,7 +171,7 @@
                                     displayFormat="DD/MM/YYYY"
                                     pickerFormat="DD/MM/YYYY"
                                     placeholder="Select Date"
-                                ></ion-datetime>
+                                ></ion-datetime> -->
                             </ion-col>
                         </ion-row>
                     </ion-col>

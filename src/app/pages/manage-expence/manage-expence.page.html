@@ -33,7 +33,7 @@
         <!--  -->
         <form [formGroup]="onExpenceForm">
             <ion-row>
-                <ion-col size="12">
+                <!-- <ion-col size="12">
                     <ion-list no-margin>
                         <ion-item lines="none">
                             <ion-label
@@ -67,8 +67,50 @@
                             Input field required
                         </ion-text>
                     </ion-text>
-                </ion-col>
+                </ion-col> -->
 
+
+                 <ion-col size="12">
+
+                     <ion-item class="fromdate">
+               <ion-label position="stacked">Date of Expense <span style="color:#000; font-size: 12px;">*</span></ion-label>
+            <ion-datetime-button 
+            [ngClass]="expence.date ? 'selected' : 'unselected'"
+             datetime="fromDatePicker"></ion-datetime-button>
+
+             <ion-icon name="calendar-clear"  (click)="setOpen(true)" slot="end" style="color: #333; 
+             margin-top: 40px;" ></ion-icon>
+
+                <!-- Datetime Component -->
+                 <ion-modal [keepContentsMounted]="true" [isOpen]="isModalOpen" (ionModalDidDismiss)="setOpen(false)">
+                <ng-template>
+                    <ion-datetime
+                    id="fromDatePicker"
+                    [(ngModel)]="expence.date"
+                    (ionChange)="fromDateChange($event); "
+                    color="primary"
+                    displayFormat="DD/MM/YYYY"
+                    pickerFormat="DD/MM/YYYY"
+                    placeholder="Select Date"
+                    min="2000-01-01"
+                    max="2100-12-31"
+                    formControlName="date"
+                    [showDefaultButtons]="true"
+                    presentation="date"
+                    style="color: #000"
+                    doneText="Done"
+                    cancelText="Cancel"
+                    presentation="date"
+                    style=" color:#000;"
+                    >
+                    </ion-datetime>
+</ng-template>
+            </ion-modal>
+          </ion-item>
+
+        </ion-col>
+
+        
                 <ion-col size="12">
                     <ion-list no-margin>
                         <ion-item lines="none">

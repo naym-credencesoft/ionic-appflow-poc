@@ -150,7 +150,7 @@ export class CustomerDetailsPage implements OnInit {
         this.navCtrl.navigateForward(['booking-list-details/bookingTab'] )
     } else {
         // this.navCtrl.navigateForward(['manage-customer'] )
-        this.location.back(); 
+       this.navCtrl.navigateBack(['manage-customer']);
        
     }
     

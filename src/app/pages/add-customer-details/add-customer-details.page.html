@@ -190,19 +190,62 @@
                         <ion-col size="6" >
     
                             <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Birthday</ion-text>
-                            <ion-datetime style="color:black" [disabled]="isDetails" [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                                                placeholder="Select Date"></ion-datetime>
-                                
+                            <div >
+                                <ion-datetime-button datetime="birthdayPicker" class="card-item" 
+                                [ngClass]="isBirthDateSelected ? 'selected' : 'unselected'"
+                                [disabled]="isDetails"></ion-datetime-button>
+    
+                                <ion-modal [keepContentsMounted]="true" >
+                                    <ng-template>
+                                    <ion-datetime
+                                        id="birthdayPicker"
+                                        presentation="date"
+                                        [(ngModel)]="customer.birthday"
+                                        formControlName="birthday"
+                                        (ionChange)="onBirthdayChange($event)"
+                                        style="color: #000;"
+                                        displayFormat="DD/MM/YYYY"
+                                        pickerFormat="DD/MM/YYYY"
+                                        [showDefaultButtons]="true"
+                                        cancelText="Cancel"
+                                        doneText="Done"
+    
+                                    ></ion-datetime>
+                                    </ng-template>
+                                </ion-modal>
+                                    
+                            </div>
                         </ion-col>
     
                         <ion-col size="6">
-                            <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Anniversary Date</ion-text>
-                            <ion-datetime style="color:black" [disabled]="isDetails" [(ngModel)]="customer.anniversaryDate"  formControlName="anniversaryDate" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                            placeholder="Select Date"></ion-datetime>
-                        
+                           <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;">Anniversary Date</ion-text>
+
+                            <ion-datetime-button datetime="anniversaryPicker" class="card-item"  
+                            [ngClass]="isAnniversaryDateSelected ? 'selected' : 'unselected'"
+                            [disabled]="isDetails"></ion-datetime-button>
+
+                            <ion-modal [keepContentsMounted]="true" >
+                            <ng-template>
+                                <ion-datetime
+                                id="anniversaryPicker"
+                                presentation="date"
+                                [(ngModel)]="customer.anniversaryDate"
+                                formControlName="anniversaryDate"
+                                style="color:black"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                [showDefaultButtons]="true"
+                                cancelText="Cancel"
+                                doneText="Done"
+                                (ionChange)="onAnniversaryConfirm($event)"
+                                ></ion-datetime>
+                            </ng-template>
+                            </ion-modal>
+
                         </ion-col>
                
                      </ion-row>
+
 
                      <ion-row>
                         <ion-col size="12">
@@ -359,15 +402,59 @@
                     <ion-col size="6" >
 
                         <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Birthday</ion-text>
-                        <ion-datetime [disabled]="isDetails" [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                                            placeholder="Select Date"></ion-datetime>
+                         <ion-datetime-button datetime="birthdayPicker2" class="card-item" 
+                            [ngClass]="isBirthDateSelected ? 'selected' : 'unselected'"
+                         [disabled]="isDetails"></ion-datetime-button>
+    
+                                <ion-modal [keepContentsMounted]="true" #birthdayModal>
+                                    <ng-template>
+                                    <ion-datetime
+                                        id="birthdayPicker2"
+                                        presentation="date"
+                                        [(ngModel)]="customer.birthday"
+                                        formControlName="birthday"
+                                        (ionChange)="onBirthdayChange($event)"
+                                        style="color: #000;"
+                                        displayFormat="DD/MM/YYYY"
+                                        pickerFormat="DD/MM/YYYY"
+                                        [showDefaultButtons]="true"
+                                        cancelText="Cancel"
+                                        doneText="Done"
+    
+                                    ></ion-datetime>
+                                    </ng-template>
+                                </ion-modal>
+                        <!-- <ion-datetime [disabled]="isDetails" [(ngModel)]="customer.birthday"  formControlName="birthday" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                                            placeholder="Select Date"></ion-datetime> -->
                             
                     </ion-col>
 
                     <ion-col size="6">
                         <ion-text color="primary" class="check-in-out-text" style="font-size: 10px;" >Anniversary Date</ion-text>
-                        <ion-datetime [disabled]="isDetails" [(ngModel)]="customer.anniversaryDate"  formControlName="anniversaryDate" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
-                        placeholder="Select Date"></ion-datetime>
+                            <ion-datetime-button datetime="anniversaryPicker" class="card-item"  
+                            [ngClass]="isAnniversaryDateSelected ? 'selected' : 'unselected'"
+                            [disabled]="isDetails"></ion-datetime-button>
+
+                            <ion-modal [keepContentsMounted]="true" #anniversaryDateModal>
+                            <ng-template>
+                                <ion-datetime
+                                id="anniversaryPicker"
+                                presentation="date"
+                                [(ngModel)]="customer.anniversaryDate"
+                                formControlName="anniversaryDate"
+                                style="color:black"
+                                displayFormat="DD/MM/YYYY"
+                                pickerFormat="DD/MM/YYYY"
+                                [showDefaultButtons]="true"
+                                cancelText="Cancel"
+                                doneText="Done"
+
+                                (ionChange)="onAnniversaryConfirm($event)"
+                                ></ion-datetime>
+                            </ng-template>
+                            </ion-modal>
+                        <!-- <ion-datetime [disabled]="isDetails" [(ngModel)]="customer.anniversaryDate"  formControlName="anniversaryDate" no-padding class="datepicker" color="primary" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY"
+                        placeholder="Select Date"></ion-datetime> -->
                     
                     </ion-col>
            

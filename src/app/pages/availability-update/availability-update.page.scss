@@ -436,6 +436,28 @@ ion-footer {
     box-shadow: none;  
 }
 
+.datetime-box {
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 0 5px; /* less padding */
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  font-size: 15px;
+}
+
+.date-btn {
+  font-size: 15px;
+  color: #000;
+  border: none;
+  background: transparent;
+  text-align: left;
+}
+
+.calendar-icon {
+  font-size: 20px;
+  color: #333;
+}
+
 .card-item {
     /* background: linear-gradient(0deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%); */
     /* backdrop-filter: blur(34px); */
@@ -468,4 +490,18 @@ ion-footer {
     --background: #259BBF;
     border-radius: 10px;
     color: white;
+}
+ion-datetime-button::part(native) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+ion-datetime-button.unselected::part(native) {
+  color: #aaa; /* grey text */
+
+}
+
+ion-datetime-button.selected::part(native) {
+  color: #000; /* black text */
+
 }

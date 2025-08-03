@@ -19,6 +19,7 @@ export const HOTEL_MARKETING = "PROP_MARKETING";
 export const SMS_SUBSCRIPTION = "SMS Subscription";
 export const BUSINESS_TYPE_SOFTWARE_CONSULTING = "Software Consulting Services";
 export const SMS_HOST = "SMS Host";
+export const FB_OPERATOR = "FB_OPERATOR";
 export const PAYMENT_LINK = "Payment Link";
 
 export class CheckUserType {
@@ -55,6 +56,14 @@ export class CheckUserType {
         }
       }
     
+  isFbOperator(type: string){
+    if(type === FB_OPERATOR){
+        return true;
+    } else {
+      return false;
+    }
+  }
+
       isAnyOrgAdmin(type: string) {
         if (
           type === ORG_ADMIN ||
@@ -93,7 +102,8 @@ export class CheckUserType {
           type === HOUSE_KEEPING ||
           type === HOTEL_FINANCE ||
           type === PROP_SERVICE_EXECUTIVE ||
-          type === PROP_FO_EXECUTIVE
+          type === PROP_FO_EXECUTIVE ||
+          type === FB_OPERATOR
         ) {
           return true;
         } else {

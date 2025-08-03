@@ -54,6 +54,11 @@ ion-item{
     margin-left: 10px;
 }
 
+ion-datetime-button::part(native) {
+background: transparent !important;
+box-shadow: none !important;
+
+}
 
 
 
@@ -144,4 +149,11 @@ ion-item{
 .back {
     margin-left: 10px;
     color: white;
+}
+ion-datetime-button.unselected::part(native) {
+ color: grey !important;
+}
+
+ion-datetime-button.selected::part(native) {
+ color: black !important;
 }

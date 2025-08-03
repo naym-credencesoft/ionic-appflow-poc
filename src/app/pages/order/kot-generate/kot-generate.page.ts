@@ -25,11 +25,8 @@ import { Booking } from "src/app/model/manage-booking/Booking/Booking";
 import { UploadImageFile } from "src/app/model/Order/UploadImageFile";
 import { FileService } from "src/app/service/file.service";
 import { DateService } from "src/app/service/DateService/date-service.service";
-import html2canvas from 'html2canvas/dist/html2canvas';
-import * as html2pdf from 'html2pdf.js';
 import { ProductGroup } from "src/app/model/product/productGroup";
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
 @Component({
     selector: "app-kot-generate",
     templateUrl: "./kot-generate.page.html",
@@ -135,7 +132,6 @@ export class KotGeneratePage implements OnInit {
                 this.getOrderByOrderId(this.dialogOrder.id);
             }, 2000);
         }
-        console.log("property", this.dialogOrder)
         this.getSubscriptionForProperty(this.dialogOrder.propertyId);
         this.getAllGroupProduct(this.dialogOrder.businessServiceId);
         //      if (this.data.sectionId != null && this.data.sectionId != undefined) {
@@ -234,10 +230,10 @@ export class KotGeneratePage implements OnInit {
         );
     }
 
-    getOrderByOrderId(orderId: number) {
+    async getOrderByOrderId(orderId: number) {
         this.loader = true;
         this.orderService.getOrderByOrderId(orderId).subscribe(
-            (data) => {
+            async (data) => {
                 this.dialogOrder = data.body;
 
                 if (this.dialogOrder.deliveryMethod == "Room Order") {
@@ -253,15 +249,7 @@ export class KotGeneratePage implements OnInit {
                 ) {
                     this.items = this.dialogOrder.orderLineDtoList;
                 }
-                 
-                // if (this.businessService?.kotQueueUrl != null && this.businessService?.kotQueueUrl != ''
-                //     && this.businessService?.printerName != null && this.businessService?.printerName != ''
-                //     && this.isSilentPrinter == true
-                // ) {
-                //     setTimeout(() => {
-                //         this.generateGroupedPDFs("kotPrintSection2");
-                //     }, 500);
-                // }
+                
 
                 if (
                     this.dialogOrder?.kotDtoList != null &&
@@ -295,14 +283,11 @@ export class KotGeneratePage implements OnInit {
 
                 if (this.isKotUpdate === true) {
                     this.isKotUpdate = false;
-                    this.updateKOTListItem();
+                    //this.updateKOTListItem();
                     this.CreateOrUpdateKotAndConfirmOrder(orderId);
                 }
-                setTimeout(() => {
-                        if ( this.isSilentPrinter === true) {
-                        this.silentlyPrintKOT(this.dialogOrder.id);
-                    } 
-                    }, 500);
+              
+            
                 
                 this.UIDetectChange();
                 this.loader = false;
@@ -312,6 +297,9 @@ export class KotGeneratePage implements OnInit {
             }
         );
     }
+    private delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
     async getBookingById(bookingId) {
         try {
             const response1 = await this.bookingService.findBooking(bookingId).toPromise();
@@ -445,21 +433,6 @@ export class KotGeneratePage implements OnInit {
     //     }
     // }
     
- silentlyPrintKOT(orderId: number) {
-  this.orderService.silentPrintKOT(orderId).subscribe({
-    next: (data) => {
-    //   console.log("Success:", data);
-      this.isSilentPrinter = false;
-    //   this.openSuccessSnackBar(data);
-    //   this.dialogRef.close({ event: "list" });
-    },
-    error: (error) => {
-      console.error("Error:", error);
-      this.presentToast("Failed to generate and process KOT PDFs");
-      this.loader = false;
-    }
-  });
-}
     async presentToast(Message: string) {
         const toast = await this.toastController.create({
             message: Message,
@@ -468,162 +441,6 @@ export class KotGeneratePage implements OnInit {
         toast.present();
     }
 
-    generateGroupedPDFs(printSectionId: string) {
-        // Get all unique group names from kotList
-        const uniqueGroupNames = [...new Set(this.kotList.map(kot => kot.productGroupName))];
-
-        // Loop through each group and generate a PDF for each one
-        uniqueGroupNames.forEach(groupName => {
-            // Filter the kotList to get only the items that belong to the current group
-            const kotListForGroup = this.kotList.filter(kot =>
-                kot.productGroupName === groupName &&
-                kot.orderLines.some(ol => ol.status == null || ol.status === "Available")
-            );
-
-            if (kotListForGroup.length > 0) {
-                // Set the filtered kotList for rendering in the DOM
-
-                this.kotListReadyToPrint = kotListForGroup;
-
-                // Generate PDF for the current group
-                this.generatePDF(printSectionId, groupName);
-            }
-        });
-    }
-    generatePDF(printSectionId: string, groupName: string) {
-        const element = document.getElementById(printSectionId);
-
-        if (element && this.kotListReadyToPrint.length > 0) {
-            // Filter the KOT list by the specified group name
-            const filteredKOTList = this.kotListReadyToPrint.filter(kot => kot.productGroupName === groupName);
-
-            if (filteredKOTList.length === 0) {
-                console.error('No KOTs found for the specified group name.');
-                return;
-            }
-
-            const printerName = filteredKOTList[0].printerName;
-            // Create a new element to hold the filtered content
-            const printElement = document.createElement('div');
-            printElement.className = 'print-area';
-            printElement.style.fontFamily = 'Arial, Segoe UI, Tahoma, Geneva, Verdana, sans-serif';
-            printElement.style.display = 'block';
-            printElement.style.maxWidth = '300px';
-            printElement.style.width = '100%';
-            printElement.style.margin = '0';
-            printElement.style.padding = '0';
-
-            // Build the HTML content
-              let content = `
-        <table style="width: 100%;">
-          <tr>
-            <td>
-              <div style="text-align: center">
-                <div class="profile-title text-center" style="font-size: 2.5vmax">
-                              ${ (this.businessService == null ||
-                    this.businessService.brandName == null ||
-                    this.businessService.brandName === '')
-                    ? `<div style="font-size: 1vmax;color:black;">${this.property.name}</div>`
-                    : `<div style="font-size: 1vmax;color:black;">${this.businessService.brandName}</div>`
-                      }
-                  <div style="font-size: 0.7vmax;color:black;">${this.dialogOrder.bookOneOrderId}</div>
-
-
-                          ${this.dialogOrder.deliveryMethod === 'Room Order'
-                              ? `<div style="font-size: 0.7vmax;color:black;"><strong>Room No: </strong>${this.dialogOrder.roomNo}</div>`
-                            : ''}
-
-
-                  <div style="width: 100%; font-size: 0.7vmax;color:black;">
-                    <div><strong>Resource:</strong> ${this.dialogOrder.resourceName}</div>
-                  </div>
-                  ${ this.dialogOrder.orderedDate
-                    ? `<div style="width: 100%; font-size: 0.7vmax;color:black;">
-                         <span>${this.dateService.convertMillisecondsToDateFormat(this.dialogOrder.orderedDate)} ${this.dialogOrder.orderedTime}</span>
-                       </div>`
-                    : ''
-                  }
-                  ${ this.dialogOrder.operatorName
-                    ? `<div style="width: 100%; font-size: 0.7vmax;color:black;">
-                         <strong>Operator: </strong> ${this.dialogOrder.operatorName}
-                       </div>`
-                    : ''
-                  }
-                </div>
-              </div>
-            </td>
-          </tr>
-        </table>
-        <div style="border: 1px solid black;border-radius: 10px;">
-          ${filteredKOTList.map(kot => `
-            <div style="margin-left: 5px;">
-              <span style="font-size: 0.7vmax;color:black;">${kot.kotNo}</span>
-
-            ${kot.productGroupName ?`<span style="font-size: 0.7vmax;margin-left: 5px;color:black;">Group: ${kot.productGroupName}</span>`: ''}
-            </div>
-            <table class="print-table-css" style="font-family: Arial; text-align: center; width: 100%; border-collapse: collapse;">
-              <thead>
-                <tr>
-                  <th style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;">NAME</th>
-                  <th style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;">QTY</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${kot.orderLines.length === 0 ? '<tr><td colspan="2">VOID KOT</td></tr>' : kot.orderLines.map(row => `
-                  <tr>
-                    <td style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;"><b>${row.name.toUpperCase()}</b><br/>${row.notes?`<span>${row.notes}</span>`:''}</td>
-                    <td style="border: 0.2px solid #c1c1c1;text-align: center;padding: 2px; font-size:0.7vmax;color:black;">${row.unitsInOrder}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          `).join('')}
-
-              <div style="font-size: 0.7vmax; margin-top: 2px; margin-left: 5px;color:black;">
-                <strong>KOT Time: </strong> ${this.formatDateTime(Number(this.kotGenerateTime))}
-              </div>
-              ${this.dialogOrder.specialNotes?`<div style="font-size: 0.7vmax; margin-top: 2px; margin-left: 5px;color:black;">
-                <strong>Notes: </strong> ${this.dialogOrder.specialNotes}
-              </div>`:''}
-            </div>
-
-      `;
-
-            printElement.innerHTML = content;
-            document.body.appendChild(printElement);
-
-            // Generate and download the PDF using html2pdf
-            html2pdf()
-                .from(printElement)
-                .set({
-                    margin: 0,
-                    filename: `POS-kot.pdf`,
-                    image: { type: 'png', quality: 1 },
-                    html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'mm', format: [52, 210], orientation: 'portrait' }
-                })
-                .outputPdf('blob').then((pdfBlob) => {
-                    element.style.setProperty('display', 'none', 'important');
-                    this.uploadPDFToS3(pdfBlob, printerName);
-                    const downloadLink = document.createElement('a');
-                downloadLink.href = URL.createObjectURL(pdfBlob);
-                downloadLink.download = `POS-kot.pdf`;
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-                    this.isSilentPrinter == false;
-                })
-                .finally(() => {
-                    // Clean up
-                    document.body.removeChild(printElement);
-                    this.isSilentPrinter = false;
-                });
-
-        } else {
-            console.error('Element not found or no KOTs ready to print');
-            this.isSilentPrinter = false;
-        }
-    }
 
     formatDateTime(timestamp: number): string {
         const date = new Date(timestamp);
@@ -638,54 +455,6 @@ export class KotGeneratePage implements OnInit {
         return `${formattedHours}:${minutes} ${ampm}`;
     }
 
-    uploadPDFToS3(pdfBlob: Blob, printerName: String) {
-        const uploadImageFile = new UploadImageFile();
-
-        if (printerName == null || printerName == undefined) {
-            printerName = this.businessService.printerName;
-        }
-        uploadImageFile.receiptFileName = 'kot.' + this.property.id + '.' + printerName + '.pdf';
-
-        const formData = new FormData();
-        formData.append("file", pdfBlob, uploadImageFile.receiptFileName);
-
-        this.fileService.kotFileUploadToCloud(formData, "kotprint").subscribe(
-            (fileUploadResponse) => {
-                const fileUrl = fileUploadResponse.url;
-                this.printKot(fileUrl);
-
-                if (this.dialogOrder.kotDtoList != null && this.dialogOrder.kotDtoList.length > 0) {
-                    this.kotList = this.dialogOrder.kotDtoList.filter((k) => {
-                        return k.orderLines.some((ol) => {
-                            return (ol.status == null || ol.status === "Available");
-                        });
-                    });
-                }
-
-                //When update the kot status.
-                this.kotList.forEach((kl) => {
-                    let kotLines = [];
-                    kl.orderLines.forEach((ol) => {
-                        ol.status = "Cooking";
-                        kotLines.push(ol);
-                    });
-                    //update kot status
-                    if (this.dialogOrder.orderStatus === "Confirmed" || this.dialogOrder.orderStatus === "InProgress") {
-                        this.updateKOTOrderLineStatus(kl.id, kotLines);
-                    }
-                    //update order status
-                    if (this.dialogOrder.orderStatus === "Confirmed") {
-                        this.updateOrderStatus2(this.dialogOrder.id, "InProgress");
-                    }
-                });
-                this.changeDetectorRefs.detectChanges();
-                // this.openSuccessSnackBar("File uploaded successfully");
-            },
-            (error) => {
-                console.error('Error uploading PDF to S3:', error);
-            }
-        );
-    }
 
     getKotOrderLine(kot) {
         return kot.orderLines.filter(
