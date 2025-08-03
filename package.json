@@ -1,4 +1,7 @@
 {
+    "engines": {
+        "node": "18.20"
+    },
     "name": "bookone-business",
     "version": "2.5.0",
     "homepage": "https://credencesoft.co.nz/",
