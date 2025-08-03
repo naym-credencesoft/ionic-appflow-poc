@@ -1,0 +1,48 @@
+{
+    "project_info": {
+        "project_number": "353589001734",
+        "firebase_url": "https://bookone-mobile-app.firebaseio.com",
+        "project_id": "bookone-mobile-app",
+        "storage_bucket": "bookone-mobile-app.appspot.com"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:353589001734:android:a1dd4a8f2951a7bdc50d87",
+                "android_client_info": {
+                    "package_name": "nz.co.credencesoft.bookone"
+                }
+            },
+            "oauth_client": [
+                {
+                    "client_id": "353589001734-96skpc063oistcigl3nevqom3abr464m.apps.googleusercontent.com",
+                    "client_type": 3
+                }
+            ],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyCCRbsYYHISTHJX3iX-4duZmDSYU-SlUbk"
+                }
+            ],
+            "services": {
+                "appinvite_service": {
+                    "other_platform_oauth_client": [
+                        {
+                            "client_id": "353589001734-96skpc063oistcigl3nevqom3abr464m.apps.googleusercontent.com",
+                            "client_type": 3
+                        },
+                        {
+                            "client_id": "353589001734-cniv8ac0b230gerghcnl914hhdc9sr08.apps.googleusercontent.com",
+                            "client_type": 2,
+                            "ios_info": {
+                                "bundle_id": "nz.co.credencesoft.bookone",
+                                "app_store_id": "1479329580"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}
