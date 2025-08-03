@@ -19,6 +19,7 @@ target 'App' do
   # Add your Pods here
   pod 'FirebaseCore'
   pod 'Firebase/Messaging'
+  pod 'Firebase/Crashlytics'
 end
 
 
