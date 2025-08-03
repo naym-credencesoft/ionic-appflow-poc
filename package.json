@@ -121,8 +121,7 @@
             }
         },
         "platforms": [
-            "ios",
-            "android"
+            "ios"
         ]
     }
 }

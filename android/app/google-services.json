@@ -10,7 +10,7 @@
             "client_info": {
                 "mobilesdk_app_id": "1:353589001734:android:a1dd4a8f2951a7bdc50d87",
                 "android_client_info": {
-                    "package_name": "nz.co.credencesoft.bookone"
+                    "package_name": "co.nz.cosft.app.mobile.test"
                 }
             },
             "oauth_client": [
@@ -35,7 +35,7 @@
                             "client_id": "353589001734-cniv8ac0b230gerghcnl914hhdc9sr08.apps.googleusercontent.com",
                             "client_type": 2,
                             "ios_info": {
-                                "bundle_id": "nz.co.credencesoft.bookone",
+                                "bundle_id": "co.nz.cosft.app.mobile.test",
                                 "app_store_id": "1479329580"
                             }
                         }

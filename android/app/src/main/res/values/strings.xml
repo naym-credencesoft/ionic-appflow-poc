@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">BookOne Business</string>
     <string name="title_activity_main">BookOne Business</string>
-    <string name="package_name">nz.co.credencesoft.bookone</string>
-    <string name="custom_url_scheme">nz.co.credencesoft.bookone</string>
+    <string name="package_name">co.nz.cosft.app.mobile.test</string>
+    <string name="custom_url_scheme">co.nz.cosft.app.mobile.test</string>
 </resources>
