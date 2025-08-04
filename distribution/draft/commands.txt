@@ -1,8 +1,0 @@
-// generate keystore
-keytool -certreq -alias test -keystore key.keystore -file key.csr
-
-// generate key
-keytool -certreq -alias test -keystore key.keystore -file key.csr  
-
-// generate p12 from key
-keytool -importkeystore   -srckeystore key.keystore  -srcstoretype JKS  -srcalias test   -srcstorepass Pass@1234    -destkeystore ios_distribution.p12    -deststoretype PKCS12     -deststorepass Pass@1234   -destkeypass Pass@1234

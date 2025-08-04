@@ -3,7 +3,9 @@ openssl genrsa -out ios_distribution.key 2048
 openssl req -new -key ios_distribution.key -out ios_distribution.csr
 
 
+# for ionic only
+# generate pem
 openssl x509 -in ios_distribution.cer -inform DER -out ios_distribution.pem -outform PEM
 
-
+# pem to p12
 openssl pkcs12 -export -inkey ios_distribution.key -in ios_distribution.pem -out ios_distribution.p12
