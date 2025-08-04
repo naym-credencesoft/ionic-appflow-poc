@@ -1,4 +1,4 @@
-package co.nz.cosft.app.mobile.test;
+package nz.co.credencesoft.bookone;
 
 import android.os.Bundle;
 

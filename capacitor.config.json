@@ -1,5 +1,5 @@
 {
-    "appId": "co.nz.cosft.app.mobile.test",
+    "appId": "nz.co.credencesoft.bookone",
     "appName": "BookOne Business",
     "bundledWebRuntime": false,
     "npmClient": "npm",
